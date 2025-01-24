@@ -1,0 +1,385 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = CleanBrilliantCompany
+build_property.RootNamespace = CleanBrilliantCompany
+build_property.ProjectDir = c:\Users\imman\Github\ICT2112-Software-Design\CleanBrilliantCompany\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = c:\Users\imman\Github\ICT2112-Software-Design\CleanBrilliantCompany
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/bootstrap_4.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxib290c3RyYXBfNC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/calendar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxjYWxlbmRhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/chart-d3.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxjaGFydC1kMy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/chart-flot.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxjaGFydC1mbG90LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/chart-js.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxjaGFydC1qcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/chart-morris.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxjaGFydC1tb3JyaXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/email_compose.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxlbWFpbF9jb21wb3NlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/email_detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxlbWFpbF9kZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/email_inbox.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxlbWFpbF9pbmJveC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/email_newsletter.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxlbWFpbF9uZXdzbGV0dGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/email_system.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxlbWFpbF9zeXN0ZW0uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/extra_404_error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxleHRyYV80MDRfZXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/extra_coming_soon.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxleHRyYV9jb21pbmdfc29vbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/extra_invoice.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxleHRyYV9pbnZvaWNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/extra_profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxleHRyYV9wcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/extra_search_results.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxleHRyYV9zZWFyY2hfcmVzdWx0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/extra_timeline.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxleHRyYV90aW1lbGluZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_dropzone.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX2Ryb3B6b25lLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_editable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX2VkaXRhYmxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_elements.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX2VsZW1lbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_multiple_upload.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX211bHRpcGxlX3VwbG9hZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_plugins.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX3BsdWdpbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_slider_switcher.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX3NsaWRlcl9zd2l0Y2hlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_summernote.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX3N1bW1lcm5vdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_validation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX3ZhbGlkYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_wizards.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX3dpemFyZHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_wizards_validation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX3dpemFyZHNfdmFsaWRhdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/form_wysiwyg.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3JtX3d5c2l3eWcuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/gallery.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxnYWxsZXJ5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/gallery_v2.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxnYWxsZXJ5X3YyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/helper_css.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxoZWxwZXJfY3NzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/index_v2.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxpbmRleF92Mi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxsb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/login_v2.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxsb2dpbl92Mi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/login_v3.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxsb2dpbl92My5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/map_google.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxtYXBfZ29vZ2xlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/map_vector.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxtYXBfdmVjdG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_blank.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX2JsYW5rLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_boxed_layout_with_mixed_menu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX2JveGVkX2xheW91dF93aXRoX21peGVkX21lbnUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_full_height.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX2Z1bGxfaGVpZ2h0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_without_sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhvdXRfc2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_boxed_layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfYm94ZWRfbGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_footer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfZm9vdGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_ionicons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfaW9uaWNvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_light_sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfbGlnaHRfc2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_line_icons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfbGluZV9pY29ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_mega_menu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfbWVnYV9tZW51LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_minified_sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfbWluaWZpZWRfc2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_mixed_menu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfbWl4ZWRfbWVudS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_right_sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfcmlnaHRfc2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_top_menu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfdG9wX21lbnUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_transparent_sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfdHJhbnNwYXJlbnRfc2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_two_sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfdHdvX3NpZGViYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/page_with_wide_sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxwYWdlX3dpdGhfd2lkZV9zaWRlYmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/register_v3.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxyZWdpc3Rlcl92My5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_basic.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9iYXNpYy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_autofill.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2VfYXV0b2ZpbGwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_buttons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2VfYnV0dG9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_colreorder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2VfY29scmVvcmRlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_combine.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2VfY29tYmluZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_fixed_columns.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2VfZml4ZWRfY29sdW1ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_fixed_header.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2VfZml4ZWRfaGVhZGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_keytable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2Vfa2V5dGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_responsive.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2VfcmVzcG9uc2l2ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_rowreorder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2Vfcm93cmVvcmRlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_scroller.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2Vfc2Nyb2xsZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/table_manage_select.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZV9tYW5hZ2Vfc2VsZWN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_buttons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9idXR0b25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_general.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9nZW5lcmFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_icons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9pY29ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_ionicons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9pb25pY29ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_language_bar_icon.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9sYW5ndWFnZV9iYXJfaWNvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_media_object.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9tZWRpYV9vYmplY3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_modal_notification.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9tb2RhbF9ub3RpZmljYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_simple_line_icons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9zaW1wbGVfbGluZV9pY29ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_social_buttons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV9zb2NpYWxfYnV0dG9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_tabs_accordions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV90YWJzX2FjY29yZGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_tour.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV90b3VyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_tree.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV90cmVlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_typography.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV90eXBvZ3JhcGh5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_unlimited_tabs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV91bmxpbWl0ZWRfdGFicy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/ui_widget_boxes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1aV93aWRnZXRfYm94ZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Home/widget.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx3aWRnZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-xvncqzennc
