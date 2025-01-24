@@ -1,3 +1,6 @@
+# Dependencies
+- I'm using .NET SDK: Version: 9.0.102 (Apologies in advance if y'all need to upgrade to this vers)
+
 # Collaboration Rules
 
 ## 1. Team Branch Rules
