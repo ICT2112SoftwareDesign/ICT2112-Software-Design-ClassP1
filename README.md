@@ -58,4 +58,6 @@ But it is highly unlikely we will ever be merging into main.
    git merge feature-login
    git push origin module1-team4
    ```
-   
+# Files
+- startbootstrap-sb-admin-2-gh-pages (Bootstrap template: refer to this for your example pages. Use/link them according to your team's needs.)
+- CleanBrilliantCompany (Generated MVC project template: This is THE project itself)
