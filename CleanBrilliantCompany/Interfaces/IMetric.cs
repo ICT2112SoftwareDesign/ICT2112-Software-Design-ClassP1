@@ -1,5 +1,5 @@
-namespace CleanBrilliantCompany.Interfaces
-{
+namespace CleanBrilliantCompany.Interfaces{
+public interface IMetric {
     public interface IMetric
     {
         /// <summary>
@@ -13,5 +13,6 @@ namespace CleanBrilliantCompany.Interfaces
         /// </summary>
         /// <returns>Object representing the metric's computed value.</returns>
         object GetValue();
+        }
     }
 }
