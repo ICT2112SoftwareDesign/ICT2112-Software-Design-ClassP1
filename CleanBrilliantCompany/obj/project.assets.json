@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\code\\ICT2112 Software Design\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectUniqueName": "c:\\code\\ICT2112 Software Design\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "projectName": "CleanBrilliantCompany",
-      "projectPath": "C:\\code\\ICT2112 Software Design\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectPath": "c:\\code\\ICT2112 Software Design\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "packagesPath": "C:\\Users\\yugik\\.nuget\\packages\\",
-      "outputPath": "C:\\code\\ICT2112 Software Design\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+      "outputPath": "c:\\code\\ICT2112 Software Design\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\yugik\\AppData\\Roaming\\NuGet\\NuGet.Config"
