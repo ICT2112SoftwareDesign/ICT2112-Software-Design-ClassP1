@@ -1,7 +1,6 @@
 namespace CleanBrilliantCompany.Interfaces{
-public interface IMetric {
-    public interface IMetric
-    {
+
+public interface IMetric{
         /// <summary>
         /// Gets the name of the metric.
         /// </summary>
@@ -13,6 +12,6 @@ public interface IMetric {
         /// </summary>
         /// <returns>Object representing the metric's computed value.</returns>
         object GetValue();
-        }
     }
 }
+
