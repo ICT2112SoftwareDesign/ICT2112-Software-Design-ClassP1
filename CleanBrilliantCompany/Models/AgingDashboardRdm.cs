@@ -7,7 +7,7 @@ public class AgingDashboardRdm : Dashboard
         _batchAnalyticsList = new List<AbstractAnalyticsDetails>();
     }
 
-     // ✅ Implementing the abstract method from Dashboard
+     // Implementing the abstract method from Dashboard
     public override Dashboard CreateNewDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration)
     {
         return new AgingDashboardRdm(name, requestedStartDate, requestedEndDate, validityDuration);
@@ -23,14 +23,14 @@ public class AgingDashboardRdm : Dashboard
         return _batchAnalyticsList;
     }
 
-    // public AbstractAnalyticsDetails? GetBatchAnalytics(int batchCode)
-    // {
-    //     return _batchAnalyticsList.Find(batch => batch.BatchCode == batchCode);
-    // }
+    public AbstractAnalyticsDetails? GetBatchAnalytics(int batchCode)
+    {
+        return _batchAnalyticsList.Find(batch => batch.GetBatchCode() == batchCode); 
+    }
 
-    // public object? GetMetricForBatch(int batchCode, string metricName)
-    // {
-    //     AbstractAnalyticsDetails? batch = GetBatchAnalytics(batchCode);
-    //     return batch?.GetMetric(metricName)?.GetValue();
-    // }
+    public object? GetMetricForBatch(int batchCode, string metricName)
+    {
+        AbstractAnalyticsDetails? batch = GetBatchAnalytics(batchCode);
+        return batch?.GetMetric(metricName)?.GetValue();
+    }
 }
