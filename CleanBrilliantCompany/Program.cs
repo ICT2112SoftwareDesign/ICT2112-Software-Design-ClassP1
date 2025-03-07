@@ -1,7 +1,17 @@
+using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Mappers;
+using CleanBrilliantCompany.Models;
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register CustomerMapper with the connection string
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddSingleton<iCustomerDatabase>(new CustomerMapper(connectionString));
+builder.Services.AddTransient<CustomerManagement>();
 
 var app = builder.Build();
 
@@ -22,8 +32,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=BeforeLogin}/{action=Login}/{id?}");
 
 
 app.Run();
