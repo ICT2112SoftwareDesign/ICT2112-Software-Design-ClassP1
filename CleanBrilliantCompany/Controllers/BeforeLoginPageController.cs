@@ -36,6 +36,8 @@ namespace CleanBrilliantCompany.Controllers
             bool isAuthenticated = _customerManagement.AuthenticateCustomer(email, password);
             if (isAuthenticated)
             {
+                // HttpContext.Session.SetString("LoggedInUserEmail", email);
+
                 // Redirect to a secure area or dashboard
                 return RedirectToAction("Index", "Home");
             }
@@ -48,8 +50,14 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult RegisterNewCustomer(string username, string password, string email)
+        public IActionResult RegisterNewCustomer(string username, string password, string confirmPassword, string email)
         {
+            if (password != confirmPassword)
+            {
+                ViewBag.Message = "Passwords do not match.";
+                return View("~/Views/BeforeLogin/RegisterCustomer.cshtml");
+            }
+            
             bool isRegistered = _customerManagement.createAccount(username, password, email);
             if (isRegistered)
             {

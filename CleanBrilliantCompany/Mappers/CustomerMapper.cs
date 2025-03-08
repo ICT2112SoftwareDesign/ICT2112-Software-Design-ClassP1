@@ -1,6 +1,8 @@
 using System;
 using Microsoft.Data.SqlClient;
 using CleanBrilliantCompany.Interfaces;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace CleanBrilliantCompany.Mappers
 {
@@ -19,6 +21,10 @@ namespace CleanBrilliantCompany.Mappers
             {
                 connection.Open();
 
+                // Hash the password before saving to the database
+                var passwordHasher = new PasswordHasher<object>();
+                string hashedPassword = passwordHasher.HashPassword(null, password);
+
                 string query = @"
                     INSERT INTO dbo.Customer (username, password, email) 
                     VALUES (@Username, @Password, @Email)";
@@ -26,7 +32,7 @@ namespace CleanBrilliantCompany.Mappers
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Username", username);
-                    command.Parameters.AddWithValue("@Password", password);
+                    command.Parameters.AddWithValue("@Password", hashedPassword);
                     command.Parameters.AddWithValue("@Email", email);
 
                     int result = command.ExecuteNonQuery();
@@ -70,14 +76,22 @@ namespace CleanBrilliantCompany.Mappers
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT COUNT(1) FROM dbo.Customer WHERE email = @Email AND password = @Password";
+
+                // Step 1: Get stored hashed password based on email
+                string query = "SELECT password FROM dbo.Customer WHERE email = @Email";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Email", email);
-                    command.Parameters.AddWithValue("@Password", password);
 
-                    int count = (int)command.ExecuteScalar();
-                    return count == 1;
+                    var storedPasswordHash = command.ExecuteScalar()?.ToString();
+
+                    if (string.IsNullOrEmpty(storedPasswordHash))
+                        return false; 
+                        
+                    var passwordHasher = new PasswordHasher<object>();
+                    var result = passwordHasher.VerifyHashedPassword(null, storedPasswordHash, password);
+
+                    return result == PasswordVerificationResult.Success;
                 }
             }
         }

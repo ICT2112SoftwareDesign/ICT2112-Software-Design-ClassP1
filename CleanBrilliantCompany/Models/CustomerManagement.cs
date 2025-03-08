@@ -31,7 +31,6 @@ namespace CleanBrilliantCompany.Models
 
         public CustomerRDM getCustomer(int customerId)
         {
-            // Implementation logic here
             return null;
         }
 
