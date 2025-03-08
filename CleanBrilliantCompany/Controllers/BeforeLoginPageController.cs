@@ -50,9 +50,16 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult RegisterNewCustomer(string username, string password, string email)
         {
-            // Placeholder logic for now
-            ViewBag.Message = "Registration functionality will be implemented later.";
-            return View("~/Views/BeforeLogin/Login.cshtml");
+            bool isRegistered = _customerManagement.createAccount(username, password, email);
+            if (isRegistered)
+            {
+                return View("~/Views/BeforeLogin/Login.cshtml");
+            }
+            else
+            {
+                ViewBag.Message = "Registration failed. Email already be in use.";
+                return View("~/Views/BeforeLogin/RegisterCustomer.cshtml");
+            }
         }
     }
 }

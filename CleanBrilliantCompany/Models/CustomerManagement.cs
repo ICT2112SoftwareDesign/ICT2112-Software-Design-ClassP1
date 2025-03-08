@@ -15,8 +15,12 @@ namespace CleanBrilliantCompany.Models
 
         public bool createAccount(string username, string password, string email)
         {
-            // Implementation logic here
-            return false;
+            // Check if customer already exists
+            if (_customerDatabase.CustomerExists(email))
+            {
+                return false;
+            }
+            return _customerDatabase.createCustomer(username, password, email);
         }
 
         public string queryChatbot()
