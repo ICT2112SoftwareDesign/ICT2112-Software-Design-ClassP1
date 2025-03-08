@@ -4,12 +4,12 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    public class BeforeLoginController : Controller
+    public class BeforeLoginPageController : Controller
     {
-        private readonly ILogger<BeforeLoginController> _logger;
+        private readonly ILogger<BeforeLoginPageController> _logger;
         private readonly CustomerManagement _customerManagement;
 
-        public BeforeLoginController(ILogger<BeforeLoginController> logger, CustomerManagement customerManagement)
+        public BeforeLoginPageController(ILogger<BeforeLoginPageController> logger, CustomerManagement customerManagement)
         {
             _logger = logger;
             _customerManagement = customerManagement;
