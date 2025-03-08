@@ -32,7 +32,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=BeforeLogin}/{action=Login}/{id?}");
+    pattern: "{controller=BeforeLoginPage}/{action=Login}/{id?}");
 
 
 app.Run();

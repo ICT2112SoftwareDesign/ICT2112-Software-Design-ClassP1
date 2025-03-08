@@ -18,12 +18,12 @@ namespace CleanBrilliantCompany.Controllers
         // PAGE CONTROLLER METHODS
         public IActionResult Login()
         {
-            return View(); // Serves Login Page
+            return View("~/Views/BeforeLogin/Login.cshtml"); // Serves Login Page
         }
 
         public IActionResult RegisterCustomer()
         {
-            return View(); // Serves Registration Page
+            return View("~/Views/BeforeLogin/RegisterCustomer.cshtml"); // Serves Registration Page
         }
 
         // INPUT CONTROLLER METHODS
