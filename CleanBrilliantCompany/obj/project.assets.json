@@ -8,24 +8,32 @@
     "net9.0": []
   },
   "packageFolders": {
-    "C:\\Users\\imman\\.nuget\\packages\\": {}
+    "C:\\Users\\rayne\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectUniqueName": "C:\\Users\\rayne\\source\\repos\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "projectName": "CleanBrilliantCompany",
-      "projectPath": "C:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
-      "packagesPath": "C:\\Users\\imman\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\obj\\",
+      "projectPath": "C:\\Users\\rayne\\source\\repos\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "packagesPath": "C:\\Users\\rayne\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\rayne\\source\\repos\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\imman\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\rayne\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
