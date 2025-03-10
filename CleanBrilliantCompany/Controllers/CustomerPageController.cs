@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
 
-// For all other pages
 namespace CleanBrilliantCompany.Controllers
 {
     public class CustomerPageController : Controller
@@ -18,6 +17,24 @@ namespace CleanBrilliantCompany.Controllers
 
         public IActionResult CustomerDetails()
         {
+            string loggedInEmail = HttpContext.Session.GetString("LoggedInUserEmail");
+            var applicationController = new ApplicationController(_customerManagement, HttpContext.RequestServices.GetService<IHttpContextAccessor>());
+
+            // Retrieve Customer Details via Session
+            var customerDetails = applicationController.GetCustomerSession();
+
+            if (customerDetails != null)
+            {
+                ViewBag.CustomerId = customerDetails.GetSession<int>("customerId");
+                ViewBag.Email = loggedInEmail;
+                ViewBag.Username = customerDetails.GetSession<string>("username");
+                ViewBag.CustomerAddress = customerDetails.GetSession<string>("customerAddress");
+            }
+            else
+            {
+                ViewBag.Message = "No customer details available.";
+            }
+
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }
     }

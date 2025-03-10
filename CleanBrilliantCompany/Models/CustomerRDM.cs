@@ -60,6 +60,50 @@ namespace CleanBrilliantCompany.Models
             this.customerAddress = address;
         }
 
+        public T GetSession<T>(string propertyName)
+        {
+            switch (propertyName)
+            {
+                case "customerId":
+                    return (T)(object)getCustomerId();
+                case "username":
+                    return (T)(object)getUsername();
+                case "password":
+                    return (T)(object)getPassword();
+                case "email":
+                    return (T)(object)getEmail();
+                case "customerAddress":
+                    return (T)(object)getCustomerAddress();
+                default:
+                    throw new Exception("Unknown property");
+            }
+        }
+
+        // Set method
+        public void SetSession<T>(string propertyName, T value)
+        {
+            switch (propertyName)
+            {
+                case "customerId":
+                    setCustomerId(Convert.ToInt32(value));
+                    break;
+                case "username":
+                    setUsername(value?.ToString()); 
+                    break;
+                case "password":
+                    setPassword(value?.ToString());
+                    break;
+                case "email":
+                    setEmail(value?.ToString()); 
+                    break;
+                case "customerAddress":
+                    setCustomerAddress(value?.ToString()); 
+                    break;
+                default:
+                    throw new Exception("Unknown property");
+            }
+        }
+
         public bool createCustomer(int customerId, string username, string password, string email)
         {
             // Implementation logic here

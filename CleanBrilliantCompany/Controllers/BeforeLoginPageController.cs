@@ -36,9 +36,9 @@ namespace CleanBrilliantCompany.Controllers
             bool isAuthenticated = _customerManagement.AuthenticateCustomer(email, password);
             if (isAuthenticated)
             {
-                // HttpContext.Session.SetString("LoggedInUserEmail", email);
-
-                // Redirect to a secure area or dashboard
+                // After user logs in stores email in session
+                HttpContext.Session.SetString("LoggedInUserEmail", email);
+                
                 return RedirectToAction("Index", "Home");
             }
             else

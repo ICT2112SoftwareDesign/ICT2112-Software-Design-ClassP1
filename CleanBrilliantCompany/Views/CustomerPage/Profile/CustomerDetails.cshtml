@@ -11,25 +11,57 @@
 
     <title>CLEAN BRILLIANT COMPANY - PROFILE</title>
 
-
-
 </head>
+    <body class="bg-primary"> <!-- Set the background color to the primary color -->
+
     <div class="container mt-5">
         <!-- Profile Header -->
-        <div class="profile-header">
-            <img src="https://via.placeholder.com/100" alt="Profile Image"> <!-- Placeholder image for profile -->
-            <h3 class="font-weight-bold">John Doe</h3>
-            <p class="text-muted">johndoe@example.com</p>
+        <div class="profile-header mb-4">
+            <h3 class="font-weight-bold text-white">Orders/Purchases: </h3>
+            <!-- <h3 class="font-weight-bold text-white">Hello! @ViewBag.Username</h3> -->
         </div>
 
-        <!-- Profile Details -->
-        <div class="profile-details">
-            <h4>Profile Details</h4>
+        <!-- Four smaller cards in a row -->
+        <div class="row mb-4">
+            <div class="col-sm-3 mb-3">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-wallet" style="margin-right: 5px;"></i>To Pay</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-3">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-box" style="margin-right: 5px;"></i>To Ship</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-3">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-truck" style="margin-right: 5px;"></i>To Receive</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-3">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-check" style="margin-right: 5px;"></i>Completed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Profile Details inside a card -->
+        <div class="card p-4">
+            <h4 class="card-title font-weight-bold">Profile Details</h4>
             <form method="post">
                 <div class="form-group row">
                     <label for="username" class="col-sm-3 col-form-label">Username</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" id="username" value="johndoe" disabled />
+                        <input type="text" class="form-control" id="username" value="@ViewBag.Username" disabled />
                     </div>
                     <div class="col-sm-3">
                         <button type="button" class="btn btn-link" data-toggle="modal" data-target="#editModal" data-field="username">
@@ -41,7 +73,7 @@
                 <div class="form-group row">
                     <label for="email" class="col-sm-3 col-form-label">Email</label>
                     <div class="col-sm-6">
-                        <input type="email" class="form-control" id="email" value="johndoe@example.com" disabled />
+                        <input type="email" class="form-control" id="email" value="@ViewBag.Email" disabled />
                     </div>
                     <div class="col-sm-3">
                         <button type="button" class="btn btn-link" data-toggle="modal" data-target="#editModal" data-field="email">
@@ -53,22 +85,10 @@
                 <div class="form-group row">
                     <label for="address" class="col-sm-3 col-form-label">Address</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" id="address" value="123 Main St, Cityville" disabled />
+                        <input type="text" class="form-control" id="address" value="@ViewBag.CustomerAddress" disabled />
                     </div>
                     <div class="col-sm-3">
                         <button type="button" class="btn btn-link" data-toggle="modal" data-target="#editModal" data-field="address">
-                            Edit
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="phone" class="col-sm-3 col-form-label">Phone</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="phone" value="+1 234 567 890" disabled />
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#editModal" data-field="phone">
                             Edit
                         </button>
                     </div>
@@ -82,7 +102,6 @@
             </form>
         </div>
     </div>
-<body> 
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>

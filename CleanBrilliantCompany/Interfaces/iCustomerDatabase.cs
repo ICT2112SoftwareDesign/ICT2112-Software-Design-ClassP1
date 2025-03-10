@@ -1,3 +1,4 @@
+using CleanBrilliantCompany.Models;
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface iCustomerDatabase
@@ -6,5 +7,7 @@ namespace CleanBrilliantCompany.Interfaces
         bool updateCustomer(string username, string password, string customerAddress, string email);
         bool VerifyCustomerCredentials(string email, string password);
         bool CustomerExists(string email);
+
+        CustomerRDM getCustomer(string email);
     }
 }

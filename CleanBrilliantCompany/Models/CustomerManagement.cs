@@ -29,9 +29,14 @@ namespace CleanBrilliantCompany.Models
             return string.Empty;
         }
 
-        public CustomerRDM getCustomer(int customerId)
+        // public CustomerRDM getCustomer(int customerId)
+        // {
+        //     return null;
+        // }
+
+        public CustomerRDM getCustomer(string email)
         {
-            return null;
+            return _customerDatabase.getCustomer(email);
         }
 
         public bool UpdateCustomerAddress(int customerId, string address)

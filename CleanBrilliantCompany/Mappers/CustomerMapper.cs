@@ -2,7 +2,7 @@ using System;
 using Microsoft.Data.SqlClient;
 using CleanBrilliantCompany.Interfaces;
 using Microsoft.AspNetCore.Identity;
-
+using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Mappers
 {
@@ -40,6 +40,45 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
+
+        public CustomerRDM getCustomer(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return null;
+            }
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT customerID, username, password, customerAddress FROM dbo.Customer WHERE email = @Email";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+                    
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            CustomerRDM customer = new CustomerRDM();
+
+                            customer.SetSession("customerId", reader.GetInt32(reader.GetOrdinal("customerID")));
+                            customer.SetSession("username", reader.GetString(reader.GetOrdinal("username")));
+                            customer.SetSession("email", email); 
+                            customer.SetSession("customerAddress", reader.IsDBNull(reader.GetOrdinal("customerAddress")) ? null : reader.GetString(reader.GetOrdinal("customerAddress")));
+
+                            return customer;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
 
         public bool CustomerExists(string email)
         {
