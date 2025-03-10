@@ -4,7 +4,7 @@ using CleanBrilliantCompany.Mappers;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class CustomerManagement
+    public class CustomerManagement: iCustomerQueryObserver
     {
         private readonly iCustomerDatabase _customerDatabase;
 
@@ -43,6 +43,7 @@ namespace CleanBrilliantCompany.Models
         public bool notifyDBCustomerQueryStatus()
         {
             // Implementation logic here
+            Console.WriteLine("Database query completed.");
             return false;
         }
 
