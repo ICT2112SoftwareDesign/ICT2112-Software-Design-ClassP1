@@ -9,13 +9,11 @@ namespace CleanBrilliantCompany.Mappers
     public class CustomerMapper : iCustomerDatabase
     {
         private readonly string _connectionString;
-        private readonly iCustomerQueryObserver _observer;
-        public CustomerMapper(string connectionString, iCustomerQueryObserver observer)
+
+        public CustomerMapper(string connectionString)
         {
             _connectionString = connectionString;
-            _observer = observer;
         }
-
 
         public bool createCustomer(string username, string password, string email)
         {
@@ -67,6 +65,12 @@ namespace CleanBrilliantCompany.Mappers
             return false;
         }
 
+        public bool notifyDBCustomerQueryStatus()
+        {
+            // Implementation logic here
+            return false;
+        }
+
         public bool VerifyCustomerCredentials(string email, string password)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -86,7 +90,7 @@ namespace CleanBrilliantCompany.Mappers
                         
                     var passwordHasher = new PasswordHasher<object>();
                     var result = passwordHasher.VerifyHashedPassword(null, storedPasswordHash, password);
-                    _observer.notifyDBCustomerQueryStatus();
+
                     return result == PasswordVerificationResult.Success;
                 }
             }
