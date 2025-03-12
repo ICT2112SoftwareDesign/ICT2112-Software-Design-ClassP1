@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    public class ReturnFormController : Controller
+	public class ReturnFormController : Controller
     {
 
 		private readonly ReturnFormControl _returnFormControl;
@@ -21,7 +21,7 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
 
-		[Route("view/{returnId}")]
+		[Route("returns/view/{returnId}")]
 		public IActionResult DisplayReturnForm(int returnId)
 		{
 			ReturnForm? returnForm = _returnFormControl.getReturnFormById(returnId);
@@ -36,9 +36,9 @@ namespace CleanBrilliantCompany.Controllers
 
 		// Handle deleting return forms.
 		[Route("returns/delete")]
-		public IActionResult DeleteReturnForm(int returnId, int itemId)
+		public IActionResult DeleteReturnForm(int returnId)
 		{
-			bool result = _returnFormControl.deleteReturnForm(returnId, itemId);
+			bool result = _returnFormControl.deleteReturnForm(returnId);
 
 			if (result)
 			{
@@ -53,10 +53,10 @@ namespace CleanBrilliantCompany.Controllers
 		public IActionResult ConfirmReturnForm(int manufacturerId, int itemId, string returnReason)
 		{
 
-			// Example staff ID set to 10
+			// Example staff ID set to 1
 			// Placeholder for returnId is 0.
 			// Placeholder for warehouseId is -1, the function will query the DB and update to the correct warehouseId.
-			var model = ReturnForm.createForm(0, manufacturerId, itemId, -1, returnReason, 10);
+			var model = ReturnForm.createForm(0, manufacturerId, itemId, -1, returnReason, 1);
 
 			if (ModelState.IsValid)
 			{
