@@ -1,0 +1,70 @@
+﻿@{
+	ViewData["Title"] = "Manage Return Form";
+}
+
+
+@model List<ReturnForm>
+
+
+<div class="text-center">
+	<h1 class="display-4 p-3">Manage Return Forms</h1>
+	<a asp-controller="StockFlowPage" asp-action="Create" class="btn btn-secondary">Create return form</a>
+</div>
+
+
+<table class="table mt-5">
+	<thead>
+		<tr>
+			<th>Return ID</th>
+			<th>Manufacturer ID</th>
+			<th>Item ID</th>
+			<th>Warehouse ID</th>
+			<th>Return Reason</th>
+			<th>Staff ID</th>
+			<th></th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model != null || Model?.Count <= 0)
+		{
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.GetReturnId()</td>
+					<td>@item.GetManufacturerId()</td>
+					<td>@item.GetItemId()</td>
+					<td>@item.GetWarehouseId()</td>
+					<td class="text-truncate" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+						@item.GetReturnReason()
+					</td>
+					<td>@item.GetStaffId()</td>
+
+					<td><a asp-controller="ReturnForm" asp-action="DisplayReturnForm" asp-route-returnId="@item.GetReturnId()" class="btn btn-outline-primary">View</a></td>
+
+					<td><a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-returnId="@item.GetReturnId()" class="btn btn-outline-danger delete-btn">Delete</a></td>
+
+				</tr>
+			}
+		}
+	</tbody>
+</table>
+@if (Model == null || Model?.Count <= 0)
+{
+	<p class="text-center">No return forms.</p>
+}
+
+
+
+<script>
+	document.querySelectorAll('.delete-btn').forEach(function(button) {
+		button.addEventListener('click', function(event) {
+
+			   const confirmDelete = confirm("Are you sure you want to delete this return form?");
+
+			if (!confirmDelete) {
+				event.preventDefault();
+			 }
+		 });
+	 });
+</script>

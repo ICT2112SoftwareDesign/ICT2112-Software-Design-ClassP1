@@ -1,0 +1,40 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	ViewData["Title"] = "View Return Form";
+}
+
+
+@model ReturnForm
+
+
+@if (Model == null)
+{
+	<p>Return form not found.</p>
+}
+
+else
+{
+	<h1 class="h1 text-center py-2 fw-bold">Clean Brilliant Company</h1>
+	<h2 class="text-muted text-center py-2 ">Return form</h2>
+
+	<h2 class="h2 py-2">Return ID: @Model.GetReturnId()</h2>
+	<br />
+	<p>
+		Manufacturer ID: @Model.GetManufacturerId() <br />
+		Manufacturer Email: RETRIEVE EMAIL AND INSERT HERE
+	</p>
+	<hr />
+	<p>Item ID: @Model.GetItemId()</p>
+	<p>Warehouse ID: @Model.GetWarehouseId()</p>
+	<hr />
+	<p>
+		<span class="fw-bold">Return Reason: <br /></span>
+		@Model.GetReturnReason()
+	</p>
+	<p>
+		<span class="fw-bold">Sent by Staff ID: <br /></span>
+		@Model.GetStaffId()
+	</p>
+}
