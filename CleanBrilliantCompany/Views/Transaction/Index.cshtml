@@ -1,0 +1,29 @@
+@model List<CleanBrilliantCompany.Models.Entity.Transaction>
+
+@{
+    ViewData["Title"] = "Transaction List";
+}
+
+<h2>Transactions for March 7, 2025</h2>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Adjustment Type</th>
+            <th>Item ID</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model)
+        {
+            <tr>
+                <td>@transaction.TransactionId</td>
+                <td>@transaction.AdjustmentType</td>
+                <td>@transaction.ItemId</td>
+                <td>@transaction.DateTime.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>
