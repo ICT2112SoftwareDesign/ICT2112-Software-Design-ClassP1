@@ -1,6 +1,10 @@
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Interfaces;
-// using Microsoft.Data.SqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using Microsoft.Data.SqlClient;
+
 
 namespace CleanBrilliantCompany.Mappers
 {
@@ -20,26 +24,95 @@ namespace CleanBrilliantCompany.Mappers
             switch (productId)
             {
                 case 1:
-                    return new Product(1, "Laptop", "Electronics", 1200.50f, 2, 1.5f, 5, 10, 0, 15);
+                    return new Product(1, "Laptop", "Electronics", 1200.50f, 2, 1.5f, 5, 10, 0, 15, 1);
                 case 2:
-                    return new Product(2, "Smartphone", "Electronics", 899.99f, 3, 0.5f, 20, 2, 0, 8);
+                    return new Product(2, "Smartphone", "Electronics", 899.99f, 3, 0.5f, 20, 2, 0, 8, 1);
                 case 3:
-                    return new Product(3, "Tablet", "Electronics", 499.99f, 4, 0.8f, 15, 3, 0, 10);
+                    return new Product(3, "Tablet", "Electronics", 499.99f, 4, 0.8f, 15, 3, 0, 10, 1);
                 default:
                     return null;
             }
         }
 
+
+        public void createProduct(string productName, string category, float costPrice, 
+        int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    INSERT INTO dbo.Product (productName, productCategory, productCost, manufacturerId, 
+                                            productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
+                    VALUES (@ProductName, @Category, @CostPrice, @ManufacturerId, 
+                            @ProductWeight, @Quantity, @Volume, @ToxicityPercentage, @CarbonFootprint, @ProductState)";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductName", productName);
+                    command.Parameters.AddWithValue("@Category", category);
+                    command.Parameters.AddWithValue("@CostPrice", costPrice);
+                    command.Parameters.AddWithValue("@ManufacturerId", manufacturerId);
+                    command.Parameters.AddWithValue("@ProductWeight", productWeight);
+                    command.Parameters.AddWithValue("@Quantity", quantity);
+                    command.Parameters.AddWithValue("@Volume", volume);
+                    command.Parameters.AddWithValue("@ToxicityPercentage", toxicityPercentage);
+                    command.Parameters.AddWithValue("@CarbonFootprint", carbonFootprint);
+                    command.Parameters.AddWithValue("@ProductState", productState);
+
+                    int result = command.ExecuteNonQuery();
+                    if (result > 0)
+                    {
+                        Console.WriteLine($"Product '{productName}' inserted successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error inserting product.");
+                    }
+                }
+            }
+        }
+
+        // Fetch all products from the database
         public List<Product> GetAllProducts()
         {
-            Console.WriteLine("Fetching all products...");
+            List<Product> products = new List<Product>();
 
-            return new List<Product>
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                new Product(1, "Laptop", "Electronics", 1200.50f, 2, 1.5f, 5, 10, 0, 15),
-                new Product(2, "Smartphone", "Electronics", 899.99f, 3, 0.5f, 20, 2, 0, 8),
-                new Product(3, "Tablet", "Electronics", 499.99f, 4, 0.8f, 15, 3, 0, 10)
-            };
+                connection.Open();
+
+                string query = @"
+                    SELECT productId, productName, productCategory, productCost, manufacturerId, 
+                           productWeight, quantity, volume, toxicityPercentage, carbonFootprint 
+                    FROM dbo.Product";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            products.Add(new Product
+                            {
+                                ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
+                                ProductName = reader.GetString(reader.GetOrdinal("productName")),
+                                ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
+                                CostPrice = (float)reader.GetDouble(reader.GetOrdinal("productCost")),
+                                ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
+                                ProductWeight = (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                Volume = reader.GetInt32(reader.GetOrdinal("volume")),
+                                ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
+                                CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint"))
+                            });
+                        }
+                    }
+                }
+            }
+
+            return products;
         }
     }
 }

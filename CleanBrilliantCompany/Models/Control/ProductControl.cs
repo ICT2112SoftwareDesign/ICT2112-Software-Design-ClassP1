@@ -10,28 +10,31 @@ namespace CleanBrilliantCompany.Models.Control
         private static List<Product> _products = new List<Product>();
         private readonly ProductMapper _productMapper;
 
-        // private readonly iProductQuery _productQuery;
-
-        public ProductControl()
+         public ProductControl(string connectionString)
         {
-            // _productQuery = productQuery;
-            _productMapper = new ProductMapper("your_connection_string");
+            _productMapper = new ProductMapper(connectionString);
 
-            // Load sample products at startup
+            // Load products from the database at startup
             _products = GetAllProducts();
-            Console.WriteLine("Sample products loaded into system.");
+            Console.WriteLine("Products loaded from database.");
         }
         
         public void CreateProduct(Product product)
         {
-            _products.Add(product);
-            Console.WriteLine($"Product '{product.ProductName}' created successfully!");
-        }
+            // Insert the new product into the database
+            _productMapper.createProduct(product.ProductName, product.ProductCategory, 
+                                        product.CostPrice, product.ManufacturerId, product.ProductWeight, 
+                                        product.Quantity, product.Volume, product.ToxicityPercentage, 
+                                        product.CarbonFootprint, product.ProductState);
 
-        // public Product GetProductById(int productId)
-        // {
-        //     return _productQuery.getProductDetails(productId);
-        // }
+            // Reload products from database after insertion to reflect the change in UI
+            _products = GetAllProducts();
+
+            Console.WriteLine($"Product '{product.ProductName}' created successfully and added to the database.");
+
+            // _products.Add(product);
+            // Console.WriteLine($"Product '{product.ProductName}' created successfully!");
+        }
 
         public List<Product> GetProducts()
         {
@@ -47,6 +50,13 @@ namespace CleanBrilliantCompany.Models.Control
         public List<Product> GetAllProducts()
         {
             return _productMapper.GetAllProducts();
+        }
+
+        public void createProduct(string productName, string category, float costPrice, 
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState)
+        {
+            _productMapper.createProduct(productName, category, costPrice, 
+                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
         }
     }
 }

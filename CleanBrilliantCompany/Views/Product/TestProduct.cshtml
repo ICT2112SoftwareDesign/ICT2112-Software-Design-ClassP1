@@ -17,36 +17,37 @@
     </form>
 
     <form method="post" asp-action="CreateProduct">
-    <!-- Can remove productId since it will auto increment-->
-        <label>Product ID:</label>
-        <input type="number" name="productId" required /><br> 
-
-        <label>Name:</label>
-        <input type="text" name="productName" required /><br>
+        <label>Product Name:</label>
+        <input type="text" name="ProductName" required /><br> 
 
         <label>Category:</label>
-        <input type="text" name="category" required /><br>
+        <input type="text" name="ProductCategory" required /><br> 
 
         <label>Cost Price:</label>
-        <input type="number" step="0.01" name="costPrice" required /><br>
+        <input type="number" step="0.01" name="CostPrice" required /><br> 
 
         <label>Manufacturer ID:</label>
-        <input type="number" name="manufacturerId" required /><br>
+        <input type="number" name="ManufacturerId" required /><br>
 
         <label>Weight:</label>
-        <input type="number" step="0.01" name="weight" required /><br>
+        <input type="number" step="0.01" name="Weight" required /><br> 
 
         <label>Volume:</label>
-        <input type="number" name="volume" required /><br>
+        <input type="number" name="Volume" required /><br> 
 
         <label>Toxicity Percentage:</label>
-        <input type="number" name="toxicityPercentage" required /><br>
+        <input type="number" step="0.01" name="ToxicityPercentage" required /><br> 
 
         <label>Carbon Footprint:</label>
-        <input type="number" name="carbonFootprint" required /><br>
+        <input type="number" name="CarbonFootprint" required /><br>
+
+        <label>Product State:</label>
+        <input type="number" name="ProductState" required /><br>
 
         <button type="submit">Create Product</button>
     </form>
+
+
 
     <!-- Product List -->
     <h3>Product List</h3>
@@ -58,12 +59,13 @@
             {
                 <li>
                     <strong>@product.ProductName</strong> - $@product.CostPrice
-                    <br>Category: @product.Category
+                    <br>Category: @product.ProductCategory
                     <br>Manufacturer ID: @product.ManufacturerId
-                    <br>Weight: @product.Weight kg
+                    <br>Weight: @product.ProductWeight kg
                     <br>Volume: @product.Volume
                     <br>Toxicity: @product.ToxicityPercentage%
                     <br>Carbon Footprint: @product.CarbonFootprint
+                    <br>Product State: @product.ProductState
                     <hr>
                 </li>
             }

@@ -11,14 +11,17 @@ namespace CleanBrilliantCompany.Controllers
         public ProductController()
         {
             // _productControl = new ProductControl(new ProductMapper("your_connection_string"));
-            _productControl = new ProductControl();
+            // _productControl = new ProductControl();
+
+            // Testing
+            string connectionString = "Server=tcp:inf2112.database.windows.net,1433;Initial Catalog=CleanBrilliantCompany;Persist Security Info=False;User ID=teammember;Password=RevacholInsulid141;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"; // 🔹 Replace with actual connection string
+            _productControl = new ProductControl(connectionString);
         }
 
         public IActionResult TestProduct()
         {
             var products = _productControl.GetProducts();
             Console.WriteLine($"Product: {string.Join(", ", products.Select(p => p.ProductName))}");
-            // return View(products);
             return View("~/Views/Product/TestProduct.cshtml", products);
         }
 
