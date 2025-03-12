@@ -1,7 +1,17 @@
+using CleanBrilliantCompany.Control;
+using CleanBrilliantCompany.Controllers;
+using CleanBrilliantCompany.Mapper;
+
 var builder = WebApplication.CreateBuilder(args);
+
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<ReturnFormControl>();
+builder.Services.AddScoped<ReturnFormMapper>();
+builder.Services.AddScoped<ReturnFormController>();
 
 var app = builder.Build();
 
@@ -14,16 +24,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
 app.Run();
