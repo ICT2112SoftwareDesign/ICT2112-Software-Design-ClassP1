@@ -4,9 +4,10 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Mappers
 {
-    public class ProductMapper : iProductQuery
+    public class ProductMapper
     {
         private readonly string _connectionString;
+
         public ProductMapper(string connectionString)
         {
             _connectionString = connectionString;
@@ -25,7 +26,7 @@ namespace CleanBrilliantCompany.Mappers
                 case 3:
                     return new Product(3, "Tablet", "Electronics", 499.99f, 4, 0.8f, 15, 3, 0, 10);
                 default:
-                    return null; // No product found
+                    return null;
             }
         }
 
@@ -33,7 +34,6 @@ namespace CleanBrilliantCompany.Mappers
         {
             Console.WriteLine("Fetching all products...");
 
-            // Fetch from a database. For now, return sample data.
             return new List<Product>
             {
                 new Product(1, "Laptop", "Electronics", 1200.50f, 2, 1.5f, 5, 10, 0, 15),

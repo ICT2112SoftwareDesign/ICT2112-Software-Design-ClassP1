@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
-using CleanBrilliantCompany.Mappers;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -11,7 +10,8 @@ namespace CleanBrilliantCompany.Controllers
 
         public ProductController()
         {
-            _productControl = new ProductControl(new ProductMapper("your_connection_string"));
+            // _productControl = new ProductControl(new ProductMapper("your_connection_string"));
+            _productControl = new ProductControl();
         }
 
         public IActionResult TestProduct()
@@ -38,7 +38,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult FetchProduct(int productId)
         {
-            var product = _productControl.GetProductById(productId);
+            var product = _productControl.getProductDetails(productId);
             return View("~/Views/Product/FetchProduct.cshtml", product);
         }
     }
