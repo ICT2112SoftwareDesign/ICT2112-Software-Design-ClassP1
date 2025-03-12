@@ -1,16 +1,14 @@
-﻿namespace CleanBrilliantCompany.Models.CalculatorImplementation
+﻿using CleanBrilliantCompany.Interfaces;
+
+namespace CleanBrilliantCompany.Models.CalculatorImplementation
 {
     public class CalculateProductCFImpl
     {
-        public CalculateProductCFImpl()
+        public float CalculateCarbonFootprint(int productId, float vol, float tox)
         {
-
-        }
-
-        public float calculateCarbonFootprint(int productId)
-        {
-            // use interface to retrieve product from prod Id (via iProduct?)
-            // return prod.weight * prod.toxic
+            float carbonFootprint = vol * tox/100;
+            // add carbonFootprint and productId into carbonFootprintRecord DB
+            return carbonFootprint;
         }
     }
 }

@@ -2,15 +2,9 @@
 {
     public class CalculateItemCFImpl
     {
-        public CalculateItemCFImpl()
+        public float CalculateCarbonFootprint(int itemId)
         {
-
-        }
-
-        public float calculateItemFootprint(int itemId)
-        {
-            // 
-            // retrieve item
+            // route
             // itemDuration = retrieve storageduration in warehouse for item via IStorageDuration?
             // return item.weight * item.toxic * itemDuration
         }
