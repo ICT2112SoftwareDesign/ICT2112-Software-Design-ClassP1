@@ -12,7 +12,7 @@ namespace CleanBrilliantCompany.Models.Entity
         public int Volume { get; set; }
         public float ToxicityPercentage { get; set; }
         public int CarbonFootprint { get; set; }
-        public int ProductState { get; set; }
+        public int ProductState { get; set; } // Change to string 
 
 
         public Product(int productId, string productName, string productCategory, float costPrice, int manufacturerId,

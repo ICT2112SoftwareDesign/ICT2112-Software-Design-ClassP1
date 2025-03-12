@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
+using Microsoft.Extensions.Configuration;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -8,13 +9,9 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ProductControl _productControl;
 
-        public ProductController()
+        public ProductController(IConfiguration configuration)
         {
-            // _productControl = new ProductControl(new ProductMapper("your_connection_string"));
-            // _productControl = new ProductControl();
-
-            // Testing
-            string connectionString = "Server=tcp:inf2112.database.windows.net,1433;Initial Catalog=CleanBrilliantCompany;Persist Security Info=False;User ID=teammember;Password=RevacholInsulid141;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"; // 🔹 Replace with actual connection string
+            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             _productControl = new ProductControl(connectionString);
         }
 

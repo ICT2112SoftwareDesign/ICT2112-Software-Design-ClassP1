@@ -19,19 +19,47 @@ namespace CleanBrilliantCompany.Mappers
 
         public Product getProductDetails(int productId)
         {
-            Console.WriteLine($"Fetching product details for Product ID: {productId}");
+            // Console.WriteLine($"Fetching product details for Product ID: {productId}");
 
-            switch (productId)
-            {
-                case 1:
-                    return new Product(1, "Laptop", "Electronics", 1200.50f, 2, 1.5f, 5, 10, 0, 15, 1);
-                case 2:
-                    return new Product(2, "Smartphone", "Electronics", 899.99f, 3, 0.5f, 20, 2, 0, 8, 1);
-                case 3:
-                    return new Product(3, "Tablet", "Electronics", 499.99f, 4, 0.8f, 15, 3, 0, 10, 1);
-                default:
-                    return null;
-            }
+            // using (SqlConnection connection = new SqlConnection(_connectionString))
+            // {
+            //     connection.Open();
+
+            //     string query = @"
+            //         SELECT productId, productName, productCategory, costPrice, manufacturerId, 
+            //             weight, quantity, volume, toxicityPercentage, carbonFootprint, productState
+            //         FROM dbo.Product
+            //         WHERE productId = @ProductId";
+
+            //     using (SqlCommand command = new SqlCommand(query, connection))
+            //     {
+            //         command.Parameters.AddWithValue("@ProductId", productId);
+
+            //         using (SqlDataReader reader = command.ExecuteReader())
+            //         {
+            //             if (reader.Read())
+            //             {
+            //                 return new Product
+            //                 {
+            //                     ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
+            //                     ProductName = reader.GetString(reader.GetOrdinal("productName")),
+            //                     ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
+            //                     CostPrice = (float)reader.GetDouble(reader.GetOrdinal("costPrice")),
+            //                     ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
+            //                     Weight = (float)reader.GetDouble(reader.GetOrdinal("weight")),
+            //                     Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+            //                     Volume = reader.GetInt32(reader.GetOrdinal("volume")),
+            //                     ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
+            //                     CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
+            //                     ProductState = reader.IsDBNull(reader.GetOrdinal("productState")) 
+            //                         ? null 
+            //                         : reader.GetString(reader.GetOrdinal("productState")) 
+            //                 };
+            //             }
+            //         }
+            //     }
+            // }
+            return null; // No product found
         }
 
 
@@ -85,7 +113,7 @@ namespace CleanBrilliantCompany.Mappers
 
                 string query = @"
                     SELECT productId, productName, productCategory, productCost, manufacturerId, 
-                           productWeight, quantity, volume, toxicityPercentage, carbonFootprint 
+                           productWeight, quantity, volume, toxicityPercentage, carbonFootprint
                     FROM dbo.Product";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -105,7 +133,8 @@ namespace CleanBrilliantCompany.Mappers
                                 Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
                                 Volume = reader.GetInt32(reader.GetOrdinal("volume")),
                                 ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
-                                CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint"))
+                                CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
+                                // ProductState = reader.GetInt32(reader.GetOrdinal("productState"))
                             });
                         }
                     }
