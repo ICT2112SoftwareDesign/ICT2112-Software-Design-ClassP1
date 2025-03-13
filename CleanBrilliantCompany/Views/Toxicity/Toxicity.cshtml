@@ -1,0 +1,23 @@
+@model CleanBrilliantCompany.Models.Ingredient
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toxicity Analysis</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h2>Toxicity Analysis for @Model.IngredientName</h2>
+
+    @if (ViewBag.ToxicityScore != null)
+    {
+        <p>Overall Toxicity Score: @ViewBag.ToxicityScore</p>
+    }
+    else
+    {
+        <p>No toxicity score available. Please select an ingredient to analyze.</p>
+    }
+</body>
+</html>
