@@ -1,6 +1,6 @@
 using System;
 using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Mappers;
+//using CleanBrilliantCompany.Mappers;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -14,24 +14,24 @@ namespace CleanBrilliantCompany.Models
         }
         public List<CarbonFootprintRecordRDM> getAllProductCarbonFootprint()
         {
-            //impl
+            throw new NotImplementedException();
         }
         public List<CarbonFootprintRecordRDM> getAllOrderCarbonFootprint()
         {
-            //impl
+            throw new NotImplementedException();
         }
         
         public float getAllCarbonFootprint()
         {
-            //impl
+            throw new NotImplementedException();
         }
         public List<CarbonFootprintRecordRDM> getCarbonFootprintComparison(List<int> entityId, string entityType)
         {
-            //impl
+            throw new NotImplementedException();
         }
         public List<CarbonFootprintRecordRDM> getEcoFriendlyReport(DateTime startDate, DateTime endDate, string entityType)
         {
-            //impl
+            throw new NotImplementedException();
         }
     }
 }

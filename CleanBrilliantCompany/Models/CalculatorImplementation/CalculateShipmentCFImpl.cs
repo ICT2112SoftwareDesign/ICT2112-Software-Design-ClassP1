@@ -27,9 +27,12 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
 
             // total_cf += [staff carbon emission if have]
             // total_cf * transport_factor
-            
+
             // add carbonFootprintId/productId/shipmentId into carbonFootprintRecord DB
             // return total_cf;
+
+
+            return 0.0f;
         }
     }
 }
