@@ -1,25 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
+    "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/CleanBrilliantCompany.csproj": {}
   },
   "projects": {
-    "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {
+    "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/CleanBrilliantCompany.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "projectUniqueName": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/CleanBrilliantCompany.csproj",
         "projectName": "CleanBrilliantCompany",
-        "projectPath": "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
-        "packagesPath": "C:\\Users\\imman\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\obj\\",
+        "projectPath": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/CleanBrilliantCompany.csproj",
+        "packagesPath": "/Users/regine/.nuget/packages/",
+        "outputPath": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\imman\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/regine/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +39,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -62,7 +63,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

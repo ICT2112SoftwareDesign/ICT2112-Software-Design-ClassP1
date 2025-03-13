@@ -1,3 +1,3 @@
 ﻿<Project>
-  <Import Project="..\build\CleanBrilliantCompany.props" />
+  <Import Project="../build/CleanBrilliantCompany.props" />
 </Project>

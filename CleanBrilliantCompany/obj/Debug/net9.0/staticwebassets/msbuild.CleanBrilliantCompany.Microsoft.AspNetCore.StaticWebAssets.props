@@ -1,22 +1,22 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CleanBrilliantCompany.q62bvsy1rt.bundle.scp.css'))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CleanBrilliantCompany.sza66i9qm4.bundle.scp.css'))">
       <SourceType>Package</SourceType>
       <SourceId>CleanBrilliantCompany</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/CleanBrilliantCompany</BasePath>
-      <RelativePath>CleanBrilliantCompany.q62bvsy1rt.bundle.scp.css</RelativePath>
+      <RelativePath>CleanBrilliantCompany.sza66i9qm4.bundle.scp.css</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>Reference</AssetMode>
       <AssetRole>Primary</AssetRole>
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ProjectBundle</AssetTraitValue>
-      <Fingerprint>q62bvsy1rt</Fingerprint>
-      <Integrity>0q4ZHOPGwRUk1enCF7T9tiXZi+AcFvuQY0WZAt8h7aE=</Integrity>
+      <Fingerprint>sza66i9qm4</Fingerprint>
+      <Integrity>KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CleanBrilliantCompany.q62bvsy1rt.bundle.scp.css'))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CleanBrilliantCompany.sza66i9qm4.bundle.scp.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\sb-admin-2.css'))">
       <SourceType>Package</SourceType>
@@ -300,8 +300,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>xtxxf3hu2r</Fingerprint>
-      <Integrity>hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo=</Integrity>
+      <Fingerprint>fr7q2aak1r</Fingerprint>
+      <Integrity>y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</OriginalItemSpec>
@@ -2082,8 +2082,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>sot52ot9a1</Fingerprint>
-      <Integrity>dChmkTPsPsTV13HU145uFtyThdb6GJpTcnYka2efamM=</Integrity>
+      <Fingerprint>43nnk0s5f9</Fingerprint>
+      <Integrity>YJeebxLNGkHErIIGksYDfDqjQg2UGPpiWartuLahi8E=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vendor\chart.js\Chart.js'))</OriginalItemSpec>
@@ -2100,8 +2100,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>1bkk5f9ct6</Fingerprint>
-      <Integrity>MwuaABKOZBmQ/lAvt5Y2+IPc+I4LP33TTpcv/3Jv/X8=</Integrity>
+      <Fingerprint>bw0uvtlh7x</Fingerprint>
+      <Integrity>9fzhKgYIoRrnZK3atuiiIxRf4dhSQjkaxwYin780WJs=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vendor\chart.js\Chart.bundle.js'))</OriginalItemSpec>
