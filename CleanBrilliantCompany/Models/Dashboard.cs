@@ -72,7 +72,8 @@ public abstract class Dashboard {
     public int RetrieveValidityDuration() => GetValidityDuration();
 
     //! I made this abstract so the children must implement this
-    public abstract Dashboard CreateNewDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration);
+    //! update 13/3/2025 - with factory , maybe this is not needed anymore 
+    //public abstract Dashboard CreateNewDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration);
     
 
     // Public Method for Updating a Dashboard

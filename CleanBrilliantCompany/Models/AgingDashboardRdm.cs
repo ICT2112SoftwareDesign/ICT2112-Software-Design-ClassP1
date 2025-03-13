@@ -1,36 +1,80 @@
+using System.Collections.Generic;
+
 public class AgingDashboardRdm : Dashboard
 {
-    private List<AbstractAnalyticsDetails> _batchAnalyticsList;  
+
+
+    private Dictionary<int , List <AbstractAnalyticsDetails>> batchAnalyticsMap;   
+
     public AgingDashboardRdm(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration)
         : base(name, requestedStartDate, requestedEndDate, validityDuration)
     {
-        _batchAnalyticsList = new List<AbstractAnalyticsDetails>();
+        //_batchAnalyticsList = new List<AbstractAnalyticsDetails>();
+        batchAnalyticsMap = new Dictionary<int, List<AbstractAnalyticsDetails>>();
     }
 
-     // Implementing the abstract method from Dashboard
-    public override Dashboard CreateNewDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration)
-    {
-        return new AgingDashboardRdm(name, requestedStartDate, requestedEndDate, validityDuration);
+    private Dictionary<int, List<AbstractAnalyticsDetails>> getBatchAnalyticsMap() => batchAnalyticsMap; 
+    private void setBatchAnalyticsMap(Dictionary<int, List<AbstractAnalyticsDetails>> batchAnalyticsMap) => this.batchAnalyticsMap = batchAnalyticsMap;
+    
+    public void populateAnalytics(List<RawBatchData> rawBatchData, List<RawStockHistoryData> rawStockHistoryData) {
+        // so for each rawanalyticsdata i need to create 2 instances since 
+        // i have 2 types of agingAnalytics
+
+        // convert stockHistory to a dictionary first 
+        Dictionary<int, Dictionary<DateTime, int>> stockHistoryMap = rawStockHistoryData
+        .GroupBy(x => x.BatchCode)  
+        .ToDictionary(
+            //batchCode as the dictionary key
+            group => group.Key, 
+            //each groups get converted to a dictionary
+            group => group.ToDictionary(x => x.Date, x => x.Quantity)
+            ); 
+        
+        //step 2 : loop through the rawBatchData and create the analytics 
+        foreach (var rawBatch in rawBatchData){
+            int batchCode = rawBatch.BatchCode; 
+
+            // ensure that the batchCode is in the analytics map 
+            if (!batchAnalyticsMap.ContainsKey(batchCode)){
+                batchAnalyticsMap.Add(batchCode, new List<AbstractAnalyticsDetails>()); 
+            } 
+
+            //create storage lifecycle Analytics 
+            var storageLifeCycleAnalytics = new StorageLifeCycleAnalyticsDetails(
+                batchCode, 
+                rawBatch.ReceiveDate, 
+                rawBatch.ExpiryDate); 
+
+            // create stock turnover analytics 
+            var stockTurnOverAnalytics = new StockTurnOverAnalyticsDetails(
+                batchCode, 
+                stockHistoryMap[batchCode], 
+                rawBatch.Quantity); 
+
+            // add the analytics to the batchAnalyticsMap 
+            addBatchAnalytics(batchCode, storageLifeCycleAnalytics);
+            addBatchAnalytics(batchCode, stockTurnOverAnalytics); 
+        }
     }
 
-    public void AddBatchAnalytics(AbstractAnalyticsDetails batchDetails)
+    public void AddBatchAnalytics(int batchCode, AbstractAnalyticsDetails batchDetails)
     {
-        _batchAnalyticsList.Add(batchDetails);
+        if (batchAnalyticsMap.ContainsKey(batchCode))
+        {
+            batchAnalyticsMap[batchCode].Add(batchDetails);
+        }
+        else
+        {
+            batchAnalyticsMap.Add(batchCode, new List<AbstractAnalyticsDetails> { batchDetails });
+        } 
     }
 
-    public List<AbstractAnalyticsDetails> GetAllBatchAnalytics()
+
+    public List<AbstractAnalyticsDetails>? GetBatchAnalytics(int batchCode)
     {
-        return _batchAnalyticsList;
+        return batchAnalyticsMap.ContainsKey(batchCode) ? batchAnalyticsMap[batchCode] : null; 
     }
 
-    public AbstractAnalyticsDetails? GetBatchAnalytics(int batchCode)
-    {
-        return _batchAnalyticsList.Find(batch => batch.GetBatchCode() == batchCode); 
-    }
-
-    public object? GetMetricForBatch(int batchCode, string metricName)
-    {
-        AbstractAnalyticsDetails? batch = GetBatchAnalytics(batchCode);
-        return batch?.GetMetric(metricName)?.GetValue();
-    }
+    // public List<int> getExpiringProducts
+    // getStorageDurationForBatch()
 }
