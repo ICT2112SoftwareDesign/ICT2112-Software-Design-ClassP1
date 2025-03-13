@@ -17,8 +17,18 @@ namespace CleanBrilliantCompany.Controllers
         {
             // Retrieve actual feedback list from the repository
             List<string> feedbackList = _repository.GetFeedbackList();
-            
+
             return View("Feedback", feedbackList);
+        }
+
+        [HttpPost]
+        public IActionResult SubmitFeedback(string feedback)
+        {
+            if (!string.IsNullOrWhiteSpace(feedback))
+            {
+                _repository.AddFeedback(feedback);
+            }
+            return RedirectToAction("Index");
         }
     }
 }
