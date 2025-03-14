@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,20 +11,26 @@ namespace CleanBrilliantCompany.Models
     {
         private readonly HttpClient _client = new HttpClient();
 
+        public RoutingAPI()
+        {
+            // Set a proper User-Agent per Nominatim's policy.
+            _client.DefaultRequestHeaders.UserAgent.ParseAdd("CleanBrilliantCompany/1.0 (yugosaito4@gmail.com)");
+        }
+
         public async Task<float> GetDistanceAsync(string origin, string destination, TransportMode mode)
         {
             if (mode == TransportMode.Truck)
             {
-                var originCoords = GeocodeAddress(origin);
-                var destCoords = GeocodeAddress(destination);
+                // Use the real geocoding API for both addresses.
+                Coordinates originCoords = await GeocodeAddressAsync(origin);
+                Coordinates destCoords = await GeocodeAddressAsync(destination);
 
-                // Debug: print the resolved coordinates.
                 Console.WriteLine($"[DEBUG] Origin Address: {origin}");
                 Console.WriteLine($"[DEBUG] Resolved Origin Coordinates: ({originCoords.Latitude}, {originCoords.Longitude})");
                 Console.WriteLine($"[DEBUG] Destination Address: {destination}");
                 Console.WriteLine($"[DEBUG] Resolved Destination Coordinates: ({destCoords.Latitude}, {destCoords.Longitude})");
 
-                // Build OSRM URL. OSRM expects coordinates in "longitude,latitude" order.
+                // OSRM API expects coordinates in "longitude,latitude" order.
                 string url = $"http://router.project-osrm.org/route/v1/driving/{originCoords.Longitude},{originCoords.Latitude};{destCoords.Longitude},{destCoords.Latitude}?overview=false";
                 Console.WriteLine($"[DEBUG] OSRM API URL: {url}");
 
@@ -33,15 +40,10 @@ namespace CleanBrilliantCompany.Models
                     Console.WriteLine($"[DEBUG] OSRM API call failed: {response.StatusCode}");
                     return 0;
                 }
-
                 string json = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"[DEBUG] OSRM API response: {json}");
 
-                // Use case-insensitive deserialization options.
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 OsrmResponse osrmResponse = JsonSerializer.Deserialize<OsrmResponse>(json, options);
                 if (osrmResponse?.Routes != null && osrmResponse.Routes.Length > 0)
                 {
@@ -51,11 +53,11 @@ namespace CleanBrilliantCompany.Models
                 }
                 return 0;
             }
-            // For Air and Sea modes, use the haversine formula.
             else if (mode == TransportMode.Air || mode == TransportMode.Sea)
             {
-                var originCoords = GeocodeAddress(origin);
-                var destCoords = GeocodeAddress(destination);
+                // For air and sea, use the haversine formula.
+                Coordinates originCoords = await GeocodeAddressAsync(origin);
+                Coordinates destCoords = await GeocodeAddressAsync(destination);
 
                 Console.WriteLine($"[DEBUG] Origin Address: {origin}");
                 Console.WriteLine($"[DEBUG] Resolved Origin Coordinates: ({originCoords.Latitude}, {originCoords.Longitude})");
@@ -69,35 +71,32 @@ namespace CleanBrilliantCompany.Models
             return 0;
         }
 
-        private Coordinates GeocodeAddress(string address)
+        // Real geocoding using Nominatim API.
+        private async Task<Coordinates> GeocodeAddressAsync(string address)
         {
-            // Example: Differentiate based on specific keywords.
-            if (address.Contains("ABC Warehouse"))
+            string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
+            Console.WriteLine($"[DEBUG] Geocoding URL: {url}");
+
+            HttpResponseMessage response = await _client.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
             {
-                return new Coordinates { Latitude = 1.3521, Longitude = 103.8198 };
+                Console.WriteLine($"[DEBUG] Geocoding API call failed: {response.StatusCode}");
+                throw new Exception($"Geocoding API error: {response.StatusCode}");
             }
-            else if (address.Contains("XYZ Town"))
+            string json = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"[DEBUG] Geocoding API response: {json}");
+
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            List<NominatimResult> results = JsonSerializer.Deserialize<List<NominatimResult>>(json, options);
+            if (results != null && results.Count > 0)
             {
-                return new Coordinates { Latitude = 1.3000, Longitude = 103.8000 };
+                return new Coordinates
+                {
+                    Latitude = double.Parse(results[0].lat),
+                    Longitude = double.Parse(results[0].lon)
+                };
             }
-            else if (address.Contains("NearestAirport"))
-            {
-                return new Coordinates { Latitude = 1.3500, Longitude = 103.9000 };
-            }
-            else if (address.Contains("DestinationAirport"))
-            {
-                return new Coordinates { Latitude = 1.2800, Longitude = 103.7000 };
-            }
-            else if (address.Contains("NearestPort"))
-            {
-                return new Coordinates { Latitude = 1.3600, Longitude = 103.9500 };
-            }
-            else if (address.Contains("DestinationPort"))
-            {
-                return new Coordinates { Latitude = 1.2500, Longitude = 103.6500 };
-            }
-            // Default: return a fixed coordinate.
-            return new Coordinates { Latitude = 1.3521, Longitude = 103.8198 };
+            throw new Exception($"No geocoding results for address: {address}");
         }
 
         private float HaversineDistance(double lat1, double lon1, double lat2, double lon2)
@@ -129,6 +128,14 @@ namespace CleanBrilliantCompany.Models
         private class Route
         {
             public float Distance { get; set; }
+        }
+
+        // Nominatim API result.
+        private class NominatimResult
+        {
+            public string lat { get; set; }
+            public string lon { get; set; }
+            // You can include other properties if needed.
         }
     }
 }
