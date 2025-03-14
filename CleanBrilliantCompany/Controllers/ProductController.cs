@@ -15,34 +15,36 @@ namespace CleanBrilliantCompany.Controllers
             _productControl = new ProductControl(connectionString);
         }
 
-        public IActionResult displayProducts()
+        public async Task<IActionResult> displayProducts()
         {
-            var products = _productControl.getAllProducts();
-            Console.WriteLine($"Product: {string.Join(", ", products.Select(p => p.ProductName))}");
+            var (status, products) = await _productControl.getAllProducts();
+
+            Console.WriteLine($"Query Status: {status}");
             return View("~/Views/Product/TestProduct.cshtml", products);
         }
 
         [HttpPost]
-        public IActionResult CreateProduct(Product product){
+        public async Task<IActionResult> CreateProduct(Product product)
+        {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid product data.");
             }
 
-            _productControl.createProduct(product.ProductName, product.ProductCategory, 
+            string status = await _productControl.createProduct(product.ProductName, product.ProductCategory, 
                                         product.ProductCost, product.ManufacturerId, product.ProductWeight, 
                                         product.Quantity, product.Volume, product.ToxicityPercentage, 
                                         product.CarbonFootprint, product.ProductState);
 
-            return RedirectToAction("displayProducts"); // Refresh the page
-        
+            Console.WriteLine($"Insert Status: {status}");
+            return RedirectToAction("displayProducts");
         }
 
+
         [HttpPost]
-        public IActionResult FetchProduct(int productId)
+        public async Task<IActionResult> FetchProduct(int productId)
         {
-            var product = _productControl.getProductDetails(productId);
-            Console.WriteLine($"Product: TEST");
+            var product = await _productControl.getProductDetails(productId);
             return View("~/Views/Product/FetchProduct.cshtml", product);
         }
     }

@@ -8,7 +8,7 @@ using Microsoft.Data.SqlClient;
 
 namespace CleanBrilliantCompany.Mappers
 {
-    public class ProductMapper
+    public class ProductMapper : iProductDatabase
     {
         private readonly string _connectionString;
 
@@ -17,7 +17,7 @@ namespace CleanBrilliantCompany.Mappers
             _connectionString = connectionString;
         }
 
-        public Product findByProductId(int productId)
+        public async Task<Product> findByProductId(int productId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -59,48 +59,54 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-
-        public void insert(string productName, string category, float productCost, 
+        public async Task<string> insert(string productName, string category, float productCost, 
         int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            try
             {
-                connection.Open();
-
-                string query = @"
-                    INSERT INTO dbo.Product (productName, productCategory, productCost, manufacturerId, 
-                                            productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
-                    VALUES (@ProductName, @Category, @ProductCost, @ManufacturerId, 
-                            @ProductWeight, @Quantity, @Volume, @ToxicityPercentage, @CarbonFootprint, @ProductState)";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    command.Parameters.AddWithValue("@ProductName", productName);
-                    command.Parameters.AddWithValue("@Category", category);
-                    command.Parameters.AddWithValue("@ProductCost", productCost);
-                    command.Parameters.AddWithValue("@ManufacturerId", manufacturerId);
-                    command.Parameters.AddWithValue("@ProductWeight", productWeight);
-                    command.Parameters.AddWithValue("@Quantity", quantity);
-                    command.Parameters.AddWithValue("@Volume", volume);
-                    command.Parameters.AddWithValue("@ToxicityPercentage", toxicityPercentage);
-                    command.Parameters.AddWithValue("@CarbonFootprint", carbonFootprint);
-                    command.Parameters.AddWithValue("@ProductState", productState);
+                    await connection.OpenAsync();
 
-                    int result = command.ExecuteNonQuery();
-                    if (result > 0)
+                    string query = @"
+                        INSERT INTO dbo.Product (productName, productCategory, productCost, manufacturerId, 
+                                                productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
+                        VALUES (@ProductName, @Category, @ProductCost, @ManufacturerId, 
+                                @ProductWeight, @Quantity, @Volume, @ToxicityPercentage, @CarbonFootprint, @ProductState)";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        Console.WriteLine($"Product '{productName}' inserted successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error inserting product.");
+                        command.Parameters.AddWithValue("@ProductName", productName);
+                        command.Parameters.AddWithValue("@Category", category);
+                        command.Parameters.AddWithValue("@ProductCost", productCost);
+                        command.Parameters.AddWithValue("@ManufacturerId", manufacturerId);
+                        command.Parameters.AddWithValue("@ProductWeight", productWeight);
+                        command.Parameters.AddWithValue("@Quantity", quantity);
+                        command.Parameters.AddWithValue("@Volume", volume);
+                        command.Parameters.AddWithValue("@ToxicityPercentage", toxicityPercentage);
+                        command.Parameters.AddWithValue("@CarbonFootprint", carbonFootprint);
+                        command.Parameters.AddWithValue("@ProductState", productState);
+
+                        int result = await command.ExecuteNonQueryAsync();
+                        if (result > 0)
+                        {
+                            return $"Product '{productName}' inserted successfully.";
+                        }
+                        else
+                        {
+                            return "Error inserting product.";
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error inserting product: {ex.Message}");
+                return $"Error inserting product: {ex.Message}"; // ✅ Ensure an error message is returned
+            }
         }
 
-        // Fetch all products from the database
-        public List<Product> findall()
+        public async Task<List<Product>> findAll()
         {
             List<Product> products = new List<Product>();
 
@@ -137,8 +143,56 @@ namespace CleanBrilliantCompany.Mappers
                     }
                 }
             }
-
             return products;
+        }
+
+        // Interface Methods
+        public async Task<Product> getDatabaseQueryStatus(Task<Product> task)
+        {
+            try
+            {
+                return await task;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database query failed: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> getDatabaseQueryStatus(Task<string> task)
+        {
+            try
+            {
+                return await task;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database insert failed: {ex.Message}");
+                return $"Database insert failed: {ex.Message}";
+            }
+        }
+
+        public async Task<(string status, List<Product> products)> getDatabaseQueryStatus(Task<List<Product>> task)
+        {
+            try
+            {
+                List<Product> products = await task;
+
+                if (products.Count > 0)
+                {
+                    return ("Query executed successfully", products);
+                }
+                else
+                {
+                    return ("No products found", products);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database query failed: {ex.Message}");
+                return ($"Database query failed: {ex.Message}", new List<Product>());
+            }
         }
     }
 }

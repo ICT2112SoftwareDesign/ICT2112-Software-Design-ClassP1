@@ -17,32 +17,23 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // Interface methods
-        public Product getProductDetails(int productId)
+        public async Task<Product> getProductDetails(int productId)
         {
-            return _productMapper.findByProductId(productId);
+            return await _productMapper.getDatabaseQueryStatus(_productMapper.findByProductId(productId));
         }
 
-        public List<Product> getAllProducts()
+        public async Task<(string status, List<Product> products)> getAllProducts()
         {
-            return _productMapper.findall();
+            return await _productMapper.getDatabaseQueryStatus(_productMapper.findAll());
         }
 
-        public void createProduct(string productName, string category, float productCost, 
+        public async Task<string> createProduct(string productName, string category, float productCost, 
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState)
         {
-            try
-            {
-                
+            return await _productMapper.getDatabaseQueryStatus(
                 _productMapper.insert(productName, category, productCost, 
-                                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
-
-
-                Console.WriteLine($"Product '{productName}' created successfully and added to the database.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error inserting product: {ex.Message}");
-            }
+                                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
+            );
         }
     }
 }
