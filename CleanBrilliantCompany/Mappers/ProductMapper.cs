@@ -102,11 +102,40 @@ namespace CleanBrilliantCompany.Mappers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error inserting product: {ex.Message}");
-                return $"Error inserting product: {ex.Message}"; // ✅ Ensure an error message is returned
+                return $"Error inserting product: {ex.Message}"; 
             }
         }
 
-        public async Task<List<Product>> findAll()
+        public async Task<string> delete(int productId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync(); 
+
+                    string query = @"
+                        DELETE FROM dbo.Product
+                        WHERE productId = @ProductId";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductId", productId);
+
+                        int result = await command.ExecuteNonQueryAsync(); 
+                        return result > 0 ? $"Product ID {productId} deleted successfully." : $"Product ID {productId} not found.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting product: {ex.Message}");
+                return $"Error deleting product: {ex.Message}"; 
+            }
+        }
+
+
+        public async Task<List<Product>> findAllProducts()
         {
             List<Product> products = new List<Product>();
 
@@ -145,6 +174,51 @@ namespace CleanBrilliantCompany.Mappers
             }
             return products;
         }
+
+        public async Task<List<ProductBatch>> findAllProductBatches()
+        {
+            List<ProductBatch> batches = new List<ProductBatch>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync(); 
+
+                    string query = @"
+                        SELECT batchCode, productId, expiryDate, receiveDate, manufactureDate, 
+                            quantity, batchCost
+                        FROM dbo.ProductBatch"; 
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync()) 
+                            {
+                                batches.Add(new ProductBatch
+                                {
+                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
+                                    ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")), 
+                                    ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")), 
+                                    ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")), 
+                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost")) 
+                                });
+                            }
+                        }
+                    }
+                }
+                return batches;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching product batches: {ex.Message}");
+                return new List<ProductBatch>();
+            }
+        }
+
 
         // Interface Methods
         public async Task<Product> getDatabaseQueryStatus(Task<Product> task)
@@ -192,6 +266,28 @@ namespace CleanBrilliantCompany.Mappers
             {
                 Console.WriteLine($"Database query failed: {ex.Message}");
                 return ($"Database query failed: {ex.Message}", new List<Product>());
+            }
+        }
+
+        public async Task<(string status, List<ProductBatch> batch)> getDatabaseQueryStatus(Task<List<ProductBatch>> batch)
+        {
+            try
+            {
+                List<ProductBatch> batchList = await batch;
+
+                if (batchList.Count > 0)
+                {
+                    return ("Query executed successfully", batchList);
+                }
+                else
+                {
+                    return ("No product batches found", batchList);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database query failed: {ex.Message}");
+                return ($"Database query failed: {ex.Message}", new List<ProductBatch>()); 
             }
         }
     }

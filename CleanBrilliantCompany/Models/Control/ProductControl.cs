@@ -24,7 +24,7 @@ namespace CleanBrilliantCompany.Models.Control
 
         public async Task<(string status, List<Product> products)> getAllProducts()
         {
-            return await _productMapper.getDatabaseQueryStatus(_productMapper.findAll());
+            return await _productMapper.getDatabaseQueryStatus(_productMapper.findAllProducts());
         }
 
         public async Task<string> createProduct(string productName, string category, float productCost, 
@@ -34,6 +34,17 @@ namespace CleanBrilliantCompany.Models.Control
                 _productMapper.insert(productName, category, productCost, 
                                     manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
             );
+        }
+
+        public async Task<string> deleteProduct(int productId)
+        {
+            return await _productMapper.getDatabaseQueryStatus(_productMapper.delete(productId));
+        }
+
+        public async Task<List<ProductBatch>> getAllProductBatches()
+        {
+            var (status, batchList) = await _productMapper.getDatabaseQueryStatus(_productMapper.findAllProductBatches());
+            return batchList; 
         }
     }
 }

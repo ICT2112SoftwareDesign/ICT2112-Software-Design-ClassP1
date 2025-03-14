@@ -8,5 +8,7 @@ namespace CleanBrilliantCompany.Interfaces
         Task<(string status, List<Product> products)> getAllProducts();
         Task<string> createProduct(string productName, string category, float productCost, 
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState);
+        Task<string> deleteProduct(int productId);
+        Task<List<ProductBatch>> getAllProductBatches();
     }
 }

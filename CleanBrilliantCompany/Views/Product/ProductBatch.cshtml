@@ -1,0 +1,34 @@
+@model List<CleanBrilliantCompany.Models.Entity.ProductBatch>
+
+<h2>Product Batch Listings</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table border="1">
+        <tr>
+            <th>Batch Code</th>
+            <th>Product ID</th>
+            <th>Expiry Date</th>
+            <th>Receive Date</th>
+            <th>Manufacture Date</th>
+            <th>Quantity</th>
+            <th>Batch Cost</th>
+        </tr>
+        @foreach (var batch in Model)
+        {
+            <tr>
+                <td>@batch.BatchCode</td>
+                <td>@batch.ProductId</td>
+                <td>@batch.ExpiryDate.ToString("yyyy-MM-dd")</td>
+                <td>@batch.ReceiveDate.ToString("yyyy-MM-dd")</td>
+                <td>@batch.ManufactureDate.ToString("yyyy-MM-dd")</td>
+                <td>@batch.Quantity</td>
+                <td>$@batch.BatchCost</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>No product batches available.</p>
+}

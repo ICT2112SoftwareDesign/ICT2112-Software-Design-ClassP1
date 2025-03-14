@@ -40,12 +40,29 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("displayProducts");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteProduct(int productId)
+        {
+            string status = await _productControl.deleteProduct(productId);
+
+            Console.WriteLine($"Delete Status: {status}");
+            return RedirectToAction("displayProducts");
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> FetchProduct(int productId)
         {
             var product = await _productControl.getProductDetails(productId);
             return View("~/Views/Product/FetchProduct.cshtml", product);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ProductBatch()
+        {
+            var batches = await _productControl.getAllProductBatches();
+            return View("~/Views/Product/ProductBatch.cshtml", batches);
         }
     }
 }

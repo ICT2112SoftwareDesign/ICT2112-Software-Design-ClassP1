@@ -2,6 +2,20 @@ namespace CleanBrilliantCompany.Models.Entity
 {
     public class Product
     {
+        // CLASS DIAGRAM
+        // - productId: Int
+        // - productName: String
+        // - category: String
+        // - costPrice: Float
+        // - manufacturerId: Int
+        // - weight: Float
+        // - quantity: Int
+        // - volume: Int
+        // - toxicityPercentage: Int
+        // - carbonFootprint: Int
+        // - ProductState: String
+
+
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string ProductCategory { get; set; }
