@@ -1,8 +1,11 @@
+using System.Threading.Tasks;
+using CleanBrilliantCompany.Models; 
+
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface IRoutingService
     {
-        // Returns a distance (in kilometers) for a leg between two addresses for a given mode.
-        float GetDistance(string origin, string destination, CleanBrilliantCompany.Models.TransportMode mode);
+        //asynchronous call
+        Task<float> GetDistanceAsync(string origin, string destination, TransportMode mode);
     }
 }

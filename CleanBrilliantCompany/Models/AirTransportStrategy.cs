@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -12,18 +14,20 @@ namespace CleanBrilliantCompany.Models
             _routingService = routingService;
         }
 
-        public List<RouteSegment> CreateRoute(string senderAddress, string recipientAddress)
+        public async Task<List<RouteSegment>> CreateRouteAsync(string senderAddress, string recipientAddress)
         {
             var segments = new List<RouteSegment>();
 
-            // Example: truck from warehouse to origin airport, then air leg, then truck to recipient.
-            float truckToAirport = _routingService.GetDistance(senderAddress, "NearestAirport", TransportMode.Truck);
+            // Truck leg: from senderAddress to nearest airport.
+            float truckToAirport = await _routingService.GetDistanceAsync(senderAddress, "NearestAirport", TransportMode.Truck);
             segments.Add(new RouteSegment(1, TransportMode.Truck, truckToAirport));
 
-            float airLeg = _routingService.GetDistance("NearestAirport", "DestinationAirport", TransportMode.Air);
+            // Air leg: from nearest airport to destination airport.
+            float airLeg = await _routingService.GetDistanceAsync("NearestAirport", "DestinationAirport", TransportMode.Air);
             segments.Add(new RouteSegment(2, TransportMode.Air, airLeg));
 
-            float airportToRecipient = _routingService.GetDistance("DestinationAirport", recipientAddress, TransportMode.Truck);
+            // Truck leg: from destination airport to recipientAddress.
+            float airportToRecipient = await _routingService.GetDistanceAsync("DestinationAirport", recipientAddress, TransportMode.Truck);
             segments.Add(new RouteSegment(3, TransportMode.Truck, airportToRecipient));
 
             return segments;
@@ -38,6 +42,7 @@ namespace CleanBrilliantCompany.Models
                 TransportMode.Truck => 0.5f,
                 _ => 1.0f
             };
+
             return segment.Distance * shipmentTotalWeight * factor;
         }
     }

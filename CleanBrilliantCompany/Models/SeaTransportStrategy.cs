@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -12,18 +14,20 @@ namespace CleanBrilliantCompany.Models
             _routingService = routingService;
         }
 
-        public List<RouteSegment> CreateRoute(string senderAddress, string recipientAddress)
+        public async Task<List<RouteSegment>> CreateRouteAsync(string senderAddress, string recipientAddress)
         {
             var segments = new List<RouteSegment>();
 
-            // Example: truck to port, sea leg, truck to recipient.
-            float truckToPort = _routingService.GetDistance(senderAddress, "NearestPort", TransportMode.Truck);
+            // Truck leg: from senderAddress to nearest port.
+            float truckToPort = await _routingService.GetDistanceAsync(senderAddress, "NearestPort", TransportMode.Truck);
             segments.Add(new RouteSegment(1, TransportMode.Truck, truckToPort));
 
-            float seaLeg = _routingService.GetDistance("NearestPort", "DestinationPort", TransportMode.Sea);
+            // Sea leg: from nearest port to destination port.
+            float seaLeg = await _routingService.GetDistanceAsync("NearestPort", "DestinationPort", TransportMode.Sea);
             segments.Add(new RouteSegment(2, TransportMode.Sea, seaLeg));
 
-            float portToRecipient = _routingService.GetDistance("DestinationPort", recipientAddress, TransportMode.Truck);
+            // Truck leg: from destination port to recipientAddress.
+            float portToRecipient = await _routingService.GetDistanceAsync("DestinationPort", recipientAddress, TransportMode.Truck);
             segments.Add(new RouteSegment(3, TransportMode.Truck, portToRecipient));
 
             return segments;
@@ -38,6 +42,7 @@ namespace CleanBrilliantCompany.Models
                 TransportMode.Truck => 0.5f,
                 _ => 1.0f
             };
+
             return segment.Distance * shipmentTotalWeight * factor;
         }
     }

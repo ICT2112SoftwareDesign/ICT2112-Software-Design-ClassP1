@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models
@@ -12,40 +13,42 @@ namespace CleanBrilliantCompany.Models
             _routingService = routingService;
         }
 
-        // Create a shipment using hard-coded details and the chosen transport strategy.
-        public ShipmentSDM CreateShipment(
+        // Asynchronous shipment creation method.
+        public async Task<ShipmentSDM> CreateShipmentAsync(
             int orderId,
             double totalWeight,
             string shippingMethod,
             string senderAddress,
             string recipientAddress)
         {
-            // Select the appropriate strategy.
+            // Select the appropriate strategy based on the shipping method.
             ITransportStrategy strategy = SelectStrategy(shippingMethod);
-            List<RouteSegment> segments = strategy.CreateRoute(senderAddress, recipientAddress);
+
+            // Await the asynchronous creation of the route.
+            List<RouteSegment> segments = await strategy.CreateRouteAsync(senderAddress, recipientAddress);
 
             // Build and return the ShipmentSDM object.
             return new ShipmentSDM
             {
-                ShipmentId = 0, // Set or generate as needed.
+                ShipmentId = 0, // Set or generate an ID as needed.
                 OrderId = orderId,
                 TotalWeight = totalWeight,
                 RouteSegments = segments
             };
         }
 
-        // Simple strategy selection based on shipping method.
+        // Synchronous helper method to choose the correct strategy.
         private ITransportStrategy SelectStrategy(string method)
         {
             if (method.Equals("Air", System.StringComparison.OrdinalIgnoreCase))
                 return new AirTransportStrategy(_routingService);
             else if (method.Equals("Sea", System.StringComparison.OrdinalIgnoreCase))
                 return new SeaTransportStrategy(_routingService);
-            else // Default to truck
+            else // default to Truck.
                 return new TruckTransportStrategy(_routingService);
         }
 
-        // Calculate total weight from a list of items (optional helper).
+        // Helper method to calculate total weight from a list of items.
         public double CalculateTotalWeight(List<Item> items)
         {
             double total = 0;
@@ -56,8 +59,7 @@ namespace CleanBrilliantCompany.Models
             return total;
         }
 
-
-
+        // Inner class representing an item; alternatively, define this in its own file.
         public class Item
         {
             public string Name { get; set; }
@@ -65,5 +67,4 @@ namespace CleanBrilliantCompany.Models
             public int Quantity { get; set; }
         }
     }
-
 }
