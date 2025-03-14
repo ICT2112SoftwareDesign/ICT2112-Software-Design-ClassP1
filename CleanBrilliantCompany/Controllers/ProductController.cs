@@ -15,9 +15,9 @@ namespace CleanBrilliantCompany.Controllers
             _productControl = new ProductControl(connectionString);
         }
 
-        public IActionResult TestProduct()
+        public IActionResult displayProducts()
         {
-            var products = _productControl.GetProducts();
+            var products = _productControl.getAllProducts();
             Console.WriteLine($"Product: {string.Join(", ", products.Select(p => p.ProductName))}");
             return View("~/Views/Product/TestProduct.cshtml", products);
         }
@@ -29,9 +29,12 @@ namespace CleanBrilliantCompany.Controllers
                 return BadRequest("Invalid product data.");
             }
 
-            _productControl.CreateProduct(product);
+            _productControl.createProduct(product.ProductName, product.ProductCategory, 
+                                        product.ProductCost, product.ManufacturerId, product.ProductWeight, 
+                                        product.Quantity, product.Volume, product.ToxicityPercentage, 
+                                        product.CarbonFootprint, product.ProductState);
 
-            return RedirectToAction("TestProduct"); // Refresh the page
+            return RedirectToAction("displayProducts"); // Refresh the page
         
         }
 
@@ -39,6 +42,7 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult FetchProduct(int productId)
         {
             var product = _productControl.getProductDetails(productId);
+            Console.WriteLine($"Product: TEST");
             return View("~/Views/Product/FetchProduct.cshtml", product);
         }
     }

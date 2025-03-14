@@ -17,53 +17,50 @@ namespace CleanBrilliantCompany.Mappers
             _connectionString = connectionString;
         }
 
-        public Product getProductDetails(int productId)
+        public Product findByProductId(int productId)
         {
-            // Console.WriteLine($"Fetching product details for Product ID: {productId}");
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
 
-            // using (SqlConnection connection = new SqlConnection(_connectionString))
-            // {
-            //     connection.Open();
+                string query = @"
+                    SELECT productId, productName, productCategory, productCost, manufacturerId, 
+                        productWeight, quantity, volume, toxicityPercentage, carbonFootprint, CAST(productState AS INT) AS productState
+                    FROM dbo.Product
+                    WHERE productId = @ProductId";
 
-            //     string query = @"
-            //         SELECT productId, productName, productCategory, costPrice, manufacturerId, 
-            //             weight, quantity, volume, toxicityPercentage, carbonFootprint, productState
-            //         FROM dbo.Product
-            //         WHERE productId = @ProductId";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductId", productId);
 
-            //     using (SqlCommand command = new SqlCommand(query, connection))
-            //     {
-            //         command.Parameters.AddWithValue("@ProductId", productId);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Product
+                            {
+                                ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
+                                ProductName = reader.GetString(reader.GetOrdinal("productName")),
+                                ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
+                                ProductCost = (float)reader.GetDouble(reader.GetOrdinal("productCost")),
+                                ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
+                                ProductWeight = (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                Volume = reader.GetInt32(reader.GetOrdinal("volume")),
+                                ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
+                                CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
+                                ProductState = reader.GetInt32(reader.GetOrdinal("productState"))
+                            };
+                        }
+                    }
+                }
+            }
 
-            //         using (SqlDataReader reader = command.ExecuteReader())
-            //         {
-            //             if (reader.Read())
-            //             {
-            //                 return new Product
-            //                 {
-            //                     ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-            //                     ProductName = reader.GetString(reader.GetOrdinal("productName")),
-            //                     ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
-            //                     CostPrice = (float)reader.GetDouble(reader.GetOrdinal("costPrice")),
-            //                     ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
-            //                     Weight = (float)reader.GetDouble(reader.GetOrdinal("weight")),
-            //                     Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-            //                     Volume = reader.GetInt32(reader.GetOrdinal("volume")),
-            //                     ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
-            //                     CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
-            //                     ProductState = reader.IsDBNull(reader.GetOrdinal("productState")) 
-            //                         ? null 
-            //                         : reader.GetString(reader.GetOrdinal("productState")) 
-            //                 };
-            //             }
-            //         }
-            //     }
-            // }
-            return null; // No product found
+            return null;
         }
 
 
-        public void createProduct(string productName, string category, float costPrice, 
+        public void insert(string productName, string category, float productCost, 
         int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -73,14 +70,14 @@ namespace CleanBrilliantCompany.Mappers
                 string query = @"
                     INSERT INTO dbo.Product (productName, productCategory, productCost, manufacturerId, 
                                             productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
-                    VALUES (@ProductName, @Category, @CostPrice, @ManufacturerId, 
+                    VALUES (@ProductName, @Category, @ProductCost, @ManufacturerId, 
                             @ProductWeight, @Quantity, @Volume, @ToxicityPercentage, @CarbonFootprint, @ProductState)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@ProductName", productName);
                     command.Parameters.AddWithValue("@Category", category);
-                    command.Parameters.AddWithValue("@CostPrice", costPrice);
+                    command.Parameters.AddWithValue("@ProductCost", productCost);
                     command.Parameters.AddWithValue("@ManufacturerId", manufacturerId);
                     command.Parameters.AddWithValue("@ProductWeight", productWeight);
                     command.Parameters.AddWithValue("@Quantity", quantity);
@@ -103,7 +100,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // Fetch all products from the database
-        public List<Product> GetAllProducts()
+        public List<Product> findall()
         {
             List<Product> products = new List<Product>();
 
@@ -127,7 +124,7 @@ namespace CleanBrilliantCompany.Mappers
                                 ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
                                 ProductName = reader.GetString(reader.GetOrdinal("productName")),
                                 ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
-                                CostPrice = (float)reader.GetDouble(reader.GetOrdinal("productCost")),
+                                ProductCost = (float)reader.GetDouble(reader.GetOrdinal("productCost")),
                                 ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
                                 ProductWeight = (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
                                 Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),

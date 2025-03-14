@@ -24,7 +24,7 @@
         <input type="text" name="ProductCategory" required /><br> 
 
         <label>Cost Price:</label>
-        <input type="number" step="0.01" name="CostPrice" required /><br> 
+        <input type="number" step="0.01" name="ProductCost" required /><br> 
 
         <label>Manufacturer ID:</label>
         <input type="number" name="ManufacturerId" required /><br>
@@ -58,7 +58,7 @@
             @foreach (var product in Model)
             {
                 <li>
-                    <strong>@product.ProductName</strong> - $@product.CostPrice
+                    <strong>@product.ProductName</strong> - $@product.ProductCost
                     <br>Category: @product.ProductCategory
                     <br>Manufacturer ID: @product.ManufacturerId
                     <br>Weight: @product.ProductWeight kg

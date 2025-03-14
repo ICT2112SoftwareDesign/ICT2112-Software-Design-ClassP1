@@ -5,7 +5,7 @@ namespace CleanBrilliantCompany.Models.Entity
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string ProductCategory { get; set; }
-        public float CostPrice { get; set; }
+        public float ProductCost { get; set; }
         public int ManufacturerId { get; set; }
         public float ProductWeight { get; set; }
         public int Quantity { get; set; } = 0;
@@ -15,13 +15,13 @@ namespace CleanBrilliantCompany.Models.Entity
         public int ProductState { get; set; } // Change to string 
 
 
-        public Product(int productId, string productName, string productCategory, float costPrice, int manufacturerId,
+        public Product(int productId, string productName, string productCategory, float productCost, int manufacturerId,
                        float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState)
         {
             ProductId = productId;
             ProductName = productName;
             ProductCategory = productCategory;
-            CostPrice = costPrice;
+            ProductCost = productCost;
             ManufacturerId = manufacturerId;
             ProductWeight = productWeight;
             Quantity = quantity;
