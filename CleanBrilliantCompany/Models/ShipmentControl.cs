@@ -14,28 +14,37 @@ namespace CleanBrilliantCompany.Models
         }
 
         // Asynchronous shipment creation method.
-        public async Task<ShipmentSDM> CreateShipmentAsync(
-            int orderId,
-            double totalWeight,
-            string shippingMethod,
-            string senderAddress,
-            string recipientAddress)
+        public async Task<ShipmentSDM> CreateShipmentAsync(int orderId, double totalWeight, string shippingMethod, string senderAddress, string recipientAddress)
         {
-            // Select the appropriate strategy based on the shipping method.
-            ITransportStrategy strategy = SelectStrategy(shippingMethod);
+            ITransportStrategy strategy;
 
-            // Await the asynchronous creation of the route.
-            List<RouteSegment> segments = await strategy.CreateRouteAsync(senderAddress, recipientAddress);
-
-            // Build and return the ShipmentSDM object.
-            return new ShipmentSDM
+            switch (shippingMethod.ToLower())
             {
-                ShipmentId = 0, // Set or generate an ID as needed.
+                case "air":
+                    strategy = new AirTransportStrategy(_routingService);
+                    break;
+                case "sea":
+                    strategy = new SeaTransportStrategy(_routingService);
+                    break;
+                case "truck":
+                    strategy = new TruckTransportStrategy(_routingService);
+                    break;
+                default:
+                    throw new ArgumentException("Unsupported shipping method.");
+            }
+
+            var routeSegments = await strategy.CreateRouteAsync(senderAddress, recipientAddress);
+
+            var shipment = new ShipmentSDM
+            {
                 OrderId = orderId,
                 TotalWeight = totalWeight,
-                RouteSegments = segments
+                RouteSegments = routeSegments
             };
+
+            return shipment;
         }
+
 
         // Synchronous helper method to choose the correct strategy.
         private ITransportStrategy SelectStrategy(string method)

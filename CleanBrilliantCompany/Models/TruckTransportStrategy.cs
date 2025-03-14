@@ -23,17 +23,6 @@ namespace CleanBrilliantCompany.Models
             return segments;
         }
 
-        public float CalculateEmission(RouteSegment segment, float shipmentTotalWeight)
-        {
-            float factor = segment.Mode switch
-            {
-                TransportMode.Air => 1.5f,
-                TransportMode.Sea => 0.1f,
-                TransportMode.Truck => 0.5f,
-                _ => 1.0f
-            };
 
-            return segment.Distance * shipmentTotalWeight * factor;
-        }
     }
 }

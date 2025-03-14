@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -71,8 +72,80 @@ namespace CleanBrilliantCompany.Models
             return 0;
         }
 
+        public async Task<string> GetNearestAirportAsync(double latitude, double longitude)
+        {
+            var client = new HttpClient();
+
+            var requestUrl = $"https://aerodatabox.p.rapidapi.com/airports/search/location/{latitude}/{longitude}/km/100/1";
+
+            // Required Headers for RapidAPI
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(requestUrl),
+                Headers =
+                {
+                    { "x-rapidapi-key", "77a1b4ec8emsh52d2b49c4cf6a82p1d8f88jsnc79d8a170c16" },      // replace with your new/working key
+                    { "x-rapidapi-host", "aerodatabox.p.rapidapi.com" },
+                }
+            };
+
+            Console.WriteLine($"[DEBUG] AeroDataBox API Request: {requestUrl}");
+
+            using (var response = await client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"[DEBUG] AeroDataBox Response: {jsonResponse}");
+
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                var airportResponse = JsonSerializer.Deserialize<AeroDataBoxResponse>(jsonResponse, options);
+
+                if (airportResponse != null && airportResponse.items != null && airportResponse.items.Length > 0)
+                {
+                    var nearestAirport = airportResponse.items[0];
+                    Console.WriteLine($"[DEBUG] Nearest Airport Found: {nearestAirport.name}");
+                    return $"{nearestAirport.name}, {nearestAirport.municipalityName}, {nearestAirport.countryName}";
+                }
+
+                throw new Exception("No airports found near the recipient location.");
+            }
+        }
+
+        public async Task<string> GetNearestPortAsync(double latitude, double longitude)
+        {
+            string username = "yugosaito4";  
+            string requestUrl = $"http://api.geonames.org/findNearbyJSON?lat={latitude}&lng={longitude}&featureCode=PRT&username={username}";
+
+            Console.WriteLine($"[DEBUG] GeoNames API Request: {requestUrl}");
+
+            var response = await _client.GetAsync(requestUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[ERROR] GeoNames API call failed: {response.StatusCode}");
+                throw new Exception($"GeoNames API error: {response.StatusCode}");
+            }
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"[DEBUG] GeoNames Response: {jsonResponse}");
+
+            var portData = JsonSerializer.Deserialize<GeoNamesPortResponse>(jsonResponse);
+
+            if (portData.geonames != null && portData.geonames.Length > 0)
+            {
+                var nearestPort = portData.geonames[0];
+                Console.WriteLine($"[DEBUG] Nearest Port Found: {nearestPort.name}");
+                return $"{nearestPort.name}, {nearestPort.countryName}";
+            }
+
+            throw new Exception("No nearby ports found.");
+        }
+
+
         // Real geocoding using Nominatim API.
-        private async Task<Coordinates> GeocodeAddressAsync(string address)
+        public async Task<Coordinates> GeocodeAddressAsync(string address)
         {
             string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
             Console.WriteLine($"[DEBUG] Geocoding URL: {url}");
@@ -113,12 +186,7 @@ namespace CleanBrilliantCompany.Models
 
         private double ToRadians(double angle) => angle * (Math.PI / 180);
 
-        // Helper classes for internal use:
-        private class Coordinates
-        {
-            public double Latitude { get; set; }
-            public double Longitude { get; set; }
-        }
+
 
         private class OsrmResponse
         {
@@ -137,5 +205,40 @@ namespace CleanBrilliantCompany.Models
             public string lon { get; set; }
             // You can include other properties if needed.
         }
+
+        public class AeroDataBoxResponse
+        {
+            public AeroAirportItem[] items { get; set; }
+        }
+
+        public class AeroAirportItem
+        {
+            public string iata { get; set; }
+            public string icao { get; set; }
+            public string name { get; set; }
+            public string municipalityName { get; set; }
+            public string countryName { get; set; }
+            public Location location { get; set; }
+        }
+
+        public class Location
+        {
+            public double lat { get; set; }
+            public double lon { get; set; }
+        }
+
+        public class GeoNamesPortResponse
+        {
+            public GeoNamePort[] geonames { get; set; }
+        }
+
+        public class GeoNamePort
+        {
+            public string name { get; set; }
+            public string countryName { get; set; }
+            public string lat { get; set; }     // <-- Change to string
+            public string lng { get; set; }     // <-- Change to string
+        }
+
     }
 }
