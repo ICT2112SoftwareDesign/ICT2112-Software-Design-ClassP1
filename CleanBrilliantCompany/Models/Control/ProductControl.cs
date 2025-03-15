@@ -7,46 +7,44 @@ namespace CleanBrilliantCompany.Models.Control
 {
     public class ProductControl : iProductQuery
     {
-        private static List<Product> _products = new List<Product>();
         private readonly ProductMapper _productMapper;
 
-        // private readonly iProductQuery _productQuery;
-
-        public ProductControl()
+         public ProductControl(string connectionString)
         {
-            // _productQuery = productQuery;
-            _productMapper = new ProductMapper("your_connection_string");
+            _productMapper = new ProductMapper(connectionString);
 
-            // Load sample products at startup
-            _products = GetAllProducts();
-            Console.WriteLine("Sample products loaded into system.");
-        }
-        
-        public void CreateProduct(Product product)
-        {
-            _products.Add(product);
-            Console.WriteLine($"Product '{product.ProductName}' created successfully!");
-        }
-
-        // public Product GetProductById(int productId)
-        // {
-        //     return _productQuery.getProductDetails(productId);
-        // }
-
-        public List<Product> GetProducts()
-        {
-            return _products;
+            Console.WriteLine("Products loaded from database.");
         }
 
         // Interface methods
-        public Product getProductDetails(int productId)
+        public async Task<Product> getProductDetails(int productId)
         {
-            return _productMapper.getProductDetails(productId);
+            return await _productMapper.getDatabaseQueryStatus(_productMapper.findByProductId(productId));
         }
 
-        public List<Product> GetAllProducts()
+        public async Task<(string status, List<Product> products)> getAllProducts()
         {
-            return _productMapper.GetAllProducts();
+            return await _productMapper.getDatabaseQueryStatus(_productMapper.findAllProducts());
+        }
+
+        public async Task<string> createProduct(string productName, string category, float productCost, 
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState)
+        {
+            return await _productMapper.getDatabaseQueryStatus(
+                _productMapper.insert(productName, category, productCost, 
+                                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
+            );
+        }
+
+        public async Task<string> deleteProduct(int productId)
+        {
+            return await _productMapper.getDatabaseQueryStatus(_productMapper.delete(productId));
+        }
+
+        public async Task<List<ProductBatch>> getAllProductBatches()
+        {
+            var (status, batchList) = await _productMapper.getDatabaseQueryStatus(_productMapper.findAllProductBatches());
+            return batchList; 
         }
     }
 }
