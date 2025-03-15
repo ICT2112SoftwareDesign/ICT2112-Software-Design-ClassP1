@@ -2,7 +2,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/staff">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
@@ -13,8 +13,8 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")">
+        <a class="nav-link" href="/staff">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
@@ -27,37 +27,33 @@
         Management
     </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-            aria-expanded="true" aria-controls="collapseTwo">
+    <!-- Nav Item - Shipping -->
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Shipping" ? "active" : "")">
+        <a class="nav-link" href="/staff/shipping">
             <i class="fas fa-fw fa-ship"></i>
             <span>Shipping</span>
         </a>
     </li>
 
-    <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRefund"
-            aria-expanded="true" aria-controls="collapseRefund">
+    <!-- Nav Item - Return/Refund -->
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Refund" ? "active" : "")">
+        <a class="nav-link" href="/staff/refund">
             <i class="fas fa-fw fa-money-bill"></i>
             <span>Return/Refund</span>
         </a>
     </li>
 
-    <!-- Nav Item - Reorder Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReorder"
-            aria-expanded="true" aria-controls="collapseReorder">
+    <!-- Nav Item - Reorder -->
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Reorder" ? "active" : "")">
+        <a class="nav-link" href="/staff/reorder">
             <i class="fas fa-fw fa-list"></i>
             <span>Reorder</span>
         </a>
     </li>
 
-    <!-- Nav Item - Ticket Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTicketing"
-            aria-expanded="true" aria-controls="collapseTicketing">
+    <!-- Nav Item - Tickets -->
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Ticket" ? "active" : "")">
+        <a class="nav-link" href="/staff/ticket">
             <i class="fas fa-fw fa-ticket-alt"></i>
             <span>Tickets</span>
         </a>
@@ -65,5 +61,10 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
 </ul>
 <!-- End of Sidebar -->
