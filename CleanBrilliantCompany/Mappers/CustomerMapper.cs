@@ -6,7 +6,7 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Mappers
 {
-    public class CustomerMapper : iCustomerDatabase
+    public class CustomerMapper : ICustomerDatabase
     {
         private readonly string _connectionString;
 

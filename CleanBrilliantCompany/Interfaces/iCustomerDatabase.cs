@@ -1,7 +1,7 @@
 using CleanBrilliantCompany.Models;
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface iCustomerDatabase
+    public interface ICustomerDatabase
     {
         bool createCustomer(string username, string password, string email);
         bool updateCustomer(string username, string password, string customerAddress, string email);

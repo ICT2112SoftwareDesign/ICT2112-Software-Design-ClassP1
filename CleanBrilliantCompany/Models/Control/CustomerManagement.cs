@@ -2,13 +2,13 @@ using System;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Mappers;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.control
 {
     public class CustomerManagement
     {
-        private readonly iCustomerDatabase _customerDatabase;
+        private readonly ICustomerDatabase _customerDatabase;
 
-        public CustomerManagement(iCustomerDatabase customerDatabase)
+        public CustomerManagement(ICustomerDatabase customerDatabase)
         {
             _customerDatabase = customerDatabase;
         }
