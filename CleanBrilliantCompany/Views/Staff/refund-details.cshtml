@@ -1,0 +1,149 @@
+@model CleanBrilliantCompany.Models.Refund_RDM
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Refund Details</title>
+
+    <!-- Custom styles -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet"> 
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        @await Html.PartialAsync("staff-sidebar")
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Staff Member</span>
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+            <div id="content">
+                <div class="container-fluid">
+                    <h1 class="h3 mb-4 text-gray-800">Refund Details</h1>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Refund Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Refund ID:</strong> @Model.RefundId</p>
+                            <p><strong>Order ID:</strong> @Model.OrderId</p>
+                            @* <p><strong>Customer ID:</strong> @Model.CustomerId</p> *@
+                            <p><strong>Refund Amount:</strong> $@Model.RefundAmount</p>
+                            <p><strong>Request Date:</strong> @Model.RefundRequestDate.ToShortDateString()</p>
+                            <p><strong>Processed Date:</strong> @(Model.RefundProcessedDate != DateTime.MinValue ? Model.RefundProcessedDate.ToShortDateString() : "Not Processed")</p>
+                            <p><strong>Refund Reason:</strong> @Model.RefundReason</p>
+                            <p><strong>Status:</strong> 
+                                <span class="@(Model.Status == "Approved" ? "text-success" : Model.Status == "Pending" ? "text-warning" : "text-danger")">@Model.Status</span>
+                            </p>
+
+                            <hr>
+                            <h5 class="text-primary">Refunded Products</h5>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Product ID</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var product in Model.RefundedProducts)
+                                    {
+                                        <tr>
+                                            <td>@product.Key</td>
+                                            <td>@product.Value</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <hr>
+                            <h5 class="text-primary">Uploaded Images</h5>
+                            <div class="d-flex flex-wrap">
+                                @if (Model.Images != null && Model.Images.Count > 0)
+                                {
+                                    @foreach (var image in Model.Images)
+                                    {
+                                        <div class="m-2">
+                                            <img src="@image" class="img-thumbnail" style="width: 150px; height: 150px;" alt="Refund Image">
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No images uploaded.</p>
+                                }
+                            </div>
+
+                            <hr>
+                            <h5 class="text-primary">Uploaded Videos</h5>
+                            <div class="d-flex flex-wrap">
+                                @if (Model.Videos != null && Model.Videos.Count > 0)
+                                {
+                                    @foreach (var video in Model.Videos)
+                                    {
+                                        <div class="m-2">
+                                            <video width="250" controls>
+                                                <source src="@video" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No videos uploaded.</p>
+                                }
+                            </div>
+
+                            <hr>
+                            @if (Model.Status == "Pending")
+                            {
+                                <form method="post" action="@Url.Action("UpdateRefundStatus", "Staff")">
+                                    <input type="hidden" name="refundId" value="@Model.RefundId" />
+                                    <div class="form-group">
+                                        <label for="status">Update Status:</label>
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="Approved">Approved</option>
+                                            <option value="Rejected">Rejected</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Update Status</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <p class="text-danger"><strong>This refund has been @Model.Status and can no longer be updated.</strong></p>
+                            }
+
+                        </div>
+                    </div>
+
+                    <a href="@Url.Action("Refund", "Staff")" class="btn btn-secondary">Back to Refunds</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & JS -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
