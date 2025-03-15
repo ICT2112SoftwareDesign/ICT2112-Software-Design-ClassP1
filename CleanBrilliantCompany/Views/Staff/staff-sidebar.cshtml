@@ -28,11 +28,22 @@
     </div>
 
     <!-- Nav Item - Shipping -->
-    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Shipping" ? "active" : "")">
-        <a class="nav-link" href="/staff/shipping">
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "ShippingAgent" || 
+                      ViewContext.RouteData.Values["action"].ToString() == "OrderFufilment" ? "active" : "")">
+        <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "ShippingAgent" || ViewContext.RouteData.Values["action"].ToString() == "OrderFufilment" ? "" : "collapsed")"
+            href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="@(ViewContext.RouteData.Values["action"].ToString() == "ShippingAgent" || ViewContext.RouteData.Values["action"].ToString() == "OrderFufilment" ? "true" : "false")"
+            aria-controls="collapsePages">
             <i class="fas fa-fw fa-ship"></i>
             <span>Shipping</span>
         </a>
+        <div id="collapsePages" class="collapse @(ViewContext.RouteData.Values["action"].ToString() == "ShippingAgent" || ViewContext.RouteData.Values["action"].ToString() == "OrderFufilment" ? "show" : "")"
+            aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item @(ViewContext.RouteData.Values["action"].ToString() == "ShippingAgent" ? "active" : "")" href="/staff/shippingagent">Shipping Agents</a>
+                <a class="collapse-item @(ViewContext.RouteData.Values["action"].ToString() == "OrderFufilment" ? "active" : "")"
+                    href="/staff/orderfufilment">Order Fufilment</a>
+            </div>
+        </div>
     </li>
 
     <!-- Nav Item - Return/Refund -->

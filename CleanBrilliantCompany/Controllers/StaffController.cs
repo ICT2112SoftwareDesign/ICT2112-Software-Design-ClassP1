@@ -12,13 +12,17 @@ namespace CleanBrilliantCompany.Controllers.Staff
         {
             return View(); // Renders Views/Staff/Index.cshtml
         }
-
-        [HttpGet("shipping")]
-        public IActionResult Shipping()
+        [HttpGet("shippingagent")]
+        public IActionResult ShippingAgent()
         {
-            return View(); // Renders Views/Staff/Shipping.cshtml
+            return View(); // Renders Views/Staff/ShippingAgent.cshtml
         }
 
+        [HttpGet("orderfufilment")]
+        public IActionResult OrderFufilment()
+        {
+            return View(); // Renders Views/Staff/OrderFufilment.cshtml
+        }
         [HttpGet("refund")]
         public IActionResult Refund()
         {
