@@ -1,0 +1,29 @@
+@model List<Dictionary<string, object>>
+
+<h2>Item List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item ID</th>
+            <th>Product ID</th>
+            <th>Sale Price</th>
+            <th>Batch Code</th>
+            <th>Warehouse ID</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var itemInfo in Model)
+        {
+            <tr>
+                <td>@itemInfo["ItemId"]</td>
+                <td>@itemInfo["ProductId"]</td>
+                <td>@itemInfo["SalePrice"]</td>
+                <td>@itemInfo["BatchCode"]</td>
+                <td>@itemInfo["WarehouseId"]</td>
+                <td>@itemInfo["ItemStatus"]</td>
+            </tr>
+        }
+    </tbody>
+</table>
