@@ -104,5 +104,26 @@ namespace CleanBrilliantCompany.Models
         {
             return dateCreated >= startDate && dateCreated <= endDate;
         }
+
+        public int getEntityIdForInsert()
+        {
+            return entityId;
+        }
+
+        public string getEntityTypeForInsert()
+        {
+            return entityType;
+        }
+
+        public string getEcoStatusForInsert()
+        {
+            return ecoStatus;
+        }
+
+        public DateOnly getDateCreatedForInsert()
+        {
+            return dateCreated;
+        }
+
     }
 }

@@ -11,5 +11,6 @@ namespace CleanBrilliantCompany.Interfaces
         public float retrieveOrderCarbonFootprint(int entityId, string entityType);
         public List<CarbonFootprintRecordRDM> retrieveAllProductCarbonFootprint();
         public List<CarbonFootprintRecordRDM> retrieveAllOrderCarbonFootprint();
+        public bool getQueryStatus();
     }
 }

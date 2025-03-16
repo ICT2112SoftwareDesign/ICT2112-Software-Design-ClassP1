@@ -5,7 +5,7 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Data
 {
-    public class CarbonFootprintMapper : ICarbonRepositoryQuery, ICarbonManagerQuery, ICarbonCalculatorQuery, ICarbonRepositoryStatusQuery
+    public class CarbonFootprintMapper : ICarbonRepositoryQuery
     {
         private readonly string _connectionString;
 
@@ -14,7 +14,7 @@ namespace CleanBrilliantCompany.Data
             _connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentNullException("Connection string not found");
         }
 
-        public bool getDatabaseQueryStatus()
+        public bool getQueryStatus()
         {
             try
             {

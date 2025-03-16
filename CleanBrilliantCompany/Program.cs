@@ -16,9 +16,9 @@ builder.Services.AddScoped<FeedbackSubmission>(); // Ensure concrete class is re
 builder.Services.AddScoped<IFeedbackSubmission, FeedbackSubmission>(); // Register with interface
 
 builder.Services.AddScoped<ICarbonRepositoryQuery, CarbonFootprintMapper>();
-builder.Services.AddScoped<ICarbonRepositoryStatusQuery, CarbonFootprintMapper>();
-builder.Services.AddScoped<ICarbonManagerQuery, CarbonFootprintMapper>();
-builder.Services.AddScoped<ICarbonCalculatorQuery, CarbonFootprintMapper>();
+builder.Services.AddScoped<ICarbonRepositoryStatusQuery, CarbonFootprintRepositoryControl>();
+builder.Services.AddScoped<ICarbonManagerQuery, CarbonFootprintManagerControl>();
+builder.Services.AddScoped<ICarbonCalculatorQuery, CarbonFootprintCalculatorControl>();
 
 builder.Services.AddScoped<CarbonFootprintManagerControl>();
 builder.Services.AddScoped<CarbonFootprintCalculatorControl>();

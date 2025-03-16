@@ -2,13 +2,18 @@
 
 namespace CleanBrilliantCompany.Domain
 {
-    public class CarbonFootprintManagerControl
+    public class CarbonFootprintManagerControl : ICarbonManagerQuery
     {
         private readonly ICarbonRepositoryQuery _repository;
 
         public CarbonFootprintManagerControl(ICarbonRepositoryQuery repository)
         {
             _repository = repository;
+        }
+
+        public bool getDatabaseQueryStatus()
+        {
+            return _repository.getQueryStatus();
         }
 
         public void AddCarbonFootprintRecord(int entityId, string entityType, float carbonEmission, string ecoStatus, DateTime dateCreated)

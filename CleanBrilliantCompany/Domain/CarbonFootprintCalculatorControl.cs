@@ -6,13 +6,18 @@ using System.Linq;
 
 namespace CleanBrilliantCompany.Domain
 {
-    public class CarbonFootprintCalculatorControl
+    public class CarbonFootprintCalculatorControl : ICarbonCalculatorQuery
     {
         private readonly ICarbonRepositoryQuery _repository;
 
         public CarbonFootprintCalculatorControl(ICarbonRepositoryQuery repository)
         {
             _repository = repository;
+        }
+
+        public bool getDatabaseQueryStatus()
+        {
+            return _repository.getQueryStatus();
         }
 
         public List<CarbonFootprintRecordRDM> getAllProductCarbonFootprint()
