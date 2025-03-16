@@ -62,4 +62,42 @@ public class AgingControl
     {
         return dashboards.OrderByDescending(d => d.RequestedStartDate).FirstOrDefault();
     }
+
+    // i also need a method where User wants to generate a new dashboard
+    // so i have to go talk to the other team through this interface
+    // so i will prolly use the function to get all available batches 
+    // loop through the list, for each batchNumber 
+    // i will call the interface again to get their stockhistory data
+    // they returns me a dictionary of stockhistory that belongs to that batch 
+    // so i assume the key will be a date and the value will be the rawstockhistorydata instance 
+    // i will then create a new dashbaord instance
+
+    public AgingDashboardRdm generateNewDashboard() 
+    {
+
+        var dashboard = new AgingDashboardRdm("Aging Dashboard", DateTime.Now, DateTime.Now.AddDays(180), 180, 1);
+        var fakeInterface = new FakeBatchInterface(); 
+        var batches = fakeInterface.getAllProductBatch(); 
+        foreach (var batch in batches){
+            var stockHistory = fakeInterface.getStockHistoryByBatch(batch.BatchCode);
+            var stockHistoryMap = stockHistory.ToDictionary(x => x.Date, x => x.Quantity);
+            
+            var storageLifeCycleAnalytics = new StorageLifeCycleAnalyticsDetails(
+                batch.BatchCode, 
+                batch.ReceiveDate, 
+                batch.ExpiryDate
+                );    
+            var stockTurnOverAnalytics = new StockTurnOverAnalyticsDetails(
+                batch.BatchCode, 
+                stockHistoryMap, 
+                batch.Quantity
+                ); 
+            dashboard.addBatchAnalytics(batch.BatchCode, storageLifeCycleAnalytics); 
+            dashboard.addBatchAnalytics(batch.BatchCode, stockTurnOverAnalytics); 
+        }
+
+        return dashboard; 
+    }
+
+
 }

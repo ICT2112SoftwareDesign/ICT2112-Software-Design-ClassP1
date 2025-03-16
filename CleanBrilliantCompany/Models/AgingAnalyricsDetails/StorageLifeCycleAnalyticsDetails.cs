@@ -11,7 +11,7 @@ public class StorageLifeCycleAnalyticsDetails : AbstractAnalyticsDetails {
     private int remainingDays = -1; 
 
 
-
+    // only this one i require the stockhistory data
     public StorageLifeCycleAnalyticsDetails(int batchCode, DateTime receiveDate, DateTime expiryDate) : base(batchCode, "StorageLifeCycleAnalyticsDetails"){
         this.receiveDate = receiveDate; 
         this.expiryDate = expiryDate; 
