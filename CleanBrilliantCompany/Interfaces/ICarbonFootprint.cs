@@ -4,10 +4,9 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface ICarbonFootprint
     {
-        public List<CarbonFootprintRecordRDM> GetAllProductCarbonFootprint();
-        public List<CarbonFootprintRecordRDM> GetAllOrderCarbonFootprint();
-        public float CalculateCarbonFootprint(int productId, float volume, float toxicity);
-        public float CalculateCarbonFootprint(ShipmentSDM shipment);
-        public float CalculateCarbonFootprint(int itemId);
+        public List<CarbonFootprintRecordRDM> getAllProductCarbonFootprint();
+        public List<CarbonFootprintRecordRDM> getAllOrderCarbonFootprint();
+        public List<CarbonFootprintRecordRDM> getCarbonFootprintComparison(List<int> entityId, string entityType);
+        public List<CarbonFootprintRecordRDM> getEcoFriendlyReport(DateTime startDate, DateTime endDate, string entityType);
     }
 }

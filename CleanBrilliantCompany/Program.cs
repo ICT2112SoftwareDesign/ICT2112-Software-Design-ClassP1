@@ -1,3 +1,5 @@
+using CleanBrilliantCompany.Data;
+using CleanBrilliantCompany.Domain;
 using CleanBrilliantCompany.Interfaces;  // Ensure this matches your actual namespace
 using CleanBrilliantCompany.Models;
 
@@ -12,6 +14,15 @@ builder.Services.AddSingleton<FeedbackRepository>();
 // Register `FeedbackSubmission` properly
 builder.Services.AddScoped<FeedbackSubmission>(); // Ensure concrete class is registered
 builder.Services.AddScoped<IFeedbackSubmission, FeedbackSubmission>(); // Register with interface
+
+builder.Services.AddScoped<ICarbonRepositoryQuery, CarbonFootprintMapper>();
+builder.Services.AddScoped<ICarbonRepositoryStatusQuery, CarbonFootprintMapper>();
+builder.Services.AddScoped<ICarbonManagerQuery, CarbonFootprintMapper>();
+builder.Services.AddScoped<ICarbonCalculatorQuery, CarbonFootprintMapper>();
+
+builder.Services.AddScoped<CarbonFootprintManagerControl>();
+builder.Services.AddScoped<CarbonFootprintCalculatorControl>();
+builder.Services.AddScoped<CarbonFootprintRepositoryControl>();
 
 var app = builder.Build();
 
