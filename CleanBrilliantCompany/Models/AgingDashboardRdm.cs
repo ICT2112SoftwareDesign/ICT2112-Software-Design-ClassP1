@@ -6,14 +6,14 @@ public class AgingDashboardRdm : Dashboard
 
     private Dictionary<int , List <AbstractAnalyticsDetails>> batchAnalyticsMap;   
 
-    public AgingDashboardRdm(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration)
-        : base(name, requestedStartDate, requestedEndDate, validityDuration)
+    public AgingDashboardRdm(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type)
+        : base(name, requestedStartDate, requestedEndDate, validityDuration, type)
     {
         //_batchAnalyticsList = new List<AbstractAnalyticsDetails>();
         batchAnalyticsMap = new Dictionary<int, List<AbstractAnalyticsDetails>>();
     }
 
-    private Dictionary<int, List<AbstractAnalyticsDetails>> getBatchAnalyticsMap() => batchAnalyticsMap; 
+    public Dictionary<int, List<AbstractAnalyticsDetails>> getBatchAnalyticsMap() => batchAnalyticsMap; 
     private void setBatchAnalyticsMap(Dictionary<int, List<AbstractAnalyticsDetails>> batchAnalyticsMap) => this.batchAnalyticsMap = batchAnalyticsMap;
     
     public void populateAnalytics(List<RawBatchData> rawBatchData, List<RawStockHistoryData> rawStockHistoryData) {
@@ -57,7 +57,7 @@ public class AgingDashboardRdm : Dashboard
         }
     }
 
-    public void AddBatchAnalytics(int batchCode, AbstractAnalyticsDetails batchDetails)
+    public void addBatchAnalytics(int batchCode, AbstractAnalyticsDetails batchDetails)
     {
         if (batchAnalyticsMap.ContainsKey(batchCode))
         {
@@ -77,4 +77,6 @@ public class AgingDashboardRdm : Dashboard
 
     // public List<int> getExpiringProducts
     // getStorageDurationForBatch()
+
+
 }

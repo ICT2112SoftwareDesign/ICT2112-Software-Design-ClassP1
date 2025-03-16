@@ -3,6 +3,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
+
+// register fake context as a singleton 
+builder.Services.AddSingleton<FakeDbContext>(); 
+
+// register aging mapper to use fakedb context 
+builder.Services.AddScoped<AgingMapper>(); 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

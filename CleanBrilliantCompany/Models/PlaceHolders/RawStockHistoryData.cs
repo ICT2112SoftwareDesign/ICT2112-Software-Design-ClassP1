@@ -7,7 +7,7 @@ public class RawStockHistoryData
     public DateTime RecordedAt { get; set; } // When the record was logged
 
     // 🔹 Constructor for Initialization
-    public StockHistory(int stockId, int batchCode, DateTime date, int quantity, DateTime recordedAt)
+    public RawStockHistoryData(int stockId, int batchCode, DateTime date, int quantity, DateTime recordedAt)
     {
         StockId = stockId;
         BatchCode = batchCode;

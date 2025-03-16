@@ -1,11 +1,10 @@
-using CleanBrilliantCompany.Interfaces; 
 public abstract class AbstractAnalyticsDetails {
     protected int batchCode; 
-    protected analyticsType : String
+    protected String analyticsType;
 
     public AbstractAnalyticsDetails(int batchCode, String analyticsType) { 
-        this.batchCode = batchCode
-        this.analyticsType = analyticsType 
+        this.batchCode = batchCode;
+        this.analyticsType = analyticsType ;
     }
 
     public int getBatchCode() => batchCode; 

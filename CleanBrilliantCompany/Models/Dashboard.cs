@@ -1,88 +1,93 @@
-public abstract class Dashboard {
-    // your priv fields 
-    private int _dashboardId;
-    private string _name;
+public abstract class Dashboard
+{
+    private string _name = string.Empty; 
     private DateTime _requestedStartDate;
     private DateTime _requestedEndDate;
     private DateTime? _generatedDate;
     private int _validityDuration;
 
-    protected Dashboard(){}
+    protected int Type { get; set; } 
 
-    protected Dashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration)
+    // 🔹 DashboardId should be set from the database, so allow protected set
+    public int DashboardId { get; protected set; } 
+
+    // 🔹 Properties with validation
+    public string Name
     {
-        SetName(name);
-        SetRequestedStartDate(requestedStartDate);
-        SetRequestedEndDate(requestedEndDate);
-        SetValidityDuration(validityDuration);
-        _generatedDate = null;
+        get => _name;
+        protected set
+        {
+            if (string.IsNullOrWhiteSpace(value)) 
+                throw new ArgumentException("Name cannot be empty.");
+            _name = value;
+        }
     }
 
-
-    // Private Getters and Setters - Used Internally Only
-    private int GetDashboardId() => _dashboardId;
-    private void SetDashboardId(int dashboardId) => _dashboardId = dashboardId;
-
-    private string GetName() => _name;
-    private void SetName(string name)
+    public DateTime RequestedStartDate
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Name cannot be empty.");
-        _name = name;
+        get => _requestedStartDate;
+        protected set
+        {
+            if (value > DateTime.Now)
+                throw new ArgumentException("Requested start date cannot be in the future.");
+            _requestedStartDate = value;
+        }
     }
 
-    private DateTime GetRequestedStartDate() => _requestedStartDate;
-    private void SetRequestedStartDate(DateTime requestedStartDate)
+    public DateTime RequestedEndDate
     {
-        if (requestedStartDate > DateTime.Now)
-            throw new ArgumentException("Requested start date cannot be in the future.");
-        _requestedStartDate = requestedStartDate;
+        get => _requestedEndDate;
+        protected set
+        {
+            if (value < _requestedStartDate)
+                throw new ArgumentException("Requested end date cannot be earlier than start date.");
+            _requestedEndDate = value;
+        }
     }
 
-    private DateTime GetRequestedEndDate() => _requestedEndDate;
-    private void SetRequestedEndDate(DateTime requestedEndDate)
+    public int ValidityDuration
     {
-        if (requestedEndDate < _requestedStartDate)
-            throw new ArgumentException("Requested end date cannot be earlier than the start date.");
-        _requestedEndDate = requestedEndDate;
+        get => _validityDuration;
+        protected set
+        {
+            if (value < 0)
+                throw new ArgumentException("Validity duration cannot be negative.");
+            _validityDuration = value;
+        }
     }
 
-    private DateTime? GetGeneratedDate() => _generatedDate;
-    private void SetGeneratedDate(DateTime generatedDate)
+    public DateTime? GeneratedDate
     {
-        if (generatedDate < _requestedStartDate)
-            throw new ArgumentException("Generated date cannot be earlier than the start date.");
-        _generatedDate = generatedDate;
+        get => _generatedDate;
+        protected set
+        {
+            if (value.HasValue && value < _requestedStartDate)
+                throw new ArgumentException("Generated date cannot be earlier than start date.");
+            _generatedDate = value;
+        }
     }
 
-    private int GetValidityDuration() => _validityDuration;
-    private void SetValidityDuration(int validityDuration)
+    // 🔹 Constructor for Retrieving from Database (Includes DashboardId)
+    protected Dashboard(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type, DateTime? generatedDate = null)
     {
-        if (validityDuration < 0)
-            throw new ArgumentException("Validity duration cannot be negative.");
-        _validityDuration = validityDuration;
+        DashboardId = dashboardId;  
+        Name = name;
+        RequestedStartDate = requestedStartDate;
+        RequestedEndDate = requestedEndDate;
+        ValidityDuration = validityDuration;
+        GeneratedDate = generatedDate ?? DateTime.Now; // 
+        Type = type;
     }
 
-    // Public Methods to Access Data - Renamed to be more descriptive
-    public int RetrieveDashboardId() => GetDashboardId();
-    public string RetrieveName() => GetName();
-    public DateTime RetrieveRequestedStartDate() => GetRequestedStartDate();
-    public DateTime RetrieveRequestedEndDate() => GetRequestedEndDate();
-    public DateTime? RetrieveGeneratedDate() => GetGeneratedDate();
-    public int RetrieveValidityDuration() => GetValidityDuration();
-
-    //! I made this abstract so the children must implement this
-    //! update 13/3/2025 - with factory , maybe this is not needed anymore 
-    //public abstract Dashboard CreateNewDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration);
-    
-
-    // Public Method for Updating a Dashboard
-    public void UpdateDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration)
+    // 🔹 Constructor for Creating a New Dashboard (Without ID, Assigned Later)
+    protected Dashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type)
     {
-        SetName(name);
-        SetRequestedStartDate(requestedStartDate);
-        SetRequestedEndDate(requestedEndDate);
-        SetValidityDuration(validityDuration);
+        DashboardId = 0; // ✅ New dashboards get ID = 0 until saved in DB
+        Name = name;
+        RequestedStartDate = requestedStartDate;
+        RequestedEndDate = requestedEndDate;
+        ValidityDuration = validityDuration;
+        GeneratedDate = null;
+        Type = type;
     }
-
 }
