@@ -7,6 +7,7 @@ namespace CleanBrilliantCompany.Data
 {
     public class CarbonFootprintMapper : ICarbonRepositoryQuery
     {
+        private bool _lastQueryStatus = false;
         private readonly string _connectionString;
 
         public CarbonFootprintMapper(IConfiguration configuration)
@@ -16,18 +17,7 @@ namespace CleanBrilliantCompany.Data
 
         public bool getQueryStatus()
         {
-            try
-            {
-                using (var conn = new SqlConnection(_connectionString))
-                {
-                    conn.Open();
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
-            }
+            return _lastQueryStatus;
         }
 
         public bool createCarbonFootprint(int entityId, string entityType, float carbonEmission, string ecoStatus, DateTime dateCreated)
@@ -45,7 +35,8 @@ namespace CleanBrilliantCompany.Data
 
                     conn.Open();
                     int rowsAffected = cmd.ExecuteNonQuery();
-                    return rowsAffected > 0;
+                    _lastQueryStatus = rowsAffected > 0;
+                    return _lastQueryStatus;
                 }
             }
         }
@@ -59,7 +50,8 @@ namespace CleanBrilliantCompany.Data
                 {
                     cmd.Parameters.AddWithValue("@Id", carbonFootprintId);
                     conn.Open();
-                    return cmd.ExecuteNonQuery() > 0;
+                    _lastQueryStatus = cmd.ExecuteNonQuery() > 0;
+                    return _lastQueryStatus;
                 }
             }
         }
@@ -78,7 +70,8 @@ namespace CleanBrilliantCompany.Data
                     cmd.Parameters.AddWithValue("@Id", carbonFootprintId);
 
                     conn.Open();
-                    return cmd.ExecuteNonQuery() > 0;
+                    _lastQueryStatus = cmd.ExecuteNonQuery() > 0;
+                    return _lastQueryStatus;
                 }
             }
         }
