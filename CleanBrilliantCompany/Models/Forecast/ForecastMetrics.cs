@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.Forecast
 {
     public abstract class ForecastMetrics
     {
@@ -25,7 +25,6 @@ namespace CleanBrilliantCompany.Models
         {
             this.forecastedStock = forecastedStock;
         }
-
         public abstract ForecastMetrics getForecastedMetrics();
     }
 

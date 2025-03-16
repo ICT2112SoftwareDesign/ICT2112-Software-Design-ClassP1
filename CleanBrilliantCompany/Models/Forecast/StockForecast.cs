@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.Forecast
 {
     public class StockForecast : ForecastMetrics
     {

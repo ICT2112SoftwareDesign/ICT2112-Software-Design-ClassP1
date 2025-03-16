@@ -3454,3 +3454,4 @@ C:\Users\G5\Documents\Singapore Institute of Technology\SD Project\ICT2112-Softw
 C:\Users\G5\Documents\Singapore Institute of Technology\SD Project\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.pdb
 C:\Users\G5\Documents\Singapore Institute of Technology\SD Project\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.genruntimeconfig.cache
 C:\Users\G5\Documents\Singapore Institute of Technology\SD Project\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\ref\CleanBrilliantCompany.dll
+C:\Users\G5\Documents\Singapore Institute of Technology\SD Project\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
