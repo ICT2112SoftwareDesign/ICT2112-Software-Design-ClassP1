@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
-namespace CleanBrilliantCompany.Models
+﻿namespace CleanBrilliantCompany.Models.Entity
 {
 	public class ReturnForm
 	{

@@ -1,11 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
-using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Entity;
 using System.Diagnostics;
 using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Mapper
 {
-	public class ReturnFormMapper : iReturnFormDatabase<ReturnForm>
+	public class ReturnFormMapper : iReturnFormDatabase
 	{
 		private readonly string _connectionString;
 
@@ -44,15 +44,10 @@ namespace CleanBrilliantCompany.Mapper
 							while (reader.Read())
 							{
 								int returnId = reader.GetInt32(reader.GetOrdinal("returnId"));
-
 								int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
-
 								int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
-
 								int warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
-
 								string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
-
 								int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
 
 								// Map to objects.
@@ -66,7 +61,7 @@ namespace CleanBrilliantCompany.Mapper
 
 					catch (Exception ex)
 					{
-						Debug.WriteLine($"Error occurred: {ex.Message} - FIND ALL");
+						Debug.WriteLine($"Error finding all return forms: {ex.Message}");
 					}
 
 					finally
@@ -108,13 +103,9 @@ namespace CleanBrilliantCompany.Mapper
 							// Loop through the results and map them to ReturnForm objects
 
 							int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
-
 							int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
-
 							int warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
-
 							string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
-
 							int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
 
 							// Map to objects.
@@ -125,7 +116,7 @@ namespace CleanBrilliantCompany.Mapper
 
 				catch (Exception ex)
 				{
-					Debug.WriteLine($"Error occurred: {ex.Message} - FIND ONE");
+					Debug.WriteLine($"Error finding one return form: {ex.Message}");
 				}
 
 				finally
@@ -179,7 +170,7 @@ namespace CleanBrilliantCompany.Mapper
 				}
 				catch (Exception ex)
 				{
-					Debug.WriteLine($"Error occurred: {ex.Message} - DELETE");
+					Debug.WriteLine($"Error deleting return form: {ex.Message}");
 				}
 				finally
 				{
@@ -242,7 +233,7 @@ namespace CleanBrilliantCompany.Mapper
 				}
 				catch (Exception ex)
 				{
-					Debug.WriteLine($"Error occurred: {ex.Message} - INSERT");
+					Debug.WriteLine($"Error inserting return form: {ex.Message}");
                     entity = null;
                 }
 				finally
@@ -254,19 +245,19 @@ namespace CleanBrilliantCompany.Mapper
 			return entity;
 		}
 
-		public List<ReturnForm> getDatabaseQueryStatus(Task<List<ReturnForm>> task)
+		public async Task<List<ReturnForm>> getDatabaseQueryStatus(Task<List<ReturnForm>> task)
 		{
-			return task.Result;
+			return await task;
 		}
 
-		public ReturnForm? getDatabaseQueryStatus(Task<ReturnForm?> task)
+		public async Task<ReturnForm?> getDatabaseQueryStatus(Task<ReturnForm?> task)
 		{
-			return task.Result;
+			return await task;
 		}
 
-		public bool getDatabaseQueryStatus(Task<bool> task)
+		public async Task<bool> getDatabaseQueryStatus(Task<bool> task)
 		{
-			return task.Result;
+			return await task;
 		}
 
 
@@ -351,13 +342,13 @@ namespace CleanBrilliantCompany.Mapper
 		}
 
 
-		public string getDatabaseQueryStatus(Task<string> task)
+		public async Task<string> getDatabaseQueryStatus(Task<string> task)
 		{
-			return task.Result;
+			return await task;
 		}
-		public int getDatabaseQueryStatus(Task<int> task)
+		public async Task<int> getDatabaseQueryStatus(Task<int> task)
 		{
-			return task.Result;
+			return await task;
 		}
 		// TEMP!!----------------------------------------------------------------------------
 	}

@@ -1,23 +1,23 @@
-﻿using CleanBrilliantCompany.Models;
+﻿using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-	public interface iReturnFormDatabase<T>
+	public interface iReturnFormDatabase
 	{
-		T? getDatabaseQueryStatus(Task<T?> task);
-		List<T> getDatabaseQueryStatus(Task<List<T>> task);
-		
-		bool getDatabaseQueryStatus(Task<bool> task);
+		Task<ReturnForm?> getDatabaseQueryStatus(Task<ReturnForm?> task);
+		Task<List<ReturnForm>> getDatabaseQueryStatus(Task<List<ReturnForm>> task);
 
-        // TEMP!!-------------------
-        string getDatabaseQueryStatus(Task<string> task);
-		int getDatabaseQueryStatus(Task<int> task);
+		Task<bool> getDatabaseQueryStatus(Task<bool> task);
+
+		// TEMP!!-------------------
+		Task<string> getDatabaseQueryStatus(Task<string> task);
+		Task<int> getDatabaseQueryStatus(Task<int> task);
 		// TEMP!!-------------------
 
-		Task<List<T>> findAll();
-		Task<T?> findByItemId(int id);
+		Task<List<ReturnForm>> findAll();
+		Task<ReturnForm?> findByItemId(int id);
 		Task<bool> delete(int id);
-		Task<T?> insert(T entity);
+		Task<ReturnForm?> insert(ReturnForm entity);
 
 	}
 }

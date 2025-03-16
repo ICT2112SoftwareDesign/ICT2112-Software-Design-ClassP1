@@ -1,5 +1,5 @@
-﻿using CleanBrilliantCompany.Control;
-using CleanBrilliantCompany.Models;
+﻿using CleanBrilliantCompany.Models.Control;
+using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
@@ -15,16 +15,16 @@ namespace CleanBrilliantCompany.Controllers
 			_returnFormControl = returnFormControl;
 		}
 
-		public List<ReturnForm> DisplayAllReturnForms()
+		public async Task<List<ReturnForm>> DisplayAllReturnForms()
 		{
-			return _returnFormControl.displayReturnForms();
+			return await _returnFormControl.displayReturnForms();
 		}
 
 
 		[Route("returns/view/{returnId}")]
-		public IActionResult DisplayReturnForm(int returnId)
+		public async Task<IActionResult> DisplayReturnForm(int returnId)
 		{
-			ReturnForm? returnForm = _returnFormControl.getReturnFormById(returnId);
+			ReturnForm? returnForm = await _returnFormControl.getReturnFormById(returnId);
 			if (returnForm == null)
 			{
 				RedirectToAction("Error", "StockFlowPage", new { errorType = "General" });
@@ -36,9 +36,9 @@ namespace CleanBrilliantCompany.Controllers
 
 		// Handle deleting return forms.
 		[Route("returns/delete")]
-		public IActionResult DeleteReturnForm(int returnId)
+		public async Task<IActionResult> DeleteReturnForm(int returnId)
 		{
-			bool result = _returnFormControl.deleteReturnForm(returnId);
+			bool result = await _returnFormControl.deleteReturnForm(returnId);
 
 			if (result)
 			{
@@ -50,7 +50,7 @@ namespace CleanBrilliantCompany.Controllers
 
 		// Handle creating new return forms.
 		[Route("returns/confirm")]
-		public IActionResult ConfirmReturnForm(int manufacturerId, int itemId, string returnReason)
+		public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, int itemId, string returnReason)
 		{
 
 			// Example staff ID set to 1
@@ -60,7 +60,7 @@ namespace CleanBrilliantCompany.Controllers
 
 			if (ModelState.IsValid)
 			{
-				var result = _returnFormControl.sendReturnForm(model);
+				var result = await _returnFormControl.sendReturnForm(model);
 
 				if (result == null)
 				{
