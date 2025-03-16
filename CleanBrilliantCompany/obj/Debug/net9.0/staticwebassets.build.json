@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ajRWMO0wilcHQ5W42eXH4KFbvkpJzD+a4INQvAvxVxE=",
+  "Hash": "qeWdlrUgDYeSUoSd3SP/Vnh6NR83AeovSYukHdla+uE=",
   "Source": "CleanBrilliantCompany",
   "BasePath": "_content/CleanBrilliantCompany",
   "Mode": "Default",
@@ -1942,8 +1942,8 @@
       "RelatedAsset": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/wwwroot/favicon.ico",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "nezsohjtde",
-      "Integrity": "wfFuuYm+Lh6RbCeeiUqxw334b/hIOkp5j9eokGUM1Y0=",
+      "Fingerprint": "jefwejb9ld",
+      "Integrity": "+/824NtfTA0L7Mr42Fo+86YJP4R5cigdi9S7Fx5VVl4=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/wwwroot/favicon.ico"
@@ -21563,12 +21563,12 @@
       "OriginalItemSpec": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/wwwroot/vendor/fontawesome-free/svgs/solid/paperclip.svg"
     },
     {
-      "Identity": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-sza66i9qm4.gz",
+      "Identity": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-olpvipt9xk.gz",
       "SourceId": "CleanBrilliantCompany",
       "SourceType": "Computed",
       "ContentRoot": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/",
       "BasePath": "_content/CleanBrilliantCompany",
-      "RelativePath": "CleanBrilliantCompany#[.{fingerprint=sza66i9qm4}]!.bundle.scp.css.gz",
+      "RelativePath": "CleanBrilliantCompany#[.{fingerprint=olpvipt9xk}]!.bundle.scp.css.gz",
       "AssetKind": "All",
       "AssetMode": "Reference",
       "AssetRole": "Alternative",
@@ -21577,8 +21577,8 @@
       "RelatedAsset": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/projectbundle/CleanBrilliantCompany.bundle.scp.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "m8om9uwgls",
-      "Integrity": "yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=",
+      "Fingerprint": "twv4p7sbi9",
+      "Integrity": "jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/projectbundle/CleanBrilliantCompany.bundle.scp.css"
@@ -34226,12 +34226,12 @@
       "OriginalItemSpec": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/wwwroot/js/demo/datatables-demo.js"
     },
     {
-      "Identity": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-sza66i9qm4.gz",
+      "Identity": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-olpvipt9xk.gz",
       "SourceId": "CleanBrilliantCompany",
       "SourceType": "Computed",
       "ContentRoot": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/",
       "BasePath": "_content/CleanBrilliantCompany",
-      "RelativePath": "CleanBrilliantCompany#[.{fingerprint=sza66i9qm4}]?.styles.css.gz",
+      "RelativePath": "CleanBrilliantCompany#[.{fingerprint=olpvipt9xk}]?.styles.css.gz",
       "AssetKind": "All",
       "AssetMode": "CurrentProject",
       "AssetRole": "Alternative",
@@ -34240,8 +34240,8 @@
       "RelatedAsset": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/bundle/CleanBrilliantCompany.styles.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "m8om9uwgls",
-      "Integrity": "yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=",
+      "Fingerprint": "twv4p7sbi9",
+      "Integrity": "jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/bundle/CleanBrilliantCompany.styles.css"
@@ -35605,8 +35605,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ApplicationBundle",
-      "Fingerprint": "sza66i9qm4",
-      "Integrity": "KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=",
+      "Fingerprint": "olpvipt9xk",
+      "Integrity": "XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/bundle/CleanBrilliantCompany.styles.css"
@@ -35626,8 +35626,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ProjectBundle",
-      "Fingerprint": "sza66i9qm4",
-      "Integrity": "KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=",
+      "Fingerprint": "olpvipt9xk",
+      "Integrity": "XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/projectbundle/CleanBrilliantCompany.bundle.scp.css"
@@ -74150,12 +74150,12 @@
   "Endpoints": [
     {
       "Route": "CleanBrilliantCompany.bundle.scp.css",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-sza66i9qm4.gz",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-olpvipt9xk.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001848428835"
+          "Quality": "0.001841620626"
         }
       ],
       "ResponseHeaders": [
@@ -74165,15 +74165,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "540"
+          "Value": "542"
         },
         {
           "Name": "ETag",
-          "Value": "\"yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=\""
+          "Value": "\"jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74193,13 +74193,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=\""
+          "Value": "W/\"XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY="
+          "Value": "sha256-XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ="
         }
       ]
     },
@@ -74222,11 +74222,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=\""
+          "Value": "\"XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74236,13 +74236,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY="
+          "Value": "sha256-XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ="
         }
       ]
     },
     {
       "Route": "CleanBrilliantCompany.bundle.scp.css.gz",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-sza66i9qm4.gz",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-olpvipt9xk.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -74251,7 +74251,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "540"
+          "Value": "542"
         },
         {
           "Name": "Content-Type",
@@ -74259,11 +74259,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=\""
+          "Value": "\"jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74281,18 +74281,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM="
+          "Value": "sha256-jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs="
         }
       ]
     },
     {
-      "Route": "CleanBrilliantCompany.styles.css",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-sza66i9qm4.gz",
+      "Route": "CleanBrilliantCompany.olpvipt9xk.bundle.scp.css",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-olpvipt9xk.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001848428835"
+          "Quality": "0.001841620626"
         }
       ],
       "ResponseHeaders": [
@@ -74302,152 +74302,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "540"
+          "Value": "542"
         },
         {
           "Name": "ETag",
-          "Value": "\"yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=\""
+          "Value": "\"jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=\""
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY="
-        }
-      ]
-    },
-    {
-      "Route": "CleanBrilliantCompany.styles.css",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/bundle/CleanBrilliantCompany.styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1090"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY="
-        }
-      ]
-    },
-    {
-      "Route": "CleanBrilliantCompany.styles.css.gz",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-sza66i9qm4.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "540"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM="
-        }
-      ]
-    },
-    {
-      "Route": "CleanBrilliantCompany.sza66i9qm4.bundle.scp.css",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-sza66i9qm4.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.001848428835"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "540"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74467,13 +74330,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=\""
+          "Value": "W/\"XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "sza66i9qm4"
+          "Value": "olpvipt9xk"
         },
         {
           "Name": "label",
@@ -74481,12 +74344,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY="
+          "Value": "sha256-XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ="
         }
       ]
     },
     {
-      "Route": "CleanBrilliantCompany.sza66i9qm4.bundle.scp.css",
+      "Route": "CleanBrilliantCompany.olpvipt9xk.bundle.scp.css",
       "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/projectbundle/CleanBrilliantCompany.bundle.scp.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -74504,11 +74367,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=\""
+          "Value": "\"XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74518,7 +74381,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "sza66i9qm4"
+          "Value": "olpvipt9xk"
         },
         {
           "Name": "label",
@@ -74526,13 +74389,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY="
+          "Value": "sha256-XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ="
         }
       ]
     },
     {
-      "Route": "CleanBrilliantCompany.sza66i9qm4.bundle.scp.css.gz",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-sza66i9qm4.gz",
+      "Route": "CleanBrilliantCompany.olpvipt9xk.bundle.scp.css.gz",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/lzeispjsy3-olpvipt9xk.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -74541,7 +74404,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "540"
+          "Value": "542"
         },
         {
           "Name": "Content-Type",
@@ -74549,11 +74412,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=\""
+          "Value": "\"jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74571,7 +74434,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "sza66i9qm4"
+          "Value": "olpvipt9xk"
         },
         {
           "Name": "label",
@@ -74579,18 +74442,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM="
+          "Value": "sha256-jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs="
         }
       ]
     },
     {
-      "Route": "CleanBrilliantCompany.sza66i9qm4.styles.css",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-sza66i9qm4.gz",
+      "Route": "CleanBrilliantCompany.olpvipt9xk.styles.css",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-olpvipt9xk.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001848428835"
+          "Quality": "0.001841620626"
         }
       ],
       "ResponseHeaders": [
@@ -74600,15 +74463,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "540"
+          "Value": "542"
         },
         {
           "Name": "ETag",
-          "Value": "\"yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=\""
+          "Value": "\"jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74628,13 +74491,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=\""
+          "Value": "W/\"XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "sza66i9qm4"
+          "Value": "olpvipt9xk"
         },
         {
           "Name": "label",
@@ -74642,12 +74505,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY="
+          "Value": "sha256-XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ="
         }
       ]
     },
     {
-      "Route": "CleanBrilliantCompany.sza66i9qm4.styles.css",
+      "Route": "CleanBrilliantCompany.olpvipt9xk.styles.css",
       "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/bundle/CleanBrilliantCompany.styles.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -74665,11 +74528,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY=\""
+          "Value": "\"XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74679,7 +74542,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "sza66i9qm4"
+          "Value": "olpvipt9xk"
         },
         {
           "Name": "label",
@@ -74687,13 +74550,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-KNvNe5yuagJEOe2peaZ2Q8diSq68dmMWymPkP04uFyY="
+          "Value": "sha256-XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ="
         }
       ]
     },
     {
-      "Route": "CleanBrilliantCompany.sza66i9qm4.styles.css.gz",
-      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-sza66i9qm4.gz",
+      "Route": "CleanBrilliantCompany.olpvipt9xk.styles.css.gz",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-olpvipt9xk.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -74702,7 +74565,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "540"
+          "Value": "542"
         },
         {
           "Name": "Content-Type",
@@ -74710,11 +74573,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM=\""
+          "Value": "\"jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 25 Feb 2025 09:41:40 GMT"
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -74732,7 +74595,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "sza66i9qm4"
+          "Value": "olpvipt9xk"
         },
         {
           "Name": "label",
@@ -74740,7 +74603,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-yvouWZZmHVDnU9Zv8r067EJaks9eG7iJW4fXAcK3VSM="
+          "Value": "sha256-jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs="
+        }
+      ]
+    },
+    {
+      "Route": "CleanBrilliantCompany.styles.css",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-olpvipt9xk.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.001841620626"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "542"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ="
+        }
+      ]
+    },
+    {
+      "Route": "CleanBrilliantCompany.styles.css",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/bundle/CleanBrilliantCompany.styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1090"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-XPkTPYPkCCpnhosv9b105nrFJPpowQvJ84xZ2Dk92tQ="
+        }
+      ]
+    },
+    {
+      "Route": "CleanBrilliantCompany.styles.css.gz",
+      "AssetFile": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yiuxaddmr2-olpvipt9xk.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "542"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 15 Mar 2025 13:04:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-jS93zrgmdjcnEKmGedmJIYnZ/nSIslgPKiTlRwCaYJs="
         }
       ]
     },
@@ -75361,7 +75361,7 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"wfFuuYm+Lh6RbCeeiUqxw334b/hIOkp5j9eokGUM1Y0=\""
+          "Value": "\"+/824NtfTA0L7Mr42Fo+86YJP4R5cigdi9S7Fx5VVl4=\""
         },
         {
           "Name": "Last-Modified",
@@ -75467,7 +75467,7 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"wfFuuYm+Lh6RbCeeiUqxw334b/hIOkp5j9eokGUM1Y0=\""
+          "Value": "\"+/824NtfTA0L7Mr42Fo+86YJP4R5cigdi9S7Fx5VVl4=\""
         },
         {
           "Name": "Last-Modified",
@@ -75497,7 +75497,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-wfFuuYm+Lh6RbCeeiUqxw334b/hIOkp5j9eokGUM1Y0="
+          "Value": "sha256-+/824NtfTA0L7Mr42Fo+86YJP4R5cigdi9S7Fx5VVl4="
         }
       ]
     },
@@ -75522,7 +75522,7 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"wfFuuYm+Lh6RbCeeiUqxw334b/hIOkp5j9eokGUM1Y0=\""
+          "Value": "\"+/824NtfTA0L7Mr42Fo+86YJP4R5cigdi9S7Fx5VVl4=\""
         },
         {
           "Name": "Last-Modified",
@@ -75612,7 +75612,7 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"wfFuuYm+Lh6RbCeeiUqxw334b/hIOkp5j9eokGUM1Y0=\""
+          "Value": "\"+/824NtfTA0L7Mr42Fo+86YJP4R5cigdi9S7Fx5VVl4=\""
         },
         {
           "Name": "Last-Modified",
@@ -75634,7 +75634,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-wfFuuYm+Lh6RbCeeiUqxw334b/hIOkp5j9eokGUM1Y0="
+          "Value": "sha256-+/824NtfTA0L7Mr42Fo+86YJP4R5cigdi9S7Fx5VVl4="
         }
       ]
     },

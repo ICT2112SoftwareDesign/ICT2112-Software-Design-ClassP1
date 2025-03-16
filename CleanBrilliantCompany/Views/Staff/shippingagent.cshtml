@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
+@model List<ShippingAgent>
+
 <head>
 
     <meta charset="utf-8">
@@ -252,89 +254,102 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="shippingAgentsTable" width="100%"
-                                    cellspacing="0">
+                                    cellspacing="0" border="1">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Company</th>
-                                            <th>Shipping Method</th>
-                                            <th>Service Type</th>
-                                            <th>Actions</th>
+                                            <th>Method</th>
+                                            <th>Service</th>
                                         </tr>
                                     </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>DHL</td>
-                                            <td>Truck</td>
-                                            <td>Express (1 day)</td>
-                                            <td>
-                                                <a href="#" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="#" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                             <td>2</td>
-                                            <td>DHL</td>
-                                            <td>Air</td>
-                                            <td>Express (1 day)</td>
-                                            <td>
-                                                <a href="#" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="#" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>DHL</td>
-                                            <td>Truck</td>
-                                            <td>Standard (3 days)</td>
-                                            <td>
-                                                <a href="#" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="#" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>ParcelForce</td>
-                                            <td>Air</td>
-                                            <td>Standard (3 days)</td>
-                                            <td>
-                                                <a href="#" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="#" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>ParcelForce</td>
-                                            <td>Truck</td>
-                                            <td>Economy (7 days)</td>
-                                            <td>
-                                                <a href="#" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="#" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        @foreach (var agent in Model)
+                                        {
+                                            <tr>
+                                                <td>@agent.ShippingAgentId</td>
+                                                <td>@agent.ShippingAgentCompany</td>
+                                                <td>@agent.ShippingMethod</td>
+                                                <td>@agent.ServiceType</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>DHL</td>
+                                                <td>Truck</td>
+                                                <td>Express (1 day)</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>DHL</td>
+                                                <td>Air</td>
+                                                <td>Express (1 day)</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>DHL</td>
+                                                <td>Truck</td>
+                                                <td>Standard (3 days)</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>ParcelForce</td>
+                                                <td>Air</td>
+                                                <td>Standard (3 days)</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>ParcelForce</td>
+                                                <td>Truck</td>
+                                                <td>Economy (7 days)</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    }
                                 </table>
                             </div>
                         </div>

@@ -1,7 +1,28 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services; // Ensure services is properly assigned
+var config = builder.Configuration;
+
+
+// Shipping Agent DB
+var shippingAgentDB = new ShippingAgentDB(config);
+shippingAgentDB.FetchShippingAgents();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+// Register DatabaseService
+builder.Services.AddSingleton<ShippingAgentDB>();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
