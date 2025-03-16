@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Carbon Footprint Dashboard";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-bordered table-striped" id="carbonFootprintTable">
+    <thead>
+        <tr>
+            <th>Entity ID</th>
+            <th>Entity Type</th>
+            <th>Carbon Emission</th>
+            <th>Eco Status</th>
+            <th>Date Created</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/CarbonFootprintInput/all')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#carbonFootprintTable tbody');
+                tableBody.innerHTML = '';
+
+                data.forEach(item => {
+                    const row = `
+                        <tr>
+                            <td>${item.entityId}</td>
+                            <td>${item.entityType}</td>
+                            <td>${item.carbonEmission}</td>
+                            <td>${item.ecoStatus}</td>
+                            <td>${item.dateCreated}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error('Error loading carbon footprint data:', error));
+    });
+</script>
+
