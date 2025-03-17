@@ -8,11 +8,13 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ILogger<CustomerPageController> _logger;
         private readonly CustomerManagement _customerManagement;
+        private readonly SupportManagement _supportManagement;
 
-        public CustomerPageController(ILogger<CustomerPageController> logger, CustomerManagement customerManagement)
+        public CustomerPageController(ILogger<CustomerPageController> logger, CustomerManagement customerManagement, SupportManagement supportManagement)
         {
             _logger = logger;
             _customerManagement = customerManagement;
+            _supportManagement = supportManagement;
         }
 
         public IActionResult CustomerDetails()
@@ -37,5 +39,54 @@ namespace CleanBrilliantCompany.Controllers
 
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }
+
+        // INPUT CONTROLLER METHODS
+
+        // HelpCenterInputController Methods
+
+        // public IActionResult displayHelpCenterOptions()
+        // {
+            
+        // }
+
+        // public IActionResult submitQuery(String query)
+        // {
+            
+        // }
+
+        public IActionResult viewFAQs(String query)
+        {
+            List<String> faqs = _supportManagement.FetchFAQs();
+            ViewBag.FAQs = faqs;
+
+            return View("~/Views/Support/FAQs.cshtml");
+        }
+
+        // public IActionResult trackTicket(Int32 ticketId)
+        // {
+            
+        // }
+
+        // public IActionResult escalateIssue(Int32 ticketId)
+        // {
+            
+        // }
+
+        // // ChatbotInputController Methods
+
+        public IActionResult startChatSession()
+        {
+            return View("~/Views/Support/Chatbot.cshtml");
+        }
+
+        // public IActionResult provideAutomatedResponse(String query)
+        // {
+            
+        // }
+
+        // public IActionResult escalateToAgent(String query)
+        // {
+            
+        // }
     }
 }

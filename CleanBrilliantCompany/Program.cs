@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddSingleton<iCustomerDatabase>(new CustomerMapper(connectionString));
 builder.Services.AddTransient<CustomerManagement>();
+builder.Services.AddTransient<SupportManagement>();
 
 var app = builder.Build();
 
