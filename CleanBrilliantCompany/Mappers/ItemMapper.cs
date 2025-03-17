@@ -15,19 +15,27 @@ namespace CleanBrilliantCompany.Mappers
         {
             _connectionString = connectionString;
         }
-        public bool getDatabaseQueryStatus(SqlDataReader reader)
+        public bool getDatabaseQueryStatus(SqlDataReader reader, int rowsAffected = -1)
         {
             try
             {
-                return reader.HasRows; // Returns true if the query returned any rows
+                // If rowsAffected is provided (not -1), check if rows were affected
+                if (rowsAffected != -1)
+                {
+                    return rowsAffected > 0;
+                }
+
+                // Otherwise, check if the reader has rows (for SELECT queries)
+                return reader.HasRows;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in database query status: {ex.Message}");
-                return false; // Return false if there is an exception
+                return false;
             }
         }
 
+        // get all items
         public List<Item> getAllItems()
         {
             List<Item> items = new List<Item>();
@@ -80,6 +88,7 @@ namespace CleanBrilliantCompany.Mappers
             return items;
         }
 
+        // get 1 item (dk if we need to use this method)
         public Item getItem(int itemId)
         {
             Item item = null;
@@ -130,6 +139,32 @@ namespace CleanBrilliantCompany.Mappers
             }
 
             return item;
+        }
+
+        // create item
+        public bool createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string insertQuery = @"
+            INSERT INTO dbo.Item (productId, salePrice, batchCode, warehouseId, itemStatus) 
+            VALUES (@productId, @salePrice, @batchCode, @warehouseId, @itemStatus);";
+
+                using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@itemId", itemId);
+                    command.Parameters.AddWithValue("@productId", productId);
+                    command.Parameters.AddWithValue("@salePrice", salePrice);
+                    command.Parameters.AddWithValue("@batchCode", batchCode);
+                    command.Parameters.AddWithValue("@warehouseId", warehouseId);
+                    command.Parameters.AddWithValue("@itemStatus", status.ToString());
+
+                    int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+                    return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
+                }
+            }
         }
 
     }

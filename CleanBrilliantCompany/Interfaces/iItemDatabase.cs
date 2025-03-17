@@ -5,6 +5,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface iItemDatabase
     {
-        bool getDatabaseQueryStatus(SqlDataReader reader);  
+        bool getDatabaseQueryStatus(SqlDataReader reader, int rowsAffected = -1);
     }
 }

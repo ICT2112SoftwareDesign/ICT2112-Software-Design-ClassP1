@@ -11,31 +11,31 @@ namespace CleanBrilliantCompany.Models.Entity
     public class Item
     {
         // Private fields
-        private int itemId;
-        private int productId;
-        private float salePrice;
-        private int batchCode;
-        private int warehouseId;
-        private ItemStatus itemStatus;
-        private int? reservationId;
-        private int? orderId;
-        private int? transferId;
-        private int? returnId;
+        private int ItemId;
+        private int ProductId;
+        private float SalePrice;
+        private int BatchCode;
+        private int WarehouseId;
+        private ItemStatus ItemStatus;
+        private int? ReservationId;
+        private int? OrderId;
+        private int? TransferId;
+        private int? ReturnId;
 
         // Constructor to initialize the private fields
         public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
                      ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId)
         {
-            this.itemId = itemId;
-            this.productId = productId;
-            this.salePrice = salePrice;
-            this.batchCode = batchCode;
-            this.warehouseId = warehouseId;
-            this.itemStatus = itemStatus;
-            this.reservationId = reservationId;
-            this.orderId = orderId;
-            this.transferId = transferId;
-            this.returnId = returnId;
+            ItemId = itemId;
+            ProductId = productId;
+            SalePrice = salePrice;
+            BatchCode = batchCode;
+            WarehouseId = warehouseId;
+            ItemStatus = itemStatus;
+            ReservationId = reservationId;
+            OrderId = orderId;
+            TransferId = transferId;
+            ReturnId = returnId;
         }
 
         // Public method to create a new item
@@ -49,61 +49,57 @@ namespace CleanBrilliantCompany.Models.Entity
         public void UpdateItemDetails(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus itemStatus,
                                       int? reservationId, int? orderId, int? transferId, int? returnId)
         {
-            this.productId = productId;
-            this.salePrice = salePrice;
-            this.batchCode = batchCode;
-            this.warehouseId = warehouseId;
-            this.itemStatus = itemStatus;
-            this.reservationId = reservationId;
-            this.orderId = orderId;
-            this.transferId = transferId;
-            this.returnId = returnId;
+            ProductId = productId;
+            SalePrice = salePrice;
+            BatchCode = batchCode;
+            WarehouseId = warehouseId;
+            ItemStatus = itemStatus;
+            ReservationId = reservationId;
+            OrderId = orderId;
+            TransferId = transferId;
+            ReturnId = returnId;
         }
 
         public Dictionary<string, object> retrieveItemInfo()
         {
             return new Dictionary<string, object>
             {
-                { "ItemId", getItemId() },
-                { "ProductId", getProductId() },
-                { "SalePrice", getSalePrice() },
-                { "BatchCode", getBatchCode() },
-                { "WarehouseId", getWarehouseId() },
-                { "ItemStatus", getItemStatus() },
-                { "ReservationId", getReservationId() },
-                { "OrderId", getOrderId() },
-                { "TransferId", getTransferId() },
-                { "ReturnId", getReturnId() }
+                { "ItemId", ItemId },
+                { "ProductId", ProductId },
+                { "SalePrice", SalePrice },
+                { "BatchCode", BatchCode },
+                { "WarehouseId", WarehouseId },
+                { "ItemStatus", ItemStatus },
+                { "ReservationId", ReservationId },
+                { "OrderId", OrderId },
+                { "TransferId", TransferId },
+                { "ReturnId", ReturnId }
             };
         }
 
-
-        public int retrieveItemId() => getItemId();
-        public int retrieveProductId() => getProductId();
-
         // Private getters 
-        private int getItemId() => itemId;
-        private int getProductId() => productId;
-        private float getSalePrice() => salePrice;
-        private int getBatchCode() => batchCode;
-        private int getWarehouseId() => warehouseId;
-        private ItemStatus getItemStatus() => itemStatus;
-        private int? getReservationId() => reservationId;
-        private int? getOrderId() => orderId;
-        private int? getTransferId() => transferId;
-        private int? getReturnId() => returnId;
+        private int getItemId() => ItemId;
+        private int getProductId() => ProductId;
+        private float getSalePrice() => SalePrice;
+        private int getBatchCode() => BatchCode;
+        private int getWarehouseId() => WarehouseId;
+        private ItemStatus getItemStatus() => ItemStatus;
+        private int? getReservationId() => ReservationId;
+        private int? getOrderId() => OrderId;
+        private int? getTransferId() => TransferId;
+        private int? getReturnId() => ReturnId;
 
         // Private setters 
-        private void setItemId(int itemId) => this.itemId = itemId;
-        private void setProductId(int productId) => this.productId = productId;
-        private void setSalePrice(float salePrice) => this.salePrice = salePrice;
-        private void setBatchCode(int batchCode) => this.batchCode = batchCode;
-        private void setWarehouseId(int warehouseId) => this.warehouseId = warehouseId;
-        private void setItemStatus(ItemStatus itemStatus) => this.itemStatus = itemStatus;
-        private void setReservationId(int? reservationId) => this.reservationId = reservationId;
-        private void setOrderId(int? orderId) => this.orderId = orderId;
-        private void setTransferId(int? transferId) => this.transferId = transferId;
-        private void setReturnId(int? returnId) => this.returnId = returnId;
+        private void setItemId(int itemId) => ItemId = itemId;
+        private void setProductId(int productId) => ProductId = productId;
+        private void setSalePrice(float salePrice) => SalePrice = salePrice;
+        private void setBatchCode(int batchCode) => BatchCode = batchCode;
+        private void setWarehouseId(int warehouseId) => WarehouseId = warehouseId;
+        private void setItemStatus(ItemStatus itemStatus) => ItemStatus = itemStatus;
+        private void setReservationId(int? reservationId) => ReservationId = reservationId;
+        private void setOrderId(int? orderId) => OrderId = orderId;
+        private void setTransferId(int? transferId) => TransferId = transferId;
+        private void setReturnId(int? returnId) => ReturnId = returnId;
 
         public Item() { } // dk if need anot 
     }

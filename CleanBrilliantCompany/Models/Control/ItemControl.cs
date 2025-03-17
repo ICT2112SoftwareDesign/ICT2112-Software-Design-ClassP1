@@ -20,12 +20,16 @@ namespace CleanBrilliantCompany.Models.Control
         // methods from iItemQuery
         public List<Item> getAllItems()
         {
-            return _itemMapper.getAllItems();
+            return _itemMapper.getAllItems(); // mapper uses iItemQuery to interact with control 
         }
 
         public Item getItem(int itemId)
         {
             return _itemMapper.getItem(itemId);
+        }
+
+        public async Task<bool> createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status) {
+            return await Task.FromResult(_itemMapper.createItem(itemId, productId, salePrice, batchCode, warehouseId, status));
         }
     }
 }

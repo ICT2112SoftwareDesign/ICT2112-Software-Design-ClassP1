@@ -21,7 +21,7 @@ namespace CleanBrilliantCompany.Controllers
         //     List<Item> items = _itemControl.getAllItems();
         //     return View("~/Views/Item/Item.cshtml", items); // Specify the full path to your view
         // }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // Retrieve all items from the database
             List<Item> items = _itemControl.getAllItems();
@@ -39,16 +39,19 @@ namespace CleanBrilliantCompany.Controllers
             return View(itemsInfo);
         }
 
-        public IActionResult Details(int itemId)
+        [HttpPost]
+        [Route("addItem")]
+        public async Task<IActionResult> addItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
         {
-            var item = _itemControl.getItem(itemId);
-            if (item == null)
-            {
-                return NotFound();
+            bool result = await _itemControl.createItem(itemId, productId, salePrice, batchCode, warehouseId, status);
+            if (result) {
+                return Ok(new {message = "Item added successfully"});
+            } else {
+                return BadRequest(new {error = "Failed to add item."});
             }
-
-            return View(item); // Pass Item directly to view
         }
+
+
 
     }
 }
