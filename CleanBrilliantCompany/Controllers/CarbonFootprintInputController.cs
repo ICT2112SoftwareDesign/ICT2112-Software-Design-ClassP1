@@ -28,17 +28,27 @@ namespace CleanBrilliantCompany.Controllers
 
         // Add a new carbon footprint record
         [HttpPost("add")]
-        public IActionResult AddCarbonFootprint([FromBody] CarbonFootprintRecordRDM record)
+        public IActionResult AddCarbonFootprint([FromBody] CarbonFootprintDTO dto)
         {
-            _manager.AddCarbonFootprintRecord(
-                record.getEntityIdForInsert(),
-                record.getEntityTypeForInsert(),
-                (float)record.getCarbonEmissionForCalculation(),
-                record.getEcoStatusForInsert(),
-                record.getDateCreatedForInsert().ToDateTime(TimeOnly.MinValue)
+            // Map DTO to RDM
+            var rdm = new CarbonFootprintRecordRDM(
+                0,
+                dto.EntityId,
+                dto.EntityType,
+                dto.CarbonEmission,
+                dto.EcoStatus,
+                dto.DateCreated
             );
 
-            return Ok("Carbon footprint record added.");
+            _manager.AddCarbonFootprintRecord(
+                rdm.getEntityIdForInsert(),
+                rdm.getEntityTypeForInsert(),
+                (float)rdm.getCarbonEmissionForCalculation(),
+                rdm.getEcoStatusForInsert(),
+                rdm.getDateCreatedForInsert().ToDateTime(TimeOnly.MinValue)
+            );
+
+            return Ok("Record added successfully.");
         }
 
         // Update an existing carbon footprint record
