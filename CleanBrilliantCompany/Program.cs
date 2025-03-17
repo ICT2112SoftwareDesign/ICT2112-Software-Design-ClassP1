@@ -19,6 +19,7 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddSingleton<iCustomerDatabase>(new CustomerMapper(connectionString));
 builder.Services.AddTransient<CustomerManagement>();
 builder.Services.AddTransient<SupportManagement>();
+builder.Services.AddTransient<ChatbotService>();
 
 var app = builder.Build();
 

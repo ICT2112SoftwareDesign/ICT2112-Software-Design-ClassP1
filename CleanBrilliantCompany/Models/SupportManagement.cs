@@ -1,5 +1,6 @@
 using System;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -9,23 +10,21 @@ namespace CleanBrilliantCompany.Models
         private readonly IChatbot _chatBotService;
         // private readonly IOrder _orderService;
 
-        public string HandleCustomerChatbotQuery(String query)
+        public SupportManagement(ChatbotService chatBotService)
         {
-            bool handled = handleQuery(query);
-            
-            if (handled)
-            {
-                return "Chatbot handled the query.";
-            }
-            else
-            {
-                return "Chatbot cannot handle the query!!!!";
-            }
+            _chatBotService = chatBotService;
         }
 
-        public bool handleQuery(String query)
+        public string handleCustomerChatbotQuery(String query)
         {
-            return _chatBotService.submitQuery(query);
+            String response = handleQuery(query);
+            return response;
+        }
+
+        public string handleQuery(String query)
+        {
+            String response = _chatBotService.submitQuery(query);
+            return response;
         }
 
         public List<String> FetchFAQs()

@@ -2,6 +2,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IChatbot
     {
-        bool submitQuery(String query);
+        string submitQuery(string query);
     }
 }

@@ -9,12 +9,18 @@ namespace CleanBrilliantCompany.Controllers
         private readonly ILogger<CustomerPageController> _logger;
         private readonly CustomerManagement _customerManagement;
         private readonly SupportManagement _supportManagement;
+        private readonly ChatbotService _chatbotService;
 
-        public CustomerPageController(ILogger<CustomerPageController> logger, CustomerManagement customerManagement, SupportManagement supportManagement)
+        public CustomerPageController(
+            ILogger<CustomerPageController> logger, 
+            CustomerManagement customerManagement, 
+            SupportManagement supportManagement,
+            ChatbotService chatbotService) 
         {
             _logger = logger;
             _customerManagement = customerManagement;
             _supportManagement = supportManagement;
+            _chatbotService = chatbotService;
         }
 
         public IActionResult CustomerDetails()
@@ -44,11 +50,6 @@ namespace CleanBrilliantCompany.Controllers
 
         // HelpCenterInputController Methods
 
-        // public IActionResult displayHelpCenterOptions()
-        // {
-            
-        // }
-
         // public IActionResult submitQuery(String query)
         // {
             
@@ -74,15 +75,29 @@ namespace CleanBrilliantCompany.Controllers
 
         // // ChatbotInputController Methods
 
+         // Method to start chat session and return current chat history
         public IActionResult startChatSession()
         {
+            var chatHistory = HttpContext.Session.GetString("ChatHistory") ?? "";
+            ViewBag.ChatHistory = chatHistory;
             return View("~/Views/Support/Chatbot.cshtml");
         }
 
-        // public IActionResult provideAutomatedResponse(String query)
-        // {
-            
-        // }
+        // Method to send a user message and get bot response
+        [HttpPost]
+        public IActionResult provideAutomatedResponse(String query)
+        {
+            if (string.IsNullOrEmpty(query)) return RedirectToAction("startChatSession");
+
+            string botResponse = _supportManagement.handleCustomerChatbotQuery(query);
+
+            // Store the conversation history in session
+            var chatHistory = HttpContext.Session.GetString("ChatHistory") ?? "";
+            chatHistory += $"You: {query}\nBot: {botResponse}\n";
+            HttpContext.Session.SetString("ChatHistory", chatHistory);
+
+            return RedirectToAction("startChatSession");
+        }
 
         // public IActionResult escalateToAgent(String query)
         // {
