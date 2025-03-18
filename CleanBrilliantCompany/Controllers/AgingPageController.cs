@@ -9,7 +9,7 @@ public class AgingPageController : Controller
     private readonly ILogger<AgingPageController> logger; 
 
 
-    public AgingPageController(ILogger<AgingPageController> logger, AgingMapper agingMapper) 
+    public AgingPageController(ILogger<AgingPageController> logger, AgingRepo agingMapper) 
     {
         this.logger = logger;
         agingControl = new AgingControl(agingMapper);

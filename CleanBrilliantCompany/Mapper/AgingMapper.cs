@@ -1,4 +1,4 @@
-public class AgingMapper
+public class AgingMapper : AgingRepo
 {
     //private readonly AppDbContext? realDbContext;
     private readonly FakeDbContext? fakeDbContext;

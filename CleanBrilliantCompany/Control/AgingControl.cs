@@ -1,9 +1,9 @@
 public class AgingControl 
 {
     private List<AgingDashboardRdm> dashboards; 
-    private AgingMapper agingMapper; 
-
-    public AgingControl(AgingMapper agingMapper) {
+    //private AgingMapper agingMapper; 
+    private AgingRepo agingMapper;
+    public AgingControl(AgingRepo agingMapper) {
         this.agingMapper = agingMapper;
         dashboards = new List<AgingDashboardRdm>();
 
