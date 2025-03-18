@@ -12,8 +12,7 @@ namespace CleanBrilliantCompany.Controllers;
 public class ForecastController : Controller
 {
     private readonly ForecastControl _forecastControl;
-    private readonly IForecastRepository forecastRepository;
-    private readonly IForecastingFacade forecastingFacade;
+
     // Inject ForecastControl via DI
     public ForecastController(ForecastControl forecastControl)
     {
@@ -37,13 +36,22 @@ public class ForecastController : Controller
         return View("FetchDashboardData", dashboard);
     }
 
-    // Generates forecast based on provided dates and detail level
     [HttpPost("generateForecast")]
-    public IActionResult GenerateForecast(string type, DateTime startDate, DateTime endDate)
+    public IActionResult GenerateForecast(string type, string month)
     {
+        // Append "-01" to convert the month string into a full date (e.g., "2025-03-01")
+        if (!DateTime.TryParse(month + "-01", out DateTime forecastMonth))
+        {
+            return BadRequest("Invalid month format.");
+        }
 
-        ForecastDashboard dashboard = _forecastControl.generateDashboard(type, startDate, endDate);
-        return View("ForecastDashboard", dashboard);
+        // Generate your forecast dashboard using forecastMonth
+        ForecastDashboard dashboard = _forecastControl.generateDashboard(
+            type, forecastMonth, forecastMonth.AddMonths(1).AddDays(-1)
+        );
+
+        return View("FetchDashboardData", dashboard);
     }
+
 
 }

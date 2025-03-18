@@ -1,4 +1,6 @@
-﻿using CleanBrilliantCompany.Interfaces.Forecast;
+﻿using CleanBrilliantCompany.DTO;
+using System.Collections.Generic;
+using CleanBrilliantCompany.Interfaces.Forecast;
 using CleanBrilliantCompany.Models.Forecast;
 
 namespace CleanBrilliantCompany.Services
@@ -17,9 +19,9 @@ namespace CleanBrilliantCompany.Services
             _scenarioPricingService = scenarioPricingService;
             _notificationService = notificationService;
         }
-        public List<ForecastMetrics> generateStockForecast()
+        public List<ForecastMetrics> generateStockForecast(List<SalesDTO> sales, DateTime selectedMonth)
         {
-            List<ForecastMetrics> metrics =_stockPredictionService.generateStockPrediction();
+            List<ForecastMetrics> metrics = _stockPredictionService.generateStockPrediction(sales, selectedMonth);
             return metrics;
             
             //TODO: Implement this method

@@ -22,7 +22,7 @@
     <ul>
         @foreach (var metric in Model.GetMetrics())
         {
-            <li>
+            <li style="display: flex; align-items: center; gap: 20px;">
                 <div><strong>Stock ID:</strong> @metric.getStockId()</div>
                 <div><strong>Forecasted Stock:</strong> @metric.getForecastedStock()</div>
             </li>
@@ -33,7 +33,15 @@
 
 <hr>
 
+@{
+    // Calculate the allowed minimum forecast month (one month after today's date)
+    var minAllowed = DateTime.Today.AddMonths(1);
+    var minValue = minAllowed.ToString("yyyy-MM"); // Format as "yyyy-MM"
+}
+
+<hr>
 <h3>🔄 Generate New Forecast</h3>
+
 <form method="post" action="/forecast/generateForecast">
     <label>Forecast Type:</label>
     <select name="type">
@@ -41,11 +49,10 @@
         <option value="stock">Stock Forecast</option>
     </select>
 
-    <label>Start Date:</label>
-    <input type="date" name="startDate" required>
-
-    <label>End Date:</label>
-    <input type="date" name="endDate" required>
+    <label>Select Forecast Month:</label>
+    <input type="month" name="month" min="@minValue" required />
 
     <button type="submit">Generate Forecast</button>
 </form>
+
+
