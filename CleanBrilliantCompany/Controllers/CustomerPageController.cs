@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -10,17 +11,20 @@ namespace CleanBrilliantCompany.Controllers
         private readonly CustomerManagement _customerManagement;
         private readonly SupportManagement _supportManagement;
         private readonly ChatbotService _chatbotService;
+        private readonly OrderManagement _orderManagement;
 
         public CustomerPageController(
             ILogger<CustomerPageController> logger, 
             CustomerManagement customerManagement, 
             SupportManagement supportManagement,
-            ChatbotService chatbotService) 
+            ChatbotService chatbotService,
+            OrderManagement orderManagement) 
         {
             _logger = logger;
             _customerManagement = customerManagement;
             _supportManagement = supportManagement;
             _chatbotService = chatbotService;
+            _orderManagement = orderManagement;
         }
 
         public IActionResult CustomerDetails()
@@ -134,5 +138,16 @@ namespace CleanBrilliantCompany.Controllers
         // {
             
         // }
+
+        public IActionResult GetAllProducts()
+        {
+            var products = _orderManagement.GetAllProducts();
+            var productDetails = new List<Dictionary<string, object>>();
+            foreach (var product in products)
+            {
+                productDetails.Add(product.GetProductDetails());
+            }
+            return View("~/Views/TestProduct.cshtml", productDetails);
+        }
     }
 }

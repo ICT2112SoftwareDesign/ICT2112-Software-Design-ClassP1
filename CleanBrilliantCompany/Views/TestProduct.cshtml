@@ -1,0 +1,22 @@
+@model List<Dictionary<string, object>>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Product</title>
+</head>
+<body>
+    <h1>Product List</h1>
+    <ul>
+        @foreach (var product in Model)
+        {
+            <li>
+                @foreach (var detail in product)
+                {
+                    <strong>@detail.Key:</strong> @detail.Value <br />
+                }
+            </li>
+        }
+    </ul>
+</body>
+</html>
