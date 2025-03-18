@@ -10,8 +10,6 @@ namespace CleanBrilliantCompany.Interfaces
 
         public bool deleteReturnForm(int returnId);
 
-		public ReturnForm? insertReturnForm(ReturnForm model);
-
 
 	}
 }
