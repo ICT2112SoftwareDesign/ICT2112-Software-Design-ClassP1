@@ -1,17 +1,9 @@
 ﻿using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Mapper;
 using CleanBrilliantCompany.Models.Entity;
-using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 using System.Net.Mail;
-using System;
 using System.Net;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Util.Store;
-using Google.Apis.Gmail.v1.Data;
-using System.Text;
 
 
 namespace CleanBrilliantCompany.Models.Control

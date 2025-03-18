@@ -2,7 +2,6 @@
 using CleanBrilliantCompany.Models.Entity;
 using System.Diagnostics;
 using CleanBrilliantCompany.Interfaces;
-using System.Reflection.PortableExecutable;
 
 namespace CleanBrilliantCompany.Mapper
 {
@@ -256,14 +255,14 @@ namespace CleanBrilliantCompany.Mapper
 			return entity;
 		}
 
-        public bool getDatabaseQueryStatus(SqlDataReader reader, int rowsAffected = -1)
+        public bool getDatabaseQueryStatus(SqlDataReader reader, int result = -1)
         {
             try
             {
                 // If rowsAffected is provided (not -1), check if rows were affected
-                if (rowsAffected != -1)
+                if (result != -1)
                 {
-                    return rowsAffected > 0;
+                    return result > 0;
                 }
 
                 // Otherwise, check if the reader has rows (for SELECT queries)
@@ -275,16 +274,6 @@ namespace CleanBrilliantCompany.Mapper
                 return false;
             }
         }
-
-        //public async Task<ReturnForm?> getDatabaseQueryStatus(Task<ReturnForm?> task)
-        //{
-        //	return await task;
-        //}
-
-        //public async Task<bool> getDatabaseQueryStatus(Task<bool> task)
-        //{
-        //	return await task;
-        //}
 
 
         // TEMP!!----------------------------------------------------------------------------
@@ -367,15 +356,6 @@ namespace CleanBrilliantCompany.Mapper
 			return status;
 		}
 
-
-		//public async Task<string> getDatabaseQueryStatus(Task<string> task)
-		//{
-		//	return await task;
-		//}
-		//public async Task<int> getDatabaseQueryStatus(Task<int> task)
-		//{
-		//	return await task;
-		//}
 		// TEMP!!----------------------------------------------------------------------------
 	}
 }
