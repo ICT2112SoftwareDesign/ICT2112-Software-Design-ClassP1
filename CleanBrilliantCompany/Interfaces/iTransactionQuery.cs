@@ -4,6 +4,8 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface iTransactionQuery
     {
+        List<Transaction> getAllTransactions();
+
     //     Product getProductDetails(int productId);
     //     List<Product> GetAllProducts();
     //     void createProduct(string productName, string category, float costPrice, 

@@ -9,37 +9,27 @@ namespace CleanBrilliantCompany.Controllers
 {
     public class TransactionController : Controller
     {
-        
-        private readonly TransactionMapper _transactionMapper;
+        private readonly TransactionControl _transactionControl;
 
-        public TransactionController()
+        public TransactionController(IConfiguration configuration)
         {
-            _transactionMapper = new TransactionMapper();
+            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+            _transactionControl = new TransactionControl(connectionString);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            TransactionControl transactionControl = new TransactionControl();
+            List<Transaction> transactions = _transactionControl.getAllTransactions();
 
-            // Sample Data
-            transactionControl.AddTransaction(new Transaction(1, new DateTime(2025, 3, 8, 14, 30, 0), "Stock In", 101, 1));
-            transactionControl.AddTransaction(new Transaction(2, new DateTime(2025, 3, 8, 18, 15, 0), "Stock Out", 102,1));
-            transactionControl.AddTransaction(new Transaction(3, new DateTime(2025, 3, 8, 10, 0, 0), "Stock In", 103,1));
+            List<Dictionary<string, object>> transactionsInfo = new List<Dictionary<string, object>>();
 
-            DateTime searchDate = new DateTime(2025, 3, 8);
-            List<Transaction> transactions = transactionControl.getTransactionsByDateTime(searchDate);
+            foreach (var item in transactions)
+            {
+                transactionsInfo.Add(item.retrieveTransactionInfo());
+            }
 
-            // // Insert a transaction for testing
-            // _transactionMapper.Insert(new Transaction(1, DateTime.Now, "Stock In", 101, 1));
 
-            // // Fetch the inserted transaction
-            // Transaction foundTransaction = _transactionMapper.Find(1);
-
-            // ViewBag.Transactions = transactions;  // List of transactions
-            // ViewBag.FoundTransaction = foundTransaction;  // Single transaction
-
-            // Return results to the view
-            return View(transactions);
+            return View(transactionsInfo);
 
         }
     }
