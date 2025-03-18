@@ -5,11 +5,13 @@ namespace CleanBrilliantCompany.Interfaces
     public interface iProductQuery
     {
         // Product
-        Task<Product> getProductDetails(int productId);
-        Task<(string status, List<Product> products)> getAllProducts();
-        Task<string> createProduct(string productName, string category, float productCost, 
-            int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState);
-        Task<string> deleteProduct(int productId);
+        Product getProductDetails(int productId);
+        List<Product> getAllProducts();
+        void createProduct(string productName, string category, float productCost, 
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState);
+        void deleteProduct(int productId);
+        public void updateProduct(int productId, string productName, string category, float productCost, 
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState);
         // Product Batch
         Task<List<ProductBatch>> getAllProductBatch();
         Task<ProductBatch> getBatchDetails(int batchCode);

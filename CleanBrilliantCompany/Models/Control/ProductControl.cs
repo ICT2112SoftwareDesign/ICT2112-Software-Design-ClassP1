@@ -5,7 +5,7 @@ using CleanBrilliantCompany.Mappers;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ProductControl : iProductQuery
+    public class ProductControl : iProductQuery, iProduct
     {
         private readonly ProductMapper _productMapper;
 
@@ -17,28 +17,34 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // Interface methods
-        public async Task<Product> getProductDetails(int productId)
+        public Product getProductDetails(int productId)
         {
-            return await _productMapper.getDatabaseQueryStatus(_productMapper.findByProductId(productId));
+            return  _productMapper.findByProductId(productId);
         }
 
-        public async Task<(string status, List<Product> products)> getAllProducts()
+
+        public List<Product> getAllProducts()
         {
-            return await _productMapper.getDatabaseQueryStatus(_productMapper.findAllProducts());
+            return  _productMapper.findAllProducts();
         }
 
-        public async Task<string> createProduct(string productName, string category, float productCost, 
-        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, int productState)
+        public void createProduct(string productName, string category, float productCost, 
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
-            return await _productMapper.getDatabaseQueryStatus(
-                _productMapper.insert(productName, category, productCost, 
-                                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
-            );
+            _productMapper.insert(productName, category, productCost, 
+                                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
         }
 
-        public async Task<string> deleteProduct(int productId)
+        public void deleteProduct(int productId)
         {
-            return await _productMapper.getDatabaseQueryStatus(_productMapper.delete(productId));
+            _productMapper.delete(productId);
+        }
+
+        public void updateProduct(int productId, string productName, string category, float productCost, 
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
+        {
+            _productMapper.update(productId, productName, category, productCost, 
+                                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);;
         }
 
         public async Task<List<ProductBatch>> getAllProductBatch()

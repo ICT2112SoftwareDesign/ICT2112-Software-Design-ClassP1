@@ -17,12 +17,12 @@ namespace CleanBrilliantCompany.Controllers
             _productControl = new ProductControl(connectionString);
             _agingControl = new AgingControl(_productControl); // Testing
         }
+        
 
         public async Task<IActionResult> displayProducts()
         {
-            var (status, products) = await _productControl.getAllProducts();
+            var products = _productControl.getAllProducts();
 
-            Console.WriteLine($"Query Status: {status}");
             return View("~/Views/Product/TestProduct.cshtml", products);
         }
 
@@ -41,21 +41,19 @@ namespace CleanBrilliantCompany.Controllers
                 return BadRequest("Invalid product data.");
             }
 
-            string status = await _productControl.createProduct(product.ProductName, product.ProductCategory, 
+            _productControl.createProduct(product.ProductName, product.ProductCategory, 
                                         product.ProductCost, product.ManufacturerId, product.ProductWeight, 
                                         product.Quantity, product.Volume, product.ToxicityPercentage, 
                                         product.CarbonFootprint, product.ProductState);
 
-            Console.WriteLine($"Insert Status: {status}");
             return RedirectToAction("displayProducts");
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
-            string status = await _productControl.deleteProduct(productId);
+            _productControl.deleteProduct(productId);
 
-            Console.WriteLine($"Delete Status: {status}");
             return RedirectToAction("displayProducts");
         }
 
@@ -63,10 +61,26 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public async Task<IActionResult> FetchProduct(int productId)
         {
-            var product = await _productControl.getProductDetails(productId);
+            var product = _productControl.getProductDetails(productId);
             return View("~/Views/Product/FetchProduct.cshtml", product);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> FetchUpdateProduct(int productId)
+        {
+            var product = _productControl.getProductDetails(productId);
+            return View("~/Views/Product/UpdateProduct.cshtml", product);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProduct(Product product)
+        {
+            _productControl.updateProduct(product.ProductId, product.ProductName, product.ProductCategory, 
+                                        product.ProductCost, product.ManufacturerId, product.ProductWeight, 
+                                        product.Quantity, product.Volume, product.ToxicityPercentage, 
+                                        product.CarbonFootprint, product.ProductState);;
+            return RedirectToAction("displayProducts");
+        }
 
         [HttpGet]
         public async Task<IActionResult> ProductBatch()

@@ -1,5 +1,5 @@
 using CleanBrilliantCompany.Models.Entity;
-
+using Microsoft.Data.SqlClient;
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface iProductDatabase
@@ -13,5 +13,8 @@ namespace CleanBrilliantCompany.Interfaces
         Task<ProductBatch> getDatabaseQueryStatus(Task<ProductBatch> task);
         // StockHistory
         Task<(string status, List<StockHistory> stockHistory)> getDatabaseQueryStatus(Task<List<StockHistory>> task);
+
+        // Corrected
+        bool getDatabaseQueryStatus(SqlDataReader reader, int rowsAffected = -1);
     }
 }
