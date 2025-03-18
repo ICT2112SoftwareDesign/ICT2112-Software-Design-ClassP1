@@ -14,12 +14,8 @@ namespace CleanBrilliantCompany.Models.Forecast
         private int ValidityDuration { get; set; }
         private List<ForecastMetrics> MetricsList { get; set; } = new List<ForecastMetrics>();
 
-        private readonly IForecastingFacade _forecastingFacade;
 
-        public ForecastDashboard(IForecastingFacade forecastingFacade)
-        {
-            _forecastingFacade = forecastingFacade;
-        }
+    
 
         public ForecastDashboard(DateTime startDate, DateTime endDate, List<ForecastMetrics> metricsList)
         {
@@ -29,7 +25,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         }
 
         // Methods
-        private int GetDashBoardID()
+        public int GetDashBoardID()
         {
             return DashBoardID;
         }
@@ -39,7 +35,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             DashBoardID = dashBoardID;
         }
 
-        private DateTime GetStartDate()
+        public DateTime GetStartDate()
         {
             return StartDate;
         }
@@ -49,7 +45,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             StartDate = startDate;
         }
 
-        private DateTime GetEndDate()
+        public DateTime GetEndDate()
         {
             return EndDate;
         }
@@ -59,7 +55,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             EndDate = endDate;
         }
 
-        private DateTime GetGeneratedDate()
+        public DateTime GetGeneratedDate()
         {
             return GeneratedDate;
         }
@@ -69,7 +65,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             GeneratedDate = generatedDate;
         }
 
-        private int GetValidityDuration()
+        public int GetValidityDuration()
         {
             return ValidityDuration;
         }
@@ -79,7 +75,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             ValidityDuration = validityDuration;
         }
 
-        private List<ForecastMetrics> GetMetrics()
+        public List<ForecastMetrics> GetMetrics()
         {
             return MetricsList;
         }
@@ -88,6 +84,8 @@ namespace CleanBrilliantCompany.Models.Forecast
         {
             MetricsList = metrics;
         }
+
+        
 
         // Methods
         public ForecastDashboard GetDashboard()

@@ -1,7 +1,51 @@
+﻿@model CleanBrilliantCompany.Models.Forecast.ForecastDashboard
+
 @{
-    ViewData["Title"] = "Forecast";
+    ViewData["Title"] = "Forecast Dashboard";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>📊 Forecast Dashboard</h1>
 
-<p>Forecast page content goes here.</p>
+<div class="dashboard-container">
+    <h3>🆔 Dashboard Details</h3>
+    <p><strong>Dashboard ID:</strong> @Model.GetDashBoardID()</p>
+    <p><strong>Generated Date:</strong> @Model.GetGeneratedDate().ToString("yyyy-MM-dd HH:mm")</p>
+    <p><strong>Validity Duration:</strong> @Model.GetValidityDuration() days</p>
+
+    <h3>🗓 Date Range</h3>
+    <p><strong>Start Date:</strong> @Model.GetStartDate().ToString("yyyy-MM-dd")</p>
+    <p><strong>End Date:</strong> @Model.GetEndDate().ToString("yyyy-MM-dd")</p>
+
+    <h3>📈 Forecast Metrics</h3>
+    <p><strong>Metrics Count:</strong> @Model.GetMetrics().Count</p>
+
+    <ul>
+        @foreach (var metric in Model.GetMetrics())
+        {
+            <li>
+                <div><strong>Stock ID:</strong> @metric.getStockId()</div>
+                <div><strong>Forecasted Stock:</strong> @metric.getForecastedStock()</div>
+            </li>
+        }
+    </ul>
+
+</div>
+
+<hr>
+
+<h3>🔄 Generate New Forecast</h3>
+<form method="post" action="/forecast/generateForecast">
+    <label>Forecast Type:</label>
+    <select name="type">
+        <option value="price">Price Forecast</option>
+        <option value="stock">Stock Forecast</option>
+    </select>
+
+    <label>Start Date:</label>
+    <input type="date" name="startDate" required>
+
+    <label>End Date:</label>
+    <input type="date" name="endDate" required>
+
+    <button type="submit">Generate Forecast</button>
+</form>

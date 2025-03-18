@@ -17,19 +17,20 @@ namespace CleanBrilliantCompany.Services
             _scenarioPricingService = scenarioPricingService;
             _notificationService = notificationService;
         }
-        public ForecastMetrics generateStockForecast()
+        public List<ForecastMetrics> generateStockForecast()
         {
-            ForecastMetrics metrics =_stockPredictionService.generateStockPrediction();
+            List<ForecastMetrics> metrics =_stockPredictionService.generateStockPrediction();
             return metrics;
             
             //TODO: Implement this method
         }
-        public ForecastMetrics generatePriceScenario()
+        public List<ForecastMetrics> generatePriceScenario()
         {
-            ForecastMetrics metrics = _scenarioPricingService.generateScenarioPricing();
+            List<ForecastMetrics> metrics = _scenarioPricingService.generateScenarioPricing();
             return metrics;
             //TODO: Implement this method
 
         }
+        
     }
 }
