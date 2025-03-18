@@ -27,11 +27,13 @@ public class AgingControl
 
         // Step 3: Create an AgingDashboardRdm and populate with analytics
         var agingDashboard = new AgingDashboardRdm(
+            dashboardDto.DashboardId,
             dashboardDto.Name,
             dashboardDto.RequestedStartDate,
             dashboardDto.RequestedEndDate,
             dashboardDto.ValidityDuration,
-            dashboardDto.Type 
+            dashboardDto.Type,
+            dashboardDto.GeneratedDate 
         );
 
         foreach (var analyticsDto in analyticsDtos)
@@ -60,6 +62,14 @@ public class AgingControl
     // 🔹 Method to Retrieve the Latest Dashboard
     public AgingDashboardRdm? GetLatestDashboard()
     {
+        Console.WriteLine("🔍 Retrieving the latest dashboard...");
+        // print out all available dashboards 
+        Console.WriteLine("Amount of dashboards: " + dashboards.Count); 
+        foreach (var dashboard in dashboards)
+        {
+            Console.WriteLine($"Dashboard: {dashboard.GeneratedDate}");
+        } 
+
         return dashboards.OrderByDescending(d => d.RequestedStartDate).FirstOrDefault();
     }
 
@@ -75,7 +85,11 @@ public class AgingControl
     public AgingDashboardRdm generateNewDashboard() 
     {
 
-        var dashboard = new AgingDashboardRdm("Aging Dashboard", DateTime.Now, DateTime.Now.AddDays(180), 180, 1);
+        // var dashboard = new AgingDashboardRdm("Aging Dashboard", DateTime.Now, DateTime.Now.AddDays(180), 180, 1);
+        //find the max id from the list then increment it by 1 
+        var id = dashboards.Max(x => x.DashboardId) + 1; 
+        var dashboard = new AgingDashboardRdm(id, "Aging Dashboard new", DateTime.Now, DateTime.Now.AddDays(180), 180, 1);
+
         var fakeInterface = new FakeBatchInterface(); 
         var batches = fakeInterface.getAllProductBatch(); 
         foreach (var batch in batches){
@@ -95,7 +109,9 @@ public class AgingControl
             dashboard.addBatchAnalytics(batch.BatchCode, storageLifeCycleAnalytics); 
             dashboard.addBatchAnalytics(batch.BatchCode, stockTurnOverAnalytics); 
         }
-
+        // add it to the list 
+        dashboards.Add(dashboard); 
+        agingMapper.saveDashboardandAnalytics(dashboard); 
         return dashboard; 
     }
 

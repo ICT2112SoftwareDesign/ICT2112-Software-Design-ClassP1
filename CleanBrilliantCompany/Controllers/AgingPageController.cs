@@ -26,4 +26,18 @@ public class AgingPageController : Controller
         } 
         return View(latestDashboard); 
     } 
+
+    [HttpPost]
+    public IActionResult GenerateDashboard()
+    {
+        var newDashboard = agingControl.generateNewDashboard();
+
+        //might wanna post the data to the datebase 
+
+        // log the new dashboard 
+        logger.LogInformation("New dashboard generated: {0}", newDashboard.Name); 
+        return Json(new { success = true, message = "New dashboard generated!", data = newDashboard });
+
+
+    }
 }

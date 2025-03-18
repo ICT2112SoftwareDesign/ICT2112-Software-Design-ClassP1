@@ -54,4 +54,62 @@ public class AgingMapper : AgingRepo
             })
             .ToList();
     }
+
+    public void saveDashboardandAnalytics(AgingDashboardRdm dashboard){
+        if (fakeDbContext == null)
+            return; 
+        //Save the dashboard and analytics to the database 
+        //convert the dashboard to a dashboardDTO 
+        //convert the analytics to a list of analyticsDTO 
+        //save the dashboardDTO and the list of analyticsDTO to the database/fakedbContext 
+    //     var newdbDTO = new DashboardDTO{
+    //         DashboardId = dashboard.DashboardId,
+    //         Name = dashboard.Name,
+    //         RequestedStartDate = dashboard.RequestedStartDate,
+    //         RequestedEndDate = dashboard.RequestedEndDate,
+    //         GeneratedDate = dashboard.GeneratedDate ?? DateTime.Now,
+    //         ValidityDuration = dashboard.ValidityDuration,
+    //         Type = 1 
+    //     }; 
+
+    //     fakeDbContext.Dashboards.Add(newdbDTO); 
+    //     foreach (var analytics in dashboard.getBatchAnalyticsMap()) {
+    //         int batchCode = analytics.Key; // Extract Batch Code
+    //         var analyticsList = analytics.Value; // Get the List<AbstractAnalyticsDetails>
+
+    //         // Initialize default values for DTO
+    //         float? newTurnOverDetail = null;
+    //         float? newDeadStockDetail = null;
+    //         int? newDaysInStorage = null;
+    //         bool? newIsExpired = null;
+    //         int? newRemainingDays = null;
+
+    //         foreach (var analytic in analyticsList)
+    //         {
+    //             if (analytic.getAnalyticsType() == "StockTurnOverAnalyticsDetails")
+    //             {
+    //                 newTurnOverDetail = analytic.TurnOverRate;
+    //                 newDeadStockDetail = analytic.DeadStockPercentage;
+    //             }
+    //             else // Assuming the only other type is "StorageLifeCycleAnalyticsDetails"
+    //             {
+    //                 newDaysInStorage = analytic.DaysInStorage;
+    //                 newIsExpired = analytic.IsExpired;
+    //                 newRemainingDays = analytic.RemainingDays;
+    //             }
+    //         }
+
+    //         // Create DTO with the extracted data
+    //         var analyticsDTO = new AgingAnalyticsDetailsDTO
+    //         {
+    //             BatchCode = batchCode,
+    //             DashboardId = dashboard.DashboardId,
+    //             DaysInStorage = newDaysInStorage,
+    //             IsExpired = newIsExpired,
+    //             RemainingDays = newRemainingDays,
+    //             TurnOverRate = newTurnOverDetail,
+    //             DeadStockPercentage = newDeadStockDetail
+    //         };
+    // }
+}
 }

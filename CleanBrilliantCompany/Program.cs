@@ -8,9 +8,11 @@ builder.Services.AddControllersWithViews();
 // register fake context as a singleton 
 builder.Services.AddSingleton<FakeDbContext>(); 
 
+
 // register aging mapper to use fakedb context 
 //builder.Services.AddScoped<AgingMapper>(); 
 builder.Services.AddScoped<AgingRepo, AgingMapper>();
+
 
 var app = builder.Build();
 

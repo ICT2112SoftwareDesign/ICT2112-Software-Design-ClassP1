@@ -48,3 +48,33 @@
 } else{
     <p> No dashboard available</p> 
 }
+<div class="mt-4">
+    <button class="btn btn-primary" id="generateDashboard"> 
+        Generate Dashboard 
+    </button>
+</div>
+
+
+<script>
+    document.getElementById("generateDashboard").addEventListener("click",function() {
+        fetch('@Url.Action("GenerateDashboard","AgingPage")',{
+        method: 'POST',
+        headers : {
+            'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Server Response", data);
+                if (data.success) {
+                    alert("Dashboard generated successfully");
+                    location.reload();
+                } else {
+                    alert("Failed to generate dashboard");
+                }
+                }) 
+        .catch(error => {
+            console.error('Error:', error);
+        }); 
+
+    });
+</script>

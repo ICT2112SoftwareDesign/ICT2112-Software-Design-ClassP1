@@ -80,14 +80,16 @@ public abstract class Dashboard
     }
 
     // 🔹 Constructor for Creating a New Dashboard (Without ID, Assigned Later)
-    protected Dashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type)
+    protected Dashboard(int id, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type)
     {
-        DashboardId = 0; // ✅ New dashboards get ID = 0 until saved in DB
+        // DashboardId = 0; // ✅ New dashboards get ID = 0 until saved in DB
+        // find the max id and increment it by 1 
+        DashboardId = id;
         Name = name;
         RequestedStartDate = requestedStartDate;
         RequestedEndDate = requestedEndDate;
         ValidityDuration = validityDuration;
-        GeneratedDate = null;
+        GeneratedDate = DateTime.Now; // ✅ New dashboards get current date 
         Type = type;
     }
 }
