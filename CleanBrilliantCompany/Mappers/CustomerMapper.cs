@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using CleanBrilliantCompany.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Mappers
 {

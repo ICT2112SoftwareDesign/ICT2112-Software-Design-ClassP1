@@ -1,17 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Control;
+using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Controllers
 {
     public class ApplicationController : Controller
     {
         private readonly CustomerManagement _customerManagement;
+        private readonly CartManagement _cartManagement;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ApplicationController(CustomerManagement customerManagement, IHttpContextAccessor httpContextAccessor)
         {
             _customerManagement = customerManagement;
+            _cartManagement = cartManagement;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -36,6 +39,17 @@ namespace CleanBrilliantCompany.Controllers
             {
                 return null;
             }
+        }
+           // Get Cart Details
+        public List<CartItem> GetCartDetails()
+        {
+            return _cartManagement.ViewCart().Select(item => new CartItem
+            {
+                ProductImage = _cartManagement.GetProductImage(item.Key),
+                ProductName = _cartManagement.GetProductName(item.Key),
+                Quantity = item.Value,
+                Price = _cartManagement.GetProductPrice(item.Key)
+            }).ToList();
         }
     }
 }

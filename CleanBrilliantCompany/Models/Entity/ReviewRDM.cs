@@ -1,6 +1,6 @@
 using System;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.Entity
 {
     public class ReviewRDM
     {

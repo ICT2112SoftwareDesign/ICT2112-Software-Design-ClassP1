@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Entity;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.Control
 {
     public class CartManagement
     {
@@ -45,8 +45,11 @@ namespace CleanBrilliantCompany.Models
         {
             var productDetails = productService.GetProductDetails(productId);
             if (productDetails != null)
-            {
+            {   
+                 // Add the product ID and quantity to the in-memory cart (CartRDM)
                 cartRDM.AddProduct(productId, quantity);
+
+                // Update the database with the new cart content
                 var success = cartDatabase.AddCart(cartRDM.RetrieveProductsInCart());
                 if (success)
                 {

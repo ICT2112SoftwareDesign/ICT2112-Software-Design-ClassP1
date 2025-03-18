@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Control;
 
 namespace CleanBrilliantCompany.Controllers
 {

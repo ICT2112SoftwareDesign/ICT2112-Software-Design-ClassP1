@@ -1,8 +1,9 @@
 using System;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Mappers;
+using CleanBrilliantCompany.Models.Entity;
 
-namespace CleanBrilliantCompany.Models.control
+namespace CleanBrilliantCompany.Models.Control
 {
     public class CustomerManagement
     {

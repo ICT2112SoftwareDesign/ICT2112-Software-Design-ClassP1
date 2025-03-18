@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Control;
+
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -8,11 +10,13 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ILogger<CustomerPageController> _logger;
         private readonly CustomerManagement _customerManagement;
+        private readonly CartManagement _cartManagement;
 
         public CustomerPageController(ILogger<CustomerPageController> logger, CustomerManagement customerManagement)
         {
             _logger = logger;
             _customerManagement = customerManagement;
+            _cartManagement = cartManagement;
         }
 
         public IActionResult CustomerDetails()
@@ -36,6 +40,18 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+        }
+        public IActionResult ToPay()
+        {
+            var cartItems = _cartManagement.ViewCart().Select(item => new CartItem
+            {
+                ProductImage = _cartManagement.GetProductImage(item.Key),
+                ProductName = _cartManagement.GetProductName(item.Key),
+                Quantity = item.Value,
+                Price = _cartManagement.GetProductPrice(item.Key)
+            }).ToList();
+
+            return View(cartItems);
         }
     }
 }

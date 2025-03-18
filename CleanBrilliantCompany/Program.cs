@@ -1,6 +1,8 @@
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models.Control;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);

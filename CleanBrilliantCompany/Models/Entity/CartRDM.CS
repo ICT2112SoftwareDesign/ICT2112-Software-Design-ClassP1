@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.Entity
 {
     public class CartRDM
     {
