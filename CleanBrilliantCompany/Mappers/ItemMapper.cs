@@ -188,5 +188,26 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
+
+        public bool updateItemStatus(int itemId, ItemStatus status)
+        {
+            
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string insertQuery = @"
+            UPDATE dbo.Item SET itemStatus = @status WHERE itemId = @itemId;";
+
+                using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@itemId", itemId);
+                    command.Parameters.AddWithValue("@status", status);
+
+                    int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+                    return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
+                }
+            }
+        }
     }
 }

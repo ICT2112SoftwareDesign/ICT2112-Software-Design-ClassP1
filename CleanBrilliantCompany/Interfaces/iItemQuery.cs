@@ -4,9 +4,9 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface iItemQuery
     {
-        List<Item> getAllItems(); 
+        Task<List<Item>> getAllItems(); 
 
-        Item getItem(int itemId);
+        Task<Item> getItem(int itemId);
 
     }
 }

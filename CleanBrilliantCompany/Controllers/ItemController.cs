@@ -15,27 +15,24 @@ namespace CleanBrilliantCompany.Controllers
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _itemControl = new ItemControl(connectionString);
         }
-
-        // public IActionResult Index()
-        // {
-        //     List<Item> items = _itemControl.getAllItems();
-        //     return View("~/Views/Item/Item.cshtml", items); // Specify the full path to your view
-        // }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? searchedItemId)
         {
-            // Retrieve all items from the database
-            List<Item> items = _itemControl.getAllItems();
-
-            // Create a list of dictionaries, where each dictionary contains the item info
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-
-            // Iterate through each item and call retrieveItemInfo() to get the data
-            foreach (var item in items)
+            if (searchedItemId != null)
             {
+                Item item = await _itemControl.getItem(searchedItemId.Value);
                 itemsInfo.Add(item.retrieveItemInfo());
             }
+            else
+            {
+                List<Item> items = await _itemControl.getAllItems();
 
-            // Pass the list of item info dictionaries to the view
+                foreach (var item in items)
+                {
+                    itemsInfo.Add(item.retrieveItemInfo());
+                }
+            }
+
             return View(itemsInfo);
         }
 
@@ -72,7 +69,34 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("updateItemStatus")]
+        public async Task<IActionResult> updateItemStatus(int itemStatusId, ItemStatus itemStatus)
+        {
+            Console.WriteLine("ItemID: " + itemStatusId);
+            Console.WriteLine("Status: " + itemStatus);
 
+            bool result = await _itemControl.updateItemStatus(itemStatusId, itemStatus);
+            if (result)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return BadRequest(new { error = "Failed to add item." });
+            }
+        }
+
+
+        // [HttpPost]
+        // public async Task<IActionResult> searchItem(int itemId)
+        // {
+        //     List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+        //     Console.WriteLine("ITEMID: " + itemId);
+        //     Item item = await _itemControl.getItem(itemId);
+        //     itemsInfo.Add(item.retrieveItemInfo());
+        //     return RedirectToAction("Index", new { itemsInfo = itemsInfo });
+        // }
 
 
     }

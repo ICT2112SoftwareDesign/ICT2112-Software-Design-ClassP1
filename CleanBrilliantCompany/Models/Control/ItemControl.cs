@@ -18,22 +18,29 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // methods from iItemQuery
-        public List<Item> getAllItems()
+        public async Task<List<Item>> getAllItems()
         {
-            return _itemMapper.getAllItems(); // mapper uses iItemQuery to interact with control 
+            return await Task.FromResult(_itemMapper.getAllItems()); // mapper uses iItemQuery to interact with control 
         }
 
-        public Item getItem(int itemId)
+        public async Task<Item> getItem(int itemId)
         {
-            return _itemMapper.getItem(itemId);
+            return await Task.FromResult(_itemMapper.getItem(itemId));
         }
 
-        public async Task<bool> createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status) {
+        public async Task<bool> createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        {
             return await Task.FromResult(_itemMapper.createItem(itemId, productId, salePrice, batchCode, warehouseId, status));
         }
 
-        public async Task<bool> updateItem(int itemId, float salePrice) {
+        public async Task<bool> updateItem(int itemId, float salePrice)
+        {
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
+        }
+
+        public async Task<bool> updateItemStatus(int itemId, ItemStatus status)
+        {
+            return await Task.FromResult(_itemMapper.updateItemStatus(itemId, status));
         }
     }
 }
