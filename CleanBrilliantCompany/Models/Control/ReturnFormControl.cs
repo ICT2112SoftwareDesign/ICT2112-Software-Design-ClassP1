@@ -21,30 +21,22 @@ namespace CleanBrilliantCompany.Models.Control
 
 		public List<ReturnForm> displayReturnForms()
 		{
-			var allReturnForms = _mapper.findAll().Result;
+			var allReturnForms = _mapper.getDatabaseQueryStatus(_mapper.findAll());
 
 			return allReturnForms;
 		}
 
 		public ReturnForm? getReturnFormById(int returnId)
 		{
-			return _mapper.findByItemId(returnId).Result;
-		}
+			return _mapper.getDatabaseQueryStatus(_mapper.findByItemId(returnId));
+        }
 
 		public bool deleteReturnForm(int returnId)
 		{
-			bool deleteResult = _mapper.delete(returnId).Result;
+			bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(returnId));
 
-			return deleteResult;
+            return deleteResult;
 		}
-
-		public ReturnForm? insertReturnForm(ReturnForm model)
-		{
-			return _mapper.insert(model).Result;
-		}
-
-
-
 
         public ReturnForm? sendReturnForm(ReturnForm model)
 		{
@@ -66,7 +58,7 @@ namespace CleanBrilliantCompany.Models.Control
 			if (inRFTable == null && status == "Available" && warehouseId != -1)
 			{
 				// Mapper function to insert return form.
-				ReturnForm? form = insertReturnForm(model);
+				ReturnForm? form = _mapper.getDatabaseQueryStatus(_mapper.insert(model));
 
 				if (form != null)
 				{

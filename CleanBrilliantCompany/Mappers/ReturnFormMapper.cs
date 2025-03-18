@@ -5,7 +5,7 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Mapper
 {
-	public class ReturnFormMapper : iReturnFormDatabase
+	public class ReturnFormMapper : iReturnFormDatabase<ReturnForm>
 	{
 		private readonly string _connectionString;
 
@@ -275,6 +275,21 @@ namespace CleanBrilliantCompany.Mapper
             }
         }
 
+        public List<ReturnForm> getDatabaseQueryStatus(Task<List<ReturnForm>> task)
+        {
+            return task.Result;
+        }
+
+        public ReturnForm? getDatabaseQueryStatus(Task<ReturnForm?> task)
+        {
+            return task.Result;
+        }
+
+        public bool getDatabaseQueryStatus(Task<bool> task)
+        {
+            return task.Result;
+        }
+
 
         // TEMP!!----------------------------------------------------------------------------
         public async Task<int> getWarehouseIdByItemId(int itemId)
@@ -356,6 +371,15 @@ namespace CleanBrilliantCompany.Mapper
 			return status;
 		}
 
-		// TEMP!!----------------------------------------------------------------------------
-	}
+        public string getDatabaseQueryStatus(Task<string> task)
+        {
+            return task.Result;
+        }
+        public int getDatabaseQueryStatus(Task<int> task)
+        {
+            return task.Result;
+        }
+
+        // TEMP!!----------------------------------------------------------------------------
+    }
 }
