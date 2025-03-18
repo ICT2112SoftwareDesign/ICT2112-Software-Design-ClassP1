@@ -30,21 +30,32 @@ namespace CleanBrilliantCompany.Models.Control
             return string.Empty;
         }
 
-        // public CustomerRDM getCustomer(int customerId)
+        public int GetIdByEmail(string email)
+        {
+            return _customerDatabase.GetIdByEmail(email);
+        }
+
+        public CustomerRDM getCustomer(int loggedInId)
+        {
+            return _customerDatabase.getCustomer(loggedInId);
+        }
+
+        // public bool UpdateCustomer(int customerId, string field, string value)
         // {
-        //     return null;
+        //     if(field == "email"){
+        //         bool emailExist = _customerDatabase.CustomerExists(email);
+        //         if (!emailExist){
+        //             return _customerDatabase.updateCustomer(customerId, field, value);
+        //         }
+        //         else{
+        //             return false;
+        //         }
+        //     }
+        //     else{
+        //         return _customerDatabase.updateCustomer(customerId, field, value);
+        //     }
+            
         // }
-
-        public CustomerRDM getCustomer(string email)
-        {
-            return _customerDatabase.getCustomer(email);
-        }
-
-        public bool UpdateCustomerAddress(int customerId, string address)
-        {
-            // Implementation logic here
-            return false;
-        }
 
         public bool notifyDBCustomerQueryStatus()
         {

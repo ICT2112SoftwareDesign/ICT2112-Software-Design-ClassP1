@@ -35,10 +35,12 @@ namespace CleanBrilliantCompany.Controllers
             //Console.WriteLine($"Received Email: {email}");
             //Console.WriteLine($"Received Password: {password}");
             bool isAuthenticated = _customerManagement.AuthenticateCustomer(email, password);
-            if (isAuthenticated)
+            int loggedInCustomerId = _customerManagement.GetIdByEmail(email);
+
+            if (isAuthenticated && loggedInCustomerId > 0)
             {
-                // After user logs in stores email in session
-                HttpContext.Session.SetString("LoggedInUserEmail", email);
+                // After user logs in stores customer id in session
+                HttpContext.Session.SetInt32("LoggedInUserId", loggedInCustomerId);
                 
                 return RedirectToAction("Index", "Home");
             }
