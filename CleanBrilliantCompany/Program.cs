@@ -1,4 +1,4 @@
-using CleanBrilliantCompany.Control;
+using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Controllers;
 using CleanBrilliantCompany.Mapper;
 

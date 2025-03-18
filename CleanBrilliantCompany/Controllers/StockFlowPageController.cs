@@ -19,9 +19,9 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [Route("returns")]
-		public async Task<IActionResult> Returns()
+		public IActionResult Returns()
 		{
-			var returnForms = await _returnFormController.DisplayAllReturnForms();
+			var returnForms = _returnFormController.DisplayAllReturnForms();
 			return View(returnForms);
 		}
 

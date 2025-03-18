@@ -15,16 +15,16 @@ namespace CleanBrilliantCompany.Controllers
 			_returnFormControl = returnFormControl;
 		}
 
-		public async Task<List<ReturnForm>> DisplayAllReturnForms()
+		public List<ReturnForm> DisplayAllReturnForms()
 		{
-			return await _returnFormControl.displayReturnForms();
+			return _returnFormControl.displayReturnForms();
 		}
 
 
 		[Route("returns/view/{returnId}")]
-		public async Task<IActionResult> DisplayReturnForm(int returnId)
+		public IActionResult DisplayReturnForm(int returnId)
 		{
-			ReturnForm? returnForm = await _returnFormControl.getReturnFormById(returnId);
+			ReturnForm? returnForm = _returnFormControl.getReturnFormById(returnId);
 			if (returnForm == null)
 			{
 				RedirectToAction("Error", "StockFlowPage", new { errorType = "General" });
@@ -36,9 +36,9 @@ namespace CleanBrilliantCompany.Controllers
 
 		// Handle deleting return forms.
 		[Route("returns/delete")]
-		public async Task<IActionResult> DeleteReturnForm(int returnId)
+		public IActionResult DeleteReturnForm(int returnId)
 		{
-			bool result = await _returnFormControl.deleteReturnForm(returnId);
+			bool result = _returnFormControl.deleteReturnForm(returnId);
 
 			if (result)
 			{
@@ -50,7 +50,7 @@ namespace CleanBrilliantCompany.Controllers
 
 		// Handle creating new return forms.
 		[Route("returns/confirm")]
-		public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, int itemId, string returnReason)
+		public IActionResult ConfirmReturnForm(int manufacturerId, int itemId, string returnReason)
 		{
 
 			// Example staff ID set to 1
@@ -60,7 +60,7 @@ namespace CleanBrilliantCompany.Controllers
 
 			if (ModelState.IsValid)
 			{
-				var result = await _returnFormControl.sendReturnForm(model);
+				var result = _returnFormControl.sendReturnForm(model);
 
 				if (result == null)
 				{
