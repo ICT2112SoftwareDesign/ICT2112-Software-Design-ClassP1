@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models;
 
-namespace CleanBrilliantCompany.Models.Control
+namespace CleanBrilliantCompany.Models
 {
     public class CartManagement
     {
         private CartRDM cartRDM;
         private ICartDatabase cartDatabase;
-        private IProduct productService;
+        private IProducts productService;
         private List<ICartObserver> observers;
 
-        public CartManagement(ICartDatabase cartDatabase, IProduct productService)
+        public CartManagement(ICartDatabase cartDatabase, IProducts productService)
         {
             this.cartDatabase = cartDatabase;
             this.productService = productService;

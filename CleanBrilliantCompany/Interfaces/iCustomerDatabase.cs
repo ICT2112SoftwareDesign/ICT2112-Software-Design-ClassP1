@@ -1,4 +1,5 @@
-using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models;
+
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface ICustomerDatabase

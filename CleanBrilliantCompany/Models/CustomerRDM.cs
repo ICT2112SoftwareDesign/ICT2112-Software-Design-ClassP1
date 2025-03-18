@@ -1,6 +1,6 @@
 using System;
 
-namespace CleanBrilliantCompany.Models.Entity
+namespace CleanBrilliantCompany.Models
 {
     public class CustomerRDM
     {
