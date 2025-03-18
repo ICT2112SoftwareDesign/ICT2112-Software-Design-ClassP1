@@ -92,10 +92,19 @@ public class AgingControl
 
         var fakeInterface = new FakeBatchInterface(); 
         var batches = fakeInterface.getAllProductBatch(); 
+
         foreach (var batch in batches){
             var stockHistory = fakeInterface.getStockHistoryByBatch(batch.BatchCode);
             var stockHistoryMap = stockHistory.ToDictionary(x => x.Date, x => x.Quantity);
-            
+            Console.WriteLine("Batch details for batch: " + batch.BatchCode); 
+            Console.WriteLine("Batch Receive Date: " + batch.ReceiveDate); 
+            Console.WriteLine("Batch Expiry Date: " + batch.ExpiryDate); 
+            Console.WriteLine("Batch Quantity: " + batch.Quantity); 
+            Console.WriteLine("Batch Stock History: "); 
+            foreach (var history in stockHistoryMap){
+                Console.WriteLine("Date: " + history.Key + " Quantity: " + history.Value); 
+            } 
+            Console.WriteLine("==========End of Batch details==========" );
             var storageLifeCycleAnalytics = new StorageLifeCycleAnalyticsDetails(
                 batch.BatchCode, 
                 batch.ReceiveDate, 

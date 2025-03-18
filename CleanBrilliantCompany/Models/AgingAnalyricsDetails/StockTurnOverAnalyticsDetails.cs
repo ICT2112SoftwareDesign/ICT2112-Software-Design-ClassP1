@@ -37,18 +37,22 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
         
         int earliestQuantity = quantityPerDay[firstDate]; 
         int latestQuantity = quantityPerDay[lastDate]; 
-
+        Console.WriteLine("Earliest Quantity: " + earliestQuantity);  
+        Console.WriteLine("Latest Quantity: " + latestQuantity); 
         int stockUsed = earliestQuantity - latestQuantity; 
+        Console.WriteLine("Stock Used: " + stockUsed); 
+        Console.WriteLine("Total Quantity: " + totalQuantity);
         // if totalQuantity is 0 , return 0 
         // else return the percentage of stock used 
-        return totalQuantity == 0 ? 0 : (stockUsed / totalQuantity) * 100; 
+        Console.WriteLine ("TurnOverRate that i am returning: " + ((float)stockUsed / totalQuantity) * 100); 
+        return totalQuantity == 0 ? 0 : ((float)stockUsed / totalQuantity) * 100; 
     }    
 
     public float calculateDeadStockPercentage(){
         if (!quantityPerDay.Any()) return 100; 
         DateTime latestDate = quantityPerDay.Keys.Max(); 
         int latestQuantity = quantityPerDay[latestDate];
-        return totalQuantity == 0 ? 0 : (latestQuantity / totalQuantity) * 100; 
+        return totalQuantity == 0 ? 0 : ((float)latestQuantity / totalQuantity) * 100; 
 
     } 
 
@@ -59,9 +63,11 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
         // batchSummary.Add("DeadStockPercentage", calculateDeadStockPercentage()); 
         //check if turnoverrate and deadstock are -1 
         if (turnOverRate == -1 && DeadStockPercentage == -1){
+            Console.WriteLine("Calculating TurnOverRate and DeadStockPercentage");
             batchSummary.Add("TurnOverRate", calculateTurnOverRate()); 
             batchSummary.Add("DeadStockPercentage", calculateDeadStockPercentage()); 
         } else {
+            Console.WriteLine("Retrieving TurnOverRate and DeadStockPercentage from the database");
             batchSummary.Add("TurnOverRate", turnOverRate); 
             batchSummary.Add("DeadStockPercentage", DeadStockPercentage); 
         }  
