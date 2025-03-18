@@ -73,43 +73,51 @@ public class AgingMapper : AgingRepo
     //     }; 
 
     //     fakeDbContext.Dashboards.Add(newdbDTO); 
-    //     foreach (var analytics in dashboard.getBatchAnalyticsMap()) {
-    //         int batchCode = analytics.Key; // Extract Batch Code
-    //         var analyticsList = analytics.Value; // Get the List<AbstractAnalyticsDetails>
+    
+//    foreach (var analytics in dashboard.getBatchAnalyticsMap())
+// {
+//     int batchCode = analytics.Key; // Extract Batch Code
+//     var analyticsList = analytics.Value; // Get List<AbstractAnalyticsDetails>
 
-    //         // Initialize default values for DTO
-    //         float? newTurnOverDetail = null;
-    //         float? newDeadStockDetail = null;
-    //         int? newDaysInStorage = null;
-    //         bool? newIsExpired = null;
-    //         int? newRemainingDays = null;
+//     // Initialize values (null for optional fields)
+//     float? turnOverRate = null;
+//     float? deadStockPercentage = null;
+//     int? daysInStorage = null;
+//     bool? isExpired = null;
+//     int? remainingDays = null;
 
-    //         foreach (var analytic in analyticsList)
-    //         {
-    //             if (analytic.getAnalyticsType() == "StockTurnOverAnalyticsDetails")
-    //             {
-    //                 newTurnOverDetail = analytic.TurnOverRate;
-    //                 newDeadStockDetail = analytic.DeadStockPercentage;
-    //             }
-    //             else // Assuming the only other type is "StorageLifeCycleAnalyticsDetails"
-    //             {
-    //                 newDaysInStorage = analytic.DaysInStorage;
-    //                 newIsExpired = analytic.IsExpired;
-    //                 newRemainingDays = analytic.RemainingDays;
-    //             }
-    //         }
+//     foreach (var analytic in analyticsList)
+//     {
+//         // ✅ Use CalculateBatchSummary() to get a dictionary of key-value pairs
+//         var batchSummary = analytic.CalculateBatchSummary();
 
-    //         // Create DTO with the extracted data
-    //         var analyticsDTO = new AgingAnalyticsDetailsDTO
-    //         {
-    //             BatchCode = batchCode,
-    //             DashboardId = dashboard.DashboardId,
-    //             DaysInStorage = newDaysInStorage,
-    //             IsExpired = newIsExpired,
-    //             RemainingDays = newRemainingDays,
-    //             TurnOverRate = newTurnOverDetail,
-    //             DeadStockPercentage = newDeadStockDetail
-    //         };
-    // }
+//         // ✅ Retrieve values dynamically using keys
+//         if (batchSummary.ContainsKey("TurnOverRate"))
+//             turnOverRate = Convert.ToSingle(batchSummary["TurnOverRate"]);
+
+//         if (batchSummary.ContainsKey("DeadStockPercentage"))
+//             deadStockPercentage = Convert.ToSingle(batchSummary["DeadStockPercentage"]);
+
+//         if (batchSummary.ContainsKey("DaysInStorage"))
+//             daysInStorage = Convert.ToInt32(batchSummary["DaysInStorage"]);
+
+//         if (batchSummary.ContainsKey("IsExpired"))
+//             isExpired = Convert.ToBoolean(batchSummary["IsExpired"]);
+
+//         if (batchSummary.ContainsKey("RemainingDays"))
+//             remainingDays = Convert.ToInt32(batchSummary["RemainingDays"]);
+//     }
+
+//     // ✅ Create DTO and add it to the database
+//     var analyticsDTO = new AgingAnalyticsDetailsDTO
+//     {
+//         BatchCode = batchCode,
+//         DashboardId = dashboard.DashboardId,
+//         DaysInStorage = daysInStorage,
+//         IsExpired = isExpired,
+//         RemainingDays = remainingDays,
+//         TurnOverRate = turnOverRate,
+//         DeadStockPercentage = deadStockPercentage
+//     };
 }
 }
