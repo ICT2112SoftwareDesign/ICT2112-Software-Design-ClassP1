@@ -44,12 +44,34 @@ namespace CleanBrilliantCompany.Controllers
         public async Task<IActionResult> addItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
         {
             bool result = await _itemControl.createItem(itemId, productId, salePrice, batchCode, warehouseId, status);
-            if (result) {
-                return Ok(new {message = "Item added successfully"});
-            } else {
-                return BadRequest(new {error = "Failed to add item."});
+            if (result)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return BadRequest(new { error = "Failed to add item." });
             }
         }
+
+        [HttpPost]
+        [Route("updateItem")]
+        public async Task<IActionResult> updateItem(int itemId, float salePrice)
+        {
+            Console.WriteLine("ITemID: " + itemId);
+            Console.WriteLine("sale price: " + salePrice);
+
+            bool result = await _itemControl.updateItem(itemId, salePrice);
+            if (result)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return BadRequest(new { error = "Failed to add item." });
+            }
+        }
+
 
 
 

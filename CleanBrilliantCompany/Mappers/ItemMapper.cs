@@ -167,5 +167,26 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
+        // update item sales price 
+        public bool updateItem(int itemId, float salesPrice)
+        {
+            
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string insertQuery = @"
+            UPDATE dbo.Item SET salePrice = @salePrice WHERE itemId = @itemId;";
+
+                using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@itemId", itemId);
+                    command.Parameters.AddWithValue("@salePrice", salesPrice);
+
+                    int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+                    return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
+                }
+            }
+        }
     }
 }

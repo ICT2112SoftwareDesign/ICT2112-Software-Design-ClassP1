@@ -31,5 +31,9 @@ namespace CleanBrilliantCompany.Models.Control
         public async Task<bool> createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status) {
             return await Task.FromResult(_itemMapper.createItem(itemId, productId, salePrice, batchCode, warehouseId, status));
         }
+
+        public async Task<bool> updateItem(int itemId, float salePrice) {
+            return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
+        }
     }
 }
