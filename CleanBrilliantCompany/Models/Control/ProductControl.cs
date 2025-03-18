@@ -41,10 +41,34 @@ namespace CleanBrilliantCompany.Models.Control
             return await _productMapper.getDatabaseQueryStatus(_productMapper.delete(productId));
         }
 
-        public async Task<List<ProductBatch>> getAllProductBatches()
+        public async Task<List<ProductBatch>> getAllProductBatch()
         {
-            var (status, batchList) = await _productMapper.getDatabaseQueryStatus(_productMapper.findAllProductBatches());
+            var (status, batchList) = await _productMapper.getDatabaseQueryStatus(_productMapper.findAllProductBatch());
+            Console.WriteLine($"Query Status: {status}");
             return batchList; 
+        }
+
+        public async Task<ProductBatch> getBatchDetails(int batchCode) 
+        {
+            return await _productMapper.getDatabaseQueryStatus(_productMapper.findByBatchCode(batchCode));
+        }
+
+        public async Task<string> createProductBatch(int productId, DateTime expiryDate, 
+            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+        {
+            return await _productMapper.getDatabaseQueryStatus(
+                _productMapper.insert(productId, expiryDate, 
+                    receiveDate, manufactureDate, quantity, batchCost)
+            );
+        }
+
+        public async Task<(string status, List<StockHistory> stockHistory)> getStockHistoryByBatch(int batchCode)
+        {
+            return await _productMapper.getDatabaseQueryStatus(
+                _productMapper.findStockHistoryByBatchCode(batchCode)
+                );
+
+            //turn into dict before sending it out. WILL FIX FEATURES FIRST
         }
     }
 }

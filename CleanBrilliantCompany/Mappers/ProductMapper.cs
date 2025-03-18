@@ -17,6 +17,7 @@ namespace CleanBrilliantCompany.Mappers
             _connectionString = connectionString;
         }
 
+        // Product
         public async Task<Product> findByProductId(int productId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -175,7 +176,8 @@ namespace CleanBrilliantCompany.Mappers
             return products;
         }
 
-        public async Task<List<ProductBatch>> findAllProductBatches()
+        // Batch
+        public async Task<List<ProductBatch>> findAllProductBatch()
         {
             List<ProductBatch> batches = new List<ProductBatch>();
 
@@ -217,6 +219,123 @@ namespace CleanBrilliantCompany.Mappers
                 Console.WriteLine($"Error fetching product batches: {ex.Message}");
                 return new List<ProductBatch>();
             }
+        }
+
+        public async Task<ProductBatch> findByBatchCode(int batchCode)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = @"
+                    SELECT batchCode, productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost
+                    FROM dbo.ProductBatch
+                    WHERE batchCode = @BatchCode";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@BatchCode", batchCode);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return new ProductBatch
+                            {
+                                BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
+                                ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")),
+                                ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")),
+                                ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null; 
+        }
+
+        public async Task<string> insert(int productId, DateTime expiryDate, 
+            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = @"
+                    INSERT INTO dbo.ProductBatch (productId, expiryDate, receiveDate, manufactureDate, 
+                                                quantity, batchCost)
+                    SELECT @ProductId, @ExpiryDate, @ReceiveDate, @ManufactureDate, @Quantity, @BatchCost
+                    WHERE EXISTS (SELECT 1 FROM dbo.Product WHERE productId = @ProductId)";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    command.Parameters.AddWithValue("@ExpiryDate", expiryDate);
+                    command.Parameters.AddWithValue("@ReceiveDate", receiveDate);
+                    command.Parameters.AddWithValue("@ManufactureDate", manufactureDate);
+                    command.Parameters.AddWithValue("@Quantity", quantity);
+                    command.Parameters.AddWithValue("@BatchCost", batchCost);
+
+                    int result = await command.ExecuteNonQueryAsync();
+
+                    if (result > 0)
+                    {
+                        Console.WriteLine("Batch inserted successfully.");
+                        return "Batch inserted successfully.";
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Product ID does not exist.");
+                        return "Error: Product ID does not exist.";
+                    }
+                }
+            }
+        }
+
+        // StockHistory
+        public async Task<List<StockHistory>> findStockHistoryByBatchCode(int batchCode)
+        {
+            List<StockHistory> stockHistoryList = new List<StockHistory>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = @"
+                    SELECT stockId, batchCode, stockCheckDate, quantity, timeRecorded
+                    FROM dbo.StockHistory
+                    WHERE batchCode = @BatchCode
+                    ORDER BY stockCheckDate DESC";  // Orders by most recent stock check
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@BatchCode", batchCode);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            // If timeRecorded is of type TIME, we convert it to DateTime
+                            DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
+                            stockHistoryList.Add(new StockHistory
+                            {
+                                StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
+                                BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
+                                TimeRecorded = timeRecorded
+                            });
+                        }
+                    }
+                }
+            }
+
+            return stockHistoryList;
         }
 
 
@@ -288,6 +407,41 @@ namespace CleanBrilliantCompany.Mappers
             {
                 Console.WriteLine($"Database query failed: {ex.Message}");
                 return ($"Database query failed: {ex.Message}", new List<ProductBatch>()); 
+            }
+        }
+
+        public async Task<ProductBatch> getDatabaseQueryStatus(Task<ProductBatch> task)
+        {
+            try
+            {
+                return await task;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database query failed: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<(string status, List<StockHistory> stockHistory)> getDatabaseQueryStatus(Task<List<StockHistory>> task)
+        {
+            try
+            {
+                List<StockHistory> stockHistoryList = await task;
+
+                if (stockHistoryList.Count > 0)
+                {
+                    return ("Query executed successfully", stockHistoryList);
+                }
+                else
+                {
+                    return ("No stock history found", stockHistoryList);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database query failed: {ex.Message}");
+                return ($"Database query failed: {ex.Message}", new List<StockHistory>());
             }
         }
     }
