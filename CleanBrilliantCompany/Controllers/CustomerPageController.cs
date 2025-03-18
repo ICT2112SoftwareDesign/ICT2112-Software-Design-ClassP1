@@ -25,7 +25,7 @@ namespace CleanBrilliantCompany.Controllers
 
         public IActionResult CustomerDetails()
         {
-            string loggedInEmail = HttpContext.Session.GetString("LoggedInUserEmail");
+            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;;
             var applicationController = new ApplicationController(_customerManagement, HttpContext.RequestServices.GetService<IHttpContextAccessor>());
 
             // Retrieve Customer Details via Session
@@ -33,8 +33,8 @@ namespace CleanBrilliantCompany.Controllers
 
             if (customerDetails != null)
             {
-                ViewBag.CustomerId = customerDetails.GetSession<int>("customerId");
-                ViewBag.Email = loggedInEmail;
+                ViewBag.CustomerId = loggedInId;
+                ViewBag.Email = customerDetails.GetSession<string>("email");
                 ViewBag.Username = customerDetails.GetSession<string>("username");
                 ViewBag.CustomerAddress = customerDetails.GetSession<string>("customerAddress");
             }
@@ -45,6 +45,37 @@ namespace CleanBrilliantCompany.Controllers
 
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }
+
+        // [HttpPost]
+        // public IActionResult UpdateCustomerAddress(string fieldName, string fieldValue)
+        // {
+        //     if(fieldValue != null){
+        //         if(fieldName == "email"){
+                    
+        //         }
+        //         bool updateSuccessful = _customerManagement.UpdateCustomer(fieldName, fieldValue);
+        //     }
+            
+        //     string loggedInEmail = HttpContext.Session.GetString("LoggedInUserEmail");
+        //     var applicationController = new ApplicationController(_customerManagement, HttpContext.RequestServices.GetService<IHttpContextAccessor>());
+
+        //     // Retrieve Customer Details via Session
+        //     var customerDetails = applicationController.GetCustomerSession();
+
+        //     if (customerDetails != null)
+        //     {
+        //         ViewBag.CustomerId = customerDetails.GetSession<int>("customerId");
+        //         ViewBag.Email = loggedInEmail;
+        //         ViewBag.Username = customerDetails.GetSession<string>("username");
+        //         ViewBag.CustomerAddress = customerDetails.GetSession<string>("customerAddress");
+        //     }
+        //     else
+        //     {
+        //         ViewBag.Message = "No customer details available.";
+        //     }
+
+        //     return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+        // }
 
         // INPUT CONTROLLER METHODS
 

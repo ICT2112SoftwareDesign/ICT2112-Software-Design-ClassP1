@@ -6,7 +6,7 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Mappers
 {
-    public class CustomerMapper : iCustomerDatabase
+    public class CustomerMapper : ICustomerDatabase
     {
         private readonly string _connectionString;
 
@@ -40,10 +40,40 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
-
-        public CustomerRDM getCustomer(string email)
+        public int GetIdByEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
+            {
+                return -1; // Return -1 or an invalid ID to signal failure
+            }
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT customerID FROM dbo.Customer WHERE email = @Email";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+
+                    object result = command.ExecuteScalar();
+
+                    if (result != null && int.TryParse(result.ToString(), out int customerId))
+                    {
+                        return customerId; 
+                    }
+                    else
+                    {
+                        return -1; 
+                    }
+                }
+            }
+        }
+
+        public CustomerRDM getCustomer(int loggedInId)
+        {
+            if (loggedInId <= 0)
             {
                 return null;
             }
@@ -52,11 +82,11 @@ namespace CleanBrilliantCompany.Mappers
             {
                 connection.Open();
 
-                string query = "SELECT customerID, username, password, customerAddress FROM dbo.Customer WHERE email = @Email";
+                string query = "SELECT username, email, password, customerAddress FROM dbo.Customer WHERE customerId = @CustomerId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@CustomerId", loggedInId);
                     
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -65,9 +95,9 @@ namespace CleanBrilliantCompany.Mappers
                         {
                             CustomerRDM customer = new CustomerRDM();
 
-                            customer.SetSession("customerId", reader.GetInt32(reader.GetOrdinal("customerID")));
                             customer.SetSession("username", reader.GetString(reader.GetOrdinal("username")));
-                            customer.SetSession("email", email); 
+                            customer.SetSession("email", reader.GetString(reader.GetOrdinal("email"))); 
+                            customer.SetSession("password", reader.GetString(reader.GetOrdinal("password"))); 
                             customer.SetSession("customerAddress", reader.IsDBNull(reader.GetOrdinal("customerAddress")) ? null : reader.GetString(reader.GetOrdinal("customerAddress")));
 
                             return customer;
@@ -98,10 +128,35 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public bool updateCustomer(string username, string password, string customerAddress, string email)
+        public bool updateCustomer(int customerId, string field, string value)
         {
-            // Implementation logic here
-            return false;
+            if (string.IsNullOrEmpty(field) || string.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
+            // Validate the field to prevent SQL injection
+            if (field != "username" && field != "email" && field != "customerAddress")
+            {
+                return false;
+            }
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Use dynamic SQL safely by validating the field name
+                string query = $"UPDATE dbo.Customer SET {field} = @Value WHERE customerID = @CustomerId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Value", value);
+                    command.Parameters.AddWithValue("@CustomerId", customerId);
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
         }
 
         public bool notifyDBCustomerQueryStatus()

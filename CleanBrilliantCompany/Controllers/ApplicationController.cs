@@ -18,11 +18,11 @@ namespace CleanBrilliantCompany.Controllers
         // Get Customer Session From Here (Hopefully it works)
         public CustomerRDM GetCustomerSession()
         {
-            string loggedInEmail = _httpContextAccessor.HttpContext.Session.GetString("LoggedInUserEmail");
+            int loggedInId = _httpContextAccessor.HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
 
-            if (!string.IsNullOrEmpty(loggedInEmail))
+            if (loggedInId != -1)
             {
-                var customerDetails = _customerManagement.getCustomer(loggedInEmail);
+                var customerDetails = _customerManagement.getCustomer(loggedInId);
                 if (customerDetails != null)
                 {
                     return customerDetails;
