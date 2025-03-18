@@ -2,6 +2,7 @@
 using CleanBrilliantCompany.Models.Entity;
 using System.Diagnostics;
 using CleanBrilliantCompany.Interfaces;
+using System.Reflection.PortableExecutable;
 
 namespace CleanBrilliantCompany.Mapper
 {
@@ -40,21 +41,24 @@ namespace CleanBrilliantCompany.Mapper
 						// Execute command and use data reader to get the results
 						using (SqlDataReader reader = await command.ExecuteReaderAsync())
 						{
-							// Loop through the results and map them to ReturnForm objects
-							while (reader.Read())
+							if (getDatabaseQueryStatus(reader))
 							{
-								int returnId = reader.GetInt32(reader.GetOrdinal("returnId"));
-								int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
-								int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
-								int warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
-								string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
-								int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
+								// Loop through the results and map them to ReturnForm objects
+								while (reader.Read())
+								{
+									int returnId = reader.GetInt32(reader.GetOrdinal("returnId"));
+									int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
+									int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
+									int warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
+									string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
+									int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
 
-								// Map to objects.
-								ReturnForm returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, warehouseId, returnReason, staffId);
+									// Map to objects.
+									ReturnForm returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, warehouseId, returnReason, staffId);
 
-								// Add object to list.
-								allReturnForms.Add(returnForm);
+									// Add object to list.
+									allReturnForms.Add(returnForm);
+								}
 							}
 						}
 					}
@@ -98,18 +102,21 @@ namespace CleanBrilliantCompany.Mapper
 
 					using (SqlDataReader reader = await command.ExecuteReaderAsync())
 					{
-						if (reader.Read())
+						if (getDatabaseQueryStatus(reader))
 						{
-							// Loop through the results and map them to ReturnForm objects
+							if (reader.Read())
+							{
+								// Loop through the results and map them to ReturnForm objects
 
-							int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
-							int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
-							int warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
-							string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
-							int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
+								int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
+								int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
+								int warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
+								string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
+								int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
 
-							// Map to objects.
-							returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, warehouseId, returnReason, staffId);
+								// Map to objects.
+								returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, warehouseId, returnReason, staffId);
+							}
 						}
 					}
 				}
@@ -163,10 +170,8 @@ namespace CleanBrilliantCompany.Mapper
 
 					int rowsAffected = await command.ExecuteNonQueryAsync();
 
-					if (rowsAffected > 0)
-					{
-						isSuccess = true;
-					}
+                    isSuccess = getDatabaseQueryStatus(null, rowsAffected);
+
 				}
 				catch (Exception ex)
 				{
@@ -228,8 +233,14 @@ namespace CleanBrilliantCompany.Mapper
 
 					int returnId = (int)await command.ExecuteScalarAsync();
 
-					entity.SetReturnId(returnId);
-
+					if (getDatabaseQueryStatus(null, returnId))
+					{
+						entity.SetReturnId(returnId);
+					}
+					else 
+					{
+                        entity = null;
+                    }
 				}
 				catch (Exception ex)
 				{
@@ -245,24 +256,39 @@ namespace CleanBrilliantCompany.Mapper
 			return entity;
 		}
 
-		public async Task<List<ReturnForm>> getDatabaseQueryStatus(Task<List<ReturnForm>> task)
-		{
-			return await task;
-		}
+        public bool getDatabaseQueryStatus(SqlDataReader reader, int rowsAffected = -1)
+        {
+            try
+            {
+                // If rowsAffected is provided (not -1), check if rows were affected
+                if (rowsAffected != -1)
+                {
+                    return rowsAffected > 0;
+                }
 
-		public async Task<ReturnForm?> getDatabaseQueryStatus(Task<ReturnForm?> task)
-		{
-			return await task;
-		}
+                // Otherwise, check if the reader has rows (for SELECT queries)
+                return reader.HasRows;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in database query status: {ex.Message}");
+                return false;
+            }
+        }
 
-		public async Task<bool> getDatabaseQueryStatus(Task<bool> task)
-		{
-			return await task;
-		}
+        //public async Task<ReturnForm?> getDatabaseQueryStatus(Task<ReturnForm?> task)
+        //{
+        //	return await task;
+        //}
+
+        //public async Task<bool> getDatabaseQueryStatus(Task<bool> task)
+        //{
+        //	return await task;
+        //}
 
 
-		// TEMP!!----------------------------------------------------------------------------
-		public async Task<int> getWarehouseIdByItemId(int itemId)
+        // TEMP!!----------------------------------------------------------------------------
+        public async Task<int> getWarehouseIdByItemId(int itemId)
 		{
 			int warehouseId = -1;
 
@@ -342,14 +368,14 @@ namespace CleanBrilliantCompany.Mapper
 		}
 
 
-		public async Task<string> getDatabaseQueryStatus(Task<string> task)
-		{
-			return await task;
-		}
-		public async Task<int> getDatabaseQueryStatus(Task<int> task)
-		{
-			return await task;
-		}
+		//public async Task<string> getDatabaseQueryStatus(Task<string> task)
+		//{
+		//	return await task;
+		//}
+		//public async Task<int> getDatabaseQueryStatus(Task<int> task)
+		//{
+		//	return await task;
+		//}
 		// TEMP!!----------------------------------------------------------------------------
 	}
 }

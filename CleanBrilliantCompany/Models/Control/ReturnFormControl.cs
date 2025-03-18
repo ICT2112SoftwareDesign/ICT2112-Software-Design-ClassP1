@@ -27,46 +27,46 @@ namespace CleanBrilliantCompany.Models.Control
             _mapper = mapper;
 		}
 
-		public async Task<List<ReturnForm>> displayReturnForms()
+		public List<ReturnForm> displayReturnForms()
 		{
-			var allReturnForms = await _mapper.getDatabaseQueryStatus(_mapper.findAll());
+			var allReturnForms = _mapper.findAll().Result;
 
 			return allReturnForms;
 		}
 
-		public async Task<ReturnForm?> getReturnFormById(int returnId)
+		public ReturnForm? getReturnFormById(int returnId)
 		{
-			return await _mapper.getDatabaseQueryStatus(_mapper.findByItemId(returnId));
+			return _mapper.findByItemId(returnId).Result;
 		}
 
-		public async Task<bool> deleteReturnForm(int returnId)
+		public bool deleteReturnForm(int returnId)
 		{
-			bool deleteResult = await _mapper.getDatabaseQueryStatus(_mapper.delete(returnId));
+			bool deleteResult = _mapper.delete(returnId).Result;
 
 			return deleteResult;
 		}
 
-		public async Task<ReturnForm?> insertReturnForm(ReturnForm model)
+		public ReturnForm? insertReturnForm(ReturnForm model)
 		{
-			return await _mapper.getDatabaseQueryStatus(_mapper.insert(model));
+			return _mapper.insert(model).Result;
 		}
 
 
 
 
-        public async Task<ReturnForm?> sendReturnForm(ReturnForm model)
+        public ReturnForm? sendReturnForm(ReturnForm model)
 		{
 
 			// Check whether the Item is in Available Status.
-			string status = await _mapper.getDatabaseQueryStatus(_mapper.getItemStatusByItemId(model.GetItemId()));
+			string status = _mapper.getItemStatusByItemId(model.GetItemId()).Result;
 
 			// Query DB to get the Warehouse Id using the Item Id. WarehouseId must not be -1 (placeholder).
-			int warehouseId = await _mapper.getDatabaseQueryStatus(_mapper.getWarehouseIdByItemId(model.GetItemId()));
+			int warehouseId = _mapper.getWarehouseIdByItemId(model.GetItemId()).Result;
 
 			model.SetWarehouseId(warehouseId);
 
 			// ItemId must not be in Return Forms table.
-			ReturnForm? inRFTable = await _mapper.getDatabaseQueryStatus(_mapper.findByItemId(model.GetItemId()));
+			ReturnForm? inRFTable = _mapper.findByItemId(model.GetItemId()).Result;
 
 			Debug.WriteLine($"Status: {status}");
 			Debug.WriteLine($"Warehouse Id found: {warehouseId}");
@@ -74,7 +74,7 @@ namespace CleanBrilliantCompany.Models.Control
 			if (inRFTable == null && status == "Available" && warehouseId != -1)
 			{
 				// Mapper function to insert return form.
-				ReturnForm? form = await insertReturnForm(model);
+				ReturnForm? form = insertReturnForm(model);
 
 				if (form != null)
 				{
@@ -110,8 +110,8 @@ namespace CleanBrilliantCompany.Models.Control
 							IsBodyHtml = false
 						};
 
-						// Send the email
-						await smtpClient.SendMailAsync(mailMessage);
+						// Send the email (synchronous)
+						smtpClient.Send(mailMessage);
 
 						Debug.WriteLine("Email sent successfully!");
 					}
