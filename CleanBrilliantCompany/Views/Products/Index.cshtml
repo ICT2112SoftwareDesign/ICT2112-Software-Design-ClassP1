@@ -97,6 +97,20 @@
                 }
             }
         }
+        function sortProducts() {
+            var order = document.getElementById("sort-dropdown").value;
+            var container = document.querySelector(".product-container");
+            var products = Array.from(container.getElementsByClassName("product-card"));
+            
+            products.sort(function(a, b) {
+                var priceA = parseFloat(a.getElementsByClassName("product-price")[0].innerText.replace("$", ""));
+                var priceB = parseFloat(b.getElementsByClassName("product-price")[0].innerText.replace("$", ""));
+                
+                return order === 'asc' ? priceA - priceB : priceB - priceA;
+            });
+            
+            products.forEach(product => container.appendChild(product));
+        }
     </script>
 </head>
 <body>
@@ -109,6 +123,10 @@
             {
                 <option value="@product">@product</option>
             }
+        </select>
+        <select id="sort-dropdown" onchange="sortProducts()">
+            <option value="asc">Sort by Price: Low to High</option>
+            <option value="desc">Sort by Price: High to Low</option>
         </select>
     </div>
     <div class="product-container">
