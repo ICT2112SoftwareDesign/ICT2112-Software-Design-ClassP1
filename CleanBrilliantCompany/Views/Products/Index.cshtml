@@ -133,7 +133,7 @@
         @foreach (var product in Model)
         {
             <div class="product-card" onclick="toggleDetails('details-@product["ProductId"]')" data-category="@product["Category"]">
-                <img src="/images/default-product.jpg" alt="Product Image">
+                <img src="~/img/placeholderimg.png" alt="Product Image">
                 <div class="product-title">@product["ProductName"]</div>
                 <div class="product-price">$@product["CostPrice"]</div>
                 <form asp-controller="CustomerPage" asp-action="AddToCart" method="post">
@@ -142,6 +142,7 @@
                     <button class="btn btn-cart">Add to Cart</button>
                 </form>
                 <button class="btn btn-wishlist">Add to Wishlist</button>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomerPage" asp-action="ProductDetail" asp-route-productId="@product["ProductId"]">View Details</a>
                 <div id="details-@product["ProductId"]" class="product-details">
                     <p><strong>Category:</strong> @product["Category"]</p>
                     <p><strong>Manufacturer ID:</strong> @product["ManufacturerId"]</p>
