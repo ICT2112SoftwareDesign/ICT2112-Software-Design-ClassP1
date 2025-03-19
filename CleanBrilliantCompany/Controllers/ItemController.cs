@@ -13,7 +13,7 @@ namespace CleanBrilliantCompany.Controllers
         public ItemController(IConfiguration configuration)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-            _itemControl = new ItemControl(connectionString);
+            _itemControl = new ItemControl(connectionString, null);
         }
         public async Task<IActionResult> Index(int? searchedItemId)
         {

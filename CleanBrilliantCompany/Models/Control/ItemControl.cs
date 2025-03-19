@@ -6,20 +6,21 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : IItemQuery, IItemUpdate, IItem
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve
     {
         private readonly ItemMapper _itemMapper;
 
-        private readonly ProductControl _productControl;
+        private readonly iProduct _iproductInterface;
 
         // Constructor that takes the connection string
-        public ItemControl(string connectionString)
+        public ItemControl(string connectionString, iProduct iproductInterface)
         {
             _itemMapper = new ItemMapper(connectionString);
+            _iproductInterface = iproductInterface;
             Console.WriteLine("Products loaded from database.");
         }
 
-        // methods from iItemQuery
+        // METHODS FOR IITEM
         public async Task<List<Item>> getAllItems()
         {
             return await Task.FromResult(_itemMapper.getAllItems()); // mapper uses iItemQuery to interact with control 
@@ -40,14 +41,27 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
         }
 
+        // for transaction feature, might remove in future
         public async Task<bool> updateItemStatus(int itemId, ItemStatus status)
         {
             return await Task.FromResult(_itemMapper.updateItemStatus(itemId, status));
         }
 
-        
-        // public Product getProductDetails(int productId) {
-            
-        // }
+
+        // METHODS FOR RESERVE FEATURE (IRESERVE)
+        public async Task<List<Item>> getItemsByStatus(ItemStatus itemStatus)
+        {
+            return await Task.FromResult(_itemMapper.getItemByStatus(itemStatus));
+        }
+
+        public Task<Product> retrieveProductDetails(int productId)
+        {
+            Product product = _iproductInterface.getProductDetails(productId);
+            return Task.FromResult(product);
+        }
+
+
+
+
     }
 }
