@@ -1,6 +1,6 @@
 using CleanBrilliantCompany.Interfaces;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.Control
 {
     public class IngredientToxicityAnalysisSDM : IToxicity
     {

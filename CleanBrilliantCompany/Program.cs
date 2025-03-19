@@ -2,6 +2,8 @@ using CleanBrilliantCompany.Data;
 using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models.Control;
 
 var builder = WebApplication.CreateBuilder(args);
 

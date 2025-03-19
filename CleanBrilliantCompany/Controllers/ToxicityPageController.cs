@@ -1,5 +1,7 @@
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models.Control;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers

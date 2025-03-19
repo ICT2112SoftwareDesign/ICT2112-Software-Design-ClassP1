@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.Entity
 {
     [Table("Ingredient")]
     public class Ingredient

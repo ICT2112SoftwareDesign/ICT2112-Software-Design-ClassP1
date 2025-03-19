@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models.Control;
 using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Data;
 
