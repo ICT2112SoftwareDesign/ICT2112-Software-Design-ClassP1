@@ -39,7 +39,7 @@ namespace CleanBrilliantCompany.Controllers.Staff
         }
 
         [HttpPost("refund/update-status")]
-        public IActionResult UpdateRefundStatus(int refundId, string status, [FromServices] IRefundQuery refundService)
+        public IActionResult UpdateRefundStatus(int refundId, string status, [FromServices] IRefundQuery refundService, [FromServices] IRefundDetails refundDetails)
         {
             var refund = refundService.GetRefundDetails(refundId);
             if (refund == null)
@@ -54,6 +54,13 @@ namespace CleanBrilliantCompany.Controllers.Staff
                 return RedirectToAction("RefundDetails", new { id = refundId });
             }
 
+            if (status == "Approved")
+            {
+                List<int> itemIds = new List<int>(refund.RefundedProducts.Keys);
+                refundDetails.ReturnItemToInventory(itemIds, refund.RefundReason);
+                Console.WriteLine($"{refund.RefundAmount} has been refunded to the customer in Order {refund.OrderId}.");
+
+            }
             // Update refund status
             refund.Status = status;
             refund.RefundProcessedDate = DateTime.Now;
