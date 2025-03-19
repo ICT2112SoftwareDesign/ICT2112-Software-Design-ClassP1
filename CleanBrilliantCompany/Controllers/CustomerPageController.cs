@@ -181,5 +181,18 @@ namespace CleanBrilliantCompany.Controllers
             }
             return View("~/Views/Products/Index.cshtml", productDetails);
         }
+
+        public IActionResult ProductDetail(int productId)
+        {
+            var product = _orderManagement.GetOneProduct(productId);
+
+            if (product == null)
+            {
+                return Content("Product not found");
+            }
+
+            var productDetails = product.GetProductDetails();
+            return View("~/Views/Products/ProductDetails.cshtml", productDetails);
+        }
     }
 }

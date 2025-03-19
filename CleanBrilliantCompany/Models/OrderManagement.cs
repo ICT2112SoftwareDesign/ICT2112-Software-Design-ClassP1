@@ -64,6 +64,11 @@ namespace CleanBrilliantCompany.Models
         {
             return _product.GetAllProducts();
         }
+
+        public Product GetOneProduct(int productId)
+        {
+            return _product.GetProductDetails(productId);
+        }
     }
 
     public class Item
