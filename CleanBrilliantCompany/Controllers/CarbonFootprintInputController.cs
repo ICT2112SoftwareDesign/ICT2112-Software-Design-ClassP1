@@ -30,6 +30,11 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost("add")]
         public IActionResult AddCarbonFootprint([FromBody] CarbonFootprintDTO dto)
         {
+            if (dto == null)
+            {
+                return BadRequest("Invalid data.");
+            }
+
             // Map DTO to RDM
             var rdm = new CarbonFootprintRecordRDM(
                 0,
@@ -53,14 +58,29 @@ namespace CleanBrilliantCompany.Controllers
 
         // Update an existing carbon footprint record
         [HttpPut("update/{id}")]
-        public IActionResult UpdateCarbonFootprint(int id, [FromBody] CarbonFootprintRecordRDM record)
+        public IActionResult UpdateCarbonFootprint(int id, [FromBody] CarbonFootprintDTO dto)
         {
-            _manager.UpdateCarbonFootprintRecord(
+            if (dto == null)
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            // Map DTO to RDM
+            var rdm = new CarbonFootprintRecordRDM(
                 id,
-                record.getEntityIdForInsert(),
-                record.getEntityTypeForInsert(),
-                (float)record.getCarbonEmissionForCalculation(),
-                record.getEcoStatusForInsert()
+                dto.EntityId,
+                dto.EntityType,
+                dto.CarbonEmission,
+                dto.EcoStatus,
+                dto.DateCreated
+            );
+
+            _manager.UpdateCarbonFootprintRecord(
+                rdm.getCarbonFootprintIdForUpdate(),
+                rdm.getEntityIdForInsert(),
+                rdm.getEntityTypeForInsert(),
+                (float)rdm.getCarbonEmissionForCalculation(),
+                rdm.getEcoStatusForInsert()
             );
 
             return Ok("Carbon footprint record updated.");
@@ -124,6 +144,7 @@ namespace CleanBrilliantCompany.Controllers
             // Map to DTO
             var result = combinedList.Select(record => new CarbonFootprintDTO
             {
+                CarbonFootprintId = record.getCarbonFootprintIdForUpdate(),
                 EntityId = record.getEntityIdForInsert(),
                 EntityType = record.getEntityTypeForInsert(),
                 CarbonEmission = record.getCarbonEmissionForCalculation(),

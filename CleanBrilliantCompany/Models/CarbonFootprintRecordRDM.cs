@@ -125,5 +125,10 @@ namespace CleanBrilliantCompany.Models
             return dateCreated;
         }
 
+        public int getCarbonFootprintIdForUpdate()
+        {
+            return this.carbonFootprintId;
+        }
+
     }
 }

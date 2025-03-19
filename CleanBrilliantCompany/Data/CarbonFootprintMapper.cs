@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using CleanBrilliantCompany.Models;
+using System.Diagnostics;
 
 namespace CleanBrilliantCompany.Data
 {
@@ -60,14 +61,14 @@ namespace CleanBrilliantCompany.Data
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string sql = "UPDATE CarbonFootprintRecord SET EntityId = @EntityId, EntityType = @EntityType, CarbonEmission = @CarbonEmission, EcoStatus = @EcoStatus WHERE CarbonFootprintId = @Id";
+                string sql = "UPDATE CarbonFootprintRecord SET CarbonEmission = @CarbonEmission, EcoStatus = @EcoStatus WHERE CarbonFootprintId = @CarbonFootprintId AND EntityId = @Id AND EntityType = @EntityType";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    cmd.Parameters.AddWithValue("@EntityId", entityId);
-                    cmd.Parameters.AddWithValue("@EntityType", entityType);
                     cmd.Parameters.AddWithValue("@CarbonEmission", carbonEmission);
                     cmd.Parameters.AddWithValue("@EcoStatus", ecoStatus);
-                    cmd.Parameters.AddWithValue("@Id", carbonFootprintId);
+                    cmd.Parameters.AddWithValue("@CarbonFootprintId", carbonFootprintId);
+                    cmd.Parameters.AddWithValue("@Id", entityId);
+                    cmd.Parameters.AddWithValue("@EntityType", entityType);
 
                     conn.Open();
                     _lastQueryStatus = cmd.ExecuteNonQuery() > 0;
