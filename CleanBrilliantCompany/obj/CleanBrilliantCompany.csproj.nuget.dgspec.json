@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
+    "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {
+    "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "projectUniqueName": "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
         "projectName": "CleanBrilliantCompany",
-        "projectPath": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
-        "packagesPath": "C:\\Users\\Xinji\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+        "projectPath": "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "packagesPath": "C:\\Users\\ryan_\\.nuget\\packages\\",
+        "outputPath": "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Xinji\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\ryan_\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
