@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.DTO;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -188,57 +189,6 @@ namespace CleanBrilliantCompany.Models
 
 
 
-        private class OsrmResponse
-        {
-            public Route[] Routes { get; set; }
-        }
-
-        private class Route
-        {
-            public float Distance { get; set; }
-        }
-
-        // Nominatim API result.
-        private class NominatimResult
-        {
-            public string lat { get; set; }
-            public string lon { get; set; }
-            // You can include other properties if needed.
-        }
-
-        public class AeroDataBoxResponse
-        {
-            public AeroAirportItem[] items { get; set; }
-        }
-
-        public class AeroAirportItem
-        {
-            public string iata { get; set; }
-            public string icao { get; set; }
-            public string name { get; set; }
-            public string municipalityName { get; set; }
-            public string countryName { get; set; }
-            public Location location { get; set; }
-        }
-
-        public class Location
-        {
-            public double lat { get; set; }
-            public double lon { get; set; }
-        }
-
-        public class GeoNamesPortResponse
-        {
-            public GeoNamePort[] geonames { get; set; }
-        }
-
-        public class GeoNamePort
-        {
-            public string name { get; set; }
-            public string countryName { get; set; }
-            public string lat { get; set; }     // <-- Change to string
-            public string lng { get; set; }     // <-- Change to string
-        }
 
     }
 }
