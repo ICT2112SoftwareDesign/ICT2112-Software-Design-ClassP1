@@ -2,7 +2,7 @@ using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface iItem
+    public interface IItem
     {
         Task<Item> getItemById(int itemId); 
     }

@@ -2,7 +2,7 @@ using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface iItemUpdate
+    public interface IItemUpdate
     {
         Task<bool> updateItem(int itemId, float salePrice); 
     }

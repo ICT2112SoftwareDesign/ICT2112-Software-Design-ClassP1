@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : iItemQuery, iItemUpdate, iItem
+    public class ItemControl : IItemQuery, IItemUpdate, IItem
     {
         private readonly ItemMapper _itemMapper;
 
