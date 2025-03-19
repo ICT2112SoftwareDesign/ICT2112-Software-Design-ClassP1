@@ -136,7 +136,11 @@
                 <img src="/images/default-product.jpg" alt="Product Image">
                 <div class="product-title">@product["ProductName"]</div>
                 <div class="product-price">$@product["CostPrice"]</div>
-                <button class="btn btn-cart">Add to Cart</button>
+                <form asp-controller="CustomerPage" asp-action="AddToCart" method="post">
+                    <input type="hidden" name="productId" value="@product["ProductId"]" />
+                    <input type="number" name="quantity" value="1" min="1" class="form-control mb-2" />
+                    <button class="btn btn-cart">Add to Cart</button>
+                </form>
                 <button class="btn btn-wishlist">Add to Wishlist</button>
                 <div id="details-@product["ProductId"]" class="product-details">
                     <p><strong>Category:</strong> @product["Category"]</p>

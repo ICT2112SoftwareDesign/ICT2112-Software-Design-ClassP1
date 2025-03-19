@@ -62,12 +62,6 @@ namespace CleanBrilliantCompany.Models
             SetProductsInCart(cartProducts);
         }
 
-        // Public method to get the products in the cart [not in class diagram]
-        public Dictionary<int, int> RetrieveProductsInCart()
-        {
-            return GetProductsInCart();
-        }
-
         // Public method to add a product to the cart [not in Class Diagram]
         public void AddProduct(int productId, int quantity)
         {
@@ -86,16 +80,22 @@ namespace CleanBrilliantCompany.Models
         {
             if (productsInCart.ContainsKey(productId))
             {
-                productsInCart[productId] = quantity;
+                productsInCart[productId] = quantity; // Update the quantity for the specific product
             }
+            
         }
 
         // Public method to remove a product from the cart [Not in Class Diagram]
-        public void RemoveProduct(int productId)
+       public void RemoveProduct(int productId)
         {
             if (productsInCart.ContainsKey(productId))
             {
+                Console.WriteLine($"Removing ProductID: {productId} from in-memory cart.");
                 productsInCart.Remove(productId);
+            }
+            else
+            {
+                Console.WriteLine($"ProductID: {productId} not found in in-memory cart. No changes made.");
             }
         }
 
@@ -104,6 +104,19 @@ namespace CleanBrilliantCompany.Models
         {
             return productsInCart.ContainsKey(productId);
         }
+
+         // Public method to load the cart data
+       public void LoadCart(Dictionary<int, int> cartData)
+        {
+            productsInCart = new Dictionary<int, int>(cartData);
+        }
+        
+        // Public method to retrieve the products in the cart
+        public Dictionary<int, int> RetrieveProductsInCart()
+        {
+            return new Dictionary<int, int>(productsInCart);
+        }
+
     }
 }
 

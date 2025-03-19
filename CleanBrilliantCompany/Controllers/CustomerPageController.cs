@@ -9,24 +9,29 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ILogger<CustomerPageController> _logger;
         private readonly CustomerManagement _customerManagement;
-        private readonly CartManagement _cartManagement;
         private readonly SupportManagement _supportManagement;
         private readonly ChatbotService _chatbotService;
         private readonly OrderManagement _orderManagement;
+        private readonly CartManagement _cartManagement;
+        private readonly IProduct _productService;
+
 
         public CustomerPageController(
             ILogger<CustomerPageController> logger, 
             CustomerManagement customerManagement, 
             SupportManagement supportManagement,
             ChatbotService chatbotService,
-            OrderManagement orderManagement) 
+            OrderManagement orderManagement,
+            CartManagement cartManagement,
+            IProduct productService) 
         {
             _logger = logger;
             _customerManagement = customerManagement;
-            _cartManagement = cartManagement;
             _supportManagement = supportManagement;
             _chatbotService = chatbotService;
             _orderManagement = orderManagement;
+            _cartManagement = cartManagement;
+            _productService = productService;
         }
 
         public IActionResult CustomerDetails()
@@ -52,19 +57,6 @@ namespace CleanBrilliantCompany.Controllers
 
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }
-        public IActionResult ToPay()
-        {
-            var cartItems = _cartManagement.ViewCart().Select(item => new CartItem
-            {
-                ProductImage = _cartManagement.GetProductImage(item.Key),
-                ProductName = _cartManagement.GetProductName(item.Key),
-                Quantity = item.Value,
-                Price = _cartManagement.GetProductPrice(item.Key)
-            }).ToList();
-
-            return View(cartItems);
-        }
-
         [HttpPost]
         public IActionResult updateCustomerDetails(string username, string email, string address)
         {
@@ -195,5 +187,126 @@ namespace CleanBrilliantCompany.Controllers
             }
             return View("~/Views/Products/Index.cshtml", productDetails);
         }
+        
+
+
+        // CART INPUT CONTROLLER METHODS
+
+        [HttpPost]
+        public IActionResult AddToCart(int productId, int quantity)
+        {
+            // Retrieve customer ID from the session using the correct key
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            if (quantity <= 0)
+            {
+                TempData["Error"] = "Quantity must be greater than zero.";
+                return RedirectToAction("GetAllProducts"); // Redirect back to the product page
+            }
+
+            var success = _cartManagement.AddToCart(customerID.Value, productId, quantity);
+            if (success)
+            {
+                TempData["Success"] = "Product added to cart successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to add product to cart.";
+            }
+
+            return RedirectToAction("GetAllProducts"); // Redirect back to the product page
+        }
+
+        [HttpPost]
+        public IActionResult UpdateQuantity(int productId, int quantity)
+        {
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            if (quantity <= 0)
+            {
+                TempData["Error"] = "Quantity must be greater than zero.";
+                return RedirectToAction("ViewCart");
+            }
+
+            var success = _cartManagement.UpdateQuantity(customerID.Value, productId, quantity);
+            if (success)
+            {
+                TempData["Success"] = "Cart updated successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to update cart.";
+            }
+
+            return RedirectToAction("ViewCart");
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromCart(int productId)
+        {
+            // Retrieve customer ID from the session
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Call the RemoveFromCart method in CartManagement
+            var success = _cartManagement.RemoveFromCart(customerID.Value, productId);
+            if (success)
+            {
+                TempData["Success"] = "Product removed from cart successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to remove product from cart.";
+            }
+
+            return RedirectToAction("ViewCart"); // Redirect back to the cart page
+        }
+        
+
+        public IActionResult ViewCart()
+        {
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            var cartData = _cartManagement.ViewCart(customerID.Value);
+            var products = new Dictionary<int, Dictionary<string, object>>();
+
+        foreach (var item in cartData)
+        {
+            var product = _productService.GetProductDetails(item.Key);
+            if (product != null)
+            {
+                var productDetails = product.GetProductDetails();
+                productDetails["CostPrice"] = Convert.ToDecimal(productDetails["CostPrice"]); // Ensure CostPrice is decimal
+                products[item.Key] = productDetails;
+            }
+        }
+
+        ViewBag.Products = products;
+        ViewBag.Total = cartData.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
+
+            return View("~/Views/Cart/Cart.cshtml", cartData);
+        }
+
+        
+        
     }
 }
