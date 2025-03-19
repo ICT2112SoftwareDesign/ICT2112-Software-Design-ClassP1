@@ -1,6 +1,7 @@
 ﻿using CleanBrilliantCompany.DTO;
 using System;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CleanBrilliantCompany.Interfaces
 {
@@ -61,9 +62,9 @@ namespace CleanBrilliantCompany.Interfaces
             new SalesDTO(8, new DateTime(2022, 12, 30), 5)
         };
 
-        public List<SalesDTO> getSalesData()
+        public List<SalesDTO> getSalesData(int month)
         {
-            return _sales;
+            return _sales.Where(s => s.DateTime.Month == month).ToList();
         }
     }
 }

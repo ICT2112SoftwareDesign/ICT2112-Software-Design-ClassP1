@@ -33,5 +33,14 @@ namespace CleanBrilliantCompany.Models.Forecast
         {
             return this;
         }
+
+        public PriceScenarioForecast(int productId, int forecastedStock,String productName,int adjustmentFactor, int pricingAfterAdjustment)
+        {
+            this.setProductId(productId);
+            this.setProductName(productName);
+            this.setForecastedStock(forecastedStock);
+            this.adjustmentFactor = adjustmentFactor;
+            this.pricingAfterAdjustment = pricingAfterAdjustment;
+        }
     }
 }

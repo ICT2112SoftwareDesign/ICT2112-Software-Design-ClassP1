@@ -53,10 +53,16 @@
 
 <form method="post" action="/forecast/generateForecast">
     <label>Forecast Type:</label>
-    <select name="type">
-        <option value="price">Price Forecast</option>
+    <select name="type" id="forecastType" onchange="toggleSlider()">
         <option value="stock">Stock Forecast</option>
+        <option value="price">PriceScenario Forecast</option>
     </select>
+
+    <div id="sliderContainer" style="display: none; margin-top: 10px;">
+        <label>Price Adjustment (%):</label>
+        <input type="range" id="priceSlider" name="priceAdjustment" min="-100" max="100" value="0" step="1" oninput="updateSliderValue()">
+        <span id="sliderValue">0%</span>
+    </div>
 
     <label>Select Forecast Month:</label>
     <input type="month" name="month" min="@minValue" required />
@@ -86,4 +92,29 @@
         text-align: left; /* Align product name to the left */
         padding-left: 20px;
     }
+
+    /* Style for the slider */
+    #priceSlider {
+        width: 100%;
+        margin-top: 5px;
+    }
 </style>
+
+<script>
+    function toggleSlider() {
+        var forecastType = document.getElementById("forecastType").value;
+        var sliderContainer = document.getElementById("sliderContainer");
+
+        if (forecastType === "price") {
+            sliderContainer.style.display = "block";
+        } else {
+            sliderContainer.style.display = "none";
+        }
+    }
+
+    function updateSliderValue() {
+        var slider = document.getElementById("priceSlider");
+        var sliderValue = document.getElementById("sliderValue");
+        sliderValue.textContent = slider.value + "%";
+    }
+</script>

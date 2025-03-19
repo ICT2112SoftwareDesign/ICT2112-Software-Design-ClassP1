@@ -1,38 +1,30 @@
 using CleanBrilliantCompany.DTO;
 using CleanBrilliantCompany.Interfaces.Forecast;
 using CleanBrilliantCompany.Models.Forecast;
-using Microsoft.Extensions.Logging.Abstractions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace CleanBrilliantCompany.Services.Forecast
 {
     public class SimpleStockPrediction : IStockPredictionService
     {
-
-        public List<ForecastMetrics> generateStockPrediction(List<SalesDTO> sales, DateTime selectedMonth, List<ProductDTO> productList)
+        public List<ForecastMetrics> generateStockPrediction(Dictionary<int, int> aggregatedSales, List<ProductDTO> productList)
         {
-            // Aggregate past sales data
-            var aggregated = aggregateResults(sales);
-
             // Dictionary to store forecasted stock values for each product
             var forecastDictionary = productList.ToDictionary(
                 product => product.ID,
-                product => 0 // Default forecast is 0
+                product => 0 // Default forecast is 0 if no past sales exist
             );
 
             // Process historical sales and update the forecast dictionary
             foreach (var product in productList)
             {
-                var pastSales = aggregated
-                    .Where(record => record.Key.Month.Month == selectedMonth.Month &&
-                                     record.Key.Month.Year != selectedMonth.Year &&
-                                     record.Key.ProductId == product.ID)
-                    .Select(record => record.Value)
-                    .ToList();
-
-                if (pastSales.Any())
+                if (aggregatedSales.TryGetValue(product.ID, out int totalSales))
                 {
                     // Compute average of past sales and increase by 50%
-                    double averageValue = pastSales.Average();
-                    forecastDictionary[product.ID] = (int)Math.Round(averageValue * 1.5);
+                    double forecastValue = totalSales * 1.5;
+                    forecastDictionary[product.ID] = (int)Math.Round(forecastValue);
                 }
             }
 
@@ -49,19 +41,6 @@ namespace CleanBrilliantCompany.Services.Forecast
                 .ToList();
 
             return forecastList;
-        }
-
-        private Dictionary<(int ProductId, DateTime Month), int> aggregateResults(List<SalesDTO> sales)
-        {
-            //sales = sales ?? _sales;
-            var aggregated = sales
-                .GroupBy(s => new { s.ProductID, Year = s.DateTime.Year, Month = s.DateTime.Month })
-                .ToDictionary(
-                    g => (g.Key.ProductID, new DateTime(g.Key.Year, g.Key.Month, 1)),
-                    g => g.Sum(s => s.Quantity)
-                );
-
-            return aggregated;
         }
     }
 }

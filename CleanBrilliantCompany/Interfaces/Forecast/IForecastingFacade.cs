@@ -6,7 +6,7 @@ namespace CleanBrilliantCompany.Interfaces.Forecast
 {
     public interface IForecastingFacade
     {
-        List<ForecastMetrics> generateStockForecast(List<SalesDTO>sales,DateTime selectedMonth);
-        List<ForecastMetrics> generatePriceScenario();
+        List<ForecastMetrics> generateStockForecast(DateTime selectedMonth);
+        List<ForecastMetrics> generatePriceScenario(DateTime selectedMonth, int adjustmentFactor);
     }
 }

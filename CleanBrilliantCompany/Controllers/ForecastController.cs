@@ -37,7 +37,7 @@ public class ForecastController : Controller
     }
 
     [HttpPost("generateForecast")]
-    public IActionResult GenerateForecast(string type, string month)
+    public IActionResult GenerateForecast(string type, string month, int? priceAdjustment)
     {
         // Append "-01" to convert the month string into a full date (e.g., "2025-03-01")
         if (!DateTime.TryParse(month + "-01", out DateTime forecastMonth))
@@ -47,7 +47,7 @@ public class ForecastController : Controller
 
         // Generate your forecast dashboard using forecastMonth
         ForecastDashboard dashboard = _forecastControl.generateDashboard(
-            type, forecastMonth, forecastMonth.AddMonths(1).AddDays(-1)
+            type, forecastMonth, forecastMonth.AddMonths(1).AddDays(-1), priceAdjustment
         );
 
         return View("FetchDashboardData", dashboard);

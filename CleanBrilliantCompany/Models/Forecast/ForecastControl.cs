@@ -9,7 +9,6 @@ namespace CleanBrilliantCompany.Models.Forecast
     {
         private readonly IForecastRepository forecastRepository;
         private readonly IForecastingFacade forecastingFacade;
-        private readonly ISales isale; //simulated interface
         private ForecastDashboard dashboard;
         //to be replaced
 
@@ -21,7 +20,6 @@ namespace CleanBrilliantCompany.Models.Forecast
         {
             this.forecastRepository = forecastRepository;
             this.forecastingFacade = forecastingFacade;
-            this.isale = isale;
 
             getLatestDashboard();
         }
@@ -32,13 +30,12 @@ namespace CleanBrilliantCompany.Models.Forecast
             this.dashboard = dashboard;
         }
 
-        public ForecastDashboard generateDashboard(String type, DateTime startDate, DateTime endDate)
+        public ForecastDashboard generateDashboard(String type, DateTime startDate, DateTime endDate, int? adjustmentFactor)
         {
-            var sales = isale.getSalesData();
             List<ForecastMetrics> metricList = type switch
             {
-                "price" => forecastingFacade.generatePriceScenario(),
-                "stock" => forecastingFacade.generateStockForecast(sales, startDate),
+                "price" => forecastingFacade.generatePriceScenario(startDate, adjustmentFactor ?? 0),
+                "stock" => forecastingFacade.generateStockForecast(startDate),
                 _ => new List<ForecastMetrics>(), // Default to empty if type is invalid
             };
             this.dashboard = new ForecastDashboard(startDate, endDate, metricList);

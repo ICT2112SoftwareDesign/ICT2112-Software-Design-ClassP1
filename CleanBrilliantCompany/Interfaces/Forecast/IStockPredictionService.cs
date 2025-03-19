@@ -5,6 +5,6 @@ namespace CleanBrilliantCompany.Interfaces.Forecast
 {
     public interface IStockPredictionService
     {
-        public List<ForecastMetrics> generateStockPrediction(List<SalesDTO> sales, DateTime selectedMonth, List<ProductDTO> productList);
+        public List<ForecastMetrics> generateStockPrediction(Dictionary<int, int> aggregatedSales, List<ProductDTO> productList);
     }
 }
