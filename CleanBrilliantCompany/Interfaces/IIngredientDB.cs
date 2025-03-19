@@ -1,15 +1,16 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CleanBrilliantCompany.Models.Entity;
-using CleanBrilliantCompany.Models.Control;
 
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface IIngredientDB
     {
-        List<Ingredient> FindIngredients();
-        Ingredient FindIngredientsbyID(int id);
-        void InsertIngredient(Ingredient ingredient);
-        void UpdateIngredient(Ingredient ingredient);
-        void DeleteIngredient(int id);
+        Task<List<IngredientSDM>> FindIngredients();
+        Task<IngredientSDM> FindIngredientsbyID(int id);
+        Task<List<IngredientSDM>> FindIngredientsByProductID(int productId);
+        Task InsertIngredient(IngredientSDM ingredient);
+        Task UpdateIngredient(IngredientSDM ingredient);
+        Task DeleteIngredient(int id);
     }
 }

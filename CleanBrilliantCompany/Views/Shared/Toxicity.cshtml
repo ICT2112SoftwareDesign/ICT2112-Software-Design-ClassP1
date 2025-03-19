@@ -1,0 +1,62 @@
+@model CleanBrilliantCompany.Models.ToxicityReport
+
+@{
+    ViewData["Title"] = "Toxicity Analysis";
+}
+
+<div class="container">
+    <h2 class="my-4">Ingredient Toxicity Analysis</h2>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Add New Ingredient</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" asp-controller="Toxicity" method="post">
+                <div class="form-group mb-3">
+                    <label for="IngredientName">Ingredient Name</label>
+                    <input name="IngredientName" id="IngredientName" class="form-control" required />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="IngredientToxicity">Toxicity Level (0.0-1.0)</label>
+                    <input type="number" step="0.1" min="0" max="1" name="IngredientToxicity" id="IngredientToxicity" class="form-control" required />
+                    <small class="form-text text-muted">Enter a value between 0 (non-toxic) and 1 (highly toxic)</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Analyze</button>
+            </form>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Ingredients != null && Model.Ingredients.Any())
+    {
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Analysis Result</h5>
+            </div>
+            <div class="card-body">
+                <h4>@Model.ProductName</h4>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Toxicity Score</th>
+                            <th>Classification</th>
+                            <th>Safety Recommendation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Model.OverallToxicityScore.ToString("F2")</td>
+                            <td>
+                                <span class="badge @(Model.ToxicityClassification.Contains("High") ? "bg-danger" : 
+                                                    Model.ToxicityClassification.Contains("Moderate") ? "bg-warning" : "bg-success")">
+                                    @Model.ToxicityClassification
+                                </span>
+                            </td>
+                            <td>@Model.SafetyRecommendation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

@@ -1,7 +1,4 @@
-using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.Entity;
-using CleanBrilliantCompany.Models.Control;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanBrilliantCompany.Data
@@ -10,6 +7,24 @@ namespace CleanBrilliantCompany.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<IngredientSDM> Ingredients { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configure the Ingredient entity
+            modelBuilder.Entity<IngredientSDM>()
+                .HasKey(i => i.IngredientId);
+
+            modelBuilder.Entity<IngredientSDM>()
+                .Property(i => i.IngredientName)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<IngredientSDM>()
+                .Property(i => i.IngredientToxicity)
+                .IsRequired();
+        }
     }
 }

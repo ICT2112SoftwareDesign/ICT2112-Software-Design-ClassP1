@@ -4,6 +4,7 @@ using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Models.Control;
+using CleanBrilliantCompany.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register async dependencies
 builder.Services.AddScoped<IIngredientDB, IngredientGateway>();
+builder.Services.AddScoped<IToxicityClassificationStrategy, StandardToxicityClassificationStrategy>();
 builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 
 var app = builder.Build();
@@ -35,7 +39,6 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "toxicity",
     pattern: "toxicity",
-    defaults: new { controller = "ToxicityPage", action = "Index" });
-
+    defaults: new { Controller = "Toxicity", action = "Index" });
 
 app.Run();

@@ -1,0 +1,188 @@
+@model CleanBrilliantCompany.Models.ToxicityReport
+
+@{
+    ViewData["Title"] = "Ingredient Toxicity Analysis";
+}
+
+<div class="container">
+    <h2 class="my-4">Ingredient Toxicity Analysis</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Select Product</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="@Url.Action("ViewByProduct", "Toxicity")">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="productId">Select Product:</label>
+                                    <select id="productId" name="productId" class="form-control">
+                                        <option value="2">Eco-Friendly Shampoo</option>
+                                        <option value="14">Product sp9</option>
+                                        <option value="18">Product sp1</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary">View Toxicity Analysis</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Add New Ingredient</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" asp-controller="Toxicity" method="post">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="IngredientName">Ingredient Name</label>
+                                    <input name="IngredientName" id="IngredientName" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="IngredientToxicity">Toxicity Level (0.0-1.0)</label>
+                                    <input type="number" step="0.1" min="0" max="1" name="IngredientToxicity" id="IngredientToxicity" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="ProductId">Product ID</label>
+                                    <input type="number" name="ProductId" id="ProductId" class="form-control" value="2" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="ThresholdQuantity">Threshold Quantity</label>
+                                    <input type="number" name="ThresholdQuantity" id="ThresholdQuantity" class="form-control" value="50" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="MeasurementUnit">Measurement Unit</label>
+                                    <input type="text" name="MeasurementUnit" id="MeasurementUnit" class="form-control" value="ml" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary">Analyze</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Ingredients != null && Model.Ingredients.Any())
+    {
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Product Toxicity Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <h4>@Model.ProductName</h4>
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <div class="alert @(Model.ToxicityClassification.Contains("High") ? "alert-danger" : 
+                                                  Model.ToxicityClassification.Contains("Moderate") ? "alert-warning" : "alert-success")">
+                                    <h5>Overall Toxicity: @Model.OverallToxicityScore.ToString("F2")</h5>
+                                    <p><strong>Classification:</strong> @Model.ToxicityClassification</p>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="alert alert-info">
+                                    <h5>Safety Recommendation:</h5>
+                                    <p>@Model.SafetyRecommendation</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Ingredient Breakdown</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ingredient Name</th>
+                                    <th>Toxicity Level</th>
+                                    <th>Classification</th>
+                                    <th>Threshold Quantity</th>
+                                    <th>Measurement Unit</th>
+                                    <th>Reorder Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ingredient in Model.Ingredients)
+                                {
+                                    <tr>
+                                        <td>@ingredient.IngredientId</td>
+                                        <td>@ingredient.IngredientName</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar @(ingredient.IngredientToxicity >= 0.7 ? "bg-danger" : 
+                                                                          ingredient.IngredientToxicity >= 0.3 ? "bg-warning" : "bg-success")" 
+                                                     role="progressbar" 
+                                                     style="width: @(ingredient.IngredientToxicity * 100)%" 
+                                                     aria-valuenow="@(ingredient.IngredientToxicity * 100)" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
+                                                    @(ingredient.IngredientToxicity.ToString("P0"))
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @{
+                                                string classification = ingredient.IngredientToxicity >= 0.7 ? "High" : 
+                                                                       ingredient.IngredientToxicity >= 0.3 ? "Moderate" : "Low";
+                                                string badgeClass = ingredient.IngredientToxicity >= 0.7 ? "bg-danger" : 
+                                                                   ingredient.IngredientToxicity >= 0.3 ? "bg-warning" : "bg-success";
+                                            }
+                                            <span class="badge @badgeClass">@classification Toxicity</span>
+                                        </td>
+                                        <td>@ingredient.ThresholdQuantity</td>
+                                        <td>@ingredient.MeasurementUnit</td>
+                                        <td>
+                                            @if (ingredient.ReorderStatus)
+                                            {
+                                                <span class="badge bg-danger">Reorder Required</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">In Stock</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
