@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
+using System.Text.Json;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -78,8 +79,16 @@ namespace CleanBrilliantCompany.Controllers
          // Method to start chat session and return current chat history
         public IActionResult startChatSession()
         {
-            var chatHistory = HttpContext.Session.GetString("ChatHistory") ?? "";
+            string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
+
+            // Check if JSON exists and is not empty
+            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson) 
+                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson) 
+                : new List<Dictionary<string, string>>();
+
+            // Pass the chat history to the ViewBag
             ViewBag.ChatHistory = chatHistory;
+            
             return View("~/Views/Support/Chatbot.cshtml");
         }
 
@@ -91,10 +100,27 @@ namespace CleanBrilliantCompany.Controllers
 
             string botResponse = _supportManagement.handleCustomerChatbotQuery(query);
 
-            // Store the conversation history in session
-            var chatHistory = HttpContext.Session.GetString("ChatHistory") ?? "";
-            chatHistory += $"You: {query}\nBot: {botResponse}\n";
-            HttpContext.Session.SetString("ChatHistory", chatHistory);
+            string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
+
+            // Check if JSON is null or empty before deserialization
+            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson) 
+                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson) 
+                : new List<Dictionary<string, string>>();
+
+            // Create separate dictionaries for user and bot messages
+            var userMessage = new Dictionary<string, string> { { "user", query } };
+            var botMessage = new Dictionary<string, string> { { "bot", botResponse } };
+
+            // Add both messages to chat history
+            chatHistory.Add(userMessage);
+            chatHistory.Add(botMessage);
+
+            // Print for debugging
+            Console.WriteLine("Chat History: " + JsonSerializer.Serialize(chatHistory));
+
+            // Store updated chat history back in session
+            HttpContext.Session.SetString("ChatHistory", JsonSerializer.Serialize(chatHistory));
+
 
             return RedirectToAction("startChatSession");
         }
