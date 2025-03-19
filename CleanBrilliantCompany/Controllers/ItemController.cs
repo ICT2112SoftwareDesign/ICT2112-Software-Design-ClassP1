@@ -20,7 +20,7 @@ namespace CleanBrilliantCompany.Controllers
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
             if (searchedItemId != null)
             {
-                Item item = await _itemControl.getItem(searchedItemId.Value);
+                Item item = await _itemControl.getItemById(searchedItemId.Value);
                 itemsInfo.Add(item.retrieveItemInfo());
             }
             else

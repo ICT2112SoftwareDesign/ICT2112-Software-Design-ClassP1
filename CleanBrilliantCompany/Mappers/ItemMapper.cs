@@ -88,8 +88,8 @@ namespace CleanBrilliantCompany.Mappers
             return items;
         }
 
-        // get 1 item (dk if we need to use this method)
-        public Item getItem(int itemId)
+        // get 1 item 
+        public Item getItemById(int itemId)
         {
             Item item = null;
 

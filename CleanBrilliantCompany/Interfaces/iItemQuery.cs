@@ -6,7 +6,7 @@ namespace CleanBrilliantCompany.Interfaces
     {
         Task<List<Item>> getAllItems(); 
 
-        Task<Item> getItem(int itemId);
+        Task<Item> getItemById(int itemId);
 
     }
 }

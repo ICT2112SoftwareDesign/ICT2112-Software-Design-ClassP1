@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : iItemQuery
+    public class ItemControl : iItemQuery, iItemUpdate, iItem
     {
         private readonly ItemMapper _itemMapper;
 
@@ -23,9 +23,9 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getAllItems()); // mapper uses iItemQuery to interact with control 
         }
 
-        public async Task<Item> getItem(int itemId)
+        public async Task<Item> getItemById(int itemId)
         {
-            return await Task.FromResult(_itemMapper.getItem(itemId));
+            return await Task.FromResult(_itemMapper.getItemById(itemId));
         }
 
         public async Task<bool> createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
