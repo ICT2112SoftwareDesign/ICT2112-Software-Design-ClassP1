@@ -45,7 +45,12 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 // Define the SQL query to retrieve items
-                string query = "SELECT itemId, productId, salePrice, batchCode, warehouseId, itemStatus, reservationId, orderId, transferId, returnId FROM Item";
+                string query = @"
+                    SELECT itemId, Item.productId, Product.productName, salePrice, Item.batchCode, itemStatus, 
+                        ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
+                    FROM Item
+                    INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
+                    INNER JOIN Product ON Item.productId = Product.productId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -70,7 +75,9 @@ namespace CleanBrilliantCompany.Mappers
                                     reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
                                     reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
                                     reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
-                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetDateTime(reader.GetOrdinal("expiryDate"))
                                 );
 
                                 // Add the item to the list
@@ -170,7 +177,7 @@ namespace CleanBrilliantCompany.Mappers
         // update item sales price 
         public bool updateItem(int itemId, float salesPrice)
         {
-            
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -191,7 +198,7 @@ namespace CleanBrilliantCompany.Mappers
 
         public bool updateItemStatus(int itemId, ItemStatus status)
         {
-            
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -209,5 +216,6 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
+
     }
 }

@@ -10,6 +10,8 @@ namespace CleanBrilliantCompany.Models.Control
     {
         private readonly ItemMapper _itemMapper;
 
+        private readonly ProductControl _productControl;
+
         // Constructor that takes the connection string
         public ItemControl(string connectionString)
         {
@@ -42,5 +44,10 @@ namespace CleanBrilliantCompany.Models.Control
         {
             return await Task.FromResult(_itemMapper.updateItemStatus(itemId, status));
         }
+
+        
+        // public Product getProductDetails(int productId) {
+            
+        // }
     }
 }
