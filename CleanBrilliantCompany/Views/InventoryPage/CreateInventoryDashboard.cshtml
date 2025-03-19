@@ -1,0 +1,12 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Create Inventory Dashboard";
+}
+
+<h1>Create Inventory Dashboard</h1>
+<form asp-action="CreateDashboard" method="post">
+    <label>Start Date: <input type="date" name="startDate" required /></label><br />
+    <label>End Date: <input type="date" name="endDate" required /></label><br />
+    <label>Level of Detail: <input type="number" name="levelOfDetail" min="1" value="1" /></label><br />
+    <button type="submit">Create</button>
+</form>

@@ -1,76 +1,122 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Interface;
 
 namespace CleanBrilliantCompany.Control
 {
     public class InventoryControl
     {
-        private readonly InventoryDashboardRDM _inventoryDashboard;
+        private readonly IInventoryRepository _inventoryRepository;
 
-        public InventoryControl(InventoryDashboardRDM inventoryDashboard)
+        public InventoryControl(IInventoryRepository inventoryRepository)
         {
-            _inventoryDashboard = inventoryDashboard ?? throw new ArgumentNullException(nameof(inventoryDashboard));
+            _inventoryRepository = inventoryRepository ?? throw new ArgumentNullException(nameof(inventoryRepository));
+        }
+
+        public void CreateDashboard(string name, DateTime startDate, DateTime endDate, int validityDuration)
+        {
+            var newDashboard = new InventoryDashboardRDM(name, startDate, endDate, validityDuration);
+            _inventoryRepository.SaveDashboard(newDashboard);
         }
 
         public InventoryDashboardRDM FetchDashboard()
         {
-            return _inventoryDashboard;
+            var dashboard = _inventoryRepository.GetLatestDashboard();
+            if (dashboard == null)
+            {
+                throw new InvalidOperationException("No dashboard available. Please create a dashboard first.");
+            }
+            return dashboard;
         }
 
         public void UpdateDashboard(Dictionary<int, int> stockUpdates)
         {
-            // Fetch latest stock data
+            var dashboard = FetchDashboard();
             Dictionary<int, int> latestStockLevels = FetchLatestStockLevels();
             Dictionary<int, int> latestThresholds = FetchLatestThresholds();
 
-            // Update InventoryDashboardRDM with latest values
-            _inventoryDashboard.updateDashboardData(latestStockLevels, latestThresholds);
+            dashboard.UpdateDashboardData(latestStockLevels, latestThresholds);
+            dashboard.UpdateReplenishmentStatus();
 
-            // Recalculate replenishment statuses
-            _inventoryDashboard.updateReplenishmentStatus();
-
+            _inventoryRepository.SaveDashboard(dashboard);
             Console.WriteLine("Dashboard updated with latest stock and threshold values.");
+        }
+
+        public string GenerateReport()
+        {
+            var dashboard = FetchDashboard();
+            var lowStock = CheckLowStock();
+            var overStock = CheckOverStock();
+
+            var report = new StringBuilder();
+            report.AppendLine($"<h1>Inventory Report - {dashboard.Name}</h1>");
+            report.AppendLine($"<p>Period: {dashboard.RequestedStartDate} to {dashboard.RequestedEndDate}</p>");
+            report.AppendLine("<h2>Stock Levels</h2><ul>");
+            foreach (var stock in dashboard.GetAllStockLevels())
+            {
+                report.AppendLine($"<li>Product {stock.Key}: {stock.Value} units (Threshold: {dashboard.GetThreshold(stock.Key)})</li>");
+            }
+            report.AppendLine("</ul>");
+            report.AppendLine("<h2>Low Stock Products</h2><ul>");
+            foreach (var productId in lowStock)
+            {
+                report.AppendLine($"<li>Product {productId}: {dashboard.GetStockLevel(productId)} (below threshold {dashboard.GetThreshold(productId)})</li>");
+            }
+            report.AppendLine("</ul>");
+            report.AppendLine("<h2>Over Stock Products</h2><ul>");
+            foreach (var productId in overStock)
+            {
+                report.AppendLine($"<li>Product {productId}: {dashboard.GetStockLevel(productId)} (above threshold {dashboard.GetThreshold(productId)})</li>");
+            }
+            report.AppendLine("</ul>");
+
+            Console.WriteLine("Report generated.");
+            return report.ToString();
         }
 
         private Dictionary<int, int> FetchLatestStockLevels()
         {
-            return new Dictionary<int, int>(_inventoryDashboard.GetAllStockLevels());
+            var dashboard = FetchDashboard();
+            return new Dictionary<int, int>(dashboard.GetAllStockLevels());
         }
 
         private Dictionary<int, int> FetchLatestThresholds()
         {
-            return new Dictionary<int, int>(_inventoryDashboard.GetAllThresholds());
+            var dashboard = FetchDashboard();
+            return new Dictionary<int, int>(dashboard.GetAllThresholds());
         }
 
         public List<int> CheckLowStock()
         {
-            return _inventoryDashboard
-                .GetAllStockLevels()
-                .Where(stock => stock.Value < _inventoryDashboard.GetThreshold(stock.Key))
+            var dashboard = FetchDashboard();
+            return dashboard.GetAllStockLevels()
+                .Where(stock => stock.Value < dashboard.GetThreshold(stock.Key))
                 .Select(stock => stock.Key)
                 .ToList();
         }
 
         public List<int> CheckOverStock()
         {
-            return _inventoryDashboard
-                .GetAllStockLevels()
-                .Where(stock => stock.Value > _inventoryDashboard.GetThreshold(stock.Key) * 1.5)
+            var dashboard = FetchDashboard();
+            return dashboard.GetAllStockLevels()
+                .Where(stock => stock.Value > dashboard.GetThreshold(stock.Key) * 1.5)
                 .Select(stock => stock.Key)
                 .ToList();
         }
 
         public List<int> GenerateReplenishmentActions()
         {
-            return CheckLowStock(); // Replenishment actions = all low-stock products
+            return CheckLowStock();
         }
 
         public List<int> PrioritiseReplenishment()
         {
+            var dashboard = FetchDashboard();
             return CheckLowStock()
-                .OrderBy(productId => _inventoryDashboard.GetStockLevel(productId))
+                .OrderBy(productId => dashboard.GetStockLevel(productId))
                 .ToList();
         }
 

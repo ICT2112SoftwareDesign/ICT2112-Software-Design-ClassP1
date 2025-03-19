@@ -59,7 +59,7 @@ public abstract class Dashboard
     public DateTime? GeneratedDate
     {
         get => _generatedDate;
-        protected set
+        /* protected */ set
         {
             if (value.HasValue && value < _requestedStartDate)
                 throw new ArgumentException("Generated date cannot be earlier than start date.");

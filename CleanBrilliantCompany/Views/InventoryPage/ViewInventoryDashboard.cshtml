@@ -1,0 +1,16 @@
+@using CleanBrilliantCompany.Models
+@{
+    ViewData["Title"] = "View Inventory Dashboard";
+    var dashboard = ViewData["Dashboard"] as InventoryDashboardRDM;
+}
+
+<h1>Inventory Dashboard (ID: @dashboard.GetDashboardId())</h1>
+<ul>
+    @foreach (var stock in dashboard.GetAllStockLevels())
+    {
+        <li>Product @stock.Key: @stock.Value units (Threshold: @dashboard.GetThreshold(stock.Key))</li>
+    }
+</ul>
+<form asp-action="GenerateReport" method="post">
+    <button type="submit">Generate Report</button>
+</form>
