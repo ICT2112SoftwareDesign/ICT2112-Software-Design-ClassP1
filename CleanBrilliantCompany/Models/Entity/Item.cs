@@ -1,3 +1,5 @@
+using CleanBrilliantCompany.Interfaces;
+
 namespace CleanBrilliantCompany.Models.Entity
 {
     public enum ItemStatus
@@ -8,7 +10,7 @@ namespace CleanBrilliantCompany.Models.Entity
         Refunded
     }
 
-    public class Item
+    public class Item : ISubject
     {
         // Private fields
         private int ItemId;
@@ -21,6 +23,26 @@ namespace CleanBrilliantCompany.Models.Entity
         private int? OrderId;
         private int? TransferId;
         private int? ReturnId;
+
+        private List<IObserver> _observers = new List<IObserver>();
+
+        // public ItemStatus StatusChange
+        // {
+        //     get => ItemStatus;
+            
+        // // }
+        // public string StatusChange
+        // {
+        //     get => ItemStatus.ToString(); //convert the enum into string
+        //     set 
+        //     {
+        //         if (ItemStatus.ToString() != value)
+        //         {
+        //             // ItemStatus = value;
+        //             Notify();
+        //         }
+        //     }
+        // }
 
         // Constructor to initialize the private fields
         public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
@@ -100,6 +122,43 @@ namespace CleanBrilliantCompany.Models.Entity
         private void setOrderId(int? orderId) => OrderId = orderId;
         private void setTransferId(int? transferId) => TransferId = transferId;
         private void setReturnId(int? returnId) => ReturnId = returnId;
+
+        public void Attach(IObserver observer)
+        {
+            Console.WriteLine("Called Attach Observer method");
+            _observers.Add(observer);
+            Console.WriteLine("Observer has been added Line 130");
+
+        }
+
+        public void Detach(IObserver observer)
+        {
+            _observers.Remove(observer);
+
+        }
+
+        public void Notify()
+        {
+            foreach (var observer in _observers)
+            {
+                observer.Update(this); //  Pass the Item object instead of a string
+            }        
+        }
+
+        public void UpdateStatus(ItemStatus newStatus)
+    {
+        Console.WriteLine("Entered UpdateStatus");
+        Console.WriteLine($"Current ItemStatus: {ItemStatus}");
+        Console.WriteLine($"New ItemStatus: {newStatus}");
+ 
+        ItemStatus = newStatus;
+
+        Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
+        Console.WriteLine($"Calling Notify() in Item.cs file");
+
+        Notify();
+
+    }
 
         public Item() { } // dk if need anot 
     }

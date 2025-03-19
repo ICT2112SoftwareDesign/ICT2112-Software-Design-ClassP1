@@ -11,9 +11,14 @@ using CleanBrilliantCompany.Models.Mapper;
 
 namespace CleanBrilliantCompany.Models.Control{
     //public class TransactionControl : iTransactionQuery --> !Comment out first since i have not created the interface for iTQ
-    public class TransactionControl : iTransactionQuery
+    public class TransactionControl : iTransactionQuery , IObserver
 
     {
+
+        public void Update(Item item)
+        {
+            Console.WriteLine($"[Notification] Sending alert: Item Status Changed");
+        }
 
         private readonly TransactionMapper _transactionMapper;
         //For now, getTransactions are set to void returns as they are not used for further processing
