@@ -1,22 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using CleanBrilliantCompany.Services;
+using CleanBrilliantCompany.Models;
 using System.Collections.Generic;
 
-public class ShippingAgentController : Controller
+namespace CleanBrilliantCompany.Controllers
 {
-    private readonly ShippingAgentDB _shippingAgentDB;
-
-    public ShippingAgentController(ShippingAgentDB shippingAgentDB)
+    public class ShippingAgentController : Controller
     {
-        _shippingAgentDB = shippingAgentDB;
-    }
+        private readonly IShippingAgentService _shippingAgentService;
 
-    public IActionResult Index()
-    {
-        var model = new ShippingAgentViewModel
+        public ShippingAgentController(IShippingAgentService shippingAgentService)
         {
-            ShippingAgents = _shippingAgentDB.FetchShippingAgents()
-        };
+            _shippingAgentService = shippingAgentService;
+        }
 
-        return View(model);
+        public async Task<IActionResult> Index()
+        {
+            var model = new ShippingAgentViewModel
+            {
+                ShippingAgents = await _shippingAgentService.GetShippingAgentsAsync() ?? new List<ShippingAgent>()
+            };
+
+            return View(model);
+        }
     }
 }
