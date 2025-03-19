@@ -1,0 +1,83 @@
+@model List<CleanBrilliantCompany.Models.Entity.ProductBatch>
+ @* @model CleanBrilliantCompany.Models.ViewModel.BatchDetailsViewModel *@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Product Batch Listings</title>
+</head>
+<body>
+    
+    <h2>Product Batch Listings</h2>
+    <!-- Form to Enter Product ID -->
+    <form method="post" asp-action="FetchBatch">
+        <h3>Fetch Product Batch</h3>
+        <label>Product Batch Code:</label>
+        <input type="number" name="batchCode" required />
+        <button type="submit">Fetch Product</button>
+    </form>
+
+    <form method="post" asp-action="FetchBatchStockHistory">
+        <h3>Fetch Batch Stock History</h3>
+        <label>Product Batch Code:</label>
+        <input type="number" name="batchCode" required />
+        <button type="submit">Fetch Batch History</button>
+    </form>
+
+    <form method="post" asp-action="CreateProductBatch">
+        <h3>Create Product Batch</h3>
+
+        <label>Product ID:</label>
+        <input type="number" name="ProductId" required /><br> 
+
+        <label>Expiry Date:</label>
+        <input type="date" name="ExpiryDate" required /><br> 
+
+        <label>Receive Date:</label>
+        <input type="date" name="ReceiveDate" required /><br> 
+
+        <label>Manufacture Date:</label>
+        <input type="date" name="ManufactureDate" required /><br> 
+
+        <label>Quantity:</label>
+        <input type="number" name="Quantity" required /><br>
+
+        <label>Batch Cost:</label>
+        <input type="number" step="0.01" name="BatchCost" required /><br> 
+
+        <button type="submit">Create Batch</button>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <table border="1">
+            <tr>
+                <th>Batch Code</th>
+                <th>Product ID</th>
+                <th>Expiry Date</th>
+                <th>Receive Date</th>
+                <th>Manufacture Date</th>
+                <th>Quantity</th>
+                <th>Batch Cost</th>
+            </tr>
+            @foreach (var batch in Model)
+            {
+                <tr>
+                    <td>@batch.BatchCode</td>
+                    <td>@batch.ProductId</td>
+                    <td>@batch.ExpiryDate.ToString("yyyy-MM-dd")</td>
+                    <td>@batch.ReceiveDate.ToString("yyyy-MM-dd")</td>
+                    <td>@batch.ManufactureDate.ToString("yyyy-MM-dd")</td>
+                    <td>@batch.Quantity</td>
+                    <td>$@batch.BatchCost</td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>No product batches available.</p>
+    }
+</body>
+</html>
