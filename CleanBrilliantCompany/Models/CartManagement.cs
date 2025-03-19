@@ -43,8 +43,6 @@ namespace CleanBrilliantCompany.Models
          // Adds a product to the cart
         public bool AddToCart(int customerID, int productId, int quantity)
         {
-            Console.WriteLine($"AddToCart called with customerID: {customerID}, productId: {productId}, quantity: {quantity}");
-            
             var productDetails = productService.GetProductDetails(productId);
             if (productDetails != null)
             {
@@ -97,7 +95,6 @@ namespace CleanBrilliantCompany.Models
 
             public bool RemoveFromCart(int customerID, int productId)
         {
-            Console.WriteLine($"RemoveFromCart called with customerID: {customerID}, productId: {productId}");
 
             // Load the cart from the database into the in-memory cart
             if (cartDatabase.GetCart(customerID, out var cartData))
@@ -106,14 +103,12 @@ namespace CleanBrilliantCompany.Models
             }
             else
             {
-                Console.WriteLine($"No cart data found for customer {customerID}. Cannot remove product.");
                 return false;
             }
 
             // Check if the product exists in the in-memory cart
             if (cartRDM.HasProduct(productId))
             {
-                Console.WriteLine($"Product {productId} found in cart for customer {customerID}. Removing product.");
 
                 // Remove the product from the in-memory cart
                 cartRDM.RemoveProduct(productId);
@@ -122,17 +117,11 @@ namespace CleanBrilliantCompany.Models
                 var success = cartDatabase.RemoveFromCart(customerID, productId);
                 if (success)
                 {
-                    Console.WriteLine("Product removed successfully from the database.");
                     NotifyObservers();
-                }
-                else
-                {
-                    Console.WriteLine("Failed to remove product from the database.");
                 }
                 return success;
             }
 
-            Console.WriteLine($"Product {productId} not found in cart for customer {customerID}. No changes made.");
             return false;
         }
 

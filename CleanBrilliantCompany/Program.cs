@@ -22,8 +22,10 @@ builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<ChatbotService>();
 builder.Services.AddScoped<IProduct, ProductsRepository>(); 
 builder.Services.AddTransient<OrderManagement>();
+//builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString));
 builder.Services.AddTransient<CartManagement>();
 builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
+
 
 var app = builder.Build();
 

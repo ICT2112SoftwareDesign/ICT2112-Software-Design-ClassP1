@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -320,6 +323,93 @@ namespace CleanBrilliantCompany.Controllers
 
             var productDetails = product.GetProductDetails();
             return View("~/Views/Products/ProductDetails.cshtml", productDetails);
+        }
+
+
+
+        // ORDER INPUT CONTROLLER METHODS
+
+        [HttpGet]
+        public IActionResult Checkout()
+        {
+            // Retrieve customer ID from the session
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Load the cart for the customer
+            var cart = _cartManagement.ViewCart(customerID.Value);
+            if (cart == null || !cart.Any())
+            {
+                TempData["Error"] = "Your cart is empty.";
+                return RedirectToAction("GetAllProducts", "CustomerPage");
+            }
+
+            // Load product details into ViewBag
+            var products = new Dictionary<int, Dictionary<string, object>>();
+            foreach (var item in cart)
+            {
+                var product = _productService.GetProductDetails(item.Key);
+                if (product != null)
+                {
+                    products[item.Key] = product.GetProductDetails();
+                }
+            }
+
+            ViewBag.Products = products; // Product details (e.g., name, price)
+            ViewBag.Cart = cart;         // Cart items (product ID and quantity)
+            ViewBag.CartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
+
+         return View("~/Views/Order/Checkout.cshtml");
+        }
+        [HttpPost]
+        public IActionResult Checkout(string deliveryType, string deliveryAddress)
+        {
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            var cart = _cartManagement.ViewCart(customerID.Value);
+            if (cart == null || !cart.Any())
+            {
+                TempData["Error"] = "Your cart is empty.";
+                return RedirectToAction("GetAllProducts", "CustomerPage");
+            }
+
+            // Calculate the shipping fee
+            var deliveryCosts = new Dictionary<string, decimal>
+            {
+                { "Next Day Delivery", 10.00m },
+                { "Three Day Delivery", 5.00m },
+                { "One Week Delivery", 0.00m }
+            };
+
+            if (!deliveryCosts.ContainsKey(deliveryType))
+            {
+                TempData["Error"] = "Invalid delivery type selected.";
+                return RedirectToAction("Checkout");
+            }
+
+            decimal shippingFee = deliveryCosts[deliveryType];
+            decimal cartTotal = cart.Sum(item =>
+            {
+                var product = _productService.GetProductDetails(item.Key);
+                return Convert.ToDecimal(product.GetProductDetails()["CostPrice"]) * item.Value;
+            });
+
+            ViewBag.ShippingFee = shippingFee;
+            ViewBag.CartTotal = cartTotal;
+            ViewBag.FinalTotal = cartTotal + shippingFee;
+            ViewBag.CustomerAddress = deliveryAddress;
+
+            TempData["Success"] = "Address and delivery type confirmed.";
+            return View("~/Views/Order/Checkout.cshtml");
         }
     }
 }
