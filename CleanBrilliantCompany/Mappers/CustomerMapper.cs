@@ -15,6 +15,34 @@ namespace CleanBrilliantCompany.Mappers
             _connectionString = connectionString;
         }
 
+        // Login
+        
+        public bool VerifyCustomerCredentials(string email, string password)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Step 1: Get stored hashed password based on email
+                string query = "SELECT password FROM dbo.Customer WHERE email = @Email";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+
+                    var storedPasswordHash = command.ExecuteScalar()?.ToString();
+
+                    if (string.IsNullOrEmpty(storedPasswordHash))
+                        return false; 
+                        
+                    var passwordHasher = new PasswordHasher<object>();
+                    var result = passwordHasher.VerifyHashedPassword(null, storedPasswordHash, password);
+
+                    return result == PasswordVerificationResult.Success;
+                }
+            }
+        }
+
+        // Register
         public bool createCustomer(string username, string password, string email)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -40,6 +68,27 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
+
+        // To check if customer exists 
+        public bool CustomerExists(string email)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT COUNT(1) FROM dbo.Customer WHERE email = @Email";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
+
+        // For session
         public int GetIdByEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -109,18 +158,18 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-
-        public bool CustomerExists(string email)
-        {
+        // For update feature
+        public bool customerUsernameExists(int customerId, string username){
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string query = "SELECT COUNT(1) FROM dbo.Customer WHERE email = @Email";
+                string query = "SELECT COUNT(1) FROM dbo.Customer WHERE username = @Username AND customerId != @CustomerId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@CustomerId", customerId);
 
                     int count = (int)command.ExecuteScalar();
                     return count > 0;
@@ -128,35 +177,48 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public bool updateCustomer(int customerId, string field, string value)
-        {
-            if (string.IsNullOrEmpty(field) || string.IsNullOrEmpty(value))
-            {
-                return false;
-            }
-
-            // Validate the field to prevent SQL injection
-            if (field != "username" && field != "email" && field != "customerAddress")
-            {
-                return false;
-            }
-
+        public bool customerEmailExists(int customerId, string email){
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                // Use dynamic SQL safely by validating the field name
-                string query = $"UPDATE dbo.Customer SET {field} = @Value WHERE customerID = @CustomerId";
+                string query = "SELECT COUNT(1) FROM dbo.Customer WHERE email = @Email AND customerId != @CustomerId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Value", value);
+                    command.Parameters.AddWithValue("@Email", email);
                     command.Parameters.AddWithValue("@CustomerId", customerId);
+
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
+        
+        public bool updateCustomerDetails(string username, string email, string address){
+            if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(address)){
+                return false;
+            }
+             using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    UPDATE dbo.Customer 
+                    SET username = @Username, email = @Email, customerAddress = @Address 
+                    WHERE email = @Email";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@Address", address);
 
                     int result = command.ExecuteNonQuery();
                     return result > 0;
                 }
             }
+
         }
 
         public bool notifyDBCustomerQueryStatus()
@@ -165,29 +227,5 @@ namespace CleanBrilliantCompany.Mappers
             return false;
         }
 
-        public bool VerifyCustomerCredentials(string email, string password)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                // Step 1: Get stored hashed password based on email
-                string query = "SELECT password FROM dbo.Customer WHERE email = @Email";
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-
-                    var storedPasswordHash = command.ExecuteScalar()?.ToString();
-
-                    if (string.IsNullOrEmpty(storedPasswordHash))
-                        return false; 
-                        
-                    var passwordHasher = new PasswordHasher<object>();
-                    var result = passwordHasher.VerifyHashedPassword(null, storedPasswordHash, password);
-
-                    return result == PasswordVerificationResult.Success;
-                }
-            }
-        }
     }
 }

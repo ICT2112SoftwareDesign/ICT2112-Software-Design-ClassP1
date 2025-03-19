@@ -31,7 +31,7 @@ namespace CleanBrilliantCompany.Controllers
 
         public IActionResult CustomerDetails()
         {
-            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;;
+            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
             var applicationController = new ApplicationController(_customerManagement, HttpContext.RequestServices.GetService<IHttpContextAccessor>());
 
             // Retrieve Customer Details via Session
@@ -41,6 +41,7 @@ namespace CleanBrilliantCompany.Controllers
             {
                 ViewBag.CustomerId = loggedInId;
                 ViewBag.Email = customerDetails.GetSession<string>("email");
+                ViewBag.Password = customerDetails.GetSession<string>("password");
                 ViewBag.Username = customerDetails.GetSession<string>("username");
                 ViewBag.CustomerAddress = customerDetails.GetSession<string>("customerAddress");
             }
@@ -64,36 +65,67 @@ namespace CleanBrilliantCompany.Controllers
             return View(cartItems);
         }
 
-        // [HttpPost]
-        // public IActionResult UpdateCustomerAddress(string fieldName, string fieldValue)
-        // {
-        //     if(fieldValue != null){
-        //         if(fieldName == "email"){
-                    
-        //         }
-        //         bool updateSuccessful = _customerManagement.UpdateCustomer(fieldName, fieldValue);
-        //     }
-            
-        //     string loggedInEmail = HttpContext.Session.GetString("LoggedInUserEmail");
-        //     var applicationController = new ApplicationController(_customerManagement, HttpContext.RequestServices.GetService<IHttpContextAccessor>());
+        [HttpPost]
+        public IActionResult updateCustomerDetails(string username, string email, string address)
+        {
+            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+            var applicationController = new ApplicationController(_customerManagement, HttpContext.RequestServices.GetService<IHttpContextAccessor>());
+            var customerDetails = applicationController.GetCustomerSession();
 
-        //     // Retrieve Customer Details via Session
-        //     var customerDetails = applicationController.GetCustomerSession();
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email))
+            {
+                ViewBag.Message = "Username and/or email cannot be empty";
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+            }
 
-        //     if (customerDetails != null)
-        //     {
-        //         ViewBag.CustomerId = customerDetails.GetSession<int>("customerId");
-        //         ViewBag.Email = loggedInEmail;
-        //         ViewBag.Username = customerDetails.GetSession<string>("username");
-        //         ViewBag.CustomerAddress = customerDetails.GetSession<string>("customerAddress");
-        //     }
-        //     else
-        //     {
-        //         ViewBag.Message = "No customer details available.";
-        //     }
+            bool isEmailChanged = email != customerDetails.GetSession<string>("email");
+            bool isUsernameChanged = username != customerDetails.GetSession<string>("username");
 
-        //     return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-        // }
+            if (isEmailChanged || isUsernameChanged)
+            {
+                var validationMessage = validateChanges(loggedInId, username, email, isEmailChanged, isUsernameChanged);
+                if (validationMessage != null)
+                {
+                    ViewBag.Message = validationMessage;
+                    CustomerDetails();
+                    return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+                }
+            }
+            bool updateSuccessful = _customerManagement.updateCustomerDetails(username, email, address);
+            if (updateSuccessful)
+            {
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+            }
+
+            ViewBag.Message = "Failed to update details.";
+            CustomerDetails();
+            return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+        }
+
+        // Check if username or email exists
+        private string validateChanges(int loggedInId, string username, string email, bool isEmailChanged, bool isUsernameChanged)
+        {
+            if (isEmailChanged && _customerManagement.customerEmailExists(loggedInId, email))
+            {
+                return "Email already exists.";
+            }
+            if (isUsernameChanged && _customerManagement.customerUsernameExists(loggedInId, username))
+            {
+                return "Username already exists.";
+            }
+
+            return null; 
+        }
+
+        [HttpPost]
+        public IActionResult UpdatePassword(string password)
+        {
+
+            return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+
+        }
 
         // INPUT CONTROLLER METHODS
 
@@ -161,7 +193,7 @@ namespace CleanBrilliantCompany.Controllers
             {
                 productDetails.Add(product.GetProductDetails());
             }
-            return View("~/Views/TestProduct.cshtml", productDetails);
+            return View("~/Views/Products/Index.cshtml", productDetails);
         }
     }
 }

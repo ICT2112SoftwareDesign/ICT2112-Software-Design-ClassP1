@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,108 +10,112 @@
 
     <title>CLEAN BRILLIANT COMPANY - PROFILE</title>
 
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
-    <body class="bg-primary"> <!-- Set the background color to the primary color -->
 
-    <div class="container mt-5">
-        <!-- Profile Header -->
-        <div class="profile-header mb-4">
-            <h3 class="font-weight-bold text-white">Orders/Purchases: </h3>
-            <!-- <h3 class="font-weight-bold text-white">Hello! @ViewBag.Username</h3> -->
-        </div>
+<body class="bg-primary">
 
-        <!-- Four smaller cards in a row -->
-        <div class="row mb-4">
-            <div class="col-sm-3 mb-3">
-                <div class="card text-center" style="cursor: pointer;">
-                    <div class="card-body">
-                        <p class="card-text"><i class="fas fa-wallet" style="margin-right: 5px;"></i>To Pay</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3 mb-3">
-                <div class="card text-center" style="cursor: pointer;">
-                    <div class="card-body">
-                        <p class="card-text"><i class="fas fa-box" style="margin-right: 5px;"></i>To Ship</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3 mb-3">
-                <div class="card text-center" style="cursor: pointer;">
-                    <div class="card-body">
-                        <p class="card-text"><i class="fas fa-truck" style="margin-right: 5px;"></i>To Receive</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3 mb-3">
-                <div class="card text-center" style="cursor: pointer;">
-                    <div class="card-body">
-                        <p class="card-text"><i class="fas fa-check" style="margin-right: 5px;"></i>Completed</p>
-                    </div>
+<div class="container mt-5">
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-danger">@ViewBag.Message</div>
+}
+    <!-- Profile Header -->
+    <div class="profile-header mb-4">
+        <h3 class="font-weight-bold text-white">Orders/Purchases: </h3>
+    </div>
+
+    <!-- Four smaller cards in a row -->
+    <div class="row mb-4">
+        <div class="col-sm-3 mb-3">
+            <div class="card text-center" style="cursor: pointer;">
+                <div class="card-body">
+                    <p class="card-text"><i class="fas fa-wallet" style="margin-right: 5px;"></i>To Pay</p>
                 </div>
             </div>
         </div>
-
-
-        <!-- Profile Details inside a card -->
-        <div class="card p-4">
-            <h4 class="card-title font-weight-bold">Profile Details</h4>
-            <form method="post">
-                <div class="form-group row">
-                    <label for="username" class="col-sm-3 col-form-label">Username</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="username" value="@ViewBag.Username" disabled />
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#editModal" data-field="username">
-                            Edit
-                        </button>
-                    </div>
+        <div class="col-sm-3 mb-3">
+            <div class="card text-center" style="cursor: pointer;">
+                <div class="card-body">
+                    <p class="card-text"><i class="fas fa-box" style="margin-right: 5px;"></i>To Ship</p>
                 </div>
-
-                <div class="form-group row">
-                    <label for="email" class="col-sm-3 col-form-label">Email</label>
-                    <div class="col-sm-6">
-                        <input type="email" class="form-control" id="email" value="@ViewBag.Email" disabled />
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#editModal" data-field="email">
-                            Edit
-                        </button>
-                    </div>
+            </div>
+        </div>
+        <div class="col-sm-3 mb-3">
+            <div class="card text-center" style="cursor: pointer;">
+                <div class="card-body">
+                    <p class="card-text"><i class="fas fa-truck" style="margin-right: 5px;"></i>To Receive</p>
                 </div>
-
-                <div class="form-group row">
-                    <label for="address" class="col-sm-3 col-form-label">Address</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="address" value="@ViewBag.CustomerAddress" disabled />
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#editModal" data-field="address">
-                            Edit
-                        </button>
-                    </div>
+            </div>
+        </div>
+        <div class="col-sm-3 mb-3">
+            <div class="card text-center" style="cursor: pointer;">
+                <div class="card-body">
+                    <p class="card-text"><i class="fas fa-check" style="margin-right: 5px;"></i>Completed</p>
                 </div>
-
-                <div class="form-group row">
-                    <div class="col-sm-12 text-center">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- just for change password -->
+    <div class="card p-4">
+        <h4 class="card-title font-weight-bold">Change Password</h4>
+        <form method="post" asp-action="UpdateCustomerDetails">
+            <div class="form-group row">
+                <label for="username" class="col-sm-3 col-form-label">Password</label>
+                <div class="col-sm-6 d-flex align-items-center">
+                    <input type="password" class="form-control" id="password" maxlength="10" name="password" value="@ViewBag.Password" />
+                     <i class="fas fa-chevron-right" style="margin-left: 18px;"></i>
+                </div>
+            </div>
+        </form>
+    </div>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <br>
+    <!-- Profile Details inside a card -->
+    <div class="card p-4">
+        <h4 class="card-title font-weight-bold">Edit Profile Details</h4>
+        <form method="post" asp-action="updateCustomerDetails">
+            <div class="form-group row">
+                <label for="username" class="col-sm-3 col-form-label">Username</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="username" name="username" value="@ViewBag.Username" />
+                </div>
+            </div>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+            <div class="form-group row">
+                <label for="email" class="col-sm-3 col-form-label">Email</label>
+                <div class="col-sm-6">
+                    <input type="email" class="form-control" id="email" name="email" value="@ViewBag.Email" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="address" class="col-sm-3 col-form-label">Address</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="address" name="address" value="@ViewBag.CustomerAddress" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-12 text-center">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+             <div class="form-group row">
+                <div class="col-sm-12 text-center">
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
 </body>
 </html>
-

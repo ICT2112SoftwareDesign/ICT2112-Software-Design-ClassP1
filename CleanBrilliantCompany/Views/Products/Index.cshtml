@@ -1,0 +1,155 @@
+@model List<Dictionary<string, object>>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .search-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .search-container input, .search-container select {
+            padding: 8px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .product-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .product-card:hover {
+            transform: scale(1.02);
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .product-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .product-price {
+            color: #28a745;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-cart {
+            background: #007bff;
+            color: white;
+        }
+        .btn-wishlist {
+            background: #ff4757;
+            color: white;
+        }
+        .product-details {
+            display: none;
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+    <script>
+        function toggleDetails(id) {
+            var details = document.getElementById(id);
+            details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        }
+        function filterProducts() {
+            var search = document.getElementById("search-bar").value.toLowerCase();
+            var category = document.getElementById("category-dropdown").value;
+            var products = document.getElementsByClassName("product-card");
+            
+            for (var i = 0; i < products.length; i++) {
+                var title = products[i].getElementsByClassName("product-title")[0].innerText.toLowerCase();
+                var prodCategory = products[i].getAttribute("data-category");
+                
+                if ((title.includes(search) || search === "") && (prodCategory === category || category === "All")) {
+                    products[i].style.display = "block";
+                } else {
+                    products[i].style.display = "none";
+                }
+            }
+        }
+        function sortProducts() {
+            var order = document.getElementById("sort-dropdown").value;
+            var container = document.querySelector(".product-container");
+            var products = Array.from(container.getElementsByClassName("product-card"));
+            
+            products.sort(function(a, b) {
+                var priceA = parseFloat(a.getElementsByClassName("product-price")[0].innerText.replace("$", ""));
+                var priceB = parseFloat(b.getElementsByClassName("product-price")[0].innerText.replace("$", ""));
+                
+                return order === 'asc' ? priceA - priceB : priceB - priceA;
+            });
+            
+            products.forEach(product => container.appendChild(product));
+        }
+    </script>
+</head>
+<body>
+    <h2 style="text-align:center;">Product List</h2>
+    <div class="search-container">
+        <input type="text" id="search-bar" placeholder="Search products..." onkeyup="filterProducts()">
+        <select id="category-dropdown" onchange="filterProducts()">
+            <option value="All">All Categories</option>
+            @foreach (var product in Model.Select(p => p["Category"]).Distinct())
+            {
+                <option value="@product">@product</option>
+            }
+        </select>
+        <select id="sort-dropdown" onchange="sortProducts()">
+            <option value="asc">Sort by Price: Low to High</option>
+            <option value="desc">Sort by Price: High to Low</option>
+        </select>
+    </div>
+    <div class="product-container">
+        @foreach (var product in Model)
+        {
+            <div class="product-card" onclick="toggleDetails('details-@product["ProductId"]')" data-category="@product["Category"]">
+                <img src="/images/default-product.jpg" alt="Product Image">
+                <div class="product-title">@product["ProductName"]</div>
+                <div class="product-price">$@product["CostPrice"]</div>
+                <button class="btn btn-cart">Add to Cart</button>
+                <button class="btn btn-wishlist">Add to Wishlist</button>
+                <div id="details-@product["ProductId"]" class="product-details">
+                    <p><strong>Category:</strong> @product["Category"]</p>
+                    <p><strong>Manufacturer ID:</strong> @product["ManufacturerId"]</p>
+                    <p><strong>Package:</strong> @product["Package"]</p>
+                    <p><strong>Weight:</strong> @product["Weight"]</p>
+                    <p><strong>Toxicity %:</strong> @product["ToxicityPercentage"]</p>
+                    <p><strong>Quantity:</strong> @product["Quantity"]</p>
+                    <p><strong>Carbon Footprint:</strong> @product["CarbonFootprint"]</p>
+                    <p><strong>Volume:</strong> @product["Volume"]</p>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+</html>
