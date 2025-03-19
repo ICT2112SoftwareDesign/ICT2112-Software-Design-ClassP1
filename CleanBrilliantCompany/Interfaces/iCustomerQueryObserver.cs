@@ -1,6 +1,6 @@
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface iCustomerQueryObserver
+    public interface ICustomerQueryObserver
     {
         void notifyDBCustomerQueryStatus();
     }

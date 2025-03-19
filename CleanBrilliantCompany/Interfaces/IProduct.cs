@@ -3,13 +3,13 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface IProducts
+    public interface IProduct
     {
         Product GetProductDetails(int productId);
         List<Product> GetAllProducts();
     }
 
-    public class ProductsRepository : IProducts
+    public class ProductsRepository : IProduct
     {
         private List<Product> products = new List<Product>
         {

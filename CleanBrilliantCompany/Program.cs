@@ -16,10 +16,12 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddSingleton<iCustomerDatabase>(new CustomerMapper(connectionString));
+builder.Services.AddSingleton<ICustomerDatabase>(new CustomerMapper(connectionString));
 builder.Services.AddTransient<CustomerManagement>();
 builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<ChatbotService>();
+builder.Services.AddScoped<IProduct, ProductsRepository>(); 
+builder.Services.AddTransient<OrderManagement>();
 
 var app = builder.Build();
 
