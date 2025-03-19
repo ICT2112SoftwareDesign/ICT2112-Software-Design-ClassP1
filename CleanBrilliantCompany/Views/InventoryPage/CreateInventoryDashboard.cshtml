@@ -1,12 +1,71 @@
 @model dynamic
 @{
     ViewData["Title"] = "Create Inventory Dashboard";
+    var today = DateTime.Now.ToString("yyyy-MM-dd");
+    var startDate = ViewData["StartDate"]?.ToString() ?? DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+    var endDate = ViewData["EndDate"]?.ToString() ?? DateTime.Now.ToString("yyyy-MM-dd");
+    var levelOfDetail = ViewData["LevelOfDetail"]?.ToString() ?? "1";
 }
 
 <h1>Create Inventory Dashboard</h1>
 <form asp-action="CreateDashboard" method="post">
-    <label>Start Date: <input type="date" name="startDate" required /></label><br />
-    <label>End Date: <input type="date" name="endDate" required /></label><br />
-    <label>Level of Detail: <input type="number" name="levelOfDetail" min="1" value="1" /></label><br />
-    <button type="submit">Create</button>
+    <div>
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" max="@startDate" required />
+    </div>
+    <div>
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" value="@today" max="@today" required />
+        <span id="endDateError" style="color: red; display: none;">End date must be after start date.</span>
+    </div>
+    <div>
+        <label for="levelOfDetail">Level of Detail:</label>
+        <input type="number" id="levelOfDetail" name="levelOfDetail" value="1" min="1" required />
+    </div>
+
+    <br />
+    <button type="submit">Create Dashboard</button>
+
+    @if (ViewData.ModelState.Any(m => m.Value.Errors.Any()))
+    {
+        <div style="color: red;">
+            @foreach (var modelState in ViewData.ModelState)
+            {
+                foreach (var error in modelState.Value.Errors)
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            }
+        </div>
+    }
 </form>
+
+<script>
+    // Update the min attribute of endDate and validate dates
+    function validateDates() {
+        var startDate = new Date(document.getElementById("startDate").value);
+        var endDate = new Date(document.getElementById("endDate").value);
+        var endDateError = document.getElementById("endDateError");
+        var submitButton = document.querySelector("button[type='submit']");
+
+        if (endDate < startDate) {
+            endDateError.style.display = "inline";
+            submitButton.disabled = true;
+        } else {
+            endDateError.style.display = "none";
+            submitButton.disabled = false;
+        }
+    }
+
+    document.getElementById("startDate").addEventListener("change", function () {
+        var startDate = new Date(this.value);
+        var endDateInput = document.getElementById("endDate");
+        endDateInput.min = this.value;
+        validateDates();
+    });
+
+    document.getElementById("endDate").addEventListener("change", validateDates);
+
+    // Validate on form load
+    validateDates();
+</script>

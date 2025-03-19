@@ -21,15 +21,20 @@ namespace CleanBrilliantCompany.Controllers
                 ViewData["Dashboard"] = inventoryDashboard; // Pass the InventoryDashboardRDM directly
                 return View("ViewInventoryDashboard");
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
-                return RedirectToAction("CreateDashboard");
+                //return RedirectToAction("CreateDashboard");
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ViewInventoryDashboard");
             }
         }
 
         [HttpGet]
         public IActionResult CreateDashboard()
         {
+            ViewData["StartDate"] = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = DateTime.Now.ToString("yyyy-MM-dd");
+            ViewData["LevelOfDetail"] = 1;
             return View("CreateInventoryDashboard");
         }
 
@@ -39,6 +44,12 @@ namespace CleanBrilliantCompany.Controllers
             if (endDate < startDate)
             {
                 ModelState.AddModelError("", "End date must be after start date.");
+
+                // Pass the submitted values back to the view to retain them
+                ViewData["StartDate"] = startDate.ToString("yyyy-MM-dd");
+                ViewData["EndDate"] = endDate.ToString("yyyy-MM-dd");
+                ViewData["LevelOfDetail"] = levelOfDetail;
+
                 return View("CreateInventoryDashboard");
             }
             _inventoryControl.CreateDashboard("Inventory Dashboard", startDate, endDate, 30);

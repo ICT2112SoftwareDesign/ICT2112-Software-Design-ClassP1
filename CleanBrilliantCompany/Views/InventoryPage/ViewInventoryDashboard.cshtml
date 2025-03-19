@@ -2,15 +2,41 @@
 @{
     ViewData["Title"] = "View Inventory Dashboard";
     var dashboard = ViewData["Dashboard"] as InventoryDashboardRDM;
+    var stockLevels = dashboard?.GetAllStockLevels() ?? new Dictionary<int, int>();
 }
 
-<h1>Inventory Dashboard (ID: @dashboard.GetDashboardId())</h1>
-<ul>
-    @foreach (var stock in dashboard.GetAllStockLevels())
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div style="color: red;">
+        <p>@ViewData["ErrorMessage"]</p>
+        <p><a asp-action="CreateDashboard">Create a new dashboard</a></p>
+    </div>
+} else if (dashboard == null) {
+    <div style="color: red;">
+        <p>Dashboard data is missing.</p>
+        <p><a asp-action="CreateDashboard">Create a new dashboard</a></p>
+    </div>
+}
+else
+{
+    <h1>Inventory Dashboard (ID: @dashboard.GetDashboardId())</h1>
+    @if (stockLevels.Any())
     {
-        <li>Product @stock.Key: @stock.Value units (Threshold: @dashboard.GetThreshold(stock.Key))</li>
+        <ul>
+            @foreach (var stock in stockLevels)
+            {
+                <li>Product @stock.Key: @stock.Value units (Threshold: @dashboard.GetThreshold(stock.Key))</li>
+            }
+        </ul>
     }
-</ul>
-<form asp-action="GenerateReport" method="post">
-    <button type="submit">Generate Report</button>
-</form>
+    else
+    {
+        <p>No stock levels available for this dashboard.</p>
+    }
+
+    <a asp-action="CreateDashboard">Create a new dashboard</a>
+
+    <form asp-action="GenerateReport" method="post">
+        <button type="submit">Generate Report</button>
+    </form>
+}

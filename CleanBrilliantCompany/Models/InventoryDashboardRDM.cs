@@ -37,7 +37,7 @@ namespace CleanBrilliantCompany.Models
             _replenishmentStatus = new Dictionary<int, bool?>();
         }
 
-        public InventoryDashboardRDM(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, DateTime? generatedDate)
+        public InventoryDashboardRDM(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, DateTime generatedDate)
             : base(dashboardId, name, requestedStartDate, requestedEndDate, validityDuration, 1, generatedDate)
         {
             _stockLevel = new Dictionary<int, int>();

@@ -6,7 +6,7 @@ namespace CleanBrilliantCompany.Interface
     {
         void SaveDashboard(InventoryDashboardRDM dashboard);
         InventoryDashboardRDM GetLatestDashboard();
-        InventoryDashboardRDM GetDashboardById(int id);
+        //InventoryDashboardRDM GetDashboardById(int id);
 
     }
 }

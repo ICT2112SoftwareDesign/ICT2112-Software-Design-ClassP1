@@ -1,9 +1,10 @@
 public abstract class Dashboard
 {
+
     private string _name = string.Empty;
     private DateTime _requestedStartDate;
     private DateTime _requestedEndDate;
-    private DateTime? _generatedDate;
+    private DateTime _generatedDate;
     private int _validityDuration;
 
     protected int Type { get; set; }
@@ -56,38 +57,42 @@ public abstract class Dashboard
         }
     }
 
-    public DateTime? GeneratedDate
+    public DateTime GeneratedDate
     {
         get => _generatedDate;
-        /* protected */ set
+        protected set
         {
-            if (value.HasValue && value < _requestedStartDate)
+            //if (value.HasValue && value < _requestedStartDate)
+            //    throw new ArgumentException("Generated date cannot be earlier than start date.");
+            //_generatedDate = value;
+
+            if (value < _requestedStartDate)
                 throw new ArgumentException("Generated date cannot be earlier than start date.");
             _generatedDate = value;
         }
     }
 
     // 🔹 Constructor for Retrieving from Database (Includes DashboardId)
-    protected Dashboard(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type, DateTime? generatedDate = null)
+    protected Dashboard(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type, DateTime generatedDate)
     {
         DashboardId = dashboardId;
         Name = name;
         RequestedStartDate = requestedStartDate;
         RequestedEndDate = requestedEndDate;
         ValidityDuration = validityDuration;
-        GeneratedDate = generatedDate ?? DateTime.Now; // 
+        GeneratedDate = generatedDate;
         Type = type;
     }
 
     // 🔹 Constructor for Creating a New Dashboard (Without ID, Assigned Later)
     protected Dashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type)
     {
-        DashboardId = 0; // ✅ New dashboards get ID = 0 until saved in DB
+        DashboardId = 0;
         Name = name;
         RequestedStartDate = requestedStartDate;
         RequestedEndDate = requestedEndDate;
         ValidityDuration = validityDuration;
-        GeneratedDate = null;
+        GeneratedDate = DateTime.Now;
         Type = type;
     }
 
