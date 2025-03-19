@@ -12,8 +12,8 @@ namespace CleanBrilliantCompany.DataSource.Mapper
             DateTime endDate = DateTime.Now;
             List<ForecastMetrics> metricsList = new List<ForecastMetrics>
             {
-              new StockForecast(1,12),
-              new StockForecast(2,3)
+              new StockForecast(1,12,"A"),
+              new StockForecast(2,3, "B")
             };
             ForecastDashboard forecastDashboard = new ForecastDashboard(startDate, endDate, metricsList);
             return forecastDashboard;

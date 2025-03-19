@@ -1,5 +1,6 @@
 using CleanBrilliantCompany.DataSource.Interface;
 using CleanBrilliantCompany.DataSource.Mapper;
+using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Interfaces.Forecast;
 using CleanBrilliantCompany.Models.Forecast;
 using CleanBrilliantCompany.Services;
@@ -21,6 +22,9 @@ builder.Services.AddScoped<IForecastRepository, ForecastMapper>();
 builder.Services.AddScoped<IForecastingFacade, ForecastFacade>();
 
 builder.Services.AddScoped<ForecastControl>();
+builder.Services.AddScoped<ISales>(); //TODO to be modified with actual ISale
+builder.Services.AddScoped<IProduct>(); //TODO to be modified with actual ISale
+
 
 
 

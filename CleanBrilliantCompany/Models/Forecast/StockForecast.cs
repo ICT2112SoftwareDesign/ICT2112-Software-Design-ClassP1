@@ -5,11 +5,14 @@ namespace CleanBrilliantCompany.Models.Forecast
 {
     public class StockForecast : ForecastMetrics
     {
+        
         public StockForecast() { }
-        public StockForecast(int stockId, int stockRequired)
+        public StockForecast(int productId, int stockRequired, string productName)
         {
-            this.setStockId(stockId);
+            this.setProductId(productId);
             this.setForecastedStock(stockRequired);
+            this.setProductName (productName);
+
         }
         public override StockForecast getForecastedMetrics()
         {

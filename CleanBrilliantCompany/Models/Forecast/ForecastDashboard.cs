@@ -22,6 +22,8 @@ namespace CleanBrilliantCompany.Models.Forecast
             this.StartDate= startDate;
             this.EndDate= endDate;
             this.MetricsList = metricsList;
+            this.GeneratedDate = DateTime.Now;
+
         }
 
         // Methods

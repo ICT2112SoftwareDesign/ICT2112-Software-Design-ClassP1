@@ -6,16 +6,18 @@ namespace CleanBrilliantCompany.Models.Forecast
     public abstract class ForecastMetrics
     {
         // Properties
-        private int stockId { get; set; }
+        private int productId { get; set; }
         private int forecastedStock { get; set; }
+        private String productName {  get; set; }
 
-        public int getStockId()
+
+        public int getProductId()
         {
-            return stockId;
+            return productId;
         }
-        public void setStockId(int stockId)
+        public void setProductId(int stockId)
         {
-            this.stockId = stockId;
+            this.productId = stockId;
         }
         public int getForecastedStock()
         {
@@ -24,6 +26,15 @@ namespace CleanBrilliantCompany.Models.Forecast
         public void setForecastedStock(int forecastedStock)
         {
             this.forecastedStock = forecastedStock;
+        }
+
+        public String getProductName()
+        {
+            return productName;
+        }
+        public void setProductName(String productName)
+        {
+            this.productName = productName;
         }
         public abstract ForecastMetrics getForecastedMetrics();
     }

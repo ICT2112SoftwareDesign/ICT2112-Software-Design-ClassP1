@@ -1,5 +1,6 @@
 ﻿using CleanBrilliantCompany.DataSource.Interface;
 using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Interfaces.Forecast;
 
 namespace CleanBrilliantCompany.Models.Forecast
@@ -8,38 +9,19 @@ namespace CleanBrilliantCompany.Models.Forecast
     {
         private readonly IForecastRepository forecastRepository;
         private readonly IForecastingFacade forecastingFacade;
+        private readonly ISales isale; //simulated interface
         private ForecastDashboard dashboard;
         //to be replaced
-        List<SalesDTO> _sales = new List<SalesDTO>()
-        { 
-            //Sales in May 2023
-            new SalesDTO(1, new DateTime(2023, 5, 10), 9),
 
-            //Sales in May 2024
-            new SalesDTO(1, new DateTime(2024, 5, 10), 11),
-            new SalesDTO(2, new DateTime(2024, 5, 15), 3),
-
-            // Sales in May 2025
-            new SalesDTO(1, new DateTime(2025, 5, 10), 5),
-            new SalesDTO(2, new DateTime(2025, 5, 15), 3),
-            new SalesDTO(1, new DateTime(2025, 5, 20), 2),
-            
-            // Sales in April 2025
-            new SalesDTO(2, new DateTime(2025, 4, 20), 4),
-            new SalesDTO(3, new DateTime(2025, 4, 25), 6),
-            
-            // Sales in March 2025
-            new SalesDTO(1, new DateTime(2025, 3, 5), 7),
-            new SalesDTO(3, new DateTime(2025, 3, 15), 3),
-            new SalesDTO(2, new DateTime(2025, 3, 18), 4)
-        };
         public ForecastControl(
             IForecastRepository forecastRepository,
-            IForecastingFacade forecastingFacade
+            IForecastingFacade forecastingFacade,
+            ISales isale
         )
         {
             this.forecastRepository = forecastRepository;
             this.forecastingFacade = forecastingFacade;
+            this.isale = isale;
 
             getLatestDashboard();
         }
@@ -52,10 +34,11 @@ namespace CleanBrilliantCompany.Models.Forecast
 
         public ForecastDashboard generateDashboard(String type, DateTime startDate, DateTime endDate)
         {
+            var sales = isale.getSalesData();
             List<ForecastMetrics> metricList = type switch
             {
                 "price" => forecastingFacade.generatePriceScenario(),
-                "stock" => forecastingFacade.generateStockForecast(_sales, startDate),
+                "stock" => forecastingFacade.generateStockForecast(sales, startDate),
                 _ => new List<ForecastMetrics>(), // Default to empty if type is invalid
             };
             this.dashboard = new ForecastDashboard(startDate, endDate, metricList);

@@ -19,16 +19,25 @@
     <h3>📈 Forecast Metrics</h3>
     <p><strong>Metrics Count:</strong> @Model.GetMetrics().Count</p>
 
-    <ul>
-        @foreach (var metric in Model.GetMetrics())
-        {
-            <li style="display: flex; align-items: center; gap: 20px;">
-                <div><strong>Stock ID:</strong> @metric.getStockId()</div>
-                <div><strong>Forecasted Stock:</strong> @metric.getForecastedStock()</div>
-            </li>
-        }
-    </ul>
-
+    <table class="forecast-table">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Forecasted Demand</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var metric in Model.GetMetrics())
+            {
+                <tr>
+                    <td>@metric.getProductId()</td>
+                    <td class="product-name">@metric.getProductName()</td>
+                    <td>@metric.getForecastedStock()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 <hr>
@@ -55,4 +64,26 @@
     <button type="submit">Generate Forecast</button>
 </form>
 
+<style>
+    .forecast-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
 
+        .forecast-table th, .forecast-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .forecast-table thead {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+    .product-name {
+        text-align: left; /* Align product name to the left */
+        padding-left: 20px;
+    }
+</style>

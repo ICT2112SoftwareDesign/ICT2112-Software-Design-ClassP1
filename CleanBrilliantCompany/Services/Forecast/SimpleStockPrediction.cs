@@ -6,28 +6,44 @@ namespace CleanBrilliantCompany.Services.Forecast
 {
     public class SimpleStockPrediction : IStockPredictionService
     {
-        
-        public List<ForecastMetrics> generateStockPrediction(List<SalesDTO> sales,DateTime selectedMonth)
-        {
-            //sales = sales ?? _sales;
-            //TODO to be replaced
 
-            // Get aggregated results grouped by ProductId and Month (first day of the month)
+        public List<ForecastMetrics> generateStockPrediction(List<SalesDTO> sales, DateTime selectedMonth, List<ProductDTO> productList)
+        {
+            // Aggregate past sales data
             var aggregated = aggregateResults(sales);
 
-            // Filter the aggregated results to only include records from the same month (ignoring the year)
-            // Then group by product id so we can average values across different years.
-            var forecastList = aggregated
-                .Where(record => record.Key.Month.Month == selectedMonth.Month &&
-                                 record.Key.Month.Year != selectedMonth.Year)
-                .GroupBy(record => record.Key.ProductId)
-                .Select(g =>
+            // Dictionary to store forecasted stock values for each product
+            var forecastDictionary = productList.ToDictionary(
+                product => product.ID,
+                product => 0 // Default forecast is 0
+            );
+
+            // Process historical sales and update the forecast dictionary
+            foreach (var product in productList)
+            {
+                var pastSales = aggregated
+                    .Where(record => record.Key.Month.Month == selectedMonth.Month &&
+                                     record.Key.Month.Year != selectedMonth.Year &&
+                                     record.Key.ProductId == product.ID)
+                    .Select(record => record.Value)
+                    .ToList();
+
+                if (pastSales.Any())
                 {
-                    // Calculate the average value for this product in the given month (across different years)
-                    double averageValue = g.Average(r => r.Value);
-                    // Increase the average by 50%
-                    int forecastValue = (int)Math.Round(averageValue * 1.5);
-                    return new StockForecast(g.Key, forecastValue);
+                    // Compute average of past sales and increase by 50%
+                    double averageValue = pastSales.Average();
+                    forecastDictionary[product.ID] = (int)Math.Round(averageValue * 1.5);
+                }
+            }
+
+            // Convert to list of StockForecast objects with Product Name
+            var forecastList = forecastDictionary
+                .Select(entry =>
+                {
+                    var product = productList.FirstOrDefault(p => p.ID == entry.Key);
+                    string productName = product != null ? product.Name : "Unknown Product";
+
+                    return new StockForecast(entry.Key, entry.Value, productName);
                 })
                 .Cast<ForecastMetrics>()
                 .ToList();
