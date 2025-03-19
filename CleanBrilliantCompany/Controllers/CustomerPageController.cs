@@ -179,7 +179,7 @@ namespace CleanBrilliantCompany.Controllers
             {
                 productDetails.Add(product.GetProductDetails());
             }
-            return View("~/Views/TestProduct.cshtml", productDetails);
+            return View("~/Views/Products/Index.cshtml", productDetails);
         }
     }
 }
