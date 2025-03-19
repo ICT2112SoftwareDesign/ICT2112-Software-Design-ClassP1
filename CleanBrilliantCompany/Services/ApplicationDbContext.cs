@@ -1,11 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using CleanBrilliantCompany.Models;
 
-public class ApplicationDbContext : DbContext
+namespace CleanBrilliantCompany.Data
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+    public class ApplicationDbContext : DbContext
     {
-    }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    public DbSet<ShippingAgent> ShippingAgents { get; set; } 
+        public DbSet<ShippingAgent> ShippingAgents { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ShippingAgent>().ToTable("ShippingAgent");
+
+            base.OnModelCreating(modelBuilder);
+        }
+    }
 }

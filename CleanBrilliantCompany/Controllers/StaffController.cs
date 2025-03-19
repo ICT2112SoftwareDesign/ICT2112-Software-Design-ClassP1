@@ -42,19 +42,3 @@ namespace CleanBrilliantCompany.Controllers.Staff
     }
 }
 
-public class ShippingAgentController : Controller
-{
-    private readonly ShippingAgentDB _shippingAgentDB;
-
-    public ShippingAgentController(ShippingAgentDB shippingAgentDB)
-    {
-        _shippingAgentDB = shippingAgentDB;
-    }
-
-    public IActionResult Index()
-{
-    var shippingAgents = _shippingAgentDB.FetchShippingAgents(); 
-    return View(shippingAgents);
-}
-
-}

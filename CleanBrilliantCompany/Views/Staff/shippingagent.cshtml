@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@model List<ShippingAgent>
+@model ShippingAgentViewModel
 
 <head>
 
@@ -253,30 +253,39 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="shippingAgentsTable" width="100%"
-                                    cellspacing="0" border="1">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Company</th>
-                                            <th>Method</th>
-                                            <th>Service</th>
-                                        </tr>
-                                    </thead>
-                                    @if (Model != null && Model.Any())
-                                    {
-                                        @foreach (var agent in Model)
+                                @if (Model != null && Model.ShippingAgents != null && Model.ShippingAgents.Any())
+                                {
+                                    <table class="table table-bordered" id="shippingAgentsTable" width="100%"
+                                        cellspacing="0" border="1">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Company</th>
+                                                <th>Method</th>
+                                                <th>Service</th>
+                                            </tr>
+                                        </thead>
+
+                                        @foreach (var agent in Model.ShippingAgents)
                                         {
                                             <tr>
                                                 <td>@agent.ShippingAgentId</td>
                                                 <td>@agent.ShippingAgentCompany</td>
                                                 <td>@agent.ShippingMethod</td>
                                                 <td>@agent.ServiceType</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
                                         }
-                                    }
-                                    else
-                                    {
+                                        }
+                                        else
+                                        {
                                         <tbody>
                                             <tr>
                                                 <td>1</td>
@@ -349,8 +358,9 @@
                                                 </td>
                                             </tr>
                                         </tbody>
-                                    }
-                                </table>
+
+                                    </table>
+                                }
                             </div>
                         </div>
                     </div>

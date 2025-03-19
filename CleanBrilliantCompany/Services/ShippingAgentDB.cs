@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-
 public class ShippingAgent
 {
     public int ShippingAgentId { get; set; }
@@ -11,7 +10,6 @@ public class ShippingAgent
     public required string? ShippingMethod { get; set; }
     public required string? ServiceType { get; set; }
 }
-
 
 public class ShippingAgentDB
 {
@@ -32,35 +30,40 @@ public class ShippingAgentDB
             try
             {
                 conn.Open();
-                Console.WriteLine("Connected to Azure SQL Database successfully!");
+                Console.WriteLine("✅ Connected to Azure SQL Database!");
 
                 string query = "SELECT * FROM ShippingAgent";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    int rowCount = 0;  // 🔹 Track row count
+                    int rowCount = 0;
+                    Console.WriteLine("🔍 Reading rows...");
                     while (reader.Read())
                     {
                         rowCount++;
-                        agents.Add(new ShippingAgent
+                        Console.WriteLine($"📌 Processing Row {rowCount}...");
+
+                        var agent = new ShippingAgent
                         {
-                            ShippingAgentId = Convert.ToInt32(reader["shippingAgentId"]),
-                            ShippingAgentCompany = reader["shippingAgentCompany"].ToString(),
-                            ShippingMethod = reader["shippingMethod"].ToString(),
-                            ServiceType = reader["serviceType"].ToString()
-                        });
+                            ShippingAgentId = reader.GetInt32(reader.GetOrdinal("shippingAgentId")),
+                            ShippingAgentCompany = reader.IsDBNull(reader.GetOrdinal("shippingAgentCompany")) ? "N/A" : reader.GetString(reader.GetOrdinal("shippingAgentCompany")),
+                            ShippingMethod = reader.IsDBNull(reader.GetOrdinal("shippingMethod")) ? "N/A" : reader.GetString(reader.GetOrdinal("shippingMethod")),
+                            ServiceType = reader.IsDBNull(reader.GetOrdinal("serviceType")) ? "N/A" : reader.GetString(reader.GetOrdinal("serviceType"))
+                        };
+
+                        agents.Add(agent);
+                        Console.WriteLine($"✅ Added: ID={agent.ShippingAgentId}, Company={agent.ShippingAgentCompany}, Method={agent.ShippingMethod}, Service={agent.ServiceType}");
                     }
 
-                    Console.WriteLine($"Rows Retrieved: {rowCount}");  // 🔹 Print the number of rows fetched
+                    Console.WriteLine($"✅ Total Rows Retrieved: {rowCount}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"❌ ERROR: {ex.Message}\n{ex.StackTrace}");
             }
         }
 
         return agents;
     }
-
 }

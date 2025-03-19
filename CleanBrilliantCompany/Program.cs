@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using CleanBrilliantCompany.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services; // Ensure services is properly assigned
