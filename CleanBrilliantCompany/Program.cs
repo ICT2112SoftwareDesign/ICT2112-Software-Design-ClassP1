@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using CleanBrilliantCompany.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -22,8 +29,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=ReorderRequest}/{action=ListOfReorders}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
