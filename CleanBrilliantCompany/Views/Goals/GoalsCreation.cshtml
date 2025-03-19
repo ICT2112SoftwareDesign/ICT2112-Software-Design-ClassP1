@@ -1,0 +1,28 @@
+@model CleanBrilliantCompany.Models.Entity.GoalsSDM;
+
+@{
+    ViewBag.Title = "Create Goal";
+}
+
+<h2>Create Goal</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.Label("Goal ID")
+        @Html.TextBox("GoalId")
+    </div>
+    <div>
+        @Html.Label("Target Emission")
+        @Html.TextBox("TargetEmission")
+    </div>
+    <div>
+        @Html.Label("Goal Year")
+        @Html.TextBox("GoalYear")
+    </div>
+    <div>
+        @Html.Label("Goal Month")
+        @Html.TextBox("GoalMonth")
+    </div>
+    <button type="submit">Save</button>
+}

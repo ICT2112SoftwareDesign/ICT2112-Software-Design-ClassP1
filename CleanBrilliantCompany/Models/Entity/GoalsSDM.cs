@@ -1,56 +1,56 @@
 namespace CleanBrilliantCompany.Models.Entity
 
 {
-    public class Goal
+    public class GoalsSDM
     {
         private int goalId;
         private float targetEmission;
         private int goalYear;
         private int goalMonth;
 
-        // Getters and Setters (Private)
-        private int GetGoalId()
+        // Getters and Setters
+        public int GetGoalId()
         {
             return goalId;
         }
 
-        private void SetGoalId(int id)
+        public void SetGoalId(int id)
         {
             goalId = id;
         }
 
-        private float GetTargetEmission()
+        public float GetTargetEmission()
         {
             return targetEmission;
         }
 
-        private void SetTargetEmission(float emission)
+        public void SetTargetEmission(float emission)
         {
             targetEmission = emission;
         }
 
-        private int GetGoalYear()
+        public int GetGoalYear()
         {
             return goalYear;
         }
 
-        private void SetGoalYear(int year)
+        public void SetGoalYear(int year)
         {
             goalYear = year;
         }
 
-        private int GetGoalMonth()
+        public int GetGoalMonth()
         {
             return goalMonth;
         }
 
-        private void SetGoalMonth(int month)
+        public void SetGoalMonth(int month)
         {
             goalMonth = month;
         }
 
         // Constructor
-        public Goal(int goalId, float targetEmission, int goalYear, int goalMonth)
+        public GoalsSDM(int goalId, float targetEmission, int goalYear, int goalMonth)
         {
             this.goalId = goalId;
             this.targetEmission = targetEmission;

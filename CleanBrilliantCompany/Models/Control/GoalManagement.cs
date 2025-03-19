@@ -2,39 +2,35 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Interfaces;
 
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class GoalManagement
+    public class GoalManagementController
     {
-        private List<Goal> goals;
+        private readonly IGoalsDB _goalDb;
 
-        // Constructor to initialize the goal list
-        public GoalManagement()
+        public GoalManagementController(IGoalsDB goalDb)
         {
-            goals = new List<Goal>();
+            _goalDb = goalDb;
         }
 
-        // Method to add a new goal
-        public void AddGoal(int goalId, float targetEmission, int goalYear, int goalMonth)
+        public void CreateGoal(int id, float target, int year, int month)
         {
-            Goal newGoal = new Goal(goalId, targetEmission, goalYear, goalMonth);
-            goals.Add(newGoal);
+            GoalsSDM newGoal = new GoalsSDM(id, target, year, month);
+            _goalDb.AddGoal(newGoal);
         }
 
-        // Method to retrieve target emission for a given year and month
-        public float? RetrieveTargetEmission(int year, int month)
+        public void UpdateGoal(int id, float newTarget)
         {
-            foreach (Goal goal in goals)
+            GoalsSDM goal = _goalDb.GetGoalById(id);
+            if (goal != null)
             {
-                float? emission = goal.GetGoalFor(year, month);
-                if (emission != null)
-                {
-                    return emission;
-                }
+                goal.UpdateTargetEmission(newTarget);
+                _goalDb.UpdateGoal(goal);
             }
-            return null;
         }
     }
+
 }

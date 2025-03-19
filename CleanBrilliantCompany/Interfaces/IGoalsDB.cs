@@ -4,11 +4,12 @@ using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface IGoalDB
+    public interface IGoalsDB
     {
-        Task InsertGoals(Goal goal);
-        Task UpdateGoals(int goalId, float targetEmission, int goalYear, int goalMonth);
-        Task DeleteGoals(int goalId);
-        Task<Goal> FindGoals(int goalId);
+        List<GoalsSDM> GetAllGoals();
+        GoalsSDM GetGoalById(int id);
+        void AddGoal(GoalsSDM goal);
+        void UpdateGoal(GoalsSDM goal);
+        void DeleteGoal(int id);
     }
 }
