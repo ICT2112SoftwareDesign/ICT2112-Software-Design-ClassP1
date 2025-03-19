@@ -12,12 +12,14 @@ namespace CleanBrilliantCompany.Interfaces
         void deleteProduct(int productId);
         public void updateProduct(int productId, string productName, string category, float productCost, 
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState);
+
         // Product Batch
-        Task<List<ProductBatch>> getAllProductBatch();
-        Task<ProductBatch> getBatchDetails(int batchCode);
-        Task<string> createProductBatch(int productId, DateTime expiryDate, 
+        List<ProductBatch> getAllProductBatch();
+        ProductBatch getBatchDetails(int batchCode); 
+        public void createProductBatch(int productId, DateTime expiryDate, 
             DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost);
+
         // Stock History
-        Task<(string status, List<StockHistory> stockHistory)> getStockHistoryByBatch(int batchCode);
+        List<StockHistory> getStockHistoryByBatch(int batchCode);
     }
 }

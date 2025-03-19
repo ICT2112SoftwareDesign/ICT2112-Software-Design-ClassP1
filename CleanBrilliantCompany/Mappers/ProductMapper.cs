@@ -276,7 +276,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // Batch
-        public async Task<List<ProductBatch>> findAllProductBatch()
+        public List<ProductBatch> findAllProductBatch()
         {
             List<ProductBatch> batches = new List<ProductBatch>();
 
@@ -284,7 +284,7 @@ namespace CleanBrilliantCompany.Mappers
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    await connection.OpenAsync(); 
+                    connection.Open(); 
 
                     string query = @"
                         SELECT batchCode, productId, expiryDate, receiveDate, manufactureDate, 
@@ -293,20 +293,23 @@ namespace CleanBrilliantCompany.Mappers
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            while (await reader.ReadAsync()) 
+                            if (getDatabaseQueryStatus(reader))
                             {
-                                batches.Add(new ProductBatch
+                                while (reader.Read())
                                 {
-                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                    ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")), 
-                                    ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")), 
-                                    ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")), 
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost")) 
-                                });
+                                    batches.Add(new ProductBatch
+                                    {
+                                        BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                        ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
+                                        ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")), 
+                                        ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")), 
+                                        ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")), 
+                                        Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                        BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost")) 
+                                    });
+                                }
                             }
                         }
                     }
@@ -320,11 +323,11 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public async Task<ProductBatch> findByBatchCode(int batchCode)
+        public ProductBatch findByBatchCode(int batchCode)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                connection.Open();
 
                 string query = @"
                     SELECT batchCode, productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost
@@ -335,34 +338,36 @@ namespace CleanBrilliantCompany.Mappers
                 {
                     command.Parameters.AddWithValue("@BatchCode", batchCode);
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        if (await reader.ReadAsync())
+                        if (getDatabaseQueryStatus(reader))
                         {
-                            return new ProductBatch
+                            if (reader.Read())
                             {
-                                BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")),
-                                ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")),
-                                ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
-                                Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
-                            };
+                                return new ProductBatch
+                                {
+                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
+                                    ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")),
+                                    ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")),
+                                    ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
+                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                                };
+                            }
                         }
                     }
                 }
             }
-
             return null; 
         }
 
-        public async Task<string> insert(int productId, DateTime expiryDate, 
+        public void insert(int productId, DateTime expiryDate, 
             DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                connection.Open();
 
                 string query = @"
                     INSERT INTO dbo.ProductBatch (productId, expiryDate, receiveDate, manufactureDate, 
@@ -379,30 +384,28 @@ namespace CleanBrilliantCompany.Mappers
                     command.Parameters.AddWithValue("@Quantity", quantity);
                     command.Parameters.AddWithValue("@BatchCost", batchCost);
 
-                    int result = await command.ExecuteNonQueryAsync();
+                    int rowsAffected = command.ExecuteNonQuery();
 
-                    if (result > 0)
+                    if (getDatabaseQueryStatus(null, rowsAffected))
                     {
                         Console.WriteLine("Batch inserted successfully.");
-                        return "Batch inserted successfully.";
                     }
                     else
                     {
                         Console.WriteLine("Error: Product ID does not exist.");
-                        return "Error: Product ID does not exist.";
                     }
                 }
             }
         }
 
         // StockHistory
-        public async Task<List<StockHistory>> findStockHistoryByBatchCode(int batchCode)
+        public List<StockHistory> findStockHistoryByBatchCode(int batchCode)
         {
             List<StockHistory> stockHistoryList = new List<StockHistory>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                connection.Open();
 
                 string query = @"
                     SELECT stockId, batchCode, stockCheckDate, quantity, timeRecorded
@@ -414,21 +417,24 @@ namespace CleanBrilliantCompany.Mappers
                 {
                     command.Parameters.AddWithValue("@BatchCode", batchCode);
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while (await reader.ReadAsync())
+                        if (getDatabaseQueryStatus(reader))
                         {
-                            // If timeRecorded is of type TIME, we convert it to DateTime
-                            DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
-                            stockHistoryList.Add(new StockHistory
+                            while (reader.Read())
                             {
-                                StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
-                                BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
-                                Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
-                                TimeRecorded = timeRecorded
-                            });
+                                // If timeRecorded is of type TIME, we convert it to DateTime
+                                DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
+                                stockHistoryList.Add(new StockHistory
+                                {
+                                    StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
+                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
+                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
+                                    TimeRecorded = timeRecorded
+                                });
+                            }
                         }
                     }
                 }
@@ -436,6 +442,48 @@ namespace CleanBrilliantCompany.Mappers
 
             return stockHistoryList;
         }
+
+        // // StockHistory
+        // public async Task<List<StockHistory>> findStockHistoryByBatchCode(int batchCode)
+        // {
+        //     List<StockHistory> stockHistoryList = new List<StockHistory>();
+
+        //     using (SqlConnection connection = new SqlConnection(_connectionString))
+        //     {
+        //         await connection.OpenAsync();
+
+        //         string query = @"
+        //             SELECT stockId, batchCode, stockCheckDate, quantity, timeRecorded
+        //             FROM dbo.StockHistory
+        //             WHERE batchCode = @BatchCode
+        //             ORDER BY stockCheckDate DESC";  // Orders by most recent stock check
+
+        //         using (SqlCommand command = new SqlCommand(query, connection))
+        //         {
+        //             command.Parameters.AddWithValue("@BatchCode", batchCode);
+
+        //             using (SqlDataReader reader = await command.ExecuteReaderAsync())
+        //             {
+        //                 while (await reader.ReadAsync())
+        //                 {
+        //                     // If timeRecorded is of type TIME, we convert it to DateTime
+        //                     DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
+        //                     stockHistoryList.Add(new StockHistory
+        //                     {
+        //                         StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
+        //                         BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+        //                         StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
+        //                         Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+        //                         // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
+        //                         TimeRecorded = timeRecorded
+        //                     });
+        //                 }
+        //             }
+        //         }
+        //     }
+
+        //     return stockHistoryList;
+        // }
 
 
         // Interface Methods

@@ -17,21 +17,27 @@ namespace CleanBrilliantCompany.Controllers
             _productControl = new ProductControl(connectionString);
             _agingControl = new AgingControl(_productControl); // Testing
         }
-        
 
         public async Task<IActionResult> displayProducts()
         {
             var products = _productControl.getAllProducts();
+            //_agingControl.testProductInterfaceMethods(); // Just to see the iProduct working
 
             return View("~/Views/Product/TestProduct.cshtml", products);
         }
 
         public async Task<IActionResult> displayProductBatch()
         {
-            var productBatches = await _productControl.getAllProductBatch();
+            var productBatches = _productControl.getAllProductBatch();
 
             return View("~/Views/Product/ProductBatch.cshtml", productBatches);
         }
+        // public async Task<IActionResult> displayProductBatch()
+        // {
+        //     var productBatches = await _productControl.getAllProductBatch();
+
+        //     return View("~/Views/Product/ProductBatch.cshtml", productBatches);
+        // }
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct(Product product)
@@ -82,19 +88,21 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("displayProducts");
         }
 
+
         [HttpGet]
         public async Task<IActionResult> ProductBatch()
         {
-            var batches = await _productControl.getAllProductBatch();
+            var batches = _productControl.getAllProductBatch();
             return View("~/Views/Product/ProductBatch.cshtml", batches);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> FetchBatch(int batchCode)
         {
-            var batch = await _productControl.getBatchDetails(batchCode);
+            var batch = _productControl.getBatchDetails(batchCode);
 
-             // Ensure we pass a List<ProductBatch> even for a single result
+            // Ensure we pass a List<ProductBatch> even for a single result
             List<ProductBatch> batchList = batch != null ? new List<ProductBatch> { batch } : new List<ProductBatch>();
             return View("~/Views/Product/ProductBatch.cshtml", batchList);
         }
@@ -107,18 +115,17 @@ namespace CleanBrilliantCompany.Controllers
                 return BadRequest("Invalid product data.");
             }
 
-            string status = await _productControl.createProductBatch(productBatch.ProductId, productBatch.ExpiryDate, 
+            _productControl.createProductBatch(productBatch.ProductId, productBatch.ExpiryDate, 
                     productBatch.ReceiveDate, productBatch.ManufactureDate, productBatch.Quantity, productBatch.BatchCost);
 
-            Console.WriteLine($"Insert Status: {status}");
             return RedirectToAction("displayProductBatch");
         }
 
         [HttpPost]
         public async Task<IActionResult> FetchBatchStockHistory(int batchCode)
         {
-            var batch = await _productControl.getBatchDetails(batchCode);
-            var (status, stockHistory) = await _productControl.getStockHistoryByBatch(batchCode);
+            var batch =  _productControl.getBatchDetails(batchCode);
+            var stockHistory = _productControl.getStockHistoryByBatch(batchCode);
 
             var viewModel = new BatchDetailsViewModel
             {
@@ -126,11 +133,7 @@ namespace CleanBrilliantCompany.Controllers
                 StockHistory = stockHistory ?? new List<StockHistory>()
             };
 
-            await _agingControl.generateNewDashboard(); // Testing AgingControl
-
             return View("~/Views/Product/StockHistoryBatch.cshtml", viewModel);
-        }
-
-        
+        }        
     }
 }

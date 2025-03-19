@@ -47,32 +47,25 @@ namespace CleanBrilliantCompany.Models.Control
                                     manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);;
         }
 
-        public async Task<List<ProductBatch>> getAllProductBatch()
+        public List<ProductBatch> getAllProductBatch()
         {
-            var (status, batchList) = await _productMapper.getDatabaseQueryStatus(_productMapper.findAllProductBatch());
-            Console.WriteLine($"Query Status: {status}");
-            return batchList; 
+            return _productMapper.findAllProductBatch(); 
         }
 
-        public async Task<ProductBatch> getBatchDetails(int batchCode) 
+        public ProductBatch getBatchDetails(int batchCode) 
         {
-            return await _productMapper.getDatabaseQueryStatus(_productMapper.findByBatchCode(batchCode));
+            return _productMapper.findByBatchCode(batchCode);
         }
 
-        public async Task<string> createProductBatch(int productId, DateTime expiryDate, 
+        public void createProductBatch(int productId, DateTime expiryDate, 
             DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
         {
-            return await _productMapper.getDatabaseQueryStatus(
-                _productMapper.insert(productId, expiryDate, 
-                    receiveDate, manufactureDate, quantity, batchCost)
-            );
+            _productMapper.insert(productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost);
         }
 
-        public async Task<(string status, List<StockHistory> stockHistory)> getStockHistoryByBatch(int batchCode)
+        public List<StockHistory> getStockHistoryByBatch(int batchCode)
         {
-            return await _productMapper.getDatabaseQueryStatus(
-                _productMapper.findStockHistoryByBatchCode(batchCode)
-                );
+            return _productMapper.findStockHistoryByBatchCode(batchCode);
 
             //turn into dict before sending it out. WILL FIX FEATURES FIRST
         }
