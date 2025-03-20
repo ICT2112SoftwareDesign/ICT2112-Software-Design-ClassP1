@@ -72,7 +72,7 @@ public class FakeBatchInterface {
             7, new RawBatchData(
                 batchCode: 7, 
                 productId: 23, 
-                expiryDate: new DateTime(2005, 06, 20), 
+                expiryDate: new DateTime(2027, 06, 20), 
                 receiveDate: new DateTime(2025, 03, 12), 
                 manufactureDate: new DateTime(2025, 03, 01), 
                 quantity: 100, 
