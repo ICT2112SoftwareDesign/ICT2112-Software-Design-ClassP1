@@ -22,9 +22,12 @@ builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<ChatbotService>();
 builder.Services.AddScoped<IProduct, ProductManagement>(); 
 builder.Services.AddTransient<OrderManagement>();
-//builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString));
+builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString));
 builder.Services.AddTransient<CartManagement>();
 builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
+builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
+
+
 
 builder.Services.AddTransient<WishlistManagement>();
 var app = builder.Build();
