@@ -24,7 +24,7 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
 		public List<Item> displayAllRefundedItems()
-		{ 
+		{
 			return _itemControl.getRefundedItems();
 
         }
@@ -36,17 +36,27 @@ namespace CleanBrilliantCompany.Models.Control
 			return allReturnForms;
 		}
 
-		public ReturnForm? getReturnFormById(int returnId)
+		public ReturnForm? getReturnFormById(int itemId, int productId)
 		{
-			return _mapper.getDatabaseQueryStatus(_mapper.findByItemId(returnId));
+			ReturnForm? returnForm = _mapper.getDatabaseQueryStatus(_mapper.findByItemId(itemId));
+
+            //Item item = _itemControl.getItemById(itemId).Result;
+            //Dictionary<string, object> itemDict = item.retrieveItemInfo();
+
+            //Product product = _itemControl.retrieveProductDetails(productId).Result;
+            //Debug.WriteLine(product);
+            //int manufId = product.ManufacturerId;
+            //string prodName = product.ProductName;
+
+            return returnForm;
         }
 
-		public bool deleteReturnForm(int returnId)
-		{
-			bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(returnId));
+		//public bool deleteReturnForm(int returnId)
+		//{
+		//	bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(returnId));
 
-            return deleteResult;
-		}
+  //          return deleteResult;
+		//}
 
 		public ReturnForm generateReturnForm(int productId, int itemId) {
 
@@ -94,7 +104,7 @@ namespace CleanBrilliantCompany.Models.Control
 			{
 				// Mapper function to insert return form.
 				ReturnForm? form = _mapper.getDatabaseQueryStatus(_mapper.insert(model));
-				await _itemControl.updateItemStatus(model.GetItemId(), ItemStatus.Returned);
+				await _itemControl.updateItemStatus(model.GetItemId(), null, null, null, form!.GetReturnId(), ItemStatus.Returned);
 
 
                 if (form != null)

@@ -24,9 +24,9 @@ namespace CleanBrilliantCompany.Controllers
 
 
 		[Route("returns/view/{returnId}")]
-		public IActionResult DisplayReturnForm(int returnId)
+		public IActionResult DisplayReturnForm(int itemId, int productId)
 		{
-			ReturnForm? returnForm = _returnFormControl.getReturnFormById(returnId);
+			ReturnForm? returnForm = _returnFormControl.getReturnFormById(itemId, productId);
 			if (returnForm == null)
 			{
 				RedirectToAction("Error", "StockFlowPage", new { errorType = "General" });
@@ -36,18 +36,18 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
 
-		// Handle deleting return forms.
-		[Route("returns/delete")]
-		public IActionResult DeleteReturnForm(int returnId)
-		{
-			bool result = _returnFormControl.deleteReturnForm(returnId);
+		//// Handle deleting return forms.
+		//[Route("returns/delete")]
+		//public IActionResult DeleteReturnForm(int returnId)
+		//{
+		//	bool result = _returnFormControl.deleteReturnForm(returnId);
 
-			if (result)
-			{
-				return RedirectToAction("Returns", "StockFlowPage");
-			}
-			return RedirectToAction("Error", "StockFlowPage", new { errorType = "DeleteError" });
-		}
+		//	if (result)
+		//	{
+		//		return RedirectToAction("Returns", "StockFlowPage");
+		//	}
+		//	return RedirectToAction("Error", "StockFlowPage", new { errorType = "DeleteError" });
+		//}
 
 
 		// Handle confirm sending return forms.

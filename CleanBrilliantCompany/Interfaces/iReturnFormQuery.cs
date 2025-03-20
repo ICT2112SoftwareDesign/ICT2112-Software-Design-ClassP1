@@ -8,7 +8,7 @@ namespace CleanBrilliantCompany.Interfaces
 
         public ReturnForm? getReturnFormById(int itemId);
 
-        public bool deleteReturnForm(int returnId);
+        //public bool deleteReturnForm(int returnId);
 
 
 	}

@@ -77,7 +77,7 @@ namespace CleanBrilliantCompany.Mapper
 
 
 		// Get Return Form by ItemId.
-		public async Task<ReturnForm?> findByItemId(int returnId)
+		public async Task<ReturnForm?> findByItemId(int itemId)
 		{
 			ReturnForm? returnForm = null;
 
@@ -91,12 +91,12 @@ namespace CleanBrilliantCompany.Mapper
 
 						SELECT * 
 						FROM [dbo].[ReturnForm] rf 
-						INNER JOIN [dbo].[Item] i ON rf.returnId = i.returnId WHERE i.returnId = @returnId;
+						INNER JOIN [dbo].[Item] i ON rf.returnId = i.returnId WHERE i.itemId = @itemId;
 
 						COMMIT TRANSACTION;";
 
 					SqlCommand command = new SqlCommand(query, connection);
-					command.Parameters.AddWithValue("@returnId", returnId);
+					command.Parameters.AddWithValue("@itemId", itemId);
 
 					using (SqlDataReader reader = await command.ExecuteReaderAsync())
 					{
@@ -106,7 +106,7 @@ namespace CleanBrilliantCompany.Mapper
 							{
 								// Loop through the results and map them to ReturnForm objects
 
-								int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
+								int returnId = reader.GetInt32(reader.GetOrdinal("returnId"));
 								int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
 								string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
 								int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));

@@ -40,9 +40,9 @@
 					</td>
 					<td>@item.GetStaffId()</td>
 
-					<td><a asp-controller="ReturnForm" asp-action="DisplayReturnForm" asp-route-returnId="@item.GetReturnId()" class="btn btn-outline-primary">View</a></td>
+					<td><a asp-controller="ReturnForm" asp-action="DisplayReturnForm" asp-route-itemId="@item.GetItemId()" asp-route-productId="@item.GetItemId()" class="btn btn-outline-primary">View</a></td>
 
-					<td><a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-returnId="@item.GetReturnId()" class="btn btn-outline-danger delete-btn">Delete</a></td>
+					@* <td><a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-returnId="@item.GetReturnId()" class="btn btn-outline-danger delete-btn">Delete</a></td> *@
 
 				</tr>
 			}
