@@ -11,13 +11,13 @@ public class StaffFeedbackFacade
         this.feedbackSubmission = feedbackSubmission;
     }
 
-    public void AddFeedback(string feedback)
+    public void AddFeedback(int staffId, string feedback)
     {
-        feedbackSubmission.AddFeedback(feedback);
+        feedbackSubmission.AddFeedback(staffId, feedback);
     }
 
-    public void EditFeedback(string feedback)
+    public void EditFeedback(int feedbackId, string feedback)
     {
-        feedbackSubmission.EditFeedback(feedback);
+        feedbackSubmission.EditFeedback(feedbackId, feedback);
     }
 }

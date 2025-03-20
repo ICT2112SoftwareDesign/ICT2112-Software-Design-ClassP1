@@ -1,11 +1,14 @@
 using System;
 using CleanBrilliantCompany.Interfaces;
+using Microsoft.Data.SqlClient; // Updated to the latest SQL Client library
+using System.Collections.Generic;
 
-namespace CleanBrilliantCompany.Models{
-    
+namespace CleanBrilliantCompany.Models
+{
+
     public class FeedbackRDM
     {
-        
+
         // Private fields
         private int feedbackId;
         private int staffId;
@@ -13,6 +16,8 @@ namespace CleanBrilliantCompany.Models{
         private DateTime dateSubmitted;
         private string feedback;
         private string managerComments;
+
+        public string StaffName { get; set; }
 
         // Public getter and setter methods
         public int GetFeedbackId()
@@ -94,50 +99,295 @@ namespace CleanBrilliantCompany.Models{
 
         public override string ToString()
         {
-            return $"FeedbackRDM [feedbackId={feedbackId}, staffId={staffId}, status={status}, dateSubmitted={dateSubmitted}, feedback={feedback}, managerComments={managerComments}]";
+            return $"FeedbackRDM [feedbackId={feedbackId}, staffId={staffId}, staffName={StaffName}, status={status}, dateSubmitted={dateSubmitted}, feedback={feedback}, managerComments={managerComments}]";
         }
     }
 
     public class FeedbackRepository
     {
-        private readonly List<string> feedbackList;
+        private readonly string connectionString = "Server=tcp:inf2112.database.windows.net,1433;Initial Catalog=CleanBrilliantCompany;Persist Security Info=False;User ID=teammember;Password=RevacholInsulid141;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
-        public FeedbackRepository()
+        public int GetDefaultStaffId()
         {
-            // Initialize with some dummy data
-            feedbackList = new List<string>
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                "Great service!",
-                "Needs improvement.",
-                "Fast response!",
-                "Highly recommended!",
-                "Would love more features."
-            };
+                conn.Open();
+
+                // Select the first available staffId
+                string query = "SELECT TOP 1 staffId FROM dbo.GeneralStaff ORDER BY staffId ASC";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        return Convert.ToInt32(result);
+                    }
+                }
+            }
+
+            throw new Exception("No staff members found in the database.");
         }
+
+        public void AddFeedback(int staffId, string feedback)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // Check if the staffId exists in GeneralStaff table
+                string checkQuery = "SELECT COUNT(*) FROM dbo.GeneralStaff WHERE staffId = @StaffID";
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@StaffID", staffId);
+                    int count = (int)checkCmd.ExecuteScalar();
+
+                    if (count == 0) // If staffId does not exist, return without inserting
+                    {
+                        throw new Exception("Invalid staffId. The staff member does not exist.");
+                    }
+                }
+
+                // If staffId is valid, insert feedback
+                string query = "INSERT INTO dbo.Feedback (StaffID, FeedbackText, DateSubmitted, Status) VALUES (@StaffID, @FeedbackText, GETDATE(), 'Pending')";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@StaffID", staffId);
+                    cmd.Parameters.AddWithValue("@FeedbackText", feedback);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
 
         public List<string> GetFeedbackList()
         {
+            List<string> feedbackList = new List<string>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT FeedbackText FROM dbo.Feedback ORDER BY DateSubmitted DESC";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            feedbackList.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+
             return feedbackList;
         }
 
-        public void AddFeedback(string feedback)
+        public void EditFeedback(int feedbackId, string feedback)
         {
-            feedbackList.Add(feedback);
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "UPDATE dbo.Feedback SET FeedbackText = @FeedbackText WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@FeedbackText", feedback);
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
-        public void EditFeedback(int index, string feedback)
+        // public void DeleteFeedback(int feedbackId)
+        // {
+        //     using (SqlConnection conn = new SqlConnection(connectionString))
+        //     {
+        //         string query = "DELETE FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
+
+        //         using (SqlCommand cmd = new SqlCommand(query, conn))
+        //         {
+        //             cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+        //             conn.Open();
+        //             cmd.ExecuteNonQuery();
+        //         }
+        //     }
+        // }
+        public List<FeedbackRDM> GetFeedbackWithDetails()
         {
-            if (index >= 0 && index < feedbackList.Count)
-                feedbackList[index] = feedback;
+            List<FeedbackRDM> feedbackList = new List<FeedbackRDM>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = @"
+                    SELECT f.FeedbackID, s.name AS StaffName, f.FeedbackText, f.Status
+                    FROM dbo.Feedback f
+                    JOIN dbo.Staff s ON f.StaffID = s.staffId
+                    ORDER BY f.DateSubmitted DESC";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            FeedbackRDM feedback = new FeedbackRDM
+                            {
+                                StaffName = reader.GetString(1),  // Staff Name
+                            };
+                            feedback.SetFeedbackId(reader.GetInt32(0)); // Feedback ID
+                            feedback.SetFeedback(reader.GetString(2));  // Feedback Text
+                            feedback.SetStatus(reader.GetString(3));    // Feedback Status
+
+                            feedbackList.Add(feedback);
+                        }
+                    }
+                }
+            }
+            return feedbackList;
         }
 
-        public void DeleteFeedback(int index)
+        public FeedbackRDM GetFeedbackById(int feedbackId)
         {
-            if (index >= 0 && index < feedbackList.Count)
-                feedbackList.RemoveAt(index);
+            FeedbackRDM feedback = null;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT FeedbackID, StaffID, FeedbackText, Status FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            feedback = new FeedbackRDM();
+                            feedback.SetFeedbackId(reader.GetInt32(0));
+                            feedback.SetFeedback(reader.GetString(2));
+                            feedback.SetStatus(reader.GetString(3));
+                        }
+                    }
+                }
+            }
+            return feedback;
         }
+
+        public void UpdateFeedback(int feedbackId, string updatedFeedback)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "UPDATE dbo.Feedback SET FeedbackText = @FeedbackText WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@FeedbackText", updatedFeedback);
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<FeedbackRDM> GetAllFeedback()
+        {
+            List<FeedbackRDM> feedbackList = new List<FeedbackRDM>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = @"
+            SELECT f.FeedbackID, s.name AS StaffName, f.FeedbackText, f.Status, f.ManagerComments
+            FROM dbo.Feedback f
+            JOIN dbo.Staff s ON f.StaffID = s.staffId
+            ORDER BY f.DateSubmitted DESC";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            FeedbackRDM feedback = new FeedbackRDM();
+                            feedback.SetFeedbackId(reader.GetInt32(0));
+                            feedback.StaffName = reader.GetString(1);
+                            feedback.SetFeedback(reader.GetString(2));
+                            feedback.SetStatus(reader.GetString(3));
+                            feedback.SetManagerComments(reader.IsDBNull(4) ? "" : reader.GetString(4));
+
+                            feedbackList.Add(feedback);
+                        }
+                    }
+                }
+            }
+            return feedbackList;
+        }
+
+        // Update manager's comments
+        public void UpdateManagerComment(int feedbackId, string managerComment)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "UPDATE dbo.Feedback SET ManagerComments = @ManagerComment WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ManagerComment", managerComment);
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Update feedback status
+        public void UpdateFeedbackStatus(int feedbackId, string status)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "UPDATE dbo.Feedback SET Status = @Status WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Status", status);
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        // Delete feedback
+        public void DeleteFeedback(int feedbackId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "DELETE FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+
     }
-
 
     // Feedback Management Implementation
     public class FeedbackManagement : IFeedbackManagement
@@ -195,19 +445,17 @@ namespace CleanBrilliantCompany.Models{
             _repository = repository;
         }
 
-        public void AddFeedback(string feedback)
+        public void AddFeedback(int staffId, string feedback)
         {
-            _repository.AddFeedback(feedback);
+            _repository.AddFeedback(staffId, feedback);
         }
 
-        public void EditFeedback(string feedback)
+        public void EditFeedback(int feedbackId, string feedback)
         {
-            var feedbackList = _repository.GetFeedbackList();
-            if (feedbackList.Count > 0)
-                _repository.EditFeedback(0, feedback);
+            _repository.EditFeedback(feedbackId, feedback);
         }
     }
 
 
-    
+
 }

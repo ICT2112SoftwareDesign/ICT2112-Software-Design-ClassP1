@@ -9,8 +9,8 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IFeedbackSubmission
     {
-        void AddFeedback(string feedback);
-        void EditFeedback(string feedback);
+        void AddFeedback(int staffId, string feedback);
+        void EditFeedback(int feedbackId, string feedback);
     }
 
     

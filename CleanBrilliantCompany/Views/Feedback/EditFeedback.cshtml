@@ -1,0 +1,24 @@
+@using CleanBrilliantCompany.Models
+@model FeedbackRDM
+
+@{
+    ViewData["Title"] = "Edit Feedback";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">Edit Feedback</h2>
+
+    <div class="card p-4 shadow-sm">
+        <form method="post" asp-action="EditFeedback" asp-controller="Feedback">
+            <input type="hidden" name="feedbackId" value="@Model.GetFeedbackId()" />
+
+            <div class="form-group">
+                <label for="updatedFeedback">Your Feedback</label>
+                <textarea class="form-control" id="updatedFeedback" name="updatedFeedback" rows="4" required>@Model.GetFeedback()</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success mt-2">Save Changes</button>
+            <a href="@Url.Action("Index", "Feedback")" class="btn btn-secondary mt-2">Cancel</a>
+        </form>
+    </div>
+</div>

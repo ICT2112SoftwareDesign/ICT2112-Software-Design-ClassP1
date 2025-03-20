@@ -1,0 +1,113 @@
+@using CleanBrilliantCompany.Models
+@model List<FeedbackRDM>
+
+@{
+    ViewData["Title"] = "Manager Feedback Management";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">Manager Feedback Management</h2>
+
+    <!-- Success or Error Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <hr>
+
+    <div class="card p-4 mt-4 shadow-sm">
+        <h4>All Feedback</h4>
+        @if (Model != null && Model.Count > 0)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Feedback</th>
+                        <th>Staff Name</th>
+                        <th>Status</th>
+                        <th>Manager Comments</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var feedback in Model)
+                    {
+                        <tr>
+                            <td>@feedback.GetFeedback()</td>
+                            <td>@feedback.StaffName</td>
+                            <td>
+                                <span class="badge bg-info">@feedback.GetStatus()</span>
+                            </td>
+                            <td>
+                                <textarea class="form-control manager-comment" data-feedback-id="@feedback.GetFeedbackId()" placeholder="Add comment">@feedback.GetManagerComments()</textarea>
+                                <a href="javascript:void(0);" class="btn btn-primary btn-sm mt-2 save-comment" data-feedback-id="@feedback.GetFeedbackId()">Save Comment</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("ResolveFeedback", "Manager", new { feedbackId = feedback.GetFeedbackId() })" class="btn btn-success btn-sm">Resolve</a>
+                                <a href="@Url.Action("DeleteFeedback", "Manager", new { feedbackId = feedback.GetFeedbackId() })" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No feedback available.</p>
+        }
+    </div>
+</div>
+
+<!-- JavaScript to Handle Comment Saving -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Auto-hide success messages after 3 seconds
+        setTimeout(function () {
+            let successAlert = document.querySelector(".alert-success");
+            if (successAlert) {
+                successAlert.classList.add("fade");
+                setTimeout(() => successAlert.remove(), 500); // Remove element after fade
+            }
+        }, 3000);
+
+        // Handle save comment button click
+        document.querySelectorAll(".save-comment").forEach(button => {
+            button.addEventListener("click", function () {
+                var feedbackId = this.getAttribute("data-feedback-id");
+                var commentField = document.querySelector(".manager-comment[data-feedback-id='" + feedbackId + "']");
+                var comment = commentField.value;
+
+                if (comment.trim() === "") {
+                    alert("Comment cannot be empty!");
+                    return;
+                }
+
+                var url = "@Url.Action("SaveComment", "Manager")" + "?feedbackId=" + feedbackId + "&managerComment=" + encodeURIComponent(comment);
+                
+                fetch(url, { method: "POST" })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Comment saved successfully!");
+                        } else {
+                            alert("Error saving comment!");
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+            });
+        });
+    });
+</script>
+

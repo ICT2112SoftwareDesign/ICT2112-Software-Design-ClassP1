@@ -1,16 +1,37 @@
 @using CleanBrilliantCompany.Models
 @using CleanBrilliantCompany.Interfaces
 
-@model List<string>
+@model List<FeedbackRDM>
 @inject IFeedbackSubmission FeedbackService
 
 @{
     ViewData["Title"] = "Feedback System";
 }
+<!-- Load jQuery and Bootstrap (Ensure this is placed before the closing </body> tag) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="container mt-4">
     <h2 class="text-center">Feedback System</h2>
-    
+
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
+            @ViewBag.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="errorAlert">
+            @ViewBag.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+
     <div class="card p-4 shadow-sm">
         <h4>Submit Your Feedback</h4>
         <form method="post" asp-action="SubmitFeedback" asp-controller="Feedback">
@@ -32,15 +53,19 @@
                 @foreach (var feedback in Model)
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        @feedback
-                        <form method="post" asp-action="EditFeedback" asp-controller="Feedback" class="d-inline">
-                            <input type="hidden" name="feedback" value="@feedback" />
+                        <div>
+                            <strong>@feedback.GetFeedback()</strong> <br>
+                            <small class="text-muted">
+                                By: <strong>@feedback.StaffName</strong> |
+                                Status: <span class="badge bg-info">@feedback.GetStatus()</span>
+                            </small>
+                        </div>
+                        @* <form method="post" asp-action="EditFeedback" asp-controller="Feedback" class="d-inline">
+                            <input type="hidden" name="feedbackId" value="@feedback.GetFeedbackId()" />
                             <button type="submit" class="btn btn-sm btn-warning">Edit</button>
-                        </form>
-                        <form method="post" asp-action="DeleteFeedback" asp-controller="Feedback" class="d-inline">
-                            <input type="hidden" name="feedback" value="@feedback" />
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        </form>
+                        </form> *@
+                        <a href="@Url.Action("EditFeedback", "Feedback", new { feedbackId = feedback.GetFeedbackId() })" class="btn btn-sm btn-warning">Edit</a>
+
                     </li>
                 }
             </ul>
@@ -51,3 +76,34 @@
         }
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        console.log("Document loaded. Checking for alerts...");
+
+        // Function to fade out and remove alerts
+        function dismissAlert(alertId) {
+            if ($(alertId).length) {
+                console.log(alertId + " found. Setting fade out.");
+                setTimeout(function () {
+                    $(alertId).fadeOut("slow", function () {
+                        $(this).remove(); // Removes from the DOM
+                        console.log(alertId + " removed.");
+                    });
+                }, 3000);
+            }
+        }
+
+        // Auto-hide alerts after 3 seconds
+        dismissAlert("#successAlert");
+        dismissAlert("#errorAlert");
+
+        // Ensure Bootstrap dismiss works correctly on close button click
+        $(".alert").on("close.bs.alert", function () {
+            console.log("Close button clicked. Removing alert.");
+            $(this).fadeOut("slow", function () {
+                $(this).remove();
+            });
+        });
+    });
+</script>
