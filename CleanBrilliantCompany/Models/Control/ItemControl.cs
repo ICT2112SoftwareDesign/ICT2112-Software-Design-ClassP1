@@ -40,24 +40,6 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
         }
 
-        // public async Task<bool> updateItemStatus(int itemId, ItemStatus status)
-        // {
-        //     return await Task.FromResult(_itemMapper.updateItemStatus(itemId, status));
-        // }
-
-        // public async Task<bool> updateItemStatus(int itemId, string statusString)
-        // {
-        //     if (Enum.TryParse(statusString, out ItemStatus status)) //  Convert string to ItemStatus
-        //     {
-        //         return await Task.FromResult(_itemMapper.updateItemStatus(itemId, status)); // Keep _itemMapper call
-        //     }
-        //     else
-        //     {
-        //         Console.WriteLine($"[Error] Invalid status value: {statusString}"); // Log invalid status
-        //         return false; // Return failure if status is invalid
-        //     }
-        // }
-
         public void RegisterObservers(Item item)
         {
             Console.WriteLine("Called registerObservers method");
@@ -66,16 +48,16 @@ namespace CleanBrilliantCompany.Models.Control
         }
         public async Task<bool> updateItemStatus(int itemId, ItemStatus status)
         {
-            bool dbUpdated = await Task.FromResult(_itemMapper.updateItemStatus(itemId, status)); // ✅ Keep _itemMapper call
+            bool dbUpdated = await Task.FromResult(_itemMapper.updateItemStatus(itemId, status)); //Keep _itemMapper call
 
             if (dbUpdated)
             {
-                Item item = await getItem(itemId); // ✅ Fetch the Item object
+                Item item = await getItem(itemId); //Fetch the Item object
                 if (item != null)
                 {
-                    RegisterObservers(item); // ✅ Attach observers before updating
+                    RegisterObservers(item); //Attach observers before updating
                     Console.WriteLine("Executed line 77 of IC.cs");
-                    item.UpdateStatus(status); // ✅ Update & notify observers
+                    item.UpdateStatus(status); //Update & notify observers
                     Console.WriteLine("Executed line 79 of IC.cs");
                 }
             }
