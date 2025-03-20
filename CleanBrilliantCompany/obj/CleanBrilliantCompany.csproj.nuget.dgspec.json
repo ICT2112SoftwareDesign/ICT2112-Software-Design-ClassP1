@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
   },
   "projects": {
@@ -12,14 +13,31 @@
         "projectPath": "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
         "packagesPath": "C:\\Users\\xuanw\\.nuget\\packages\\",
         "outputPath": "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+=======
+    "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
+  },
+  "projects": {
+    "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "projectName": "CleanBrilliantCompany",
+        "projectPath": "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "packagesPath": "C:\\Users\\ryan_\\.nuget\\packages\\",
+        "outputPath": "D:\\SIT\\Database\\Project 2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+>>>>>>> module2-team3-expiryTransactionTest
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
+<<<<<<< HEAD
           "C:\\Users\\xuanw\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+=======
+          "C:\\Users\\ryan_\\AppData\\Roaming\\NuGet\\NuGet.Config"
+>>>>>>> module2-team3-expiryTransactionTest
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -49,6 +67,12 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

@@ -76,6 +76,7 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1dGlsaXRpZXMtb3RoZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+<<<<<<< HEAD
 [C:/GitHub/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Product/FetchProduct.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxGZXRjaFByb2R1Y3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -89,6 +90,13 @@ build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxUcmFuc2Zlci5jc2h0
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/GitHub/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/Error.cshtml]
+=======
+[D:/SIT/Database/Project 2/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Item/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRlbVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/SIT/Database/Project 2/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/Error.cshtml]
+>>>>>>> module2-team3-expiryTransactionTest
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
@@ -96,7 +104,15 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+<<<<<<< HEAD
 [C:/GitHub/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/_ViewImports.cshtml]
+=======
+[D:/SIT/Database/Project 2/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Transaction/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/SIT/Database/Project 2/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/_ViewImports.cshtml]
+>>>>>>> module2-team3-expiryTransactionTest
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
