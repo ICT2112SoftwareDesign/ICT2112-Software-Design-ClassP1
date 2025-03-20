@@ -24,9 +24,9 @@ namespace CleanBrilliantCompany.Controllers
 
 
 		[Route("returns/view/{returnId}")]
-		public IActionResult DisplayReturnForm(int itemId, int productId)
+		public IActionResult DisplayReturnForm(int itemId)
 		{
-			ReturnForm? returnForm = _returnFormControl.getReturnFormById(itemId, productId);
+			ReturnForm? returnForm = _returnFormControl.getReturnFormById(itemId);
 			if (returnForm == null)
 			{
 				RedirectToAction("Error", "StockFlowPage", new { errorType = "General" });

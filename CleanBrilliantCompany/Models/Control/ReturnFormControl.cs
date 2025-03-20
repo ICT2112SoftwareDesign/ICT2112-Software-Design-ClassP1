@@ -36,7 +36,7 @@ namespace CleanBrilliantCompany.Models.Control
 			return allReturnForms;
 		}
 
-		public ReturnForm? getReturnFormById(int itemId, int productId)
+		public ReturnForm? getReturnFormById(int itemId)
 		{
 			ReturnForm? returnForm = _mapper.getDatabaseQueryStatus(_mapper.findByItemId(itemId));
 
@@ -51,14 +51,14 @@ namespace CleanBrilliantCompany.Models.Control
             return returnForm;
         }
 
-		//public bool deleteReturnForm(int returnId)
-		//{
-		//	bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(returnId));
+        //public bool deleteReturnForm(int returnId)
+        //{
+        //	bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(returnId));
 
-  //          return deleteResult;
-		//}
+        //          return deleteResult;
+        //}
 
-		public ReturnForm generateReturnForm(int productId, int itemId) {
+        public ReturnForm generateReturnForm(int productId, int itemId) {
 
             Item item = _itemControl.getItemById(itemId).Result;
             Dictionary<string, object> itemDict = item.retrieveItemInfo();
@@ -173,5 +173,5 @@ namespace CleanBrilliantCompany.Models.Control
 		}
 
 
-	}
+    }
 }
