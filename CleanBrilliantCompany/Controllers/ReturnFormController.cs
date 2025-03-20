@@ -1,9 +1,11 @@
-﻿using CleanBrilliantCompany.Models.Control;
+﻿using System.Diagnostics;
+using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
 {
+
 	public class ReturnFormController : Controller
     {
 
@@ -48,28 +50,49 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
 
-		// Handle creating new return forms.
+		// Handle confirm sending return forms.
 		[Route("returns/confirm")]
-		public IActionResult ConfirmReturnForm(int manufacturerId, int itemId, string returnReason)
+		public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, string manufacturerName, string manufacturerEmail, int productId, string productName, int itemId, string returnReason, int staffId)
 		{
 
-			// Example staff ID set to 1
+			// Example staff ID set to 1.
 			// Placeholder for returnId is 0.
-			// Placeholder for warehouseId is -1, the function will query the DB and update to the correct warehouseId.
-			var model = ReturnForm.createForm(0, manufacturerId, itemId, -1, returnReason, 1);
+			var model = ReturnForm.createForm(0, manufacturerId, manufacturerName, manufacturerEmail, itemId, productId, productName, returnReason, staffId);
 
-			if (ModelState.IsValid)
+			var result = await _returnFormControl.sendReturnForm(model);
+
+			if (result == null)
 			{
-				var result = _returnFormControl.sendReturnForm(model);
-
-				if (result == null)
-				{
-					return RedirectToAction("Error", "StockFlowPage", new { errorType = "InputError" });
-				}
+				return RedirectToAction("Error", "StockFlowPage", new { errorType = "InputError" });
 			}
-
+			
 			return RedirectToAction("Returns", "StockFlowPage");
 		}
-	}
+
+		// Generate new return forms for sending (not sent yet)
+		[Route("returns/create")]
+        public IActionResult Create(int productId, int itemId) {
+
+            ReturnForm model = _returnFormControl.generateReturnForm(productId, itemId);
+
+			return View(model);
+		}
+
+        [Route("returns/refunded")]
+        public ActionResult ShowAllRefunded()
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+
+            List<Item> items = _returnFormControl.displayAllRefundedItems();
+
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            return View(itemsInfo);
+        }
+
+    }
 
 }

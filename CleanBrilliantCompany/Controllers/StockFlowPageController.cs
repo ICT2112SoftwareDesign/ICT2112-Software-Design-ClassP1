@@ -25,12 +25,6 @@ namespace CleanBrilliantCompany.Controllers
 			return View(returnForms);
 		}
 
-		[Route("returns/create")]
-		public IActionResult Create()
-		{
-			return View();
-		}
-
 		[Route("returns/error")]
 		public IActionResult Error(string errorType)
 		{

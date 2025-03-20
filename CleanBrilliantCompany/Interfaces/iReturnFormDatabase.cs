@@ -12,10 +12,5 @@ namespace CleanBrilliantCompany.Interfaces
         List<T> getDatabaseQueryStatus(Task<List<T>> task);
 
         bool getDatabaseQueryStatus(Task<bool> task);
-
-        // TEMP!!-------------------
-        string getDatabaseQueryStatus(Task<string> task);
-        int getDatabaseQueryStatus(Task<int> task);
-        // TEMP!!-------------------
     }
 }

@@ -1,16 +1,25 @@
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Controllers;
 using CleanBrilliantCompany.Mapper;
+using CleanBrilliantCompany.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+//string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 
-// string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-var configuration = builder.Configuration;
-builder.Services.AddSingleton<IConfiguration>(configuration);
+//// string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+////var configuration = builder.Configuration;
+////builder.Services.AddSingleton<IConfiguration>(configuration);
+//builder.Services.AddSingleton(connectionString);
 
+
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnectionString' is missing or empty.");
+}
+builder.Services.AddSingleton(connectionString);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,6 +27,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ReturnFormControl>();
 builder.Services.AddScoped<ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormController>();
+builder.Services.AddScoped<ItemControl>();
+builder.Services.AddScoped<iProduct, ProductControl>();
 
 var app = builder.Build();
 

@@ -4,8 +4,11 @@
 	{
 		private int _returnId;
 		private int _manufacturerId;
-		private int _itemId;
-		private int _warehouseId;
+		private string _manufacturerName;
+        private string _manufacturerEmail;
+        private int _productId;
+        private string _productName;
+        private int _itemId;
 		private string? _returnReason;
 		private int _staffId;
 
@@ -21,19 +24,32 @@
 			get { return _manufacturerId; }
 			set { _manufacturerId = value; }
 		}
-
-		private int itemId
+        private string manufacturerName
+        {
+            get { return _manufacturerName; }
+            set { _manufacturerName = value; }
+        }
+        private string manufacturerEmail
+        {
+            get { return _manufacturerEmail; }
+            set { _manufacturerEmail = value; }
+        }
+        private int itemId
 		{
 			get { return _itemId; }
 			set { _itemId = value; }
 		}
-
-		private int warehouseId
+        private int productId
 		{
-			get { return _warehouseId; }
-			set { _warehouseId = value; }
+			get { return _productId; }
+			set { _productId = value; }
 		}
-		private string? returnReason
+        private string productName
+        {
+            get { return _productName; }
+            set { _productName = value; }
+        }
+        private string? returnReason
 		{
 			get { return _returnReason; }
 			set
@@ -60,13 +76,17 @@
 
 		public int GetManufacturerId() => manufacturerId;
 		public void SetManufacturerId(int value) => manufacturerId = value;
-
-		public int GetItemId() => itemId;
+        public string GetManufacturerName() => manufacturerName;
+        public void SetManufacturerName(string value) => manufacturerName = value;
+        public string GetManufacturerEmail() => manufacturerEmail;
+        public void SetManufacturerEmail(string value) => manufacturerEmail = value;
+        public int GetItemId() => itemId;
 		public void SetItemId(int value) => itemId = value;
-		public int GetWarehouseId() => warehouseId;
-		public void SetWarehouseId(int value) => warehouseId = value;
-
-		public string? GetReturnReason() => returnReason;
+        public int GetProductId() => productId;
+		public void SetProductId(int value) => productId = value;
+        public string GetProductName() => productName;
+        public void SetProductName(string value) => productName = value;
+        public string? GetReturnReason() => returnReason;
 		public void SetReturnReason(string? value) => returnReason = value;
 
 		public int GetStaffId() => staffId;
@@ -75,20 +95,36 @@
 
 		public ReturnForm() { }
 
-		private ReturnForm(int returnId, int manufacturerId, int itemId, int warehouseId, string returnReason, int staffId)
+		private ReturnForm(int returnId, int manufId, string manufName, string manufEmail, int itemId, int productId, string productName, string returnReason, int staffId)
 		{
 			SetReturnId(returnId);
 			SetItemId(itemId);
-			SetManufacturerId(manufacturerId);
-			SetWarehouseId(warehouseId);
-			SetReturnReason(returnReason);
+            SetManufacturerId(manufId);
+            SetManufacturerName(manufName);
+            SetManufacturerEmail(manufEmail);
+            SetProductId(productId);
+            SetProductName(productName);
+            SetReturnReason(returnReason);
 			SetStaffId(staffId);
 		}
 
-		// Public method to create a return form.
-		public static ReturnForm createForm(int returnId, int manufacturerId, int itemId, int warehouseId, string returnReason, int staffId)
+		private ReturnForm(int returnId, int manufId, int itemId, string returnReason, int staffId) {
+            SetReturnId(returnId);
+            SetItemId(itemId);
+            SetManufacturerId(manufId);
+            SetReturnReason(returnReason);
+            SetStaffId(staffId);
+        }
+		public static ReturnForm createForm(int returnId, int manufId, int itemId, string returnReason, int staffId) {
+
+            var form = new ReturnForm(returnId, manufId, itemId, returnReason, staffId);
+            return form;
+        }
+
+        // Public method to create a return form.
+        public static ReturnForm createForm(int returnId, int manufId, string manufName, string manufEmail, int itemId, int productId, string productName, string returnReason, int staffId)
 		{
-			var form = new ReturnForm(returnId, manufacturerId, itemId, warehouseId, returnReason, staffId);
+			var form = new ReturnForm(returnId, manufId, manufName, manufEmail, itemId, productId, productName, returnReason, staffId);
 			return form;
 		}
 	}

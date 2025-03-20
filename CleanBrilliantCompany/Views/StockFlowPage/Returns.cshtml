@@ -8,7 +8,7 @@
 
 <div class="text-center">
 	<h1 class="display-4 p-3">Manage Return Forms</h1>
-	<a asp-controller="StockFlowPage" asp-action="Create" class="btn btn-secondary">Create return form</a>
+	<a asp-controller="ReturnForm" asp-action="ShowAllRefunded" class="btn btn-secondary">Items to be Returned</a>
 </div>
 
 
@@ -18,7 +18,7 @@
 			<th>Return ID</th>
 			<th>Manufacturer ID</th>
 			<th>Item ID</th>
-			<th>Warehouse ID</th>
+			<th>Product ID</th>
 			<th>Return Reason</th>
 			<th>Staff ID</th>
 			<th></th>
@@ -34,7 +34,7 @@
 					<td>@item.GetReturnId()</td>
 					<td>@item.GetManufacturerId()</td>
 					<td>@item.GetItemId()</td>
-					<td>@item.GetWarehouseId()</td>
+					<td>@item.GetProductId()</td>
 					<td class="text-truncate" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
 						@item.GetReturnReason()
 					</td>

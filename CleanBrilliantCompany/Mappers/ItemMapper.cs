@@ -162,7 +162,7 @@ namespace CleanBrilliantCompany.Mappers
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@itemStatus", itemStatus);
+                    command.Parameters.AddWithValue("@status", itemStatus);
                     // Execute the query and get the results
                     using (SqlDataReader reader = command.ExecuteReader())
                     {

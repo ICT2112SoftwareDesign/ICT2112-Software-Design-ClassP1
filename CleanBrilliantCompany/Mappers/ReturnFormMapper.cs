@@ -11,7 +11,7 @@ namespace CleanBrilliantCompany.Mapper
 
 		public ReturnFormMapper(IConfiguration configuration)
 		{
-			_connectionString = configuration.GetConnectionString("DefaultConnectionString");
+			_connectionString = configuration.GetConnectionString("DefaultConnection");
 		}
 
 		// Get all Return Forms.
@@ -48,12 +48,11 @@ namespace CleanBrilliantCompany.Mapper
 									int returnId = reader.GetInt32(reader.GetOrdinal("returnId"));
 									int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
 									int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
-									int warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
 									string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
 									int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
 
 									// Map to objects.
-									ReturnForm returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, warehouseId, returnReason, staffId);
+									ReturnForm returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, returnReason, staffId);
 
 									// Add object to list.
 									allReturnForms.Add(returnForm);
@@ -109,12 +108,11 @@ namespace CleanBrilliantCompany.Mapper
 
 								int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
 								int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
-								int warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
 								string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
 								int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
 
 								// Map to objects.
-								returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, warehouseId, returnReason, staffId);
+								returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, returnReason, staffId);
 							}
 						}
 					}
@@ -149,7 +147,7 @@ namespace CleanBrilliantCompany.Mapper
 										BEGIN TRANSACTION;
 
 										UPDATE [dbo].[Item] 
-										SET itemStatus = 'Available', returnId = NULL 
+										SET itemStatus = 0, returnId = NULL 
 										WHERE returnId = @returnId;
 
 										DELETE FROM [dbo].[ReturnForm] WHERE returnId = @returnId;
@@ -208,10 +206,6 @@ namespace CleanBrilliantCompany.Mapper
 
 							DECLARE @ReturnId INT;
 							SELECT @ReturnId = returnId FROM @ReturnIdTable;
-
-							UPDATE [dbo].[Item] 
-							SET [itemStatus] = 'Refunded', [returnId] = @ReturnId 
-							WHERE [itemId] = @itemId;
 							
 							COMMIT TRANSACTION;
 
@@ -289,97 +283,5 @@ namespace CleanBrilliantCompany.Mapper
         {
             return task.Result;
         }
-
-
-        // TEMP!!----------------------------------------------------------------------------
-        public async Task<int> getWarehouseIdByItemId(int itemId)
-		{
-			int warehouseId = -1;
-
-			using (SqlConnection connection = new SqlConnection(_connectionString))
-			{
-				try
-				{
-					await connection.OpenAsync();
-
-					string query = "SELECT * FROM [dbo].[Item] WHERE [itemId] = @itemId";
-					SqlCommand command = new SqlCommand(query, connection);
-					command.Parameters.AddWithValue("@itemId", itemId);
-
-					using (SqlDataReader reader = command.ExecuteReader())
-					{
-						// Loop through the results and map them to Item objects
-						if (reader.Read())
-						{
-							warehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId"));
-						}
-
-					}
-				}
-
-				catch (Exception ex)
-				{
-					Debug.WriteLine($"Error occurred: {ex.Message}");
-				}
-
-				finally
-				{
-					connection.Close();
-				}
-			}
-
-			return warehouseId;
-		}
-
-
-		public async Task<string> getItemStatusByItemId(int itemId)
-		{
-            string status = "Refunded";
-
-			using (SqlConnection connection = new SqlConnection(_connectionString))
-			{
-				try
-				{
-					await connection.OpenAsync();
-
-					string query = "SELECT * FROM [dbo].[Item] WHERE [itemId] = @itemId";
-					SqlCommand command = new SqlCommand(query, connection);
-					command.Parameters.AddWithValue("@itemId", itemId);
-
-					using (SqlDataReader reader = await command.ExecuteReaderAsync())
-					{
-						// Loop through the results and map them to Item objects
-						if (reader.Read())
-						{
-							status = reader.GetString(reader.GetOrdinal("itemStatus"));
-						}
-
-					}
-				}
-
-				catch (Exception ex)
-				{
-					Debug.WriteLine($"Error occurred: {ex.Message} - GET STATUS");
-				}
-
-				finally
-				{
-					await connection.CloseAsync();
-				}
-			}
-
-			return status;
-		}
-
-        public string getDatabaseQueryStatus(Task<string> task)
-        {
-            return task.Result;
-        }
-        public int getDatabaseQueryStatus(Task<int> task)
-        {
-            return task.Result;
-        }
-
-        // TEMP!!----------------------------------------------------------------------------
     }
 }

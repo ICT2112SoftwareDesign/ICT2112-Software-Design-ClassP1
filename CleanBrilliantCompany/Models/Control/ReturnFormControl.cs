@@ -4,6 +4,7 @@ using CleanBrilliantCompany.Models.Entity;
 using System.Diagnostics;
 using System.Net.Mail;
 using System.Net;
+using System.Reflection;
 
 
 namespace CleanBrilliantCompany.Models.Control
@@ -11,13 +12,22 @@ namespace CleanBrilliantCompany.Models.Control
 	public class ReturnFormControl : iReturnFormQuery
 	{
 		private readonly ReturnFormMapper _mapper;
+		private readonly ItemControl _itemControl;
         private readonly IConfiguration _configuration;
 
-        public ReturnFormControl(ReturnFormMapper mapper, IConfiguration configuration)
+        public ReturnFormControl(ReturnFormMapper mapper, IConfiguration configuration, ItemControl itemControl)
 		{
             _configuration = configuration;
             _mapper = mapper;
-		}
+            _itemControl = itemControl;
+
+        }
+
+		public List<Item> displayAllRefundedItems()
+		{ 
+			return _itemControl.getRefundedItems();
+
+        }
 
 		public List<ReturnForm> displayReturnForms()
 		{
@@ -38,44 +48,70 @@ namespace CleanBrilliantCompany.Models.Control
             return deleteResult;
 		}
 
-        public ReturnForm? sendReturnForm(ReturnForm model)
+		public ReturnForm generateReturnForm(int productId, int itemId) {
+
+            Item item = _itemControl.getItemById(itemId).Result;
+            Dictionary<string, object> itemDict = item.retrieveItemInfo();
+
+            Product product = _itemControl.retrieveProductDetails(productId).Result;
+			Debug.WriteLine(product);
+            int manufId = product.ManufacturerId;
+            string prodName = product.ProductName;
+
+            ReturnForm model = ReturnForm.createForm(
+				0,
+				manufId,
+				"test@test.com", // need iManufacturer
+				"test",
+				itemId,
+				productId,
+                prodName,
+				"-", // Placeholder for returnReason.
+				1
+			);
+
+			return model;
+        }
+
+		public async Task<ReturnForm?> sendReturnForm(ReturnForm model)
 		{
+			Debug.WriteLine($"Finding item for item id: {model.GetItemId()}");
+
+			Item item = await _itemControl.getItemById(model.GetItemId());
+			Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
 			// Check whether the Item is in Available Status.
-			string status = _mapper.getItemStatusByItemId(model.GetItemId()).Result;
+			var status = (ItemStatus)itemDict["ItemStatus"];
+			Debug.WriteLine($"ItemStatus type: {status.GetType()}");
 
-			// Query DB to get the Warehouse Id using the Item Id. WarehouseId must not be -1 (placeholder).
-			int warehouseId = _mapper.getWarehouseIdByItemId(model.GetItemId()).Result;
-
-			model.SetWarehouseId(warehouseId);
 
 			// ItemId must not be in Return Forms table.
-			ReturnForm? inRFTable = _mapper.findByItemId(model.GetItemId()).Result;
+			ReturnForm? inRFTable = await _mapper.findByItemId(model.GetItemId());
 
 			Debug.WriteLine($"Status: {status}");
-			Debug.WriteLine($"Warehouse Id found: {warehouseId}");
 
-			if (inRFTable == null && status == "Available" && warehouseId != -1)
+			if (inRFTable == null && status == ItemStatus.Refunded)
 			{
 				// Mapper function to insert return form.
 				ReturnForm? form = _mapper.getDatabaseQueryStatus(_mapper.insert(model));
+				await _itemControl.updateItemStatus(model.GetItemId(), ItemStatus.Returned);
 
-				if (form != null)
+
+                if (form != null)
 				{
 
 					// Get email from iManufacturer.
 					// var prodManuf = await iManufaccturer.getManufacturerDetails(model.ManufacturerId);
 					// string manufacturerEmail = prodManuf.email
-					// string manufacturerName = prodManuf.name 
-
+					// string manufacturerName = prodManuf.name
 
 					try
 					{
 
 						string? fromEmail = _configuration.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
-                        string? password = _configuration.GetValue<string>("EMAIL_CONFIGURATION:PASSWORD");
-                        string? host = _configuration.GetValue<string>("EMAIL_CONFIGURATION:HOST");
-                        int port = _configuration.GetValue<int>("EMAIL_CONFIGURATION:PORT");
+						string? password = _configuration.GetValue<string>("EMAIL_CONFIGURATION:PASSWORD");
+						string? host = _configuration.GetValue<string>("EMAIL_CONFIGURATION:HOST");
+						int port = _configuration.GetValue<int>("EMAIL_CONFIGURATION:PORT");
 
 
 						// Set up the SMTP client
@@ -83,34 +119,35 @@ namespace CleanBrilliantCompany.Models.Control
 						smtpClient.EnableSsl = true;
 						smtpClient.UseDefaultCredentials = false;
 						smtpClient.Credentials = new NetworkCredential(fromEmail, password);
-						
 
-
-                        // Create the email message. Replace toEmail with manufEmail
-                        MailMessage mailMessage = new MailMessage(fromEmail!, fromEmail!)
+						// Create the email message. Replace toEmail with manufEmail
+						MailMessage mailMessage = new MailMessage(fromEmail!, fromEmail!)
 						{
 							Subject = "Clean Brilliant Company Return Form",
-							Body = "Return Form sent to: [MANUFACTURER NAME] Clean Brilliant Company (CBC) is requesting a return of [MANUFACTURER NAME]'s [PRODUCT DETAILS], itemID #[ITEMID] due to the following reason: [RETURN REASON]",
+							Body = $"Return Form sent to: [MANUFACTURER NAME] Clean Brilliant Company (CBC) is requesting a return of [MANUFACTURER NAME]'s item due to the following reason: {model.GetReturnReason()}\nItem Details:\nCBC ItemID: {model.GetItemId()}\nPrice: {itemDict["SalePrice"]}",
 							IsBodyHtml = false
 						};
 
 						// Send the email (synchronous)
-						smtpClient.Send(mailMessage);
+						await smtpClient.SendMailAsync(mailMessage);
 
 						Debug.WriteLine("Email sent successfully!");
 					}
 					catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Error sending email: {ex.Message}");
-                    }
+					{
+						Debug.WriteLine($"Error sending email: {ex.Message}");
+					}
 
-                    Debug.WriteLine("Sending return form to manufacturer by email...");
+					Debug.WriteLine("Sending return form to manufacturer by email...");
 
 					model = ReturnForm.createForm(
 						model.GetReturnId(),
 						model.GetManufacturerId(),
+						model.GetManufacturerName(),
+						model.GetManufacturerEmail(),
 						model.GetItemId(),
-						model.GetWarehouseId(),
+						model.GetProductId(),
+						model.GetProductName(),
 						model.GetReturnReason(),
 						model.GetStaffId()
 						);
