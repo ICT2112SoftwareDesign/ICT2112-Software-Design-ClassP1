@@ -2,10 +2,14 @@
     ViewBag.Title = "Checkout";
     var products = ViewBag.Products as Dictionary<int, Dictionary<string, object>>;
     var cart = ViewBag.Cart as Dictionary<int, int>;
-    var cartTotal = ViewBag.CartTotal;
-    var customerAddress = ViewBag.CustomerAddress as string; // Retrieve the customer's saved address
-    var shippingFee = ViewBag.ShippingFee ?? 0; // Retrieve the shipping fee (default to 0 if not set)
-    var finalTotal = cartTotal + Convert.ToDecimal(shippingFee); // Calculate the final total
+    var cartTotal = ViewBag.CartTotal ?? 0m;
+    var customerAddress = ViewBag.CustomerAddress as string ?? string.Empty;
+    var selectedDeliveryTime = ViewBag.SelectedDeliveryTime as string ?? "One Week Delivery";
+    var selectedShippingType = ViewBag.SelectedShippingType as string ?? "Standard";
+    var selectedShippingAgent = ViewBag.SelectedShippingAgent as string ?? "DHL";
+    var shippingFee = ViewBag.ShippingFee ?? 0m;
+    var finalTotal = ViewBag.FinalTotal ?? 0m;
+    var shippingAgents = ViewBag.ShippingAgents as List<string> ?? new List<string>();
 }
 
 <div class="container mt-5">
@@ -42,33 +46,67 @@
         </table>
 
         <!-- Address Form -->
-        <form asp-action="Checkout" method="post">
+        <form id="checkoutForm" asp-action="Checkout" method="post">
             <div class="form-group">
                 <label for="deliveryAddress">Delivery Address</label>
                 <textarea id="deliveryAddress" name="deliveryAddress" class="form-control" rows="3" placeholder="Enter your delivery address">@customerAddress</textarea>
             </div>
-
             <div class="form-group">
-                <label for="deliveryType">Delivery Type</label>
-                <select id="deliveryType" name="deliveryType" class="form-control">
-                    <option value="Next Day Delivery">Next Day Delivery ($10.00)</option>
-                    <option value="Three Day Delivery">Three Day Delivery ($5.00)</option>
-                    <option value="One Week Delivery">One Week Delivery (Free)</option>
+                <label for="deliveryTime">Delivery Time</label>
+                <select id="deliveryTime" name="deliveryTime" class="form-control">
+                    <option value="One Week Delivery" selected="@(selectedDeliveryTime == "One Week Delivery")">One Week Delivery (Free)</option>
+                    <option value="Three Day Delivery" selected="@(selectedDeliveryTime == "Three Day Delivery")">Three Day Delivery ($5.00)</option>
+                    <option value="Next Day Delivery" selected="@(selectedDeliveryTime == "Next Day Delivery")">Next Day Delivery ($10.00)</option>
                 </select>
             </div>
-
-            <button type="submit" class="btn btn-primary mb-3">Update Shipping and Total</button>
+            <div class="form-group">
+                <label for="shippingType">Shipping Type</label>
+                <select id="shippingType" name="shippingType" class="form-control">
+                    <option value="Air" selected="@(selectedShippingType == "Air")">Air</option>
+                    <option value="Truck" selected="@(selectedShippingType == "Truck")">Truck</option>
+                    <option value="Ship" selected="@(selectedShippingType == "Ship")">Ship</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="shippingAgent">Shipping Agent</label>
+                <select id="shippingAgent" name="shippingAgent" class="form-control">
+                    @foreach (var agent in shippingAgents)
+                    {
+                        <option value="@agent" selected="@(selectedShippingAgent == agent)">@agent</option>
+                    }
+                </select>
+            </div>
         </form>
 
-         <!-- Total Breakdown -->
-
-
+        <!-- Total Breakdown -->
         <div class="text-right mt-4">
             <h5>Total Product Price: @cartTotal.ToString("C")</h5>
-            <h5>Total Shipping Fee: @Convert.ToDecimal(shippingFee).ToString("C")</h5>
-            <h4><strong>Total: @finalTotal.ToString("C")</strong></h4>
-            <button type="submit" class="btn btn-primary mb-3">Place Order</button>
+            <h5>Total Shipping Fee: @shippingFee.ToString("C")</h5>
+            <h4><strong>Total: @finalTotal.ToString("C")</h4>
         </div>
+
+        <!-- Place Order Button -->
+        <form asp-action="PlaceOrder" method="post">
+            <input type="hidden" name="deliveryAddress" value="@customerAddress" />
+            <input type="hidden" name="deliveryTime" value="@selectedDeliveryTime" />
+            <input type="hidden" name="shippingType" value="@selectedShippingType" />
+            <input type="hidden" name="shippingAgent" value="@selectedShippingAgent" />
+            <button type="submit" class="btn btn-primary btn-block">Place Order</button>
+        </form>
     }
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById('deliveryTime').addEventListener('change', function () {
+            document.getElementById('checkoutForm').submit();
+        });
+        document.getElementById('shippingType').addEventListener('change', function () {
+            document.getElementById('checkoutForm').submit();
+        });
+        document.getElementById('shippingAgent').addEventListener('change', function () {
+            document.getElementById('checkoutForm').submit();
+        });
+    </script>
+}
 

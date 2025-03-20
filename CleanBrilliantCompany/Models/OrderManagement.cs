@@ -6,18 +6,28 @@ namespace CleanBrilliantCompany.Models
 {
     public class OrderManagement
     {
+        private readonly IOrderDatabase _orderDatabase;
+
         private readonly IProduct _product;
+        private readonly IShippingAgents _shippingAgents;
 
-        public OrderManagement(IProduct product)
+        public OrderManagement(IOrderDatabase orderDatabase,IShippingAgents shippingAgents)
         {
-            _product = product;
+            _orderDatabase = orderDatabase;
+            _shippingAgents = shippingAgents;
+            
         }
 
-        public bool createOrder(int customerId, DateTime orderDate, string orderAddress, Dictionary<int, int> orderProducts, List<Item> orderItems)
-        {
-            // Implementation for creating an order
-            return true;
-        }
+       //public int CreateOrder(int customerId, string orderAddress, string deliveryTime, Service shippingType, string shippingAgent, Dictionary<int, int> orderProducts, decimal orderTotal)
+       // {
+            // Create a new order
+        //    var orderId = _orderDatabase.createOrder(customerId, orderAddress, deliveryTime, shippingType, shippingAgent, orderProducts, orderTotal);
+
+            // Notify the DB of the order query status
+        //    notifyDBOrderQueryStatus();
+
+        //    return orderId;
+       // }
 
         public bool makePayment()
         {
@@ -25,28 +35,27 @@ namespace CleanBrilliantCompany.Models
             return true;
         }
 
-        public List<Order> getOrderHistory(int customerId)
-        {
-            // Implementation for getting order history
-            return new List<Order>();
-        }
+       // public List<OrderRDM> getOrderHistory(int customerId)
+        //{
+            // Retrieve orders from the database based on customerId
+        //    return _orderDatabase.retrieveOrders(customerId);
+       // }
 
-        public string getOrderStatus(int customerId)
-        {
-            // Implementation for getting order status
-            return "Order Status";
-        }
+       // public string getOrderStatus(int orderId)
+       // {
+        //  return orderId;
+       // }
 
         public bool cancelOrder(int orderId)
         {
-            // Implementation for canceling an order
-            return true;
+            // Retrieve the order from the database
+            return false;
         }
 
         public bool requestReturn(int orderId)
         {
-            // Implementation for requesting a return
-            return true;
+            // Retrieve the order from the database 
+            return false;
         }
 
         public void changeNotificationSetting()
@@ -60,7 +69,7 @@ namespace CleanBrilliantCompany.Models
             return true;
         }
 
-        public List<Product> getAllProducts()
+        public List<Product> GetAllProducts()
         {
             return _product.getAllProducts();
         }
@@ -69,15 +78,27 @@ namespace CleanBrilliantCompany.Models
         {
             return _product.GetProductDetails(productId);
         }
-    }
 
-    public class Item
-    {
-        // Implementation for Item class
-    }
+          public List<string> GetShippingAgents(Service shippingType)
+        {
+            return _shippingAgents.getShippingAgentList(shippingType);
+        }
 
-    public class Order
-    {
-        // Implementation for Order class
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     }
 }

@@ -18,6 +18,8 @@ namespace CleanBrilliantCompany.Controllers
         private readonly CartManagement _cartManagement;
         private readonly IProduct _productService;
 
+        private readonly IShippingAgents _shippingAgents;
+
 
         public CustomerPageController(
             ILogger<CustomerPageController> logger, 
@@ -26,7 +28,8 @@ namespace CleanBrilliantCompany.Controllers
             ChatbotService chatbotService,
             OrderManagement orderManagement,
             CartManagement cartManagement,
-            IProduct productService) 
+            IProduct productService,
+            IShippingAgents shippingAgents) 
         {
             _logger = logger;
             _customerManagement = customerManagement;
@@ -35,6 +38,7 @@ namespace CleanBrilliantCompany.Controllers
             _orderManagement = orderManagement;
             _cartManagement = cartManagement;
             _productService = productService;
+            _shippingAgents = shippingAgents;
         }
 
         public IActionResult CustomerDetails()
@@ -218,7 +222,7 @@ namespace CleanBrilliantCompany.Controllers
         // CART INPUT CONTROLLER METHODS
 
         [HttpPost]
-        public IActionResult AddToCart(int productId, int quantity)
+        public IActionResult addToCart(int productId, int quantity)
         {
             // Retrieve customer ID from the session using the correct key
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
@@ -234,7 +238,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("GetAllProducts"); // Redirect back to the product page
             }
 
-            var success = _cartManagement.AddToCart(customerID.Value, productId, quantity);
+            var success = _cartManagement.addToCart(customerID.Value, productId, quantity);
             if (success)
             {
                 TempData["Success"] = "Product added to cart successfully!";
@@ -248,7 +252,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateQuantity(int productId, int quantity)
+        public IActionResult updateQuantity(int productId, int quantity)
         {
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerID == null)
@@ -263,7 +267,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("ViewCart");
             }
 
-            var success = _cartManagement.UpdateQuantity(customerID.Value, productId, quantity);
+            var success = _cartManagement.updateQuantity(customerID.Value, productId, quantity);
             if (success)
             {
                 TempData["Success"] = "Cart updated successfully.";
@@ -277,7 +281,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult RemoveFromCart(int productId)
+        public IActionResult removeFromCart(int productId)
         {
             // Retrieve customer ID from the session
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
@@ -288,7 +292,7 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // Call the RemoveFromCart method in CartManagement
-            var success = _cartManagement.RemoveFromCart(customerID.Value, productId);
+            var success = _cartManagement.removeFromCart(customerID.Value, productId);
             if (success)
             {
                 TempData["Success"] = "Product removed from cart successfully.";
@@ -302,7 +306,7 @@ namespace CleanBrilliantCompany.Controllers
         }
         
 
-        public IActionResult ViewCart()
+       public IActionResult viewCart()
         {
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerID == null)
@@ -311,22 +315,18 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            var cartData = _cartManagement.ViewCart(customerID.Value);
-            var products = new Dictionary<int, Dictionary<string, object>>();
+            // Retrieve the cart data
+            var cartData = _cartManagement.viewCart(customerID.Value);
 
-        foreach (var item in cartData)
-        {
-            var product = _productService.GetProductDetails(item.Key);
-            if (product != null)
-            {
-                var productDetails = product.GetProductDetails();
-                productDetails["CostPrice"] = Convert.ToDecimal(productDetails["CostPrice"]); // Ensure CostPrice is decimal
-                products[item.Key] = productDetails;
-            }
-        }
+            // Retrieve product details for the cart
+            var products = _cartManagement.getCartProductDetails(cartData);
 
-        ViewBag.Products = products;
-        ViewBag.Total = cartData.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
+            // Calculate the total cost of the cart
+            var cartTotal = _cartManagement.calculateCartTotal(cartData, products);
+
+            // Pass data to the view
+            ViewBag.Products = products;
+            ViewBag.Total = cartTotal;
 
             return View("~/Views/Cart/Cart.cshtml", cartData);
         }
@@ -362,8 +362,12 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
+            // Retrieve customer details using CustomerManagement
+            var customer = _customerManagement.getCustomer(customerID.Value);
+            string customerAddress = customer?.GetSession<string>("customerAddress") ?? string.Empty;
+
             // Load the cart for the customer
-            var cart = _cartManagement.ViewCart(customerID.Value);
+            var cart = _cartManagement.viewCart(customerID.Value);
             if (cart == null || !cart.Any())
             {
                 TempData["Error"] = "Your cart is empty.";
@@ -381,15 +385,30 @@ namespace CleanBrilliantCompany.Controllers
                 }
             }
 
+             // Default shipping type
+            var selectedShippingType = Service.Standard;
+
+            // Fetch available shipping agents for the default shipping type
+            var shippingAgents = _shippingAgents.getShippingAgentList(selectedShippingType);
+
             ViewBag.Products = products; // Product details (e.g., name, price)
             ViewBag.Cart = cart;         // Cart items (product ID and quantity)
             ViewBag.CartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
+            ViewBag.CustomerAddress = customerAddress; // Pass the customer's address (empty if missing)
+            ViewBag.SelectedDeliveryType = "One Week Delivery"; // Default to "One Week Delivery"
+            ViewBag.ShippingAgents = shippingAgents; // Available shipping agents
 
-         return View("~/Views/Order/Checkout.cshtml");
+            return View("~/Views/Order/Checkout.cshtml");
         }
+
         [HttpPost]
-        public IActionResult Checkout(string deliveryType, string deliveryAddress)
+        public IActionResult Checkout (string deliveryType, string deliveryAddress, string shippingType)
         {
+            // Set default values if any parameter is null
+            deliveryType ??= "One Week Delivery"; // Default delivery type
+            deliveryAddress ??= "Default Address"; // Default address (if applicable)
+            shippingType ??= "Air"; // Default shipping type    
+
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerID == null)
             {
@@ -397,19 +416,27 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            var cart = _cartManagement.ViewCart(customerID.Value);
+            var cart = _cartManagement.viewCart(customerID.Value);
             if (cart == null || !cart.Any())
             {
                 TempData["Error"] = "Your cart is empty.";
                 return RedirectToAction("GetAllProducts", "CustomerPage");
             }
 
+            // Save the address if it is provided
+            if (!string.IsNullOrEmpty(deliveryAddress))
+            {
+                var customer = _customerManagement.getCustomer(customerID.Value);
+                customer.SetSession("customerAddress", deliveryAddress); // Update the address in the session
+                _customerManagement.updateCustomerDetails(customer.GetSession<string>("username"), customer.GetSession<string>("email"), deliveryAddress); // Save to the database
+            }
+
             // Calculate the shipping fee
             var deliveryCosts = new Dictionary<string, decimal>
             {
-                { "Next Day Delivery", 10.00m },
+                { "One Week Delivery", 0.00m },
                 { "Three Day Delivery", 5.00m },
-                { "One Week Delivery", 0.00m }
+                { "Next Day Delivery", 10.00m }
             };
 
             if (!deliveryCosts.ContainsKey(deliveryType))
@@ -419,19 +446,41 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             decimal shippingFee = deliveryCosts[deliveryType];
-            decimal cartTotal = cart.Sum(item =>
+            decimal cartTotal = 0;
+            var products = new Dictionary<int, Dictionary<string, object>>();
+
+            foreach (var item in cart)
             {
                 var product = _productService.GetProductDetails(item.Key);
-                return Convert.ToDecimal(product.GetProductDetails()["CostPrice"]) * item.Value;
-            });
+                if (product != null)
+                {
+                    var productDetails = product.GetProductDetails();
+                    products[item.Key] = productDetails;
+                    cartTotal += Convert.ToDecimal(productDetails["CostPrice"]) * item.Value;
+                }
+            }
+            // Parse the selected shipping type
+                if (!Enum.TryParse<Service>(shippingType, out var selectedShippingType))
+                {
+                    TempData["Error"] = "Invalid shipping type selected.";
+                    return RedirectToAction("Checkout");
+                }
 
-            ViewBag.ShippingFee = shippingFee;
-            ViewBag.CartTotal = cartTotal;
-            ViewBag.FinalTotal = cartTotal + shippingFee;
-            ViewBag.CustomerAddress = deliveryAddress;
+                // Fetch available shipping agents for the selected shipping type
+                var shippingAgents = _shippingAgents.getShippingAgentList(selectedShippingType);
 
-            TempData["Success"] = "Address and delivery type confirmed.";
-            return View("~/Views/Order/Checkout.cshtml");
-        }
+                // Pass updated values to the view
+                ViewBag.ShippingFee = shippingFee;
+                ViewBag.CartTotal = cartTotal;
+                ViewBag.FinalTotal = cartTotal + shippingFee;
+                ViewBag.CustomerAddress = deliveryAddress;
+                ViewBag.Cart = cart;
+                ViewBag.Products = products;
+                ViewBag.SelectedDeliveryType = deliveryType;
+                ViewBag.SelectedShippingType = shippingType;
+                ViewBag.ShippingAgents = shippingAgents;
+
+                return View("~/Views/Order/Checkout.cshtml");
+            }
     }
 }
