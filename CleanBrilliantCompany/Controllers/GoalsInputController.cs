@@ -6,7 +6,7 @@ using CleanBrilliantCompany.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace YourProject.Controllers
+namespace CleanBrilliantCompany.Controllers
 {
     public class GoalsInputController : Controller
     {
@@ -18,11 +18,11 @@ namespace YourProject.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(GoalsSDM goal)
+        public async Task<ActionResult> Create(GoalsSDM goal)
         {
             if (ModelState.IsValid)
             {
-                _goalDb.AddGoal(goal);
+                await _goalDb.InsertGoal(goal);
                 return RedirectToAction("Index", "GoalsPage");
             }
             return View(goal);

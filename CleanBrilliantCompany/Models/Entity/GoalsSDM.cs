@@ -58,10 +58,19 @@ namespace CleanBrilliantCompany.Models.Entity
             this.goalMonth = goalMonth;
         }
 
-        // Public Methods to access entity
+        // Public methods to access private fields
+
+        
         public void UpdateTargetEmission(float newEmission)
         {
-            SetTargetEmission(newEmission);
+            targetEmission = newEmission;
+        }
+
+        
+        public void UpdateGoalDate(int year, int month)
+        {
+            goalYear = year;
+            goalMonth = month;
         }
 
 

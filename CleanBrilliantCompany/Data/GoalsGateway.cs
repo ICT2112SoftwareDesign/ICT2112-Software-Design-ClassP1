@@ -6,40 +6,48 @@ using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Models.Control;
 using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Data;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Data
 {
     public class GoalsGateway : IGoalsDB
     {
-        private static List<GoalsSDM> goals = new List<GoalsSDM>();
+        private static List<GoalsSDM> goals = new List<GoalsSDM>(); // Store GoalsSDM objects
 
-        public List<GoalsSDM> GetAllGoals()
+        public async Task<List<GoalsSDM>> GetAllGoals()
         {
-            return goals;
+            return await Task.FromResult(goals);
         }
 
-        public GoalsSDM GetGoalById(int id)
-        {
-            return goals.FirstOrDefault(g => g.GetGoalId() == id);
-        }
-
-        public void AddGoal(GoalsSDM goal)
+        public async Task InsertGoal(GoalsSDM goal)
         {
             goals.Add(goal);
+            await Task.CompletedTask;
         }
 
-        public void UpdateGoal(GoalsSDM goal)
+        public async Task UpdateGoal(int goalId, float targetEmission, int goalYear, int goalMonth)
         {
-            var existingGoal = GetGoalById(goal.GetGoalId());
-            if (existingGoal != null)
+            var goal = goals.FirstOrDefault(g => g.GetGoalId() == goalId);
+            if (goal != null)
             {
-                existingGoal.UpdateTargetEmission(goal.GetTargetEmission());
+                goal.UpdateTargetEmission(targetEmission);
+                goal.UpdateGoalDate(goalYear, goalMonth);
             }
+            await Task.CompletedTask;
         }
 
-        public void DeleteGoal(int id)
+        public async Task DeleteGoal(int goalId)
         {
-            goals.RemoveAll(g => g.GetGoalId() == id);
+            goals.RemoveAll(g => g.GetGoalId() == goalId);
+            await Task.CompletedTask;
+        }
+
+        public async Task<GoalsSDM> FindGoals(int goalId)
+        {
+            var goal = goals.FirstOrDefault(g => g.GetGoalId() == goalId);
+            return await Task.FromResult(goal);
         }
     }
 }

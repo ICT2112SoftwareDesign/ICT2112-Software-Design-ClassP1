@@ -16,20 +16,20 @@ namespace CleanBrilliantCompany.Models.Control
             _goalDb = goalDb;
         }
 
-        public void CreateGoal(int id, float target, int year, int month)
+        public async Task CreateGoal(int id, float target, int year, int month)
         {
             GoalsSDM newGoal = new GoalsSDM(id, target, year, month);
-            _goalDb.AddGoal(newGoal);
+            await _goalDb.InsertGoal(newGoal);
         }
 
-        public void UpdateGoal(int id, float newTarget)
+        public async Task UpdateGoal(int id, float newTarget, int year, int month)
         {
-            GoalsSDM goal = _goalDb.GetGoalById(id);
-            if (goal != null)
-            {
-                goal.UpdateTargetEmission(newTarget);
-                _goalDb.UpdateGoal(goal);
-            }
+            await _goalDb.UpdateGoal(id, newTarget, year, month);
+        }
+
+        public async Task DeleteGoal(int id)
+        {
+            await _goalDb.DeleteGoal(id);
         }
     }
 

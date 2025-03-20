@@ -6,16 +6,30 @@ using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Interfaces;
 using System.Threading.Tasks;
 
-namespace YourProject.Controllers
+namespace CleanBrilliantCompany.Controllers
 {
     public class GoalsPageController : Controller
     {
-        private readonly IGoalsDB _goalDb = new GoalsGateway();
-
-        public ActionResult Index()
+        public IActionResult GoalsManagement()
         {
-            var goals = _goalDb.GetAllGoals();
-            return View(goals);
+            return View();
+        }
+
+        public IActionResult GoalsCreation()
+        {
+            return View();
+        }
+
+        public IActionResult GoalsModification()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ModifyGoal(int goalId, float targetEmission, int goalYear, int goalMonth)
+        {
+            // TODO: Add logic to update the goal in GoalsGateway or database
+            return RedirectToAction("GoalsManagement");
         }
     }
 }

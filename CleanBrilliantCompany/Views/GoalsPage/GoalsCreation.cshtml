@@ -1,0 +1,36 @@
+@model CleanBrilliantCompany.Models.Entity.GoalsSDM;
+
+@{
+    ViewData["Title"] = "Create Goal";
+}
+
+<h2>Create a Goal</h2>
+
+<form asp-action="Create" asp-controller="Goal" method="post">
+    <div class="form-group">
+        <label for="GoalId">Goal ID:</label>
+        <input type="number" id="GoalId" name="GoalId" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="TargetEmission">Target Emission (kg CO2):</label>
+        <input type="number" step="0.01" id="TargetEmission" name="TargetEmission" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="GoalYear">Year:</label>
+        <input type="number" id="GoalYear" name="GoalYear" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="GoalMonth">Month:</label>
+        <select id="GoalMonth" name="GoalMonth" class="form-control" required>
+            @for (int i = 1; i <= 12; i++)
+            {
+                <option value="@i">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Goal</button>
+</form>

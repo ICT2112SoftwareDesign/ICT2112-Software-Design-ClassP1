@@ -41,4 +41,22 @@ app.MapControllerRoute(
     pattern: "toxicity",
     defaults: new { Controller = "Toxicity", action = "Index" });
 
+app.MapControllerRoute(
+    name: "goalsManagement",
+    pattern: "Goals",
+    defaults: new { controller = "GoalsPage", action = "GoalsManagement" } 
+);
+
+app.MapControllerRoute(
+    name: "goalsCreation",
+    pattern: "Goals/GoalsCreation",
+    defaults: new { controller = "GoalsPage", action = "GoalsCreation" }
+);
+
+app.MapControllerRoute(
+    name: "goalsModification",
+    pattern: "Goals/GoalsModification",
+    defaults: new { controller = "GoalsPage", action = "GoalsModification" }
+);
+
 app.Run();
