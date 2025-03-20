@@ -30,7 +30,7 @@ namespace CleanBrilliantCompany.Data
                 .HasKey(s => s.StockCode);
             
             modelBuilder.Entity<AlertTypeTable>()
-                .HasKey(a => a.TypeCode);
+                .HasKey(a => a.AlertType);
             
             modelBuilder.Entity<InventoryLevelTable>()
                 .HasKey(i => i.InventoryId);
@@ -38,15 +38,11 @@ namespace CleanBrilliantCompany.Data
             modelBuilder.Entity<InventoryAlertsTable>()
                 .HasKey(a => a.AlertId);
 
+            // Auto-generate primary key
             modelBuilder.Entity<DashboardTable>()
                 .Property(d => d.DashboardId)
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<DashboardTypeTable>()
-                .HasKey(t => t.TypeId);
-            modelBuilder.Entity<StockStatusTable>();
-
-            // Auto-generate primary key
             modelBuilder.Entity<InventoryLevelTable>()
                 .Property(i => i.InventoryId)
                 .ValueGeneratedOnAdd();
@@ -54,12 +50,6 @@ namespace CleanBrilliantCompany.Data
             modelBuilder.Entity<InventoryAlertsTable>()
                 .Property(a => a.AlertId)
                 .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<StockStatusTable>()
-                .HasKey(s => s.StockCode);
-
-            modelBuilder.Entity<AlertTypeTable>()
-                .HasKey(a => a.TypeCode);
 
             // Map entities to new table names in the database
             modelBuilder.Entity<DashboardTable>()
@@ -112,9 +102,9 @@ namespace CleanBrilliantCompany.Data
             // One-to-many relationship between InventoryAlertsTable and AlertTypeTable
             // One AlertTypeTable can have many InventoryAlertsTable
             modelBuilder.Entity<InventoryAlertsTable>()
-                .HasOne(a => a.AlertType)
+                .HasOne(a => a.AlertTypes)
                 .WithMany()
-                .HasForeignKey(a => a.AlertTypeCode);
+                .HasForeignKey(a => a.AlertType);
         }
     }
 }

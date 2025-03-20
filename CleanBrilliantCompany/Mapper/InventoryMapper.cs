@@ -46,7 +46,7 @@ namespace CleanBrilliantCompany.Mapper
                 .ThenInclude(i => i.StockStatus)
                 .Include(d => d.InventoryLevels)
                 .ThenInclude(i => i.AlertTypes)
-                .ThenInclude(a => a.AlertType)
+                .ThenInclude(a => a.AlertTypes)
                 .OrderByDescending(d => d.GeneratedDate)
                 .FirstOrDefault();
 

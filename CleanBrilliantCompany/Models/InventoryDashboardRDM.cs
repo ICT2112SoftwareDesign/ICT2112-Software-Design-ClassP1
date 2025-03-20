@@ -38,7 +38,7 @@ namespace CleanBrilliantCompany.Models
         }
 
         public InventoryDashboardRDM(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, DateTime generatedDate)
-            : base(dashboardId, name, requestedStartDate, requestedEndDate, validityDuration, 1, generatedDate)
+            : base(dashboardId, name, requestedStartDate, requestedEndDate, validityDuration, 2, generatedDate)
         {
             _stockLevel = new Dictionary<int, int>();
             _threshold = new Dictionary<int, int>();
@@ -53,9 +53,18 @@ namespace CleanBrilliantCompany.Models
 
         private void EnsureProductExists(int productId)
         {
-            if (!_stockLevel.ContainsKey(productId) || !_threshold.ContainsKey(productId) || !_replenishmentStatus.ContainsKey(productId))
+            // If the product doesn't exist, initialize it in all dictionaries
+            if (!_stockLevel.ContainsKey(productId))
             {
-                throw new InvalidOperationException($"Product {productId} does not exist.");
+                _stockLevel[productId] = 0; // Default stock level
+            }
+            if (!_threshold.ContainsKey(productId))
+            {
+                _threshold[productId] = 0; // Default threshold
+            }
+            if (!_replenishmentStatus.ContainsKey(productId))
+            {
+                _replenishmentStatus[productId] = false; // Default replenishment status
             }
         }
 

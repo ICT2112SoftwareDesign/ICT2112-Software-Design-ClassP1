@@ -1,8 +1,8 @@
-@using CleanBrilliantCompany.Models
+@model CleanBrilliantCompany.Models.InventoryDashboardRDM
+
 @{
-    ViewData["Title"] = "View Inventory Dashboard";
-    var dashboard = ViewData["Dashboard"] as InventoryDashboardRDM;
-    var stockLevels = dashboard?.GetAllStockLevels() ?? new Dictionary<int, int>();
+    ViewData["Title"] = "Inventory Dashboard";
+    var stockLevels = Model?.GetAllStockLevels() ?? new Dictionary<int, int>();
 }
 
 @if (ViewData["ErrorMessage"] != null)
@@ -11,7 +11,9 @@
         <p>@ViewData["ErrorMessage"]</p>
         <p><a asp-action="CreateDashboard">Create a new dashboard</a></p>
     </div>
-} else if (dashboard == null) {
+}
+else if (Model == null)
+{
     <div style="color: red;">
         <p>Dashboard data is missing.</p>
         <p><a asp-action="CreateDashboard">Create a new dashboard</a></p>
@@ -19,13 +21,59 @@
 }
 else
 {
-    <h1>Inventory Dashboard (ID: @dashboard.GetDashboardId())</h1>
+    <h1>Inventory Dashboard (ID: @Model.GetDashboardId())</h1>
+    <h2>@Model.Name</h2>
+    <p>Period: @Model.RequestedStartDate.ToString("d") to @Model.RequestedEndDate.ToString("d")</p>
+    <p>Generated: @Model.GeneratedDate.ToString("d")</p>
+    <p>Validity Duration: @Model.ValidityDuration days</p>
+
+    <h3>Stock Levels Chart</h3>
+    <canvas id="stockLevelChart" width="400" height="200"></canvas>
+
+    @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Get the chart data from ViewBag
+        const chartData = @Html.Raw(ViewBag.ChartData);
+
+        // Render the chart using Chart.js
+        const ctx = document.getElementById('stockLevelChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar', // You can change this to 'line', 'pie', etc.
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Stock Level (Units)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Products'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    </script>
+    }
+
     @if (stockLevels.Any())
     {
         <ul>
             @foreach (var stock in stockLevels)
             {
-                <li>Product @stock.Key: @stock.Value units (Threshold: @dashboard.GetThreshold(stock.Key))</li>
+                <li>Product @stock.Key: @stock.Value units (Threshold: @Model.GetThreshold(stock.Key))</li>
             }
         </ul>
     }

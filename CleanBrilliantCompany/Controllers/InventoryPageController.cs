@@ -18,8 +18,9 @@ namespace CleanBrilliantCompany.Controllers
             try
             {
                 var inventoryDashboard = _inventoryControl.FetchDashboard();
-                ViewData["Dashboard"] = inventoryDashboard; // Pass the InventoryDashboardRDM directly
-                return View("ViewInventoryDashboard");
+                var chartData = _inventoryControl.GenerateStockLevelChartData();
+                ViewBag.ChartData = chartData;
+                return View("ViewInventoryDashboard", inventoryDashboard);
             }
             catch (InvalidOperationException ex)
             {
