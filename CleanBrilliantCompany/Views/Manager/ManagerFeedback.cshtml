@@ -48,7 +48,15 @@
                             <td>@feedback.GetFeedback()</td>
                             <td>@feedback.StaffName</td>
                             <td>
-                                <span class="badge bg-info">@feedback.GetStatus()</span>
+                                
+                                    @if (feedback.GetStatus() == "Resolved")
+                                    {
+                                        <span class="badge bg-success">Resolved</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info">@feedback.GetStatus()</span>
+                                    }
                             </td>
                             <td>
                                 <textarea class="form-control manager-comment" data-feedback-id="@feedback.GetFeedbackId()" placeholder="Add comment">@feedback.GetManagerComments()</textarea>
