@@ -60,20 +60,21 @@ using CleanBrilliantCompany.Services;
 using CleanBrilliantCompany.Models;
 using System.Collections.Generic;
 
+
 namespace CleanBrilliantCompany.Controllers
 {
     public class ShippingAgentController : Controller
     {
-        private readonly IShippingAgentService _shippingAgentService;
+        private readonly ShippingAgentMapper _shippingAgentMapper;
 
-        public ShippingAgentController(IShippingAgentService shippingAgentService)
+        public ShippingAgentController(IConfiguration configuration)
         {
-            _shippingAgentService = shippingAgentService;
+            _shippingAgentMapper = new ShippingAgentMapper(configuration); // Initialize the mapper
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var agents = await _shippingAgentService.GetShippingAgentsAsync();
+            var agents = _shippingAgentMapper.FetchShippingAgents(); // Fetch data from database
 
             // Ensure agents is not null
             if (agents == null)

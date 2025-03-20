@@ -13,14 +13,14 @@ var config = builder.Configuration;
 
 
 // Shipping Agent DB
-var shippingAgentDB = new ShippingAgentDB(config);
+var shippingAgentDB = new ShippingAgentMapper(config);
 shippingAgentDB.FetchShippingAgents();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 // In Program.cs or Startup.cs
-services.AddScoped<ShippingAgentDB>();
+services.AddScoped<ShippingAgentMapper>();
 services.AddScoped<IShippingAgentService, ShippingAgentService>();
 
 // Register DatabaseService
