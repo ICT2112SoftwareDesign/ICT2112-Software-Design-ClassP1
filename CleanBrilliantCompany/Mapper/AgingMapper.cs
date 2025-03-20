@@ -50,7 +50,8 @@ public class AgingMapper : AgingRepo
                 IsExpired = a.IsExpired,
                 RemainingDays = a.RemainingDays,
                 TurnOverRate = a.TurnOverRate,
-                DeadStockPercentage = a.DeadStockPercentage
+                DeadStockPercentage = a.DeadStockPercentage,
+                ProductId = a.ProductId 
             })
             .ToList();
     }
@@ -74,76 +75,132 @@ public class AgingMapper : AgingRepo
 
         fakeDbContext.Dashboards.Add(newdbDTO); 
     
-        foreach (var analytics in dashboard.getBatchAnalyticsMap())
-        {
-            int batchCode = analytics.Key; // Extract Batch Code
-            var analyticsList = analytics.Value; // Get List<AbstractAnalyticsDetails>
+        // foreach (var analytics in dashboard.getBatchAnalyticsMap())
+        // {
+        //     int batchCode = analytics.Key; // Extract Batch Code
+        //     var analyticsList = analytics.Value; // Get List<AbstractAnalyticsDetails>
 
             
-            // ✅ Always initialize variables before the loop
-            float turnOverRate = 0; // Default value (e.g., 0% turnover if not found)
-            float deadStockPercentage = 0; // Default value (e.g., 0% if not found)
-            int daysInStorage = 0; // Default value (e.g., no storage days found)
-            bool isExpired = false; // Default value (assume not expired)
-            int remainingDays = 0; // Default value (assume 0 days left)
+        //     // ✅ Always initialize variables before the loop
+        //     float turnOverRate = 0; // Default value (e.g., 0% turnover if not found)
+        //     float deadStockPercentage = 0; // Default value (e.g., 0% if not found)
+        //     int daysInStorage = 0; // Default value (e.g., no storage days found)
+        //     bool isExpired = false; // Default value (assume not expired)
+        //     int remainingDays = 0; // Default value (assume 0 days left)
 
-            foreach (var analytic in analyticsList)
-            {
-                // ✅ Use CalculateBatchSummary() to get a dictionary of key-value pairs
-                var batchSummary = analytic.CalculateBatchSummary();
+        //     foreach (var analytic in analyticsList)
+        //     {
+        //         // ✅ Use CalculateBatchSummary() to get a dictionary of key-value pairs
+        //         var batchSummary = analytic.CalculateBatchSummary();
 
-                Console.WriteLine("--------------------Looking for the details in batch summary now------------------------");
-                // print all the keys in batchsummaty 
-                foreach (var key in batchSummary.Keys)
-                {
-                    Console.WriteLine("Key: " + key);
-                }
+        //         Console.WriteLine("--------------------Looking for the details in batch summary now------------------------");
+        //         // print all the keys in batchsummaty 
+        //         foreach (var key in batchSummary.Keys)
+        //         {
+        //             Console.WriteLine("Key: " + key);
+        //         }
                 
-                // ✅ Retrieve values dynamically using keys
-                if (batchSummary.ContainsKey("TurnOverRate")){
-                    Console.WriteLine("TurnOverRate found");
-                    Console.WriteLine("TurnOverRate: " + batchSummary["TurnOverRate"]);
-                    turnOverRate = Convert.ToSingle(batchSummary["TurnOverRate"]);
-                    Console.WriteLine("TurnOverRate after converting to single: " + turnOverRate); 
-                }
+        //         // ✅ Retrieve values dynamically using keys
+        //         if (batchSummary.ContainsKey("TurnOverRate")){
+        //             Console.WriteLine("TurnOverRate found");
+        //             Console.WriteLine("TurnOverRate: " + batchSummary["TurnOverRate"]);
+        //             turnOverRate = Convert.ToSingle(batchSummary["TurnOverRate"]);
+        //             Console.WriteLine("TurnOverRate after converting to single: " + turnOverRate); 
+        //         }
                     
 
-                if (batchSummary.ContainsKey("DeadStockPercentage"))
-                    deadStockPercentage = Convert.ToSingle(batchSummary["DeadStockPercentage"]);
+        //         if (batchSummary.ContainsKey("DeadStockPercentage"))
+        //             deadStockPercentage = Convert.ToSingle(batchSummary["DeadStockPercentage"]);
 
-                if (batchSummary.ContainsKey("DaysInStorage"))
-                    daysInStorage = Convert.ToInt32(batchSummary["DaysInStorage"]);
+        //         if (batchSummary.ContainsKey("DaysInStorage"))
+        //             daysInStorage = Convert.ToInt32(batchSummary["DaysInStorage"]);
 
-                if (batchSummary.ContainsKey("IsExpired"))
-                    isExpired = Convert.ToBoolean(batchSummary["IsExpired"]);
+        //         if (batchSummary.ContainsKey("IsExpired"))
+        //             isExpired = Convert.ToBoolean(batchSummary["IsExpired"]);
 
-                if (batchSummary.ContainsKey("RemainingDays"))
-                    remainingDays = Convert.ToInt32(batchSummary["RemainingDays"]);
-                Console.WriteLine("End of looking for the details in batch summary");
-            }
+        //         if (batchSummary.ContainsKey("RemainingDays"))
+        //             remainingDays = Convert.ToInt32(batchSummary["RemainingDays"]);
+        //         Console.WriteLine("End of looking for the details in batch summary");
+        //     }
         
-            //console.writeline to check all the values 
-            Console.WriteLine("values check before saving to database as a dto");
-            Console.WriteLine("BatchCode: " + batchCode); 
-            Console.WriteLine("TurnOverRate: " + turnOverRate); 
-            Console.WriteLine("DeadStockPercentage: " + deadStockPercentage);
-            Console.WriteLine("DaysInStorage: " + daysInStorage);
-            Console.WriteLine("IsExpired: " + isExpired);
-            Console.WriteLine("RemainingDays: " + remainingDays);
-            Console.WriteLine("------------------------------------");
-            // ✅ Create DTO and add it to the database
-            var analyticsDTO = new AgingAnalyticsDetailsDTO
+        //     //console.writeline to check all the values 
+        //     Console.WriteLine("values check before saving to database as a dto");
+        //     Console.WriteLine("BatchCode: " + batchCode); 
+        //     Console.WriteLine("TurnOverRate: " + turnOverRate); 
+        //     Console.WriteLine("DeadStockPercentage: " + deadStockPercentage);
+        //     Console.WriteLine("DaysInStorage: " + daysInStorage);
+        //     Console.WriteLine("IsExpired: " + isExpired);
+        //     Console.WriteLine("RemainingDays: " + remainingDays);
+        //     Console.WriteLine("------------------------------------");
+        //     // ✅ Create DTO and add it to the database
+        //     var analyticsDTO = new AgingAnalyticsDetailsDTO
+        //     {
+        //         BatchCode = batchCode,
+        //         DashboardId = dashboard.DashboardId,
+        //         DaysInStorage = daysInStorage,
+        //         IsExpired = isExpired,
+        //         RemainingDays = remainingDays,
+        //         TurnOverRate = turnOverRate,
+        //         DeadStockPercentage = deadStockPercentage
+        //     };
+
+
+        // Loop through the productToBatchMap
+        foreach (var productBatch in dashboard.getProductToBatchMap())
+        {
+            int productId = productBatch.Key; // Get Product ID
+            List<int> batchCodes = productBatch.Value; // Get the list of batch codes for this product
+
+            foreach (var batchCode in batchCodes)
             {
-                BatchCode = batchCode,
-                DashboardId = dashboard.DashboardId,
-                DaysInStorage = daysInStorage,
-                IsExpired = isExpired,
-                RemainingDays = remainingDays,
-                TurnOverRate = turnOverRate,
-                DeadStockPercentage = deadStockPercentage
+                // Get the batch analytics for each batch code
+                var analyticsList = dashboard.GetBatchAnalytics(batchCode); 
+
+                // Initialize default values for the analytics summary
+                float turnOverRate = 0; // Default turnover rate
+                float deadStockPercentage = 0; // Default dead stock percentage
+                int daysInStorage = 0; // Default days in storage
+                bool isExpired = false; // Default expired status
+                int remainingDays = 0; // Default remaining days
+
+                foreach (var analytics in analyticsList)
+                {
+                    // Get batch summary from CalculateBatchSummary
+                    var batchSummary = analytics.CalculateBatchSummary();
+
+                    // Check for each key in the batch summary and set the respective values
+                    if (batchSummary.ContainsKey("TurnOverRate"))
+                        turnOverRate = Convert.ToSingle(batchSummary["TurnOverRate"]);
+
+                    if (batchSummary.ContainsKey("DeadStockPercentage"))
+                        deadStockPercentage = Convert.ToSingle(batchSummary["DeadStockPercentage"]);
+
+                    if (batchSummary.ContainsKey("DaysInStorage"))
+                        daysInStorage = Convert.ToInt32(batchSummary["DaysInStorage"]);
+
+                    if (batchSummary.ContainsKey("IsExpired"))
+                        isExpired = Convert.ToBoolean(batchSummary["IsExpired"]);
+
+                    if (batchSummary.ContainsKey("RemainingDays"))
+                        remainingDays = Convert.ToInt32(batchSummary["RemainingDays"]);
+                }
+
+                // Create a DTO for analytics details and save it to the database
+                var analyticsDTO = new AgingAnalyticsDetailsDTO
+                {
+                    BatchCode = batchCode,
+                    DashboardId = dashboard.DashboardId,
+                    ProductId = productId,  // Save the Product ID
+                    DaysInStorage = daysInStorage,
+                    IsExpired = isExpired,
+                    RemainingDays = remainingDays,
+                    TurnOverRate = turnOverRate,
+                    DeadStockPercentage = deadStockPercentage
+                };
+
+                fakeDbContext.AgingAnalyticsDetails.Add(analyticsDTO);
             };
-            fakeDbContext.AgingAnalyticsDetails.Add(analyticsDTO);
-        };
+        }
     }
 };
 

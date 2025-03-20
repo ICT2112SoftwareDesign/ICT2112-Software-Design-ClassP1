@@ -32,7 +32,9 @@ public class FakeDbContext
                 IsExpired = false,
                 RemainingDays = 60,
                 TurnOverRate = 75.5,
-                DeadStockPercentage = 24.5
+                DeadStockPercentage = 24.5,
+                ProductId = 502
+
             },
             new AgingAnalyticsDetailsDTO
             {
@@ -43,7 +45,20 @@ public class FakeDbContext
                 IsExpired = false,
                 RemainingDays = 30,
                 TurnOverRate = 55.0,
-                DeadStockPercentage = 45.0
+                DeadStockPercentage = 45.0,
+                ProductId = 501
+            },
+            new AgingAnalyticsDetailsDTO
+            {
+                AnalyticsId = 1003,
+                BatchCode = 103,
+                DashboardId = 1,
+                DaysInStorage = 180,
+                IsExpired = true,
+                RemainingDays = 0,
+                TurnOverRate = 0.0,
+                DeadStockPercentage = 100.0,
+                ProductId = 501
             }
         };
     }

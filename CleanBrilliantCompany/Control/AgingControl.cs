@@ -38,6 +38,9 @@ public class AgingControl
 
         foreach (var analyticsDto in analyticsDtos)
         {
+            // add this batchID to the list of batch for the productID in the dashboard
+            agingDashboard.addBatchtoProductMap(analyticsDto.ProductId, analyticsDto.BatchCode); 
+
             var stockTurnOverDetails = new StockTurnOverAnalyticsDetails(
                 analyticsDto.BatchCode,
                 (float)analyticsDto.TurnOverRate, 
@@ -99,7 +102,8 @@ public class AgingControl
 
         var fakeInterface = new FakeBatchInterface(); 
         var batches = fakeInterface.getAllProductBatch(); 
-
+        Console.WriteLine("Amount of batches: " + batches.Count); 
+        Console.WriteLine("batch productid : " + batches[0].ProductId); 
         // Retrieve all stock histories for all batches
         var stockHistories = new List<RawStockHistoryData>(); 
         foreach (var batch in batches)

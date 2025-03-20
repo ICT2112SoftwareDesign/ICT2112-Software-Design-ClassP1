@@ -9,7 +9,16 @@ public class FakeBatchInterface {
         fakeBatches = new Dictionary<int , RawBatchData>()
         {
         
-        { 1001, new RawBatchData(1001, 501, DateTime.Now.AddMonths(6), DateTime.Now.AddDays(-30), DateTime.Now.AddMonths(-1), 100, 15.5f) },
+        { 
+            1001, new RawBatchData(
+                batchCode: 1001, 
+                productId: 501, 
+                expiryDate: DateTime.Now.AddMonths(6), 
+                receiveDate: DateTime.Now.AddDays(-30), 
+                manufactureDate: DateTime.Now.AddMonths(-1), 
+                quantity:100, 
+                salesPrice:15.5f) 
+            },
         { 1002, new RawBatchData(1002, 502, DateTime.Now.AddMonths(3), DateTime.Now.AddDays(-60), DateTime.Now.AddMonths(-2), 50, 22.0f) },
         { 1003, new RawBatchData(1003, 503, DateTime.Now.AddMonths(9), DateTime.Now.AddDays(-10), DateTime.Now.AddMonths(-3), 200, 10.75f) }
         
