@@ -108,3 +108,4 @@ CleanBrilliantCompany/obj/Debug/net9.0/staticwebassets/msbuild.CleanBrilliantCom
 CleanBrilliantCompany/obj/Debug/net9.0/staticwebassets/msbuild.CleanBrilliantCompany.Microsoft.AspNetCore.StaticWebAssets.props
 CleanBrilliantCompany/obj/project.assets.json
 CleanBrilliantCompany/obj/project.nuget.cache
+CleanBrilliantCompany/appsettings.json
