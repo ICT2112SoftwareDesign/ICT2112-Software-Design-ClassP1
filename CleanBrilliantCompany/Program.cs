@@ -18,6 +18,9 @@ builder.Services.AddScoped<IIngredientDB, IngredientGateway>();
 builder.Services.AddScoped<IToxicityClassificationStrategy, StandardToxicityClassificationStrategy>();
 builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 
+builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
+builder.Services.AddScoped<ICarbonNotification, CarbonNotification>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,7 +47,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "goalsManagement",
     pattern: "Goals",
-    defaults: new { controller = "GoalsPage", action = "GoalsManagement" } 
+    defaults: new { controller = "GoalsPage", action = "GoalsManagement" }
 );
 
 app.MapControllerRoute(
@@ -58,5 +61,10 @@ app.MapControllerRoute(
     pattern: "Goals/GoalsModification",
     defaults: new { controller = "GoalsPage", action = "GoalsModification" }
 );
+
+app.MapControllerRoute(
+    name: "alerts",
+    pattern: "alerts",
+    defaults: new { controller = "Alert", action = "Index" });
 
 app.Run();
