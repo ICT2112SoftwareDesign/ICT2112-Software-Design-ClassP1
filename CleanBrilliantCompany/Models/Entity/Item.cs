@@ -29,7 +29,7 @@ namespace CleanBrilliantCompany.Models.Entity
         // public ItemStatus StatusChange
         // {
         //     get => ItemStatus;
-            
+
         // // }
         // public string StatusChange
         // {
@@ -142,23 +142,26 @@ namespace CleanBrilliantCompany.Models.Entity
             foreach (var observer in _observers)
             {
                 observer.Update(this); //  Pass the Item object instead of a string
-            }        
+            }
         }
 
         public void UpdateStatus(ItemStatus newStatus)
-    {
-        Console.WriteLine("Entered UpdateStatus");
-        Console.WriteLine($"Current ItemStatus: {ItemStatus}");
-        Console.WriteLine($"New ItemStatus: {newStatus}");
- 
-        ItemStatus = newStatus;
+        {
+            Console.WriteLine("Entered UpdateStatus");
+            Console.WriteLine($"Current ItemStatus: {ItemStatus}");
+            Console.WriteLine($"New ItemStatus: {newStatus}");
 
-        Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
-        Console.WriteLine($"Calling Notify() in Item.cs file");
+            ItemStatus = newStatus;
 
-        Notify();
+            Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
+            Console.WriteLine($"Calling Notify() in Item.cs file");
 
-    }
+            Notify();
+        }
+
+        public void getWarehouseDetails(){
+            // return _itemMapper.getAllWarehouses();
+        }
 
         public Item() { } // dk if need anot 
     }

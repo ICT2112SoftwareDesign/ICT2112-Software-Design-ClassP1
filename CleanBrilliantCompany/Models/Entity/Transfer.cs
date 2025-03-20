@@ -2,83 +2,48 @@ namespace CleanBrilliantCompany.Models.Entity
 {
 
 
+    public enum TransferStatus
+    {
+        Pending,
+        Completed,
+        Cancelled
+    }
+
     public class Transfer
     {
         private int transferId;
         private int productId;
-        private string status;
+        private TransferStatus status;
         private int quantity;
         private int sourceWarehouse;
         private int destinationWarehouse;
 
-        private int getTransferId()
-        {
-            return transferId;
-        }
+        //Getter Method
+        private int getTransferId() => transferId;
+        private int getProductId() => productId;
+        private TransferStatus getStatus() => status;
+        private int getQuantity() => quantity;
+        private int getSourceWarehouse() => sourceWarehouse;
+        private int getDestinationWarehouse() => destinationWarehouse;
 
-        private void setTransferId(int transferId)
-        {
-            this.transferId = transferId;
-        }
 
-        private int getProductId()
-        {
-            return productId;
-        }
+        //Setter Method
+        private void setTransferId(int transferId) => this.transferId = transferId;
+        private void setProductId(int productId) => this.productId = productId;
+        private void setStatus(TransferStatus status) => this.status = status;
+        private void setQuantity(int quantity) => this.quantity = quantity;
+        private void setSourceWarehouse(int sourceWarehouse) => this.sourceWarehouse = sourceWarehouse;
+        private void setDestinationWarehouse(int destinationWarehouse) => this.destinationWarehouse = destinationWarehouse;
+        
 
-        private void setProductId(int productId)
-        {
-            this.productId = productId;
-        }
 
-        private string getStatus()
-        {
-            return status;
-        }
-
-        private void setStatus(string status)
-        {
-            this.status = status;
-        }
-
-        private int getQuantity()
-        {
-            return quantity;
-        }
-
-        private void setQuantity(int quantity)
-        {
-            this.quantity = quantity;
-        }
-
-        private int getSourceWarehouse()
-        {
-            return sourceWarehouse;
-        }
-
-        private void setSourceWarehouse(int sourceWarehouse)
-        {
-            this.sourceWarehouse = sourceWarehouse;
-        }
-
-        private int getDestinationWarehouse()
-        {
-            return destinationWarehouse;
-        }
-
-        private void setDestinationWarehouse(int destinationWarehouse)
-        {
-            this.destinationWarehouse = destinationWarehouse;
-        }
-
-        public void createTransfer(int productId, string status, int quantity, int sourceWarehouse, int destinationWarehouse)
+        public void createTransfer(int productId, TransferStatus status, int quantity, int sourceWarehouse, int destinationWarehouse)
         {
             setProductId(productId);
             setStatus(status);
             setQuantity(quantity);
             setSourceWarehouse(sourceWarehouse);
             setDestinationWarehouse(destinationWarehouse);
-            setStatus("Pending");
 
         }
     }

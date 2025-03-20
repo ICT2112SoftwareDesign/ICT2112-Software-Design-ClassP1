@@ -65,5 +65,10 @@ namespace CleanBrilliantCompany.Models.Control
             return dbUpdated;
         }
 
+        public async Task<List<Warehouse>> getWarehouseDetails()
+        {
+            return await Task.FromResult(_itemMapper.getWarehouseDetails());
+        }
+
     }
 }

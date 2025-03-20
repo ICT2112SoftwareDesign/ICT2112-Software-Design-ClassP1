@@ -69,5 +69,10 @@ namespace CleanBrilliantCompany.Models.Control
 
             //turn into dict before sending it out. WILL FIX FEATURES FIRST
         }
+        // Shift to ItemControl?
+        // public List<Warehouse> getAllWarehouses()
+        // {
+        //     return _productMapper.findAllWarehouses();
+        // }
     }
 }

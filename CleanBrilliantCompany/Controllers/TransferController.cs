@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using YourNamespace.Models;
+using CleanBrilliantCompany.Models.Entity;
 
 public class TransferController : Controller
 {
     [HttpGet]
-    public IActionResult Create()
+    public IActionResult Index()
     {
-        return View(new Transfer());
+        return View("Transfer");
     }
 
     [HttpPost]
