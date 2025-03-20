@@ -10,17 +10,12 @@
 //    {
 //        public static async Task Main(string[] args)
 //        {
-//            // The warehouse (sender) is fixed.
+//            // Hardcoded addresses and transport mode.
 //            string senderAddress = "Penjuru Ln, 34, Singapore 609201";
+//            string recipientAddress = "Buckingham Palace, London, SW1A 1AA, United Kingdom";
+//            string transportMode = "Air";
 
-//            // Prompt user for the recipient address and transport mode.
-//            Console.Write("Enter recipient address: ");
-//            string recipientAddress = Console.ReadLine();
-
-//            Console.Write("Enter transport mode (Air/Sea/Truck): ");
-//            string transportMode = Console.ReadLine();
-
-//            // Hard-coded items list for weight calculation.
+//            // Hardcoded items list for weight calculation.
 //            List<ShipmentControl.Item> items = new List<ShipmentControl.Item>
 //            {
 //                new ShipmentControl.Item { Name = "Bleach", Weight = 2.0, Quantity = 2 },
@@ -30,7 +25,7 @@
 //            // Create the routing service instance.
 //            IRoutingService routingService = new RoutingAPI();
 
-//            // Create the ShipmentControl instance (which now supports async creation).
+//            // Create the ShipmentControl instance.
 //            ShipmentControl shipmentControl = new ShipmentControl(routingService);
 
 //            // Calculate total weight from items.

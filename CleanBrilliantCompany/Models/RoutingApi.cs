@@ -187,8 +187,5 @@ namespace CleanBrilliantCompany.Models
 
         private double ToRadians(double angle) => angle * (Math.PI / 180);
 
-
-
-
     }
 }

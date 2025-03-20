@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Interfaces;
@@ -14,30 +15,23 @@ namespace CleanBrilliantCompany.Models
         }
 
         // Asynchronous shipment creation method.
-        public async Task<ShipmentSDM> CreateShipmentAsync(int orderId, double totalWeight, string shippingMethod, string senderAddress, string recipientAddress)
+        // Note: The totalWeight parameter has been removed.
+        public async Task<ShipmentSDM> CreateShipmentAsync(int orderId, string shippingMethod, string senderAddress, string recipientAddress)
         {
-            ITransportStrategy strategy;
+            // Hardcoded method to simulate retrieval of order details (IOrder interface in the future).
+            OrderDetails orderDetails = GetOrderDetailsHardcoded(orderId);
 
-            switch (shippingMethod.ToLower())
-            {
-                case "air":
-                    strategy = new AirTransportStrategy(_routingService);
-                    break;
-                case "sea":
-                    strategy = new SeaTransportStrategy(_routingService);
-                    break;
-                case "truck":
-                    strategy = new TruckTransportStrategy(_routingService);
-                    break;
-                default:
-                    throw new ArgumentException("Unsupported shipping method.");
-            }
+            // Use the recipient address from order details.
+            string recipientAddrFromOrder = orderDetails.RecipientAddress;
+            List<Item> items = orderDetails.Items;
+            double totalWeight = CalculateTotalWeight(items);
 
-            var routeSegments = await strategy.CreateRouteAsync(senderAddress, recipientAddress);
+            ITransportStrategy strategy = SelectStrategy(shippingMethod);
+            var routeSegments = await strategy.CreateRouteAsync(senderAddress, recipientAddrFromOrder);
 
             var shipment = new ShipmentSDM
             {
-                OrderId = orderId,
+                OrderId = orderDetails.OrderId,
                 TotalWeight = totalWeight,
                 RouteSegments = routeSegments
             };
@@ -45,15 +39,30 @@ namespace CleanBrilliantCompany.Models
             return shipment;
         }
 
+        // Hardcoded method simulating IOrder retrieval.
+        private OrderDetails GetOrderDetailsHardcoded(int orderId)
+        {
+            return new OrderDetails
+            {
+                OrderId = orderId,
+                RecipientAddress = "Buckingham Palace",
+                ShippingMethod = "Air",
+                Items = new List<Item>
+                {
+                    new Item { Name = "Bleach", Weight = 2.0, Quantity = 2 },
+                    new Item { Name = "Detergent", Weight = 1.0, Quantity = 4 }
+                }
+            };
+        }
 
-        // Synchronous helper method to choose the correct strategy.
+        // Helper method for selecting the appropriate strategy.
         private ITransportStrategy SelectStrategy(string method)
         {
-            if (method.Equals("Air", System.StringComparison.OrdinalIgnoreCase))
+            if (method.Equals("Air", StringComparison.OrdinalIgnoreCase))
                 return new AirTransportStrategy(_routingService);
-            else if (method.Equals("Sea", System.StringComparison.OrdinalIgnoreCase))
+            else if (method.Equals("Sea", StringComparison.OrdinalIgnoreCase))
                 return new SeaTransportStrategy(_routingService);
-            else // default to Truck.
+            else // default to Truck
                 return new TruckTransportStrategy(_routingService);
         }
 
@@ -67,13 +76,21 @@ namespace CleanBrilliantCompany.Models
             }
             return total;
         }
+    }
 
-        // Inner class representing an item; alternatively, define this in its own file.
-        public class Item
-        {
-            public string Name { get; set; }
-            public double Weight { get; set; }
-            public int Quantity { get; set; }
-        }
+    // Representation of order details.
+    public class OrderDetails
+    {
+        public int OrderId { get; set; }
+        public string RecipientAddress { get; set; }
+        public string ShippingMethod { get; set; }
+        public List<Item> Items { get; set; }
+    }
+
+    public class Item
+    {
+        public string Name { get; set; }
+        public double Weight { get; set; }
+        public int Quantity { get; set; }
     }
 }
