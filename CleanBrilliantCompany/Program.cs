@@ -20,13 +20,13 @@ builder.Services.AddSingleton<ICustomerDatabase>(new CustomerMapper(connectionSt
 builder.Services.AddTransient<CustomerManagement>();
 builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<ChatbotService>();
-builder.Services.AddScoped<IProduct, ProductsRepository>(); 
+builder.Services.AddScoped<IProduct, ProductManagement>(); 
 builder.Services.AddTransient<OrderManagement>();
 //builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString));
 builder.Services.AddTransient<CartManagement>();
 builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
 
-
+builder.Services.AddTransient<WishlistManagement>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

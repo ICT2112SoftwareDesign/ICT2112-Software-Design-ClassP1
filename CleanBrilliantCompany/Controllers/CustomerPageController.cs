@@ -180,15 +180,37 @@ namespace CleanBrilliantCompany.Controllers
             
         // }
 
-        public IActionResult GetAllProducts()
+        public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
         {
-            var products = _orderManagement.GetAllProducts();
-            var productDetails = new List<Dictionary<string, object>>();
-            foreach (var product in products)
+            List<Product> products = _productService.getAllProducts();
+            
+            // Apply search filter
+            if (!string.IsNullOrEmpty(query))
             {
-                productDetails.Add(product.GetProductDetails());
+                products = products.Where(p => p.GetProductDetails()["ProductName"].ToString().Contains(query, System.StringComparison.OrdinalIgnoreCase)).ToList();
             }
+            
+            // Apply category filter
+            if (filters != "All")
+            {
+                products = products.Where(p => p.GetProductDetails()["Category"].ToString() == filters).ToList();
+            }
+            
+            // Apply sorting
+            products = sortOrder == "asc" 
+                ? products.OrderBy(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList() 
+                : products.OrderByDescending(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList();
+            
+            // Convert to a list of dictionaries
+            var productDetails = products.Select(product => product.GetProductDetails()).ToList();
+            
             return View("~/Views/Products/Index.cshtml", productDetails);
+        }
+
+        public List<Product> FilterProducts(List<string> categories)
+        {
+            var allProducts = _productService.getAllProducts();
+            return allProducts.FindAll(p => categories.Contains(p.GetProductDetails()["Category"].ToString()));
         }
         
 
