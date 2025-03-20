@@ -62,9 +62,14 @@
     </tbody>
 </table>
 
-@* button to trigger model *@
+@* button to trigger add model *@
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
     Add Item
+</button>
+
+@* button to trigger get warehouse quantity model *@
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#warehouseModel">
+    Get Warehouse Quantity
 </button>
 
 @* add item modal *@
@@ -112,6 +117,38 @@
         </div>
     </div>
 </div>
+
+
+@* get warehouse quantity modal *@
+<div class="modal fade" id="warehouseModel" tabindex="-1" aria-labelledby="warehouseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="warehouseModalLabel">Get Warehouse Quantity</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="getProductQuantityByWarehouse">
+                    <input type="hidden" id="warehouseItemId" name="itemId">
+                    <div class="mb-3">
+                        <label for="productId" class="form-label">Product ID</label>
+                        <input type="text" class="form-control" id="productId" name="productId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="warehouseId" class="form-label">Warehouse ID</label>
+                        <input type="text" class="form-control" id="warehouseId" name="warehouseId" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Get Quantity</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @* update item modal *@
 <div class="modal fade" id="updateItemModal" tabindex="-1" aria-labelledby="updateItemModalLabel" aria-hidden="true">

@@ -21,12 +21,9 @@ namespace CleanBrilliantCompany.Models.Entity
         private int? OrderId;
         private int? TransferId;
         private int? ReturnId;
-
         private string ProductName;
         private DateTime ExpiryDate;
  
-
-
         // Constructor to initialize the private fields
         public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
                      ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId)

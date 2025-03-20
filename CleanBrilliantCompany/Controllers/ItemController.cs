@@ -88,15 +88,26 @@ namespace CleanBrilliantCompany.Controllers
         }
 
 
-        // [HttpPost]
-        // public async Task<IActionResult> searchItem(int itemId)
-        // {
-        //     List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-        //     Console.WriteLine("ITEMID: " + itemId);
-        //     Item item = await _itemControl.getItem(itemId);
-        //     itemsInfo.Add(item.retrieveItemInfo());
-        //     return RedirectToAction("Index", new { itemsInfo = itemsInfo });
-        // }
+        // TESTING FOR IWAREHOUSE METHOD
+        [HttpPost]
+        [Route("getProductQuantityByWarehouse")]
+        public async Task<IActionResult> getProductQuantityByWarehouse(int productId, int warehouseId)
+        {
+            Console.WriteLine("PRODUCT ID: " + productId);
+            Console.WriteLine("Warehouse ID: " + warehouseId);
+
+            int result = await _itemControl.getProductQuantityByWarehouse(productId, warehouseId);
+
+            if (result >= 0) 
+            {
+                Console.WriteLine("QUANTITY: " + result);
+                return RedirectToAction("Index", new { quantity = result });
+            }
+            else
+            {
+                return BadRequest(new { error = "Failed to get quantity" });
+            }
+        }
 
 
     }

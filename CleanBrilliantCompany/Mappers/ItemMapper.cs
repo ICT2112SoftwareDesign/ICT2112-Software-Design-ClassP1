@@ -285,9 +285,9 @@ namespace CleanBrilliantCompany.Mappers
 
                 // Define the SQL query to retrieve warehouse details
                 string query = @"
-                    SELECT warehouseId, warehouseAddress, currentCapacity, maxCapacity, Product.productId, Product.quantity, Item.ItemId
+                    SELECT Warehouse.warehouseId, warehouseAddress, currentCapacity, maxCapacity, Product.productId, Product.quantity, Item.ItemId
                     FROM Warehouse 
-                    INNER JOIN Item ON Warehouse.batchCode = Item.Warehouse
+                    INNER JOIN Item ON Warehouse.warehouseId = Item.warehouseId
                     INNER JOIN Product ON Item.productId = Product.productId
                     WHERE warehouseId = @warehouseId";
 
@@ -326,5 +326,101 @@ namespace CleanBrilliantCompany.Mappers
             return warehouse;
         }
 
+        public List<Item> getItemByProductAndWarehouse(int productId, int warehouseId)
+        {
+            List<Item> items = new List<Item>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve the item by its ID
+                string query = @"SELECT * FROM Item 
+                WHERE productId = @productId AND warehouseId = @warehouseId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@productId", productId);
+                    command.Parameters.AddWithValue("@warehouseId", warehouseId);
+                    // Execute the query and get the results
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Check if the query executed successfully and returned any rows
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            // Iterate through each row in the result set
+                            while (reader.Read())
+                            {
+                                ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+
+                                // Create the Item object using the constructor
+                                Item item = new Item(
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    status,
+                                    reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                    reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
+                                    reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                );
+                                // Add the item to the list
+                                items.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"FAILED TO RETRIEVES ITEMS {items}.");
+                        }
+                    }
+                }
+            }
+
+            return items;
+        }
+
+        public int getProductQuantityByWarehouse(int productId, int warehouseId)
+        {
+            int totalQuantity = 0;
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve the item by its ID
+                string query = @"
+                SELECT SUM(quantity) AS 'Total quantity' FROM Item 
+                INNER JOIN Product ON Product.productId = Item.productId
+                INNER JOIN Warehouse ON Warehouse.warehouseId = Item.warehouseId
+                WHERE Product.productId = @productId AND Item.warehouseId = @warehouseId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@productId", productId);
+                    command.Parameters.AddWithValue("@warehouseId", warehouseId);
+
+                    // Execute the query using ExecuteScalar()
+                    object result = command.ExecuteScalar();
+
+                    // Check if the query returned valid data
+                    if (result != null && result != DBNull.Value)
+                    {
+                        int rowsAffected = Convert.ToInt32(result); // Total quantity result
+                        if (getDatabaseQueryStatus(null, rowsAffected))
+                        {
+                            totalQuantity = rowsAffected;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Query returned no results.");
+                    }
+                }
+
+                return totalQuantity;
+            }
+        }
     }
 }

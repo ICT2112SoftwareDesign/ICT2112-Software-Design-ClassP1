@@ -60,7 +60,18 @@ namespace CleanBrilliantCompany.Models.Control
             return Task.FromResult(product);
         }
 
+        // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
+        public async Task<Warehouse> getWarehouseDetails(int warehouseId) {
+            return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
+        }
 
+        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId) {
+            return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, warehouseId));
+        }
+
+        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId) {
+            return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
+        }
 
 
     }
