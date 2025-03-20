@@ -53,6 +53,12 @@ namespace CleanBrilliantCompany.Models.Control
             if (dbUpdated)
             {
                 Item item = await getItem(itemId); //Fetch the Item object
+                Console.WriteLine("Item in IC.cs" + item.retrieveItemInfo());
+                foreach (var kvp in item.retrieveItemInfo())
+                {
+                    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+                }
+
                 if (item != null)
                 {
                     RegisterObservers(item); //Attach observers before updating

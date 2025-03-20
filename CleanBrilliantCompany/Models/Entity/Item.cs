@@ -24,12 +24,15 @@ namespace CleanBrilliantCompany.Models.Entity
         private int? TransferId;
         private int? ReturnId;
 
+        private string ProductName;
+        private DateTime ExpiryDate;
+
         private List<IObserver> _observers = new List<IObserver>();
 
         // public ItemStatus StatusChange
         // {
         //     get => ItemStatus;
-            
+
         // // }
         // public string StatusChange
         // {
@@ -58,6 +61,23 @@ namespace CleanBrilliantCompany.Models.Entity
             OrderId = orderId;
             TransferId = transferId;
             ReturnId = returnId;
+        }
+
+        public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
+                     ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId, string productName, DateTime expiryDate)
+        {
+            ItemId = itemId;
+            ProductId = productId;
+            SalePrice = salePrice;
+            BatchCode = batchCode;
+            WarehouseId = warehouseId;
+            ItemStatus = itemStatus;
+            ReservationId = reservationId;
+            OrderId = orderId;
+            TransferId = transferId;
+            ReturnId = returnId;
+            ExpiryDate = expiryDate;
+            ProductName = productName;
         }
 
         // Public method to create a new item
@@ -95,7 +115,9 @@ namespace CleanBrilliantCompany.Models.Entity
                 { "ReservationId", ReservationId },
                 { "OrderId", OrderId },
                 { "TransferId", TransferId },
-                { "ReturnId", ReturnId }
+                { "ReturnId", ReturnId },
+                { "ExpiryDate", ExpiryDate},
+                { "ProductName", ProductName}
             };
         }
 
@@ -139,26 +161,37 @@ namespace CleanBrilliantCompany.Models.Entity
 
         public void Notify()
         {
+            var items = retrieveItemInfo();
             foreach (var observer in _observers)
             {
-                observer.Update(this); //  Pass the Item object instead of a string
-            }        
+
+                // Debug: Print out the dictionary right before passing it to observer
+                Console.WriteLine("===================================");
+                foreach (var kvp in items)
+                {
+                    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+                }
+                Console.WriteLine("===================================");
+
+                observer.Update(items); // Pass the Item object instead of a string
+            }
         }
 
+
         public void UpdateStatus(ItemStatus newStatus)
-    {
-        Console.WriteLine("Entered UpdateStatus");
-        Console.WriteLine($"Current ItemStatus: {ItemStatus}");
-        Console.WriteLine($"New ItemStatus: {newStatus}");
- 
-        ItemStatus = newStatus;
+        {
+            Console.WriteLine("Entered UpdateStatus");
+            Console.WriteLine($"Current ItemStatus: {ItemStatus}");
+            Console.WriteLine($"New ItemStatus: {newStatus}");
 
-        Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
-        Console.WriteLine($"Calling Notify() in Item.cs file");
+            ItemStatus = newStatus;
 
-        Notify();
+            Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
+            Console.WriteLine($"Calling Notify() in Item.cs file");
 
-    }
+            Notify();
+
+        }
 
         public Item() { } // dk if need anot 
     }

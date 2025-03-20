@@ -20,10 +20,12 @@
         <tr>
             <th>Item ID</th>
             <th>Product ID</th>
+            <th>Product Name</th>
             <th>Sale Price</th>
             <th>Batch Code</th>
             <th>Warehouse ID</th>
             <th>Status</th>
+            <th>Expiry Date</th>
             <th>Reservation ID</th>
             <th>Order ID</th>
             <th>Transfer ID</th>
@@ -36,10 +38,12 @@
             <tr>
                 <td>@itemInfo["ItemId"]</td>
                 <td>@itemInfo["ProductId"]</td>
+                <td>@itemInfo["ProductName"]</td>
                 <td>@itemInfo["SalePrice"]</td>
                 <td>@itemInfo["BatchCode"]</td>
                 <td>@itemInfo["WarehouseId"]</td>
                 <td>@itemInfo["ItemStatus"]</td>
+                <td>@itemInfo["ExpiryDate"]</td>
                 <td>@(itemInfo.ContainsKey("ReservationId") ? itemInfo["ReservationId"] ?? "NULL" : "NULL")</td>
                 <td>@(itemInfo.ContainsKey("OrderId") ? itemInfo["OrderId"] ?? "NULL" : "NULL")</td>
                 <td>@(itemInfo.ContainsKey("TransferId") ? itemInfo["TransferId"] ?? "NULL" : "NULL")</td>

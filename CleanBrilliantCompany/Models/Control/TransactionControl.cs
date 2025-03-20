@@ -8,23 +8,40 @@ using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Models.Mapper;
 
-namespace CleanBrilliantCompany.Models.Control{
+namespace CleanBrilliantCompany.Models.Control
+{
     //public class TransactionControl : iTransactionQuery --> !Comment out first since i have not created the interface for iTQ
-    public class TransactionControl : iTransactionQuery , IObserver
+    public class TransactionControl : iTransactionQuery, IObserver
 
     {
 
         //When any changes to status are detected here --> the necessary code will run here 
         //TODO: Add record into database
-        public void Update(Item item)
+        public void Update(Dictionary<string, object> itemInfo)
         {
+            var itemId = itemInfo["ItemId"];
+            var itemStatus = itemInfo["ItemStatus"];
+            var productName = itemInfo["ProductName"];
+            Console.WriteLine("ab" + productName);
+
+
             Console.WriteLine($"[Notification] Sending alert: Item Status Changed");
+            // Console.WriteLine($"Item type: {itemId}");
+            // Console.WriteLine($"Item status: {itemStatus}");
+            // Console.WriteLine($"Product name: {productName}");
+
+            foreach (var kvp in itemInfo)
+            {
+                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+            }
+
+
         }
 
         private readonly TransactionMapper _transactionMapper;
         //For now, getTransactions are set to void returns as they are not used for further processing
         //If needed, will update return type to List<Transaction>
-                // Constructor that takes the connection string
+        // Constructor that takes the connection string
         public TransactionControl(string connectionString)
         {
             _transactionMapper = new TransactionMapper(connectionString);
@@ -32,7 +49,8 @@ namespace CleanBrilliantCompany.Models.Control{
         }
 
         //This method will replace getTransactions() in class diagram --> update afterwards
-        public List<Transaction> getAllTransactions() {
+        public List<Transaction> getAllTransactions()
+        {
             return _transactionMapper.getAllTransactions();
         }
 
@@ -45,7 +63,7 @@ namespace CleanBrilliantCompany.Models.Control{
         // public List<Transaction> getTransactionByItem(itemId) {
         //     return _transactionMapper.getTransactionByItem();
         // }
-        
+
         //Missing Method 2: getTransactionByDateTime(dateTime): List<Transaction>
         //Similarly --> pass in the dateTime var --> return a list of all transactions for that day itself
 
