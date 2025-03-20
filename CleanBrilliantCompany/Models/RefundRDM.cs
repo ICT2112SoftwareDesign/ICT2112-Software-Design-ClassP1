@@ -7,14 +7,13 @@ namespace CleanBrilliantCompany.Models
     {
         public int OrderId { get; set; }
         public int RefundId { get; set; }
-        // public int CustomerId { get; set; }
         public Dictionary<int, int> RefundedProducts { get; set; } = new Dictionary<int, int>(); 
-        public string RefundReason { get; set; }
+        public string RefundReason { get; set; } = string.Empty;
         public float RefundAmount { get; set; }
         public DateTime RefundRequestDate { get; set; }
-        public DateTime RefundProcessedDate { get; set; }
+        public DateTime? RefundProcessedDate { get; set; }
         public List<string> Images { get; set; } = new List<string>();
         public List<string> Videos { get; set; } = new List<string>();
-        public string Status { get; set; }  // Pending, Approved, Rejected
+        public string Status { get; set; } = "Pending";
     }
 }

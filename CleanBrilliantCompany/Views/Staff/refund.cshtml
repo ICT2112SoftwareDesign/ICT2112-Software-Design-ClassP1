@@ -16,7 +16,7 @@
 <body id="page-top">
     <div id="wrapper">
         <!-- Sidebar -->
-        @await Html.PartialAsync("staff-sidebar")
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
@@ -69,15 +69,13 @@
                                         <td class="align-middle">$@refund.RefundAmount</td>
                                         <td class="align-middle">@refund.RefundRequestDate.ToShortDateString()</td>
                                         <td class="align-middle">
-                                            @(refund.RefundProcessedDate != DateTime.MinValue 
-                                                ? refund.RefundProcessedDate.ToShortDateString() 
-                                                : "Not Processed")
+                                            @(refund.RefundProcessedDate?.ToShortDateString() ?? "Not Processed")
                                         </td>
                                         <td class="align-middle @(refund.Status == "Approved" ? "text-success" : refund.Status == "Pending" ? "text-warning" : "text-danger")">
                                             @refund.Status
                                         </td>
                                         <td class="align-middle">
-                                            <a href="@Url.Action("RefundDetails", "Staff", new { id = refund.RefundId })" class="btn @(refund.Status == "Pending" ? "btn-primary" : "btn-secondary")">
+                                            <a href="@Url.Action("RefundDetails", "Refund", new { id = refund.RefundId })" class="btn @(refund.Status == "Pending" ? "btn-primary" : "btn-secondary")">
                                                 Manage
                                             </a>
                                         </td>
@@ -93,6 +91,13 @@
                             }
                         </tbody>
                     </table>
+                    <hr>
+
+                    <!-- Insert Test Refund -->
+                    <form method="post" action="@Url.Action("CreateRefund", "Refund")">                        
+                        <button type="submit" class="btn btn-primary mt-3">Create Test Refund</button>
+                    </form>
+   
                 </div>
                 <!-- End of Page Content -->
 
