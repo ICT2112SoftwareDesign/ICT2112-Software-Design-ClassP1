@@ -1,12 +1,12 @@
-﻿namespace CleanBrilliantCompany.Models
+﻿namespace CleanBrilliantCompany.Entities
 {
-    public class InventoryAlerts
+    public class InventoryAlertsTable
     {
         public int AlertId { get; set; }
         public int InventoryId { get; set; }
-        public InventoryLevel InventoryLevel { get; set; }
+        public InventoryLevelTable InventoryLevel { get; set; }
         public string AlertTypeCode { get; set; }
-        public AlertType AlertType { get; set; }
+        public AlertTypeTable AlertType { get; set; }
         public DateTime AlertDate { get; set; }
     }
 }

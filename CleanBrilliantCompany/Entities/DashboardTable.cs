@@ -1,4 +1,4 @@
-﻿namespace CleanBrilliantCompany.Models
+﻿namespace CleanBrilliantCompany.Entities
 {
     public class DashboardTable
     {
@@ -9,5 +9,8 @@
         public DateTime GeneratedDate { get; set; }
         public int ValidityDuration { get; set; }
         public int TypeId { get; set; }
+        public DashboardTypeTable Type { get; set; } // Navigation property
+
+        public List<InventoryLevelTable> InventoryLevels { get; set; } = new List<InventoryLevelTable>(); // Added for the relationship
     }
 }

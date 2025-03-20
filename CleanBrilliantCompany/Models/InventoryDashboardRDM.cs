@@ -8,7 +8,7 @@ namespace CleanBrilliantCompany.Models
     {
         private readonly Dictionary<int, int> _stockLevel;
         private readonly Dictionary<int, int> _threshold;
-        private readonly Dictionary<int, bool?> _replenishmentStatus;
+        private readonly Dictionary<int, bool> _replenishmentStatus;
 
         // Public properties for EF Core to access, but with private setters
         public Dictionary<int, int> StockLevel
@@ -23,9 +23,9 @@ namespace CleanBrilliantCompany.Models
             private set => throw new InvalidOperationException("Use SetThreshold to modify Threshold.");
         }
 
-        public Dictionary<int, bool?> ReplenishmentStatus
+        public Dictionary<int, bool> ReplenishmentStatus
         {
-            get => new Dictionary<int, bool?>(_replenishmentStatus);
+            get => new Dictionary<int, bool>(_replenishmentStatus);
             private set => throw new InvalidOperationException("Use SetReplenishmentStatus to modify ReplenishmentStatus.");
         }
 
@@ -34,7 +34,7 @@ namespace CleanBrilliantCompany.Models
         {
             _stockLevel = new Dictionary<int, int>();
             _threshold = new Dictionary<int, int>();
-            _replenishmentStatus = new Dictionary<int, bool?>();
+            _replenishmentStatus = new Dictionary<int, bool>();
         }
 
         public InventoryDashboardRDM(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, DateTime generatedDate)
@@ -42,8 +42,9 @@ namespace CleanBrilliantCompany.Models
         {
             _stockLevel = new Dictionary<int, int>();
             _threshold = new Dictionary<int, int>();
-            _replenishmentStatus = new Dictionary<int, bool?>();
+            _replenishmentStatus = new Dictionary<int, bool>();
         }
+
 
         public int GetDashboardId()
         {
@@ -83,9 +84,9 @@ namespace CleanBrilliantCompany.Models
             return _replenishmentStatus.TryGetValue(productId, out var status) ? status : null;
         }
 
-        public Dictionary<int, bool?> GetAllReplenishmentStatuses()
+        public Dictionary<int, bool> GetAllReplenishmentStatuses()
         {
-            return new Dictionary<int, bool?>(_replenishmentStatus);
+            return new Dictionary<int, bool>(_replenishmentStatus);
         }
 
         protected void SetStockLevel(int productId, int stockLevel)

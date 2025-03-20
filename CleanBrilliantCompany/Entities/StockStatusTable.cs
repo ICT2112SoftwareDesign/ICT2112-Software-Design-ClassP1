@@ -1,6 +1,6 @@
-﻿namespace CleanBrilliantCompany.Models
+﻿namespace CleanBrilliantCompany.Entities
 {
-    public class StockStatus
+    public class StockStatusTable
     {
         public string StockCode { get; set; }
         public string Description { get; set; }

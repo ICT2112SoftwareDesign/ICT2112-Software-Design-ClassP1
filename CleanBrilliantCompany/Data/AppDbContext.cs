@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using CleanBrilliantCompany.Models;
 using System.Collections.Generic;
+using CleanBrilliantCompany.Entities;
 
 namespace CleanBrilliantCompany.Data
 {
@@ -9,82 +9,109 @@ namespace CleanBrilliantCompany.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<DashboardTable> DashboardTable { get; set; }
-        public DbSet<DashboardTableType> DashboardTableType { get; set; }
-        public DbSet<StockStatus> StockStatus { get; set; }
-        public DbSet<AlertType> AlertType { get; set; }
-        public DbSet<InventoryLevel> InventoryLevel { get; set; }
-        public DbSet<InventoryAlerts> InventoryAlerts { get; set; }
+        public DbSet<DashboardTypeTable> DashboardTableType { get; set; }
+        public DbSet<StockStatusTable> StockStatusTable { get; set; }
+        public DbSet<AlertTypeTable> AlertTypeTable { get; set; }
+        public DbSet<InventoryLevelTable> InventoryLevelTable { get; set; }
+        public DbSet<InventoryAlertsTable> InventoryAlertsTable { get; set; }
 
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Define DashboardId as the primary key
-            modelBuilder.Entity<InventoryDashboardRDM>()
+            // Define primary key
+            modelBuilder.Entity<DashboardTable>()
                 .HasKey(d => d.DashboardId);
+
+            modelBuilder.Entity<DashboardTypeTable>()
+                .HasKey(t => t.TypeId);
+
+            modelBuilder.Entity<StockStatusTable>()
+                .HasKey(s => s.StockCode);
+            
+            modelBuilder.Entity<AlertTypeTable>()
+                .HasKey(a => a.TypeCode);
+            
+            modelBuilder.Entity<InventoryLevelTable>()
+                .HasKey(i => i.InventoryId);
+            
+            modelBuilder.Entity<InventoryAlertsTable>()
+                .HasKey(a => a.AlertId);
 
             modelBuilder.Entity<DashboardTable>()
                 .Property(d => d.DashboardId)
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<InventoryLevel>()
+            modelBuilder.Entity<DashboardTypeTable>()
+                .HasKey(t => t.TypeId);
+            modelBuilder.Entity<StockStatusTable>();
+
+            // Auto-generate primary key
+            modelBuilder.Entity<InventoryLevelTable>()
                 .Property(i => i.InventoryId)
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<InventoryAlerts>()
+            modelBuilder.Entity<InventoryAlertsTable>()
                 .Property(a => a.AlertId)
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<StockStatus>()
+            modelBuilder.Entity<StockStatusTable>()
                 .HasKey(s => s.StockCode);
 
-            modelBuilder.Entity<AlertType>()
+            modelBuilder.Entity<AlertTypeTable>()
                 .HasKey(a => a.TypeCode);
 
+            // Map entities to new table names in the database
+            modelBuilder.Entity<DashboardTable>()
+                .ToTable("Dashboard");
+
+            modelBuilder.Entity<DashboardTypeTable>()
+                .ToTable("DashboardType");
+
+            modelBuilder.Entity<StockStatusTable>()
+                .ToTable("StockStatus");
+
+            modelBuilder.Entity<AlertTypeTable>()
+                .ToTable("InventoryAlertType");
+
+            modelBuilder.Entity<InventoryLevelTable>()
+                .ToTable("InventoryLevel");
+
+            modelBuilder.Entity<InventoryAlertsTable>()
+                .ToTable("InventoryAlerts");
+
             // Relationships between tables
+            // One-to-many relationship between DashboardTypeTable and DashboardTable
+            // One DashboardTypeTable can have many DashboardTable
+            modelBuilder.Entity<DashboardTable>()
+                .HasOne(d => d.Type)
+                .WithMany()
+                .HasForeignKey(d => d.TypeId);
 
-            //modelBuilder.Entity<InventoryLevel>()
-            //    .HasOne(i => i.StockStatus)
-            //    .WithMany()
-            //    .HasForeignKey(i => i.StockCode);
-
-            //modelBuilder.Entity<InventoryLevel>()
-            //    .HasOne(i => i.DashboardTable)
-            //    .WithMany(d => d.InventoryLevels)
-            //    .HasForeignKey(i => i.DashboardId);
-
-            //modelBuilder.Entity<InventoryAlerts>()
-            //    .HasOne(a => a.InventoryLevel)
-            //    .WithMany(i => i.AlertsTypes)
-            //    .HasForeignKey(a => a.InventoryId);
-
-            //modelBuilder.Entity<InventoryAlerts>()
-            //    .HasOne(a => a.AlertType)
-            //    .WithMany()
-            //    .HasForeignKey(a => a.AlertTypeCode);
-
-            // VERIFY AGAIN
-            //modelBuilder.Entity<DashboardTable>()
-            //    .HasOne(d => d.Type)
-            //    .WithMany()
-            //    .HasForeignKey(d => d.TypeId);
-
-            modelBuilder.Entity<InventoryLevel>()
+            // One-to-many relationship between InventoryLevelTable and StockStatusTable
+            // One StockStatusTable can have many InventoryLevelTable
+            modelBuilder.Entity<InventoryLevelTable>()
                 .HasOne(i => i.StockStatus)
                 .WithMany()
                 .HasForeignKey(i => i.StockCode);
 
-            //modelBuilder.Entity<InventoryLevel>()
-            //    .HasOne(i => i.DashboardTable)
-            //    .WithMany(d => d.InventoryLevels)
-            //    .HasForeignKey(i => i.DashboardId);
+            // One-to-many relationship between InventoryLevelTable and DashboardTable
+            // One DashboardTable can have many InventoryLevels
+            modelBuilder.Entity<InventoryLevelTable>()
+                .HasOne(i => i.DashboardTable)
+                .WithMany(d => d.InventoryLevels)
+                .HasForeignKey(i => i.DashboardId);
 
-            //modelBuilder.Entity<InventoryAlerts>()
-            //    .HasOne(a => a.InventoryLevel)
-            //    .WithMany(i => i.AlertType)
-            //    .HasForeignKey(a => a.InventoryId);
+            // One-to-many relationship between InventoryAlertsTable and InventoryLevelTable
+            // One InventoryLevelTable can have many InventoryAlerts
+            modelBuilder.Entity<InventoryAlertsTable>()
+                .HasOne(a => a.InventoryLevel)
+                .WithMany(i => i.AlertTypes)
+                .HasForeignKey(a => a.InventoryId);
 
-            modelBuilder.Entity<InventoryAlerts>()
+            // One-to-many relationship between InventoryAlertsTable and AlertTypeTable
+            // One AlertTypeTable can have many InventoryAlertsTable
+            modelBuilder.Entity<InventoryAlertsTable>()
                 .HasOne(a => a.AlertType)
                 .WithMany()
                 .HasForeignKey(a => a.AlertTypeCode);

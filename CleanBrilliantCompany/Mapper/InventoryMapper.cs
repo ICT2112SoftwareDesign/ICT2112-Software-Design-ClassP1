@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Data;
+using CleanBrilliantCompany.Entities;
 
 namespace CleanBrilliantCompany.Mapper
 {
@@ -18,31 +20,15 @@ namespace CleanBrilliantCompany.Mapper
 
         public void SaveDashboard(InventoryDashboardRDM dashboard)
         {
-            //dashboard.GeneratedDate = DateTime.Now;
-            //_context.InventoryLevel.Add(dashboard);
-            //_context.SaveChanges();
-
-            //if (dashboard.GetDashboardId() == 0)
-            //{
-            //    var maxId = _context.InventoryLevel.Any()
-            //        ? _context.InventoryLevel.Max(d => d.DashboardId)
-            //        : 0;
-            //    typeof(Dashboard).GetProperty("DashboardId")?.SetValue(dashboard, maxId + 1);
-            //}
-
-            //dashboard.GeneratedDate = DateTime.Now;
-            //_context.InventoryLevel.Add(dashboard);
-            //_context.SaveChanges();
-
             // Map the business model (InventoryDashboardRDM) to the entity (DashboardEntity)
             var dashboardEntity = new DashboardTable
             {
                 Name = dashboard.Name,
                 RequestedStartDate = dashboard.RequestedStartDate,
                 RequestedEndDate = dashboard.RequestedEndDate,
-                GeneratedDate = DateTime.Now, // Set directly on the entity
+                GeneratedDate = DateTime.Now,
                 ValidityDuration = dashboard.ValidityDuration,
-                TypeId = dashboard.GetType().Name == "InventoryDashboardRDM" ? 1 : 0 // Verify Again!!
+                TypeId = dashboard.Type
             };
 
             _context.DashboardTable.Add(dashboardEntity);
@@ -55,11 +41,12 @@ namespace CleanBrilliantCompany.Mapper
 
         public InventoryDashboardRDM? GetLatestDashboard()
         {
-            //return _context.InventoryLevel
-            //    .OrderByDescending(d => d.GeneratedDate)
-            //    .FirstOrDefault();
-
-            var dashboardEntity = _context.Dashboards
+            var dashboardEntity = _context.DashboardTable // Fixed: Changed Dashboards to DashboardTable
+                .Include(d => d.InventoryLevels)
+                .ThenInclude(i => i.StockStatus)
+                .Include(d => d.InventoryLevels)
+                .ThenInclude(i => i.AlertTypes)
+                .ThenInclude(a => a.AlertType)
                 .OrderByDescending(d => d.GeneratedDate)
                 .FirstOrDefault();
 
@@ -72,14 +59,7 @@ namespace CleanBrilliantCompany.Mapper
                 dashboardEntity.RequestedStartDate,
                 dashboardEntity.RequestedEndDate,
                 dashboardEntity.ValidityDuration,
-                dashboardEntity.TypeId,
                 dashboardEntity.GeneratedDate);
         }
-
-        //public InventoryDashboardRDM GetDashboardById(int id)
-        //{
-        //    return _context.InventoryLevel
-        //        .FirstOrDefault(d => d.DashboardId == id);
-        //}
     }
 }
