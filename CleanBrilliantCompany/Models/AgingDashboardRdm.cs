@@ -5,7 +5,9 @@ public class AgingDashboardRdm : Dashboard
 
 
     private Dictionary<int , List <AbstractAnalyticsDetails>> batchAnalyticsMap;   
+    private Dictionary<int, int> batchToProductMap = new Dictionary<int, int>();
 
+    //private Dictionary<int, Dictionary<int, List<AbstractAnalyticsDetails>>> productBatchAnalyticsMap = new Dictionary<int, Dictionary<int, List<AbstractAnalyticsDetails>>>(); 
 
     // this is for db 
     public AgingDashboardRdm(int id, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type, DateTime? generatedDate = null)
@@ -45,11 +47,17 @@ public class AgingDashboardRdm : Dashboard
         //step 2 : loop through the rawBatchData and create the analytics 
         foreach (var rawBatch in rawBatchData){
             int batchCode = rawBatch.BatchCode; 
+            int productId = rawBatch.ProductId;
 
             // ensure that the batchCode is in the analytics map 
             if (!batchAnalyticsMap.ContainsKey(batchCode)){
                 batchAnalyticsMap.Add(batchCode, new List<AbstractAnalyticsDetails>()); 
             } 
+
+            // add the mapping for the batchcode to the productid 
+            if (!batchToProductMap.ContainsKey(batchCode)){
+                batchToProductMap.Add(batchCode,productId);
+            }
 
             //create storage lifecycle Analytics 
             var storageLifeCycleAnalytics = new StorageLifeCycleAnalyticsDetails(
@@ -68,6 +76,9 @@ public class AgingDashboardRdm : Dashboard
             addBatchAnalytics(batchCode, stockTurnOverAnalytics); 
         }
     }
+
+
+
 
     public void addBatchAnalytics(int batchCode, AbstractAnalyticsDetails batchDetails)
     {
