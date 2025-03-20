@@ -53,8 +53,12 @@
                         Update
                     </button></td>
                 <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#updateItemStatusModal" data-updateitem-id="@itemInfo["ItemId"]">
+                        data-bs-target="#updateItemStatusModalOld" data-updateitem-id="@itemInfo["ItemId"]">
                         Update Status
+                    </button></td>
+                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#updateItemStatusModal" data-updateitem-id="@itemInfo["ItemId"]">
+                        Update ID & Status
                     </button></td>
             </tr>
 
@@ -118,7 +122,6 @@
     </div>
 </div>
 
-
 @* get warehouse quantity modal *@
 <div class="modal fade" id="warehouseModel" tabindex="-1" aria-labelledby="warehouseModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -149,7 +152,6 @@
     </div>
 </div>
 
-
 @* update item modal *@
 <div class="modal fade" id="updateItemModal" tabindex="-1" aria-labelledby="updateItemModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -177,20 +179,72 @@
 </div>
 
 @* update item status modal (for ryan) *@
+<div class="modal fade" id="updateItemStatusModalOld" tabindex="-1" aria-labelledby="updateItemStatusModalLabelOld"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateItemStatusModalLabelOld">Update Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="updateItemStatusOld">
+                    <input type="hidden" id="updateStatusItemIdOld" name="itemStatusIdOld">
+                    <div class="mb-3">
+                        <label for="itemStatus" class="form-label">Status</label>
+                        <select class="form-control" id="itemStatus" name="itemStatus" required>
+                            <option value="Available">Available</option>
+                            <option value="Reserved">Reserved</option>
+                            <option value="Sold">Sold</option>
+                            <option value="Refunded">Refunded</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* update item id & status model (to test for iItemUpdate) *@
 <div class="modal fade" id="updateItemStatusModal" tabindex="-1" aria-labelledby="updateItemStatusModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateItemStatusModalLabel">Update Item</h5>
+                <h5 class="modal-title" id="updateItemStatusModalLabel">Update Item Id & Status</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="post" asp-action="updateItemStatus">
-                    <input type="hidden" id="updateStatusItemId" name="itemStatusId">
+                    <input type="hidden" id="updateStatusItemId" name="itemId">
+                    <div class="mb-3">
+                        <label for="reservationId" class="form-label">Reservation Id</label>
+                        <input type="text" class="form-control" id="reservationId" name="reservationId" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="orderId" class="form-label">Order Id</label>
+                        <input type="text" class="form-control" id="orderId" name="orderId" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="orderId" class="form-label">Return Id</label>
+                        <input type="text" class="form-control" id="returnId" name="returnId" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="orderId" class="form-label">Transfer Id</label>
+                        <input type="text" class="form-control" id="transferId" name="transferId" >
+                    </div>
+
                     <div class="mb-3">
                         <label for="itemStatus" class="form-label">Status</label>
-                        <select class="form-control" id="itemStatus" name="itemStatus" required>
+                        <select class="form-control" id="itemStatus" name="status" required>
                             <option value="Available">Available</option>
                             <option value="Reserved">Reserved</option>
                             <option value="Sold">Sold</option>
