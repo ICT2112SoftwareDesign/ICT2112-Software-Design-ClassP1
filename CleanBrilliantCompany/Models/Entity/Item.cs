@@ -23,27 +23,9 @@ namespace CleanBrilliantCompany.Models.Entity
         private int? OrderId;
         private int? TransferId;
         private int? ReturnId;
-
-        private List<IObserver> _observers = new List<IObserver>();
-
-        // public ItemStatus StatusChange
-        // {
-        //     get => ItemStatus;
-
-        // // }
-        // public string StatusChange
-        // {
-        //     get => ItemStatus.ToString(); //convert the enum into string
-        //     set 
-        //     {
-        //         if (ItemStatus.ToString() != value)
-        //         {
-        //             // ItemStatus = value;
-        //             Notify();
-        //         }
-        //     }
-        // }
-
+        private string ProductName;
+        private DateTime ExpiryDate;
+ 
         // Constructor to initialize the private fields
         public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
                      ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId)
@@ -58,6 +40,23 @@ namespace CleanBrilliantCompany.Models.Entity
             OrderId = orderId;
             TransferId = transferId;
             ReturnId = returnId;
+        }
+
+        public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
+                     ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId, string productName, DateTime expiryDate)
+        {
+            ItemId = itemId;
+            ProductId = productId;
+            SalePrice = salePrice;
+            BatchCode = batchCode;
+            WarehouseId = warehouseId;
+            ItemStatus = itemStatus;
+            ReservationId = reservationId;
+            OrderId = orderId;
+            TransferId = transferId;
+            ReturnId = returnId;
+            ProductName = productName;
+            ExpiryDate = expiryDate;
         }
 
         // Public method to create a new item
@@ -95,7 +94,9 @@ namespace CleanBrilliantCompany.Models.Entity
                 { "ReservationId", ReservationId },
                 { "OrderId", OrderId },
                 { "TransferId", TransferId },
-                { "ReturnId", ReturnId }
+                { "ReturnId", ReturnId },
+                { "ExpiryDate", ExpiryDate},
+                { "ProductName", ProductName}
             };
         }
 

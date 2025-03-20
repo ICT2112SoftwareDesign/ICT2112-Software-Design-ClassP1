@@ -6,28 +6,31 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : iItemQuery
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve
     {
         private readonly ItemMapper _itemMapper;
         private readonly TransactionControl _transactionObserver; // Added observer
 
+        private readonly iProduct _iproductInterface;
+
         // Constructor that takes the connection string
-        public ItemControl(string connectionString)
+        public ItemControl(string connectionString, iProduct iproductInterface)
         {
             _itemMapper = new ItemMapper(connectionString);
+            _iproductInterface = iproductInterface;
             Console.WriteLine("Products loaded from database.");
             _transactionObserver = new TransactionControl(connectionString);
         }
 
-        // methods from iItemQuery
+        // METHODS FOR IITEM
         public async Task<List<Item>> getAllItems()
         {
             return await Task.FromResult(_itemMapper.getAllItems()); // mapper uses iItemQuery to interact with control 
         }
 
-        public async Task<Item> getItem(int itemId)
+        public async Task<Item> getItemById(int itemId)
         {
-            return await Task.FromResult(_itemMapper.getItem(itemId));
+            return await Task.FromResult(_itemMapper.getItemById(itemId));
         }
 
         public async Task<bool> createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
@@ -40,35 +43,44 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
         }
 
-        public void RegisterObservers(Item item)
+        // METHOD FOR IITEMUPDATE 
+        public async Task<bool> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
         {
-            Console.WriteLine("Called registerObservers method");
-            item.Attach(_transactionObserver);
-            Console.WriteLine("Attached transactionObserver to item");
-        }
-        public async Task<bool> updateItemStatus(int itemId, ItemStatus status)
-        {
-            bool dbUpdated = await Task.FromResult(_itemMapper.updateItemStatus(itemId, status)); //Keep _itemMapper call
-
-            if (dbUpdated)
-            {
-                Item item = await getItem(itemId); //Fetch the Item object
-                if (item != null)
-                {
-                    RegisterObservers(item); //Attach observers before updating
-                    Console.WriteLine("Executed line 77 of IC.cs");
-                    item.UpdateStatus(status); //Update & notify observers
-                    Console.WriteLine("Executed line 79 of IC.cs");
-                }
-            }
-
-            return dbUpdated;
+            return await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
         }
 
-        public async Task<List<Warehouse>> getWarehouseDetails()
+        // for transaction feature, might remove in future
+        public async Task<bool> updateItemStatusOld(int itemId, ItemStatus status)
         {
-            return await Task.FromResult(_itemMapper.getWarehouseDetails());
+            return await Task.FromResult(_itemMapper.updateItemStatusOld(itemId, status));
         }
+
+
+        // METHODS FOR RESERVE FEATURE (IRESERVE)
+        public async Task<List<Item>> getItemsByStatus(ItemStatus itemStatus)
+        {
+            return await Task.FromResult(_itemMapper.getItemByStatus(itemStatus));
+        }
+
+        public Task<Product> retrieveProductDetails(int productId)
+        {
+            Product product = _iproductInterface.getProductDetails(productId);
+            return Task.FromResult(product);
+        }
+
+        // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
+        public async Task<Warehouse> getWarehouseDetails(int warehouseId) {
+            return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
+        }
+
+        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId) {
+            return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, warehouseId));
+        }
+
+        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId) {
+            return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
+        }
+
 
     }
 }
