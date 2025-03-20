@@ -22,8 +22,11 @@ builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<ChatbotService>();
 builder.Services.AddScoped<IProduct, ProductsRepository>(); 
 builder.Services.AddTransient<OrderManagement>();
-builder.Services.AddTransient<WishlistManagement>();
 
+builder.Services.AddTransient<CartManagement>();
+builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
+
+builder.Services.AddTransient<WishlistManagement>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,6 +1,7 @@
 using System;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Mappers;
+using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {

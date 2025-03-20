@@ -4,7 +4,7 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Mappers
 {
-   public class ReviewMapper : iReviewDatabase
+   public class ReviewMapper : IReviewDatabase
    { 
         private readonly string _connectionString; 
 
