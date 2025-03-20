@@ -67,7 +67,7 @@ public class AgingControl
     {
         Console.WriteLine("🔍 Retrieving the latest dashboard...");
         // print out all available dashboards 
-        Console.WriteLine("Amount of dashboards: " + dashboards.Count); 
+        //Console.WriteLine("Amount of dashboards: " + dashboards.Count); 
         foreach (var dashboard in dashboards)
         {
             Console.WriteLine($"Dashboard: {dashboard.GeneratedDate}");
@@ -102,8 +102,8 @@ public class AgingControl
 
         var fakeInterface = new FakeBatchInterface(); 
         var batches = fakeInterface.getAllProductBatch(); 
-        Console.WriteLine("Amount of batches: " + batches.Count); 
-        Console.WriteLine("batch productid : " + batches[0].ProductId); 
+        // Console.WriteLine("Amount of batches: " + batches.Count); 
+        // Console.WriteLine("batch productid : " + batches[0].ProductId); 
         // Retrieve all stock histories for all batches
         var stockHistories = new List<RawStockHistoryData>(); 
         foreach (var batch in batches)
@@ -122,47 +122,7 @@ public class AgingControl
         return dashboard;
     }
 
-    // public AgingDashboardRdm generateNewDashboard() 
-    // {
 
-    //     // var dashboard = new AgingDashboardRdm("Aging Dashboard", DateTime.Now, DateTime.Now.AddDays(180), 180, 1);
-    //     //find the max id from the list then increment it by 1 
-    //     var id = dashboards.Max(x => x.DashboardId) + 1; 
-    //     var dashboard = new AgingDashboardRdm(id, "Aging Dashboard new", DateTime.Now, DateTime.Now.AddDays(180), 180, 1);
-
-    //     var fakeInterface = new FakeBatchInterface(); 
-    //     var batches = fakeInterface.getAllProductBatch(); 
-
-    //     foreach (var batch in batches){
-    //         var stockHistory = fakeInterface.getStockHistoryByBatch(batch.BatchCode);
-    //         var stockHistoryMap = stockHistory.ToDictionary(x => x.Date, x => x.Quantity);
-    //         Console.WriteLine("Batch details for batch: " + batch.BatchCode); 
-    //         Console.WriteLine("Batch Receive Date: " + batch.ReceiveDate); 
-    //         Console.WriteLine("Batch Expiry Date: " + batch.ExpiryDate); 
-    //         Console.WriteLine("Batch Quantity: " + batch.Quantity); 
-    //         Console.WriteLine("Batch Stock History: "); 
-    //         foreach (var history in stockHistoryMap){
-    //             Console.WriteLine("Date: " + history.Key + " Quantity: " + history.Value); 
-    //         } 
-    //         Console.WriteLine("==========End of Batch details==========" );
-    //         var storageLifeCycleAnalytics = new StorageLifeCycleAnalyticsDetails(
-    //             batch.BatchCode, 
-    //             batch.ReceiveDate, 
-    //             batch.ExpiryDate
-    //             );    
-    //         var stockTurnOverAnalytics = new StockTurnOverAnalyticsDetails(
-    //             batch.BatchCode, 
-    //             stockHistoryMap, 
-    //             batch.Quantity
-    //             ); 
-    //         dashboard.addBatchAnalytics(batch.BatchCode, storageLifeCycleAnalytics); 
-    //         dashboard.addBatchAnalytics(batch.BatchCode, stockTurnOverAnalytics); 
-    //     }
-    //     // add it to the list 
-    //     dashboards.Add(dashboard); 
-    //     agingMapper.saveDashboardandAnalytics(dashboard); 
-    //     return dashboard; 
-    // }
 
 
 }

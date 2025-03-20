@@ -33,7 +33,7 @@ public class AgingDashboardRdm : Dashboard
     public Dictionary<int, List<int>> getProductToBatchMap() => productToBatchMap; 
     public void addBatchtoProductMap(int productId, int batchCode){
         
-        Console.WriteLine("Adding batch {0} to product {1}", batchCode, productId); 
+        //Console.WriteLine("Adding batch {0} to product {1}", batchCode, productId); 
         if (productToBatchMap.ContainsKey(productId)){
             productToBatchMap[productId].Add(batchCode); 
         } else {

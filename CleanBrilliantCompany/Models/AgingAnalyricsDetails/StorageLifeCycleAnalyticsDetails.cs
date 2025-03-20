@@ -37,6 +37,10 @@ public class StorageLifeCycleAnalyticsDetails : AbstractAnalyticsDetails {
     } 
 
     public bool checkExpiryStatus(){
+        Console.WriteLine("Checking expiry status for batch {0}", batchCode); 
+        Console.WriteLine("Expiry date is {0}", expiryDate); 
+        Console.WriteLine("Current date is {0}", DateTime.Now); 
+        Console.WriteLine("Expiry status is {0}", DateTime.Now > expiryDate); 
         return DateTime.Now > expiryDate; 
     } 
 

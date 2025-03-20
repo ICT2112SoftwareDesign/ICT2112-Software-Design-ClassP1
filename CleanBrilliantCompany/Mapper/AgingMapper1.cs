@@ -1,17 +1,23 @@
-public class AgingMapper : AgingRepo
+public class AgingMapper1 : AgingRepo
 {
-    private readonly ApplicationDbContext _realDbContext;  // Use real DbContext
+    //private readonly AppDbContext? realDbContext;
+    private readonly FakeDbContext? fakeDbContext;
 
-    // Constructor for real DbContext
-    public AgingMapper(ApplicationDbContext realDbContext)
+    // 🔹 Constructor supports BOTH Fake & Real DB
+    public AgingMapper1(FakeDbContext? fakeDbContext = null)
     {
-        _realDbContext = realDbContext ?? throw new ArgumentNullException(nameof(realDbContext)); 
+        //this.realDbContext = realDbContext;
+        this.fakeDbContext = fakeDbContext ?? throw new ArgumentNullException(nameof(fakeDbContext)); 
     }
 
-    // Fetch Dashboard and Analytics
-    public DashboardDTO GetLatestAgingDashboard()
+    // 🔹 Fetch Dashboard DTO
+    public DashboardDTO? GetLatestAgingDashboard()
     {
-        return _realDbContext.Dashboards
+        //Ensure `fakeDbContext` is non-null before accessing `Dashboards`
+        if (fakeDbContext == null || fakeDbContext.Dashboards == null)
+        return null; // Return null if no dashboards exist
+
+        return (fakeDbContext.Dashboards) 
             .OrderByDescending(d => d.GeneratedDate)
             .Select(d => new DashboardDTO
             {
@@ -21,14 +27,19 @@ public class AgingMapper : AgingRepo
                 RequestedEndDate = d.RequestedEndDate,
                 GeneratedDate = d.GeneratedDate,
                 ValidityDuration = d.ValidityDuration,
-                Type = d.TypeId
+                Type = d.Type
             })
             .FirstOrDefault();
     }
 
+    // 🔹 Fetch Aging Analytics DTOs
     public List<AgingAnalyticsDetailsDTO> GetAgingAnalytics(int dashboardId)
     {
-        return _realDbContext.AgingAnalyticsDetails
+        if (fakeDbContext == null || fakeDbContext.AgingAnalyticsDetails == null)
+            return new List<AgingAnalyticsDetailsDTO>(); // Return empty list if no data
+
+
+        return (fakeDbContext.AgingAnalyticsDetails) 
             .Where(a => a.DashboardId == dashboardId)
             .Select(a => new AgingAnalyticsDetailsDTO
             {
@@ -40,31 +51,29 @@ public class AgingMapper : AgingRepo
                 RemainingDays = a.RemainingDays,
                 TurnOverRate = a.TurnOverRate,
                 DeadStockPercentage = a.DeadStockPercentage,
-                ProductId = a.ProductId
+                ProductId = a.ProductId 
             })
             .ToList();
     }
-    public void saveDashboardandAnalytics(AgingDashboardRdm dashboard)
-    {
-        if (_realDbContext == null)
-            return;
 
-        // Create the DashboardTable (Entity) instead of DashboardDTO
-        var newDbTable = new DashboardTable
-        {
-            //DashboardId = dashboard.DashboardId,
+    public void saveDashboardandAnalytics(AgingDashboardRdm dashboard){
+        if (fakeDbContext == null)
+            return; 
+        // Save the dashboard and analytics to the database 
+        // convert the dashboard to a dashboardDTO 
+        // convert the analytics to a list of analyticsDTO 
+        // save the dashboardDTO and the list of analyticsDTO to the database/fakedbContext 
+        var newdbDTO = new DashboardDTO{
+            DashboardId = dashboard.DashboardId,
             Name = dashboard.Name,
             RequestedStartDate = dashboard.RequestedStartDate,
             RequestedEndDate = dashboard.RequestedEndDate,
             GeneratedDate = dashboard.GeneratedDate ?? DateTime.Now,
             ValidityDuration = dashboard.ValidityDuration,
-            TypeId = 1 // Or other type value based on your logic
-        };
+            Type = 1 
+        }; 
 
-        // Add the Dashboard entity to the DbContext
-        _realDbContext.Dashboards.Add(newDbTable);
-        // save 
-        _realDbContext.SaveChanges(); 
+        fakeDbContext.Dashboards.Add(newdbDTO); 
 
         // Loop through the productToBatchMap
         foreach (var productBatch in dashboard.getProductToBatchMap())
@@ -75,14 +84,14 @@ public class AgingMapper : AgingRepo
             foreach (var batchCode in batchCodes)
             {
                 // Get the batch analytics for each batch code
-                var analyticsList = dashboard.GetBatchAnalytics(batchCode);
+                var analyticsList = dashboard.GetBatchAnalytics(batchCode); 
 
                 // Initialize default values for the analytics summary
-                float turnOverRate = 0;
-                float deadStockPercentage = 0;
-                int daysInStorage = 0;
-                bool isExpired = false;
-                int remainingDays = 0;
+                float turnOverRate = 0; // Default turnover rate
+                float deadStockPercentage = 0; // Default dead stock percentage
+                int daysInStorage = 0; // Default days in storage
+                bool isExpired = false; // Default expired status
+                int remainingDays = 0; // Default remaining days
 
                 foreach (var analytics in analyticsList)
                 {
@@ -96,25 +105,21 @@ public class AgingMapper : AgingRepo
                     if (batchSummary.ContainsKey("DeadStockPercentage"))
                         deadStockPercentage = Convert.ToSingle(batchSummary["DeadStockPercentage"]);
 
-                    if (batchSummary.ContainsKey("StorageDuration"))
-                        daysInStorage = Convert.ToInt32(batchSummary["StorageDuration"]);
+                    if (batchSummary.ContainsKey("DaysInStorage"))
+                        daysInStorage = Convert.ToInt32(batchSummary["DaysInStorage"]);
 
-                    if (batchSummary.ContainsKey("ExpiryStatus")){
-                        Console.WriteLine("Batch Code: {0} is expired: {1}", batchCode, batchSummary["ExpiryStatus"]);
-                        isExpired = Convert.ToBoolean(batchSummary["ExpiryStatus"]);
-                        Console.WriteLine("after conversion: {0}", isExpired); 
-                    }
-                        
+                    if (batchSummary.ContainsKey("IsExpired"))
+                        isExpired = Convert.ToBoolean(batchSummary["IsExpired"]);
 
                     if (batchSummary.ContainsKey("RemainingDays"))
                         remainingDays = Convert.ToInt32(batchSummary["RemainingDays"]);
                 }
 
                 // Create a DTO for analytics details and save it to the database
-                var analyticsTable = new AgingAnalyticsDetailsTable
+                var analyticsDTO = new AgingAnalyticsDetailsDTO
                 {
                     BatchCode = batchCode,
-                    DashboardId = newDbTable.DashboardId,
+                    DashboardId = dashboard.DashboardId,
                     ProductId = productId,  // Save the Product ID
                     DaysInStorage = daysInStorage,
                     IsExpired = isExpired,
@@ -123,12 +128,9 @@ public class AgingMapper : AgingRepo
                     DeadStockPercentage = deadStockPercentage
                 };
 
-                _realDbContext.AgingAnalyticsDetails.Add(analyticsTable);
+                fakeDbContext.AgingAnalyticsDetails.Add(analyticsDTO);
             };
         }
-
-        // Save changes to the real database
-        _realDbContext.SaveChanges();
     }
+};
 
-}
