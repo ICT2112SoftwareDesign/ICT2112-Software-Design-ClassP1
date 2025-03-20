@@ -158,7 +158,9 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 // Define the SQL query to retrieve the item by its ID
-                string query = @"SELECT * FROM Item WHERE itemStatus = @status";
+                string query = @"SELECT * FROM Item 
+                INNER JOIN ProductBatch ON ProductBatch.productId = Item.productId
+                WHERE itemStatus = @status";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -270,6 +272,58 @@ namespace CleanBrilliantCompany.Mappers
                     return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
                 }
             }
+        }
+
+        // get all warehouse details
+        public Warehouse getWarehouseDetails(int warehouseId)
+        {
+            Warehouse warehouse = null;
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve warehouse details
+                string query = @"
+                    SELECT warehouseId, warehouseAddress, currentCapacity, maxCapacity, Product.productId, Product.quantity, Item.ItemId
+                    FROM Warehouse 
+                    INNER JOIN Item ON Warehouse.batchCode = Item.Warehouse
+                    INNER JOIN Product ON Item.productId = Product.productId
+                    WHERE warehouseId = @warehouseId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@warehouseID", warehouseId);
+                    // Execute the query and get the results
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Check if the query executed successfully and returned any rows
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            // Iterate through each row in the result set
+                            while (reader.Read())
+                            {
+                                // Create the Item object using the constructor
+                                warehouse = new Warehouse(
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    reader.GetString(reader.GetOrdinal("warehouseAddress")),
+                                    reader.GetInt32(reader.GetOrdinal("currentCapacity")),
+                                    reader.GetInt32(reader.GetOrdinal("maxCapactiy")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    reader.GetInt32(reader.GetOrdinal("itemId"))
+                                );
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No data found for the query.");
+                        }
+                    }
+                }
+            }
+
+            return warehouse;
         }
 
     }
