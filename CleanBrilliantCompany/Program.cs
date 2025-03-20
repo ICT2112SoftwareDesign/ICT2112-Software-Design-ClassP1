@@ -4,7 +4,13 @@ using CleanBrilliantCompany.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+
+// string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var configuration = builder.Configuration;
+builder.Services.AddSingleton<IConfiguration>(configuration);
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -31,8 +37,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
-
 
 app.Run();

@@ -1,0 +1,203 @@
+@model List<Dictionary<string, object>>
+
+<h2>Item List</h2>
+
+<div class="row mb-3">
+    @* button for search *@
+    <form method="post" asp-action="Index">
+        <label for="itemId" class="form-label"></label>
+        <input class="form-control" id="itemId" type="number" name="searchedItemId" placeholder="Search Item by Id"
+            required>
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">Clear</a>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item ID</th>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Sale Price</th>
+            <th>Batch Code</th>
+            <th>Warehouse ID</th>
+            <th>Status</th>
+            <th>Expiry Date</th>
+            <th>Reservation ID</th>
+            <th>Order ID</th>
+            <th>Transfer ID</th>
+            <th>Return ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var itemInfo in Model)
+        {
+            <tr>
+                <td>@itemInfo["ItemId"]</td>
+                <td>@itemInfo["ProductId"]</td>
+                <td>@itemInfo["ProductName"]</td>
+                <td>@itemInfo["SalePrice"]</td>
+                <td>@itemInfo["BatchCode"]</td>
+                <td>@itemInfo["WarehouseId"]</td>
+                <td>@itemInfo["ItemStatus"]</td>
+                <td>@itemInfo["ExpiryDate"]</td>
+                <td>@(itemInfo.ContainsKey("ReservationId") ? itemInfo["ReservationId"] ?? "NULL" : "NULL")</td>
+                <td>@(itemInfo.ContainsKey("OrderId") ? itemInfo["OrderId"] ?? "NULL" : "NULL")</td>
+                <td>@(itemInfo.ContainsKey("TransferId") ? itemInfo["TransferId"] ?? "NULL" : "NULL")</td>
+                <td>@(itemInfo.ContainsKey("ReturnId") ? itemInfo["ReturnId"] ?? "NULL" : "NULL")</td>
+                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateItemModal"
+                        data-item-id="@itemInfo["ItemId"]">
+                        Update
+                    </button></td>
+                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#updateItemStatusModal" data-updateitem-id="@itemInfo["ItemId"]">
+                        Update Status
+                    </button></td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+@* button to trigger model *@
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+    Add Item
+</button>
+
+@* add item modal *@
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addItemModalLabel">Add New Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="addItem">
+                    <div class="mb-3">
+                        <label for="productId" class="form-label">Product ID</label>
+                        <input type="text" class="form-control" id="productId" name="productId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="salePrice" class="form-label">Sale Price</label>
+                        <input type="number" class="form-control" id="salePrice" name="salePrice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="batchCode" class="form-label">Batch Code</label>
+                        <input type="text" class="form-control" id="batchCode" name="batchCode" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="warehouseId" class="form-label">Warehouse ID</label>
+                        <input type="text" class="form-control" id="warehouseId" name="warehouseId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="itemStatus" class="form-label">Status</label>
+                        <select class="form-control" id="itemStatus" name="itemStatus" required>
+                            <option value="Available">Available</option>
+                            <option value="Reserved">Reserved</option>
+                            <option value="Sold">Sold</option>
+                            <option value="Refunded">Refunded</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* update item modal *@
+<div class="modal fade" id="updateItemModal" tabindex="-1" aria-labelledby="updateItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateItemModalLabel">Update Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="updateItem">
+                    <input type="hidden" id="updateItemId" name="itemId">
+                    <div class="mb-3">
+                        <label for="salePrice" class="form-label">Sale Price</label>
+                        <input type="text" class="form-control" id="salePrice" name="salePrice" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* update item status modal (for ryan) *@
+<div class="modal fade" id="updateItemStatusModal" tabindex="-1" aria-labelledby="updateItemStatusModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateItemStatusModalLabel">Update Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="updateItemStatus">
+                    <input type="hidden" id="updateStatusItemId" name="itemStatusId">
+                    <div class="mb-3">
+                        <label for="itemStatus" class="form-label">Status</label>
+                        <select class="form-control" id="itemStatus" name="itemStatus" required>
+                            <option value="Available">Available</option>
+                            <option value="Reserved">Reserved</option>
+                            <option value="Sold">Sold</option>
+                            <option value="Refunded">Refunded</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var updateModal = document.getElementById("updateItemModal");
+
+        updateModal.addEventListener("show.bs.modal", function (event) {
+            var button = event.relatedTarget;
+            var itemId = button.getAttribute("data-item-id");
+
+            var hiddenInput = document.getElementById("updateItemId");
+            hiddenInput.value = itemId;
+            console.log(hiddenInput.value);
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var updateModal = document.getElementById("updateItemStatusModal");
+
+        updateModal.addEventListener("show.bs.modal", function (event) {
+            var button = event.relatedTarget;
+            var itemId = button.getAttribute("data-updateitem-id");
+
+            var hiddenInput = document.getElementById("updateStatusItemId");
+            hiddenInput.value = itemId;
+
+            console.log(hiddenInput.value);
+        });
+    });
+</script>

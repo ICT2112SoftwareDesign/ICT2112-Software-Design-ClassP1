@@ -1,0 +1,124 @@
+@model List<CleanBrilliantCompany.Models.Entity.Product>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test Product Page</title>
+</head>
+<body>
+
+<p>This page is used to test the ProductControl class.</p>
+
+<!-- Form to Enter Product ID -->
+<form method="post" asp-action="FetchProduct">
+    <h3>Fetch Product</h3>
+    <label>Enter Product ID:</label>
+    <input type="number" name="productId" required />
+    <button type="submit">Fetch Product</button>
+</form>
+
+<form method="post" asp-action="DeleteProduct">
+    <h3>Delete Product</h3>
+    <label>Enter Product ID:</label>
+    <input type="number" name="productId" required />
+    <button type="submit">Delete Product</button>
+</form>
+
+<form method="post" asp-action="FetchUpdateProduct">
+    <h3>Update Product</h3>
+    <label>Enter Product ID:</label>
+    <input type="number" name="productId" required />
+    <button type="submit">Update Product</button>
+</form>
+
+<form method="post" asp-action="CreateProduct">
+    <h3>Create Product</h3>
+
+    <label>Product Name:</label>
+    <input type="text" name="ProductName" required /><br>
+
+    <label>Category:</label>
+    <input type="text" name="ProductCategory" required /><br>
+
+    <label>Cost Price:</label>
+    <input type="number" step="0.01" name="ProductCost" required /><br>
+
+    <label>Manufacturer ID:</label>
+    <input type="number" name="ManufacturerId" required /><br>
+
+    <label>Weight:</label>
+    <input type="number" step="0.01" name="Weight" required /><br>
+
+    <label>Volume:</label>
+    <input type="number" name="Volume" required /><br>
+
+    <label>Toxicity Percentage:</label>
+    <input type="number" step="0.01" name="ToxicityPercentage" required /><br>
+
+    <label>Carbon Footprint:</label>
+    <input type="number" name="CarbonFootprint" required /><br>
+
+    <label>Product State:</label>
+    <input type="text" name="ProductState" required /><br>
+
+    <button type="submit">Create Product</button>
+</form>
+
+<!-- Go to Product Batch Listings Link -->
+<a asp-controller="Product" asp-action="ProductBatch" class="btn btn-primary">Go to Product Batch Listings</a>
+
+<!-- Search input for filtering the product list -->
+<h3>Search Products</h3>
+<label for="searchInput">Search by Product Name or Category:</label>
+<input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Search..." />
+
+<!-- Product List -->
+<h3>Product List</h3>
+@if (Model != null && Model.Any())
+{
+    <ul id="productList">
+        @foreach (var product in Model)
+        {
+            <li class="product-item">
+                <span class="product-name"> <strong>@product.ProductName</strong> </span>
+                <br>Product Cost: $@product.ProductCost
+                <br>ProductId: @product.ProductId
+                <span class="product-category"><br>Product Category: @product.ProductCategory</span>
+                <br>Manufacturer ID: @product.ManufacturerId
+                <br>Weight: @product.ProductWeight kg
+                <br>Volume: @product.Volume
+                <br>Toxicity: @product.ToxicityPercentage%
+                <br>Carbon Footprint: @product.CarbonFootprint
+                <br>Product State: @product.ProductState
+                <hr>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No products available.</p>
+}
+
+<!-- JavaScript for filtering products -->
+<script>
+    function filterProducts() {
+        var searchQuery = document.getElementById('searchInput').value.toLowerCase();
+        var productItems = document.querySelectorAll(".product-item");
+
+        productItems.forEach(function(item) {
+            var productName = item.querySelector(".product-name").textContent.toLowerCase();
+            @* var productCategory = item.querySelector("br:nth-child(3)").textContent.toLowerCase(); *@
+            var productCategory = item.querySelector(".product-category").textContent.toLowerCase();
+
+            if (productName.includes(searchQuery) || productCategory.includes(searchQuery)) {
+                item.style.display = ""; // Show item
+            } else {
+                item.style.display = "none"; // Hide item
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

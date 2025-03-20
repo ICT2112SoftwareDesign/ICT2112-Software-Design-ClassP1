@@ -1,0 +1,40 @@
+@model CleanBrilliantCompany.Models.Entity.Product
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test Product Page</title>
+</head>
+<body>
+
+    <h2>Fetch a Product</h2>
+
+    <!-- Form to Enter Product ID -->
+    <form method="post" asp-action="FetchProduct">
+        <label>Enter Product ID:</label>
+        <input type="number" name="productId" required />
+        <button type="submit">Fetch Product</button>
+    </form>
+
+    <hr>
+
+    <!-- Display the Retrieved Product -->
+    @if (Model != null)
+    {
+        <h3>Product Details</h3>
+        <p><strong>Name:</strong> @Model.ProductName</p>
+        <p><strong>ProductId:</strong> @Model.ProductId</p>
+        <p><strong>Category:</strong> @Model.ProductCategory</p>
+        <p><strong>Cost:</strong> $@Model.ProductCost</p>
+        <p><strong>Weight:</strong> @Model.ProductWeight kg</p>
+        <p><strong>Volume:</strong> @Model.Volume</p>
+        <p><strong>Toxicity:</strong> @Model.ToxicityPercentage%</p>
+        <p><strong>Carbon Footprint:</strong> @Model.CarbonFootprint</p>
+    }
+    else
+    {
+        <p>No product found. Please enter a valid Product ID.</p>
+    }
+
+</body>
+</html>
