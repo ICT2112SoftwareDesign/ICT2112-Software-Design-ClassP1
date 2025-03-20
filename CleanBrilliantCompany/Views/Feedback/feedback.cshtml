@@ -64,7 +64,10 @@
                             <input type="hidden" name="feedbackId" value="@feedback.GetFeedbackId()" />
                             <button type="submit" class="btn btn-sm btn-warning">Edit</button>
                         </form> *@
-                        <a href="@Url.Action("EditFeedback", "Feedback", new { feedbackId = feedback.GetFeedbackId() })" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="@Url.Action("EditFeedback", "Feedback", new { feedbackId = feedback.GetFeedbackId() })"
+                            class="btn btn-sm btn-warning px-3 py-1" style="color: black !important;">Edit</a>
+
+
 
                     </li>
                 }

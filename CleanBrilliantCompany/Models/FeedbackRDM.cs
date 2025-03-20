@@ -2,6 +2,7 @@ using System;
 using CleanBrilliantCompany.Interfaces;
 using Microsoft.Data.SqlClient; // Updated to the latest SQL Client library
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -105,15 +106,18 @@ namespace CleanBrilliantCompany.Models
 
     public class FeedbackRepository
     {
-        private readonly string connectionString = "Server=tcp:inf2112.database.windows.net,1433;Initial Catalog=CleanBrilliantCompany;Persist Security Info=False;User ID=teammember;Password=RevacholInsulid141;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        private readonly string _connectionString;
+
+        public FeedbackRepository(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
 
         public int GetDefaultStaffId()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-
-                // Select the first available staffId
                 string query = "SELECT TOP 1 staffId FROM dbo.GeneralStaff ORDER BY staffId ASC";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -125,30 +129,27 @@ namespace CleanBrilliantCompany.Models
                     }
                 }
             }
-
             throw new Exception("No staff members found in the database.");
         }
 
         public void AddFeedback(int staffId, string feedback)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
 
-                // Check if the staffId exists in GeneralStaff table
                 string checkQuery = "SELECT COUNT(*) FROM dbo.GeneralStaff WHERE staffId = @StaffID";
                 using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                 {
                     checkCmd.Parameters.AddWithValue("@StaffID", staffId);
                     int count = (int)checkCmd.ExecuteScalar();
 
-                    if (count == 0) // If staffId does not exist, return without inserting
+                    if (count == 0)
                     {
                         throw new Exception("Invalid staffId. The staff member does not exist.");
                     }
                 }
 
-                // If staffId is valid, insert feedback
                 string query = "INSERT INTO dbo.Feedback (StaffID, FeedbackText, DateSubmitted, Status) VALUES (@StaffID, @FeedbackText, GETDATE(), 'Pending')";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -160,12 +161,11 @@ namespace CleanBrilliantCompany.Models
             }
         }
 
-
         public List<string> GetFeedbackList()
         {
             List<string> feedbackList = new List<string>();
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = "SELECT FeedbackText FROM dbo.Feedback ORDER BY DateSubmitted DESC";
 
@@ -181,13 +181,12 @@ namespace CleanBrilliantCompany.Models
                     }
                 }
             }
-
             return feedbackList;
         }
 
         public void EditFeedback(int feedbackId, string feedback)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = "UPDATE dbo.Feedback SET FeedbackText = @FeedbackText WHERE FeedbackID = @FeedbackID";
 
@@ -202,32 +201,17 @@ namespace CleanBrilliantCompany.Models
             }
         }
 
-        // public void DeleteFeedback(int feedbackId)
-        // {
-        //     using (SqlConnection conn = new SqlConnection(connectionString))
-        //     {
-        //         string query = "DELETE FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
-
-        //         using (SqlCommand cmd = new SqlCommand(query, conn))
-        //         {
-        //             cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
-        //             conn.Open();
-        //             cmd.ExecuteNonQuery();
-        //         }
-        //     }
-        // }
         public List<FeedbackRDM> GetFeedbackWithDetails()
         {
             List<FeedbackRDM> feedbackList = new List<FeedbackRDM>();
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = @"
-                    SELECT f.FeedbackID, s.name AS StaffName, f.FeedbackText, f.Status
-                    FROM dbo.Feedback f
-                    JOIN dbo.Staff s ON f.StaffID = s.staffId
-                    ORDER BY f.DateSubmitted DESC";
+                SELECT f.FeedbackID, s.name AS StaffName, f.FeedbackText, f.Status
+                FROM dbo.Feedback f
+                JOIN dbo.Staff s ON f.StaffID = s.staffId
+                ORDER BY f.DateSubmitted DESC";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -238,11 +222,11 @@ namespace CleanBrilliantCompany.Models
                         {
                             FeedbackRDM feedback = new FeedbackRDM
                             {
-                                StaffName = reader.GetString(1),  // Staff Name
+                                StaffName = reader.GetString(1),
                             };
-                            feedback.SetFeedbackId(reader.GetInt32(0)); // Feedback ID
-                            feedback.SetFeedback(reader.GetString(2));  // Feedback Text
-                            feedback.SetStatus(reader.GetString(3));    // Feedback Status
+                            feedback.SetFeedbackId(reader.GetInt32(0));
+                            feedback.SetFeedback(reader.GetString(2));
+                            feedback.SetStatus(reader.GetString(3));
 
                             feedbackList.Add(feedback);
                         }
@@ -256,7 +240,7 @@ namespace CleanBrilliantCompany.Models
         {
             FeedbackRDM feedback = null;
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = "SELECT FeedbackID, StaffID, FeedbackText, Status FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
 
@@ -282,7 +266,7 @@ namespace CleanBrilliantCompany.Models
 
         public void UpdateFeedback(int feedbackId, string updatedFeedback)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = "UPDATE dbo.Feedback SET FeedbackText = @FeedbackText WHERE FeedbackID = @FeedbackID";
 
@@ -297,11 +281,61 @@ namespace CleanBrilliantCompany.Models
             }
         }
 
+        public void UpdateManagerComment(int feedbackId, string managerComment)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = "UPDATE dbo.Feedback SET ManagerComments = @ManagerComment WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ManagerComment", managerComment);
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateFeedbackStatus(int feedbackId, string status)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = "UPDATE dbo.Feedback SET Status = @Status WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Status", status);
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteFeedback(int feedbackId)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = "DELETE FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public List<FeedbackRDM> GetAllFeedback()
         {
             List<FeedbackRDM> feedbackList = new List<FeedbackRDM>();
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = @"
             SELECT f.FeedbackID, s.name AS StaffName, f.FeedbackText, f.Status, f.ManagerComments
@@ -330,63 +364,6 @@ namespace CleanBrilliantCompany.Models
             }
             return feedbackList;
         }
-
-        // Update manager's comments
-        public void UpdateManagerComment(int feedbackId, string managerComment)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "UPDATE dbo.Feedback SET ManagerComments = @ManagerComment WHERE FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@ManagerComment", managerComment);
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-        // Update feedback status
-        public void UpdateFeedbackStatus(int feedbackId, string status)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "UPDATE dbo.Feedback SET Status = @Status WHERE FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Status", status);
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-
-        // Delete feedback
-        public void DeleteFeedback(int feedbackId)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "DELETE FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-
-
     }
 
     // Feedback Management Implementation
