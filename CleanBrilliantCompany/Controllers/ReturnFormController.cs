@@ -23,7 +23,7 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
 
-		[Route("returns/view/{returnId}")]
+		[Route("returns/view/{itemId}")]
 		public IActionResult DisplayReturnForm(int itemId)
 		{
 			ReturnForm? returnForm = _returnFormControl.getReturnFormById(itemId);

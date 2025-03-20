@@ -40,13 +40,24 @@ namespace CleanBrilliantCompany.Models.Control
 		{
 			ReturnForm? returnForm = _mapper.getDatabaseQueryStatus(_mapper.findByItemId(itemId));
 
-            //Item item = _itemControl.getItemById(itemId).Result;
-            //Dictionary<string, object> itemDict = item.retrieveItemInfo();
+			if (returnForm != null) {
+                Item item = _itemControl.getItemById(itemId).Result;
+                Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
-            //Product product = _itemControl.retrieveProductDetails(productId).Result;
-            //Debug.WriteLine(product);
-            //int manufId = product.ManufacturerId;
-            //string prodName = product.ProductName;
+                int productId = (int)itemDict["ProductId"];
+                Product product = _itemControl.retrieveProductDetails(productId).Result;
+
+                //Debug.WriteLine(product);
+
+                int manufId = product.ManufacturerId;
+                string prodName = product.ProductName;
+
+                returnForm.SetProductId(productId);
+                returnForm.SetProductName(prodName);
+                // TODO: set manuf name 
+				// TODO: set manuf email
+
+            }
 
             return returnForm;
         }
