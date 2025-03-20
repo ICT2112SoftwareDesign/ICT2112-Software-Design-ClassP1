@@ -70,13 +70,37 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        [Route("updateItemStatus")]
-        public async Task<IActionResult> updateItemStatus(int itemStatusId, ItemStatus itemStatus)
+        [Route("updateItemStatusOld")]
+        public async Task<IActionResult> updateItemStatusOld(int itemStatusId, ItemStatus itemStatus)
         {
             Console.WriteLine("ItemID: " + itemStatusId);
             Console.WriteLine("Status: " + itemStatus);
 
-            bool result = await _itemControl.updateItemStatus(itemStatusId, itemStatus);
+            bool result = await _itemControl.updateItemStatusOld(itemStatusId, itemStatus);
+            if (result)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return BadRequest(new { error = "Failed to add item." });
+            }
+        }
+
+        
+        // to test update item status & id (related to iItemUpdate)
+        [HttpPost]
+        [Route("updateItemStatus")]
+        public async Task<IActionResult> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
+        {
+            Console.WriteLine("ItemID: " + itemId);
+            Console.WriteLine("OrderId: " + orderId);
+            Console.WriteLine("reservationId: " + reservationId);
+            Console.WriteLine("transferId: " + transferId);
+            Console.WriteLine("returnId: " + returnId);
+            Console.WriteLine("status: " + status);
+
+            bool result = await _itemControl.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status);
             if (result)
             {
                 return RedirectToAction("Index");
@@ -88,15 +112,26 @@ namespace CleanBrilliantCompany.Controllers
         }
 
 
-        // [HttpPost]
-        // public async Task<IActionResult> searchItem(int itemId)
-        // {
-        //     List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-        //     Console.WriteLine("ITEMID: " + itemId);
-        //     Item item = await _itemControl.getItem(itemId);
-        //     itemsInfo.Add(item.retrieveItemInfo());
-        //     return RedirectToAction("Index", new { itemsInfo = itemsInfo });
-        // }
+        // TESTING FOR IWAREHOUSE METHOD
+        [HttpPost]
+        [Route("getProductQuantityByWarehouse")]
+        public async Task<IActionResult> getProductQuantityByWarehouse(int productId, int warehouseId)
+        {
+            Console.WriteLine("PRODUCT ID: " + productId);
+            Console.WriteLine("Warehouse ID: " + warehouseId);
+
+            int result = await _itemControl.getProductQuantityByWarehouse(productId, warehouseId);
+
+            if (result >= 0) 
+            {
+                Console.WriteLine("QUANTITY: " + result);
+                return RedirectToAction("Index", new { quantity = result });
+            }
+            else
+            {
+                return BadRequest(new { error = "Failed to get quantity" });
+            }
+        }
 
 
     }

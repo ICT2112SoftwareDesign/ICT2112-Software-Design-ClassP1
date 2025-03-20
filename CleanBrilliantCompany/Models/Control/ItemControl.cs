@@ -41,10 +41,16 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
         }
 
-        // for transaction feature, might remove in future
-        public async Task<bool> updateItemStatus(int itemId, ItemStatus status)
+        // METHOD FOR IITEMUPDATE 
+        public async Task<bool> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
         {
-            return await Task.FromResult(_itemMapper.updateItemStatus(itemId, status));
+            return await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
+        }
+
+        // for transaction feature, might remove in future
+        public async Task<bool> updateItemStatusOld(int itemId, ItemStatus status)
+        {
+            return await Task.FromResult(_itemMapper.updateItemStatusOld(itemId, status));
         }
 
 
@@ -60,7 +66,18 @@ namespace CleanBrilliantCompany.Models.Control
             return Task.FromResult(product);
         }
 
+        // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
+        public async Task<Warehouse> getWarehouseDetails(int warehouseId) {
+            return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
+        }
 
+        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId) {
+            return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, warehouseId));
+        }
+
+        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId) {
+            return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
+        }
 
 
     }
