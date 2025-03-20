@@ -6,6 +6,6 @@ namespace CleanBrilliantCompany.Services
 {
     public interface IShippingAgentService
     {
-        Task<List<ShippingAgent>> GetShippingAgentsAsync();
+        Task<List<CleanBrilliantCompany.Models.ShippingAgent>> GetShippingAgentsAsync();
     }
 }

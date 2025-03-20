@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Data;
+using CleanBrilliantCompany.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services; // Ensure services is properly assigned
@@ -18,10 +19,11 @@ shippingAgentDB.FetchShippingAgents();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// In Program.cs or Startup.cs
+services.AddScoped<ShippingAgentDB>();
+services.AddScoped<IShippingAgentService, ShippingAgentService>();
 
 // Register DatabaseService
-builder.Services.AddSingleton<ShippingAgentDB>();
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

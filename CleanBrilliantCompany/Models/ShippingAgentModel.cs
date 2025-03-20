@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+
 
 namespace CleanBrilliantCompany.Models
 {
@@ -8,23 +10,35 @@ namespace CleanBrilliantCompany.Models
     {
         [Key] // Marks this as the primary key
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-incremented ID
+        [Column("shippingAgentId")]
         public int ShippingAgentId { get; set; }
 
         [Required]
         [StringLength(255)] // Adjust length based on your database schema
+        [Column("shippingAgentCompany")]
         public string ShippingAgentCompany { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255)]
+        [Column("shippingAgentMethod")]
         public string ShippingMethod { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255)]
+        [Column("serviceType")]
         public string ServiceType { get; set; } = string.Empty;
     }
 }
 
-public class ShippingAgentViewModel
+namespace CleanBrilliantCompany.Models
 {
-    public List<ShippingAgent> ShippingAgents { get; set; } = new List<ShippingAgent>();
+    public class ShippingAgentViewModel
+    {
+        public List<ShippingAgent> ShippingAgents { get; set; }
+
+        public ShippingAgentViewModel()
+        {
+            ShippingAgents = new List<ShippingAgent>();
+        }
+    }
 }

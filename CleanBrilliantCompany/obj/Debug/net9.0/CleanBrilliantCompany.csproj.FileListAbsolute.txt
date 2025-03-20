@@ -1726,15 +1726,6 @@ c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/obj/Debug/ne
 c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/obj/Debug/net9.0/compressed/qe9dgkjvz6-3voehigyoz.gz
 c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/obj/Debug/net9.0/compressed/459kx6rgwy-vuyk5hsu8t.gz
 c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/obj/Debug/net9.0/compressed/yieken0rvn-w9gruc5uo1.gz
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.csproj.AssemblyReference.cache
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.GeneratedMSBuildEditorConfig.editorconfig
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfoInputs.cache
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfo.cs
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.csproj.CoreCompileInputs.cache
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.MvcApplicationPartsAssemblyInfo.cache
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.RazorAssemblyInfo.cache
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.RazorAssemblyInfo.cs
-/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.sourcelink.json
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/bin/Debug/net9.0/appsettings.Development.json
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/bin/Debug/net9.0/appsettings.json
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/bin/Debug/net9.0/CleanBrilliantCompany.staticwebassets.runtime.json
@@ -1885,6 +1876,15 @@ c:/Users/imman/Github/ICT2112-Software-Design/CleanBrilliantCompany/obj/Debug/ne
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/bin/Debug/net9.0/runtimes/unix/lib/net8.0/System.Data.SqlClient.dll
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/bin/Debug/net9.0/runtimes/win/lib/net8.0/System.Data.SqlClient.dll
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/bin/Debug/net9.0/runtimes/win/lib/net9.0/System.Diagnostics.EventLog.Messages.dll
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.csproj.AssemblyReference.cache
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.GeneratedMSBuildEditorConfig.editorconfig
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfoInputs.cache
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfo.cs
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.csproj.CoreCompileInputs.cache
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.MvcApplicationPartsAssemblyInfo.cache
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.RazorAssemblyInfo.cache
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.RazorAssemblyInfo.cs
+/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.sourcelink.json
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/Views/Shared/_Layout.cshtml.rz.scp.css
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/bundle/CleanBrilliantCompany.styles.css
 /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/Debug/net9.0/scopedcss/projectbundle/CleanBrilliantCompany.bundle.scp.css
