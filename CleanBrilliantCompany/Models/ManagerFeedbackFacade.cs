@@ -1,34 +1,36 @@
-namespace CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interfaces;
-// Facade class for Managing Feedback
-public class ManageFeedbackFacade
+
+namespace CleanBrilliantCompany.Models
 {
-    private readonly IFeedbackRetrieval feedbackRetrieval;
-    private readonly IFeedbackManagement feedbackManagement;
-
-    public ManageFeedbackFacade(IFeedbackRetrieval feedbackRetrieval, IFeedbackManagement feedbackManagement)
+    public class ManageFeedbackFacade
     {
-        this.feedbackRetrieval = feedbackRetrieval;
-        this.feedbackManagement = feedbackManagement;
-    }
+        private readonly IFeedbackRetrieval _feedbackRetrieval;
+        private readonly IFeedbackManagement _feedbackManagement;
 
-    public string GetFeedbackById(int feedbackId)
-    {
-        return feedbackRetrieval.GetFeedbackById(feedbackId);
-    }
+        public ManageFeedbackFacade(IFeedbackRetrieval feedbackRetrieval, IFeedbackManagement feedbackManagement)
+        {
+            _feedbackRetrieval = feedbackRetrieval;
+            _feedbackManagement = feedbackManagement;
+        }
 
-    public List<string> GetAllFeedback()
-    {
-        return feedbackRetrieval.GetAllFeedback();
-    }
+        public List<FeedbackRDM> GetAllFeedback()
+        {
+            return _feedbackRetrieval.GetAllFeedback();
+        }
 
-    public void DeleteFeedback()
-    {
-        feedbackManagement.DeleteFeedback();
-    }
+        public void UpdateManagerComment(int feedbackId, string managerComment)
+        {
+            _feedbackManagement.UpdateManagerComment(feedbackId, managerComment);
+        }
 
-    public bool ResolveFeedback(int feedbackId)
-    {
-        return feedbackManagement.ResolveFeedback(feedbackId);
+        public void UpdateFeedbackStatus(int feedbackId, string status)
+        {
+            _feedbackManagement.UpdateFeedbackStatus(feedbackId, status);
+        }
+
+        public void DeleteFeedback(int feedbackId)
+        {
+            _feedbackManagement.DeleteFeedback(feedbackId);
+        }
     }
 }

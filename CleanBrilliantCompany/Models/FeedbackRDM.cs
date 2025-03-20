@@ -9,98 +9,20 @@ namespace CleanBrilliantCompany.Models
 
     public class FeedbackRDM
     {
-
-        // Private fields
-        private int feedbackId;
-        private int staffId;
-        private string status;
-        private DateTime dateSubmitted;
-        private string feedback;
-        private string managerComments;
-
+        // ✅ Use public properties instead of private fields with setters
+        public int FeedbackId { get; set; }
+        public int StaffId { get; set; }
         public string StaffName { get; set; }
+        public string Feedback { get; set; }
+        public string Status { get; set; }
+        public string ManagerComments { get; set; }
+        public DateTime DateSubmitted { get; set; }
 
-        // Public getter and setter methods
-        public int GetFeedbackId()
-        {
-            return feedbackId;
-        }
-
-        public void SetFeedbackId(int id)
-        {
-            feedbackId = id;
-        }
-
-        public string GetStatus()
-        {
-            return status;
-        }
-
-        public void SetStatus(string status)
-        {
-            this.status = status;
-        }
-
-        public DateTime GetDateSubmitted()
-        {
-            return dateSubmitted;
-        }
-
-        public void SetDateSubmitted(DateTime dateSubmitted)
-        {
-            this.dateSubmitted = dateSubmitted;
-        }
-
-        public string GetFeedback()
-        {
-            return feedback;
-        }
-
-        public void SetFeedback(string feedback)
-        {
-            this.feedback = feedback;
-        }
-
-        public string GetManagerComments()
-        {
-            return managerComments;
-        }
-
-        public void SetManagerComments(string managerComments)
-        {
-            this.managerComments = managerComments;
-        }
-
-        public object FeedbackDetails(string field, object value)
-        {
-            switch (field.ToLower())
-            {
-                case "feedbackid":
-                    feedbackId = Convert.ToInt32(value);
-                    return feedbackId;
-                case "staffid":
-                    staffId = Convert.ToInt32(value);
-                    return staffId;
-                case "status":
-                    status = value.ToString();
-                    return status;
-                case "datesubmitted":
-                    dateSubmitted = Convert.ToDateTime(value);
-                    return dateSubmitted;
-                case "feedback":
-                    feedback = value.ToString();
-                    return feedback;
-                case "managercomments":
-                    managerComments = value.ToString();
-                    return managerComments;
-                default:
-                    return null;
-            }
-        }
-
+        // ✅ Override ToString for debugging purposes
         public override string ToString()
         {
-            return $"FeedbackRDM [feedbackId={feedbackId}, staffId={staffId}, staffName={StaffName}, status={status}, dateSubmitted={dateSubmitted}, feedback={feedback}, managerComments={managerComments}]";
+            return $"FeedbackId: {FeedbackId}, StaffId: {StaffId}, StaffName: {StaffName}, " +
+                   $"Feedback: {Feedback}, Status: {Status}, ManagerComments: {ManagerComments}, DateSubmitted: {DateSubmitted}";
         }
     }
 
@@ -208,10 +130,11 @@ namespace CleanBrilliantCompany.Models
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = @"
-                SELECT f.FeedbackID, s.name AS StaffName, f.FeedbackText, f.Status
-                FROM dbo.Feedback f
-                JOIN dbo.Staff s ON f.StaffID = s.staffId
-                ORDER BY f.DateSubmitted DESC";
+            SELECT f.FeedbackID, f.StaffID, s.name AS StaffName, f.FeedbackText, 
+                   f.Status, ISNULL(f.ManagerComments, '') AS ManagerComments, f.DateSubmitted
+            FROM dbo.Feedback f
+            JOIN dbo.Staff s ON f.StaffID = s.staffId
+            ORDER BY f.DateSubmitted DESC";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -222,11 +145,14 @@ namespace CleanBrilliantCompany.Models
                         {
                             FeedbackRDM feedback = new FeedbackRDM
                             {
-                                StaffName = reader.GetString(1),
+                                FeedbackId = reader.GetInt32(0),  // ✅ Feedback ID
+                                StaffId = reader.GetInt32(1),     // ✅ Staff ID
+                                StaffName = reader.GetString(2),  // ✅ Staff Name
+                                Feedback = reader.GetString(3),   // ✅ Feedback Text
+                                Status = reader.GetString(4),     // ✅ Status
+                                ManagerComments = reader.GetString(5), // ✅ Manager Comments (handle NULL)
+                                DateSubmitted = reader.GetDateTime(6) // ✅ Date Submitted
                             };
-                            feedback.SetFeedbackId(reader.GetInt32(0));
-                            feedback.SetFeedback(reader.GetString(2));
-                            feedback.SetStatus(reader.GetString(3));
 
                             feedbackList.Add(feedback);
                         }
@@ -236,13 +162,19 @@ namespace CleanBrilliantCompany.Models
             return feedbackList;
         }
 
+
         public FeedbackRDM GetFeedbackById(int feedbackId)
         {
             FeedbackRDM feedback = null;
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "SELECT FeedbackID, StaffID, FeedbackText, Status FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
+                string query = @"
+            SELECT f.FeedbackID, f.StaffID, s.name AS StaffName, f.FeedbackText, f.Status, 
+                   ISNULL(f.ManagerComments, '') AS ManagerComments, f.DateSubmitted
+            FROM dbo.Feedback f
+            JOIN dbo.Staff s ON f.StaffID = s.staffId
+            WHERE f.FeedbackID = @FeedbackID";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -253,16 +185,24 @@ namespace CleanBrilliantCompany.Models
                     {
                         if (reader.Read())
                         {
-                            feedback = new FeedbackRDM();
-                            feedback.SetFeedbackId(reader.GetInt32(0));
-                            feedback.SetFeedback(reader.GetString(2));
-                            feedback.SetStatus(reader.GetString(3));
+                            feedback = new FeedbackRDM
+                            {
+                                FeedbackId = reader.GetInt32(0),  // ✅ Feedback ID
+                                StaffId = reader.GetInt32(1),     // ✅ Staff ID
+                                StaffName = reader.GetString(2),  // ✅ Staff Name
+                                Feedback = reader.GetString(3),   // ✅ Feedback Text
+                                Status = reader.GetString(4),     // ✅ Status
+                                ManagerComments = reader.GetString(5), // ✅ Manager Comments (Handle NULL)
+                                DateSubmitted = reader.GetDateTime(6) // ✅ Date Submitted
+                            };
                         }
                     }
                 }
             }
             return feedback;
         }
+
+
 
         public void UpdateFeedback(int feedbackId, string updatedFeedback)
         {
@@ -338,7 +278,8 @@ namespace CleanBrilliantCompany.Models
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = @"
-            SELECT f.FeedbackID, s.name AS StaffName, f.FeedbackText, f.Status, f.ManagerComments
+            SELECT f.FeedbackID, f.StaffID, s.name AS StaffName, f.FeedbackText, f.Status, 
+                   ISNULL(f.ManagerComments, '') AS ManagerComments, f.DateSubmitted
             FROM dbo.Feedback f
             JOIN dbo.Staff s ON f.StaffID = s.staffId
             ORDER BY f.DateSubmitted DESC";
@@ -350,12 +291,16 @@ namespace CleanBrilliantCompany.Models
                     {
                         while (reader.Read())
                         {
-                            FeedbackRDM feedback = new FeedbackRDM();
-                            feedback.SetFeedbackId(reader.GetInt32(0));
-                            feedback.StaffName = reader.GetString(1);
-                            feedback.SetFeedback(reader.GetString(2));
-                            feedback.SetStatus(reader.GetString(3));
-                            feedback.SetManagerComments(reader.IsDBNull(4) ? "" : reader.GetString(4));
+                            FeedbackRDM feedback = new FeedbackRDM
+                            {
+                                FeedbackId = reader.GetInt32(0),  // ✅ Feedback ID
+                                StaffId = reader.GetInt32(1),     // ✅ Staff ID
+                                StaffName = reader.GetString(2),  // ✅ Staff Name
+                                Feedback = reader.GetString(3),   // ✅ Feedback Text
+                                Status = reader.GetString(4),     // ✅ Status
+                                ManagerComments = reader.GetString(5), // ✅ Manager Comments (Handles NULL values)
+                                DateSubmitted = reader.GetDateTime(6) // ✅ Date Submitted
+                            };
 
                             feedbackList.Add(feedback);
                         }
@@ -364,54 +309,60 @@ namespace CleanBrilliantCompany.Models
             }
             return feedbackList;
         }
+
     }
 
     // Feedback Management Implementation
     public class FeedbackManagement : IFeedbackManagement
     {
-        private readonly FeedbackRepository repository;
+        private readonly FeedbackRepository _repository;
 
-        public FeedbackManagement(FeedbackRepository repo)
+        public FeedbackManagement(FeedbackRepository repository)
         {
-            this.repository = repo;
+            _repository = repository;
         }
 
-        public void DeleteFeedback()
+        public void UpdateManagerComment(int feedbackId, string managerComment)
         {
-            var feedbackList = repository.GetFeedbackList();
-            if (feedbackList.Count > 0)
-                feedbackList.RemoveAt(0);
+            _repository.UpdateManagerComment(feedbackId, managerComment);
         }
 
-        public bool ResolveFeedback(int feedbackId)
+        public void UpdateFeedbackStatus(int feedbackId, string status)
         {
-            var feedbackList = repository.GetFeedbackList();
-            return feedbackId < feedbackList.Count;
+            _repository.UpdateFeedbackStatus(feedbackId, status);
+        }
+
+        public void DeleteFeedback(int feedbackId)
+        {
+            _repository.DeleteFeedback(feedbackId);
         }
     }
+
 
 
     // Feedback Retrieval Implementation
     public class FeedbackRetrieval : IFeedbackRetrieval
     {
-        private readonly FeedbackRepository repository;
+        private readonly FeedbackRepository _repository;
 
-        public FeedbackRetrieval(FeedbackRepository repo)
+        public FeedbackRetrieval(FeedbackRepository repository)
         {
-            this.repository = repo;
+            _repository = repository;
         }
 
-        public string GetFeedbackById(int feedbackId)
+        public FeedbackRDM GetFeedbackById(int feedbackId)
         {
-            var feedbackList = repository.GetFeedbackList();
-            return feedbackId < feedbackList.Count ? feedbackList[feedbackId] : "Feedback Not Found";
+            var feedback = _repository.GetFeedbackById(feedbackId);
+            return feedback ?? new FeedbackRDM { Feedback = "Feedback Not Found" }; // ✅ Now returns `FeedbackRDM`
         }
 
-        public List<string> GetAllFeedback()
+        // ✅ Returns List<FeedbackRDM> directly
+        public List<FeedbackRDM> GetAllFeedback()
         {
-            return repository.GetFeedbackList();
+            return _repository.GetAllFeedback();
         }
     }
+
 
     public class FeedbackSubmission : IFeedbackSubmission
     {

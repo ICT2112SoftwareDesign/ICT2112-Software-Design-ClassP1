@@ -1,61 +1,78 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    //[Route("ManagerFeedback")]
-    public class ManagerController : Controller
+    [Route("Manager")]
+    public class ManagerFeedbackController : Controller
     {
-        private readonly FeedbackRepository _repository;
+        private readonly ManageFeedbackFacade _manageFeedbackFacade;
 
-        public ManagerController(FeedbackRepository repository)
+        public ManagerFeedbackController(ManageFeedbackFacade manageFeedbackFacade)
         {
-            _repository = repository;
+            _manageFeedbackFacade = manageFeedbackFacade;
         }
 
-        // Display all feedback for the manager
+        [HttpGet]
+        [Route("")]
+        [Route("Index")]
         public IActionResult Index()
         {
-            List<FeedbackRDM> feedbackList = _repository.GetAllFeedback();
+            var feedbackList = _manageFeedbackFacade.GetAllFeedback();
             return View("ManagerFeedback", feedbackList);
-
         }
 
-        // Save Manager Comment (Handles AJAX request)
         [HttpPost]
+        [Route("SaveComment")]
         public IActionResult SaveComment(int feedbackId, string managerComment)
         {
-            if (string.IsNullOrWhiteSpace(managerComment))
+            try
             {
-                return Json(new { success = false, message = "Comment cannot be empty!" });
+                if (string.IsNullOrWhiteSpace(managerComment))
+                {
+                    TempData["ErrorMessage"] = "Manager comment cannot be empty.";
+                    return RedirectToAction("Index");
+                }
+
+                _manageFeedbackFacade.UpdateManagerComment(feedbackId, managerComment);
+                TempData["SuccessMessage"] = "Comment saved successfully.";
             }
-
-            _repository.UpdateManagerComment(feedbackId, managerComment);
-            return Json(new { success = true, message = "Manager comment added successfully!" });
-        }
-
-        // Resolve Feedback
-        [HttpGet] // Allow GET requests for ResolveFeedback
-        public IActionResult ResolveFeedback(int feedbackId)
-        {
-            if (feedbackId <= 0)
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Invalid feedback ID!";
-                return RedirectToAction("Index");
+                TempData["ErrorMessage"] = ex.Message;
             }
-
-            _repository.UpdateFeedbackStatus(feedbackId, "Resolved");
-            TempData["SuccessMessage"] = "Feedback resolved successfully!";
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [Route("ResolveFeedback")]
+        public IActionResult ResolveFeedback(int feedbackId)
+        {
+            try
+            {
+                _manageFeedbackFacade.UpdateFeedbackStatus(feedbackId, "Resolved");
+                TempData["SuccessMessage"] = "Feedback marked as Resolved.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            return RedirectToAction("Index");
+        }
 
-        // Delete Feedback
+        [HttpPost]
+        [Route("DeleteFeedback")]
         public IActionResult DeleteFeedback(int feedbackId)
         {
-            _repository.DeleteFeedback(feedbackId);
-            TempData["SuccessMessage"] = "Feedback deleted successfully!";
+            try
+            {
+                _manageFeedbackFacade.DeleteFeedback(feedbackId);
+                TempData["SuccessMessage"] = "Feedback deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
             return RedirectToAction("Index");
         }
     }

@@ -1,24 +1,31 @@
-@using CleanBrilliantCompany.Models
-@model FeedbackRDM
+@model CleanBrilliantCompany.Models.FeedbackRDM
 
-@{
-    ViewData["Title"] = "Edit Feedback";
-}
+<h2 class="mb-4">Edit Feedback</h2>
 
-<div class="container mt-4">
-    <h2 class="text-center">Edit Feedback</h2>
+<form method="post" asp-action="EditFeedback">
+    <!-- Hidden field to store Feedback ID -->
+    <input type="hidden" asp-for="FeedbackId" />
 
-    <div class="card p-4 shadow-sm">
-        <form method="post" asp-action="EditFeedback" asp-controller="Feedback">
-            <input type="hidden" name="feedbackId" value="@Model.GetFeedbackId()" />
-
-            <div class="form-group">
-                <label for="updatedFeedback">Your Feedback</label>
-                <textarea class="form-control" id="updatedFeedback" name="updatedFeedback" rows="4" required>@Model.GetFeedback()</textarea>
-            </div>
-
-            <button type="submit" class="btn btn-success mt-2">Save Changes</button>
-            <a href="@Url.Action("Index", "Feedback")" class="btn btn-secondary mt-2">Cancel</a>
-        </form>
+    <div class="mb-3">
+        <label class="form-label" for="feedback">Feedback</label>
+        <textarea class="form-control" asp-for="Feedback" rows="4" required></textarea>
+        <span class="text-danger" asp-validation-for="Feedback"></span>
     </div>
-</div>
+
+    @* <div class="mb-3">
+        <label class="form-label" for="managerComments">Manager Comments</label>
+        <textarea class="form-control" asp-for="ManagerComments" rows="3"></textarea>
+        <span class="text-danger" asp-validation-for="ManagerComments"></span>
+    </div> *@
+
+    <div class="d-flex">
+        <button type="submit" class="btn btn-primary px-4 me-3">Save</button>
+        <a asp-action="Index" class="btn btn-secondary px-4">Cancel</a>
+    </div>
+
+</form>
+
+<!-- Client-Side Validation Support -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -8,12 +8,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Register `FeedbackRepository` as a singleton
-builder.Services.AddSingleton<FeedbackRepository>();
+// Register Database Configuration
+builder.Services.AddScoped<FeedbackRepository>();
 
-// Register `FeedbackSubmission` properly
-builder.Services.AddScoped<FeedbackSubmission>(); // Ensure concrete class is registered
-builder.Services.AddScoped<IFeedbackSubmission, FeedbackSubmission>(); // Register with interface
+// Register Facades
+builder.Services.AddScoped<StaffFeedbackFacade>();
+builder.Services.AddScoped<ManageFeedbackFacade>();
+
+// Register Interfaces and Implementations
+builder.Services.AddScoped<IFeedbackSubmission, FeedbackSubmission>();
+builder.Services.AddScoped<IFeedbackRetrieval, FeedbackRetrieval>();
+builder.Services.AddScoped<IFeedbackManagement, FeedbackManagement>();
 
 builder.Services.AddScoped<ICarbonRepositoryQuery, CarbonFootprintMapper>();
 builder.Services.AddScoped<ICarbonRepositoryStatusQuery, CarbonFootprintRepositoryControl>();

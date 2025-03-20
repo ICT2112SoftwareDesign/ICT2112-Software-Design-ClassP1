@@ -1,30 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Controllers
 {
     public class FeedbackController : Controller
     {
-        private readonly FeedbackRepository _repository;
+        private readonly StaffFeedbackFacade _staffFeedbackFacade;
+        private readonly IFeedbackRetrieval _feedbackRetrieval;
 
-        public FeedbackController(FeedbackRepository repository)
+        public FeedbackController(StaffFeedbackFacade staffFeedbackFacade, IFeedbackRetrieval feedbackRetrieval)
         {
-            _repository = repository;
+            _staffFeedbackFacade = staffFeedbackFacade;
+            _feedbackRetrieval = feedbackRetrieval;
         }
 
         public IActionResult Index()
         {
-            ViewBag.SuccessMessage = TempData["SuccessMessage"] as string;
-            ViewBag.ErrorMessage = TempData["ErrorMessage"] as string;
-
-            TempData.Remove("SuccessMessage"); // Ensure it's cleared after reading
-            TempData.Remove("ErrorMessage");   // Prevents reappearing messages
-
-            List<FeedbackRDM> feedbackList = _repository.GetFeedbackWithDetails();
-            return View("Feedback", feedbackList);
+            var feedbackList = _staffFeedbackFacade.GetAllFeedback(); // Now correctly returning List<FeedbackRDM>
+            return View("Feedback", feedbackList); // ✅ Pass the list to the view
         }
-
 
 
         [HttpPost]
@@ -32,54 +27,53 @@ namespace CleanBrilliantCompany.Controllers
         {
             try
             {
-                if (staffId == null || staffId <= 0)
+                // If staffId is null or less than 1, default it to 1
+                if (staffId == null || staffId < 1)
                 {
-                    staffId = _repository.GetDefaultStaffId();
+                    staffId = 1;
                 }
 
-                _repository.AddFeedback((int)staffId, feedback);
-
-                // Pass a success message using TempData
-                TempData["SuccessMessage"] = "Feedback submitted successfully!";
-
-                return RedirectToAction("Index"); // Redirect to the feedback page
+                _staffFeedbackFacade.AddFeedback(staffId.Value, feedback);
+                TempData["SuccessMessage"] = "Feedback submitted successfully.";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Failed to submit feedback: " + ex.Message;
-                return RedirectToAction("Index"); // Redirect with an error message
+                TempData["ErrorMessage"] = ex.Message;
             }
+            return RedirectToAction("Index");
         }
 
+        // GET: Load the feedback edit page
         [HttpGet]
         public IActionResult EditFeedback(int feedbackId)
         {
-            FeedbackRDM feedback = _repository.GetFeedbackById(feedbackId);
+            var feedback = _feedbackRetrieval.GetFeedbackById(feedbackId);
+
             if (feedback == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Feedback not found.";
+                return RedirectToAction("Index");
             }
 
-            return View("EditFeedback", feedback); // Pass feedback to the edit view
+            // ✅ Ensure the correct model type is passed
+            return View("EditFeedback", feedback);
         }
 
+
+        // POST: Save the edited feedback
         [HttpPost]
-        public IActionResult EditFeedback(int feedbackId, string updatedFeedback)
+        public IActionResult EditFeedback(int feedbackId, string feedback)
         {
             try
             {
-                _repository.UpdateFeedback(feedbackId, updatedFeedback);
-                TempData["SuccessMessage"] = "Feedback updated successfully!";
-                return RedirectToAction("Index");
+                _staffFeedbackFacade.EditFeedback(feedbackId, feedback);
+                TempData["SuccessMessage"] = "Feedback updated successfully.";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Error updating feedback: " + ex.Message;
-                return RedirectToAction("Index");
+                TempData["ErrorMessage"] = ex.Message;
             }
+            return RedirectToAction("Index");
         }
-
-
-
     }
 }

@@ -1,13 +1,9 @@
-using System;
-using CleanBrilliantCompany.Models;
-
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface IFeedbackManagement
     {
-        void DeleteFeedback();
-        bool ResolveFeedback(int feedbackId);
+        void UpdateManagerComment(int feedbackId, string managerComment);
+        void UpdateFeedbackStatus(int feedbackId, string status);
+        void DeleteFeedback(int feedbackId);
     }
-
-    
 }

@@ -1,23 +1,32 @@
 namespace CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interfaces;
+using System.Collections.Generic;
 
 // Facade class for Staff Feedback
 public class StaffFeedbackFacade
 {
-    private readonly IFeedbackSubmission feedbackSubmission;
+    private readonly IFeedbackSubmission _feedbackSubmission;
+    private readonly IFeedbackRetrieval _feedbackRetrieval; // Now retrieves full feedback objects
 
-    public StaffFeedbackFacade(IFeedbackSubmission feedbackSubmission)
+    public StaffFeedbackFacade(IFeedbackSubmission feedbackSubmission, IFeedbackRetrieval feedbackRetrieval)
     {
-        this.feedbackSubmission = feedbackSubmission;
+        _feedbackSubmission = feedbackSubmission;
+        _feedbackRetrieval = feedbackRetrieval;
     }
 
     public void AddFeedback(int staffId, string feedback)
     {
-        feedbackSubmission.AddFeedback(staffId, feedback);
+        _feedbackSubmission.AddFeedback(staffId, feedback);
     }
 
     public void EditFeedback(int feedbackId, string feedback)
     {
-        feedbackSubmission.EditFeedback(feedbackId, feedback);
+        _feedbackSubmission.EditFeedback(feedbackId, feedback);
+    }
+
+    // ✅ Now correctly fetching all feedback details
+    public List<FeedbackRDM> GetAllFeedback()
+    {
+        return _feedbackRetrieval.GetAllFeedback();
     }
 }
