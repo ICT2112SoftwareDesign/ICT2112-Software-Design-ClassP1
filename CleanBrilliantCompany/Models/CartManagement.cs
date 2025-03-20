@@ -20,40 +20,40 @@ namespace CleanBrilliantCompany.Models
         }
 
         // Adds an observer to the list
-        public void AddObserver(ICartObserver observer)
+        public void addObserver(ICartObserver observer)
         {
             observers.Add(observer);
         }
 
         // Removes an observer from the list
-        public void RemoveObserver(ICartObserver observer)
+        public void removeObserver(ICartObserver observer)
         {
             observers.Remove(observer);
         }
 
         // Notifies all observers of a change
-        private void NotifyObservers()
+        private void notifyObservers()
         {
             foreach (var observer in observers)
             {
-                observer.CartUpdated();
+                observer.cartUpdated();
             }
         }
 
          // Adds a product to the cart
-        public bool AddToCart(int customerID, int productId, int quantity)
+        public bool addToCart(int customerID, int productId, int quantity)
         {
             var productDetails = productService.GetProductDetails(productId);
             if (productDetails != null)
             {
                 // Add the product ID and quantity to the in-memory cart (CartRDM)
-                cartRDM.AddProduct(productId, quantity);
+                cartRDM.addProduct(productId, quantity);
 
                 // Update the database with the new cart content
-                var success = cartDatabase.AddCart(customerID, cartRDM.RetrieveProductsInCart());
+                var success = cartDatabase.addCart(customerID, cartRDM.retrieveProductsInCart());
                 if (success)
                 {
-                    NotifyObservers();
+                    notifyObservers();
                 }
                 return success;
             }
@@ -61,14 +61,14 @@ namespace CleanBrilliantCompany.Models
         }
 
          // Updates the quantity of a product in the cart
-        public bool UpdateQuantity(int customerID, int productId, int quantity)
+        public bool updateQuantity(int customerID, int productId, int quantity)
         {
           
 
             // Load the cart from the database into the in-memory cart
-            if (cartDatabase.GetCart(customerID, out var cartData))
+            if (cartDatabase.getCart(customerID, out var cartData))
             {
-                cartRDM.LoadCart(cartData);
+                cartRDM.loadCart(cartData);
             }
             else
             {
@@ -76,30 +76,30 @@ namespace CleanBrilliantCompany.Models
             }
 
             // Check if the product exists in the in-memory cart
-            if (cartRDM.HasProduct(productId))
+            if (cartRDM.hasProduct(productId))
             {
 
                 // Update the in-memory cart
-                cartRDM.UpdateProductQuantity(productId, quantity);
+                cartRDM.updateProductQuantity(productId, quantity);
 
                 // Update the database with the new cart content
-                var success = cartDatabase.UpdateCart(customerID, cartRDM.RetrieveProductsInCart());
+                var success = cartDatabase.updateCart(customerID, cartRDM.retrieveProductsInCart());
                 if (success)
                 {
-                    NotifyObservers();
+                    notifyObservers();
                 }
                 return success;
             }
             return false;
         }
 
-            public bool RemoveFromCart(int customerID, int productId)
+            public bool removeFromCart(int customerID, int productId) 
         {
 
             // Load the cart from the database into the in-memory cart
-            if (cartDatabase.GetCart(customerID, out var cartData))
+            if (cartDatabase.getCart(customerID, out var cartData))
             {
-                cartRDM.LoadCart(cartData);
+                cartRDM.loadCart(cartData);
             }
             else
             {
@@ -107,17 +107,17 @@ namespace CleanBrilliantCompany.Models
             }
 
             // Check if the product exists in the in-memory cart
-            if (cartRDM.HasProduct(productId))
+            if (cartRDM.hasProduct(productId))
             {
 
                 // Remove the product from the in-memory cart
-                cartRDM.RemoveProduct(productId);
+                cartRDM.removeProduct(productId);
 
                 // Update the database with the new cart content
-                var success = cartDatabase.RemoveFromCart(customerID, productId);
+                var success = cartDatabase.removeFromCart(customerID, productId);
                 if (success)
                 {
-                    NotifyObservers();
+                    notifyObservers();
                 }
                 return success;
             }
@@ -125,17 +125,42 @@ namespace CleanBrilliantCompany.Models
             return false;
         }
 
-        // Retrieves the cart for a specific customer
-        public Dictionary<int, int> ViewCart(int customerID)
+        // Retrieves the cart for a specific customer [Check if inside class diagram]
+        public Dictionary<int, int> viewCart(int customerID)
         {
-            if (cartDatabase.GetCart(customerID, out var cartData))
+            if (cartDatabase.getCart(customerID, out var cartData))
             {
-                cartRDM.LoadCart(cartData);
-                return cartRDM.RetrieveProductsInCart();
+                cartRDM.loadCart(cartData);
+                return cartRDM.retrieveProductsInCart();
             }
 
             // Return an empty cart if no data is found
             return new Dictionary<int, int>();
+        }
+
+        // Get product details for the cart [Check if inside class diagram]
+        public Dictionary<int, Dictionary<string, object>> getCartProductDetails(Dictionary<int, int> cart)
+        {
+            var products = new Dictionary<int, Dictionary<string, object>>();
+
+            foreach (var item in cart)
+            {
+                var product = productService.GetProductDetails(item.Key);
+                if (product != null)
+                {
+                    var productDetails = product.GetProductDetails();
+                    productDetails["CostPrice"] = Convert.ToDecimal(productDetails["CostPrice"]); // Ensure CostPrice is decimal
+                    products[item.Key] = productDetails;
+                }
+            }
+
+            return products;
+        }
+
+        // Calculate the total cost of the cart [Check if inside class diagram]
+        public decimal calculateCartTotal(Dictionary<int, int> cart, Dictionary<int, Dictionary<string, object>> products)
+        {
+            return cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
         }
     }
 }

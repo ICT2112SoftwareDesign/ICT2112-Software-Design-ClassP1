@@ -15,7 +15,7 @@ namespace CleanBrilliantCompany.Mappers
            _connectionString = connectionString;
         }
 
-        public bool AddCart(int customerID, Dictionary<int, int> productsInCart)
+        public bool addCart(int customerID, Dictionary<int, int> productsInCart)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -92,7 +92,7 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
-        public bool UpdateCart(int customerID, Dictionary<int, int> productsInCart)
+        public bool updateCart(int customerID, Dictionary<int, int> productsInCart)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -146,7 +146,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public bool HasProductInCart(int customerID, int productId)
+        public bool hasProductInCart(int customerID, int productId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -163,7 +163,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public bool RemoveFromCart(int customerID, int productId)
+        public bool removeFromCart(int customerID, int productId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -223,7 +223,7 @@ namespace CleanBrilliantCompany.Mappers
         }
         
          // New method to get the cart for a specific customer
-       public bool GetCart(int customerID, out Dictionary<int, int> cartData)
+       public bool getCart(int customerID, out Dictionary<int, int> cartData)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {

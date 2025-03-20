@@ -2,6 +2,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface ICartObserver
     {
-        void CartUpdated();
+        void cartUpdated();
     }
 }
