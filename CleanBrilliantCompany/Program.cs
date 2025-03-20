@@ -22,6 +22,7 @@ builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<ChatbotService>();
 builder.Services.AddScoped<IProduct, ProductsRepository>(); 
 builder.Services.AddTransient<OrderManagement>();
+builder.Services.AddTransient<WishlistManagement>();
 
 var app = builder.Build();
 
