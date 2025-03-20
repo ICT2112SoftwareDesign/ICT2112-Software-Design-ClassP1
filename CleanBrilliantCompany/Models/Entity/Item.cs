@@ -29,24 +29,6 @@ namespace CleanBrilliantCompany.Models.Entity
 
         private List<IObserver> _observers = new List<IObserver>();
 
-        // public ItemStatus StatusChange
-        // {
-        //     get => ItemStatus;
-
-        // // }
-        // public string StatusChange
-        // {
-        //     get => ItemStatus.ToString(); //convert the enum into string
-        //     set 
-        //     {
-        //         if (ItemStatus.ToString() != value)
-        //         {
-        //             // ItemStatus = value;
-        //             Notify();
-        //         }
-        //     }
-        // }
-
         // Constructor to initialize the private fields
         public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
                      ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId)
@@ -166,12 +148,12 @@ namespace CleanBrilliantCompany.Models.Entity
             {
 
                 // Debug: Print out the dictionary right before passing it to observer
-                Console.WriteLine("===================================");
-                foreach (var kvp in items)
-                {
-                    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-                }
-                Console.WriteLine("===================================");
+                //Console.WriteLine("===================================");
+                //foreach (var kvp in items)
+                //{
+                    //Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+                //}
+                //Console.WriteLine("===================================");
 
                 observer.Update(items); // Pass the Item object instead of a string
             }
@@ -181,8 +163,6 @@ namespace CleanBrilliantCompany.Models.Entity
         public void UpdateStatus(ItemStatus newStatus)
         {
             Console.WriteLine("Entered UpdateStatus");
-            Console.WriteLine($"Current ItemStatus: {ItemStatus}");
-            Console.WriteLine($"New ItemStatus: {newStatus}");
 
             ItemStatus = newStatus;
 

@@ -36,6 +36,47 @@ namespace CleanBrilliantCompany.Models.Mapper
             }
         }
 
+        //Fields to pass in: transactionDate, adjustmentType, productId, itemId, staffId
+        //IMPT: If i need the result of this method later --> CHANGE THE RETURN TYPE TO BOOL
+        public void createTransaction(DateTime dateTime, string adjustmentType, int productId, int itemId, int staffId)
+        {
+            Console.WriteLine("Item is reserved --> Called createTransaction in transactionMapper");
+            // using (SqlConnection connection = new SqlConnection(_connectionString))
+            // {
+            //     connection.Open();
+
+            //     string insertQuery = @"
+            //     INSERT INTO dbo.ItemTransaction (transactionDateTime, )
+            //     "
+            // }
+        }
+        // public bool createTransaction(DateTime dateTime, ItemStatus adjustmentType, int productId, int itemId, int staffId)
+        // {
+        //     Console.WriteLine("Called createTransaction in transactionMapper");
+        //     // using (SqlConnection connection = new SqlConnection(_connectionString))
+        //     // {
+        //     //     connection.Open();
+
+        //     //     string insertQuery = @"
+        //     // INSERT INTO dbo.Item (productId, salePrice, batchCode, warehouseId, itemStatus) 
+        //     // VALUES (@productId, @salePrice, @batchCode, @warehouseId, @itemStatus);";
+
+        //     //     using (SqlCommand command = new SqlCommand(insertQuery, connection))
+        //     //     {
+        //     //         command.Parameters.AddWithValue("@itemId", itemId);
+        //     //         command.Parameters.AddWithValue("@productId", productId);
+        //     //         command.Parameters.AddWithValue("@salePrice", salePrice);
+        //     //         command.Parameters.AddWithValue("@batchCode", batchCode);
+        //     //         command.Parameters.AddWithValue("@warehouseId", warehouseId);
+        //     //         command.Parameters.AddWithValue("@itemStatus", status.ToString());
+
+        //     //         int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+        //     //         return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
+        //     //     }
+        //     // }
+        // }
+
+
         public List<Transaction> getAllTransactions()
         {
             List<Transaction> transactions = new List<Transaction>();

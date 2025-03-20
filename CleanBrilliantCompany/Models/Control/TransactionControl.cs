@@ -15,30 +15,56 @@ namespace CleanBrilliantCompany.Models.Control
 
     {
 
+        private readonly TransactionMapper _transactionMapper;
+
         //When any changes to status are detected here --> the necessary code will run here 
         //TODO: Add record into database
         public void Update(Dictionary<string, object> itemInfo)
         {
-            var itemId = itemInfo["ItemId"];
+            int itemId = Convert.ToInt32(itemInfo["ItemId"]);
             var itemStatus = itemInfo["ItemStatus"];
+            int productId = Convert.ToInt32(itemInfo["ProductId"]);
+            Console.WriteLine("ProductId: " + productId.GetType());
             var productName = itemInfo["ProductName"];
-            Console.WriteLine("ab" + productName);
+            var transactionDate = DateTime.Now;
+            var staffId = 1;
 
+            Console.WriteLine("Product Name Received in Update (TC): " + productName);
 
-            Console.WriteLine($"[Notification] Sending alert: Item Status Changed");
-            // Console.WriteLine($"Item type: {itemId}");
-            // Console.WriteLine($"Item status: {itemStatus}");
-            // Console.WriteLine($"Product name: {productName}");
+            var stringStatus = itemStatus.ToString();
 
-            foreach (var kvp in itemInfo)
+            // Simple switch case based on itemStatus
+            switch (itemStatus)
             {
-                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-            }
+                case ItemStatus.Available:
+                    Console.WriteLine($"Item {itemId}: {productName} is {itemStatus}.");
+                    break;
 
+                case ItemStatus.Reserved:
+                    Console.WriteLine($"Item {itemId}: {productName} is Reserved.");
+                    stringStatus = "Reserved";
+                    //Add Logic here to add into ItemTransaction table
+                    //Fields to pass in: transactionDate, adjustmentType, productId, itemId, staffId
+                    _transactionMapper.createTransaction(transactionDate, stringStatus, productId, itemId, staffId);
+                    break;
+
+                case ItemStatus.Sold:
+                    Console.WriteLine($"Item {itemId}: {productName} is Sold.");
+                    break;
+
+                case ItemStatus.Refunded:
+                    Console.WriteLine($"Item {itemId}: {productName} is Refunded.");
+                    break;
+
+                default:
+                    Console.WriteLine($"Item {itemId}: {productName} status is unknown.");
+                    break;
+            }
 
         }
 
-        private readonly TransactionMapper _transactionMapper;
+
+
         //For now, getTransactions are set to void returns as they are not used for further processing
         //If needed, will update return type to List<Transaction>
         // Constructor that takes the connection string
