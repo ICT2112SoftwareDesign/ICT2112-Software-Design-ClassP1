@@ -1,6 +1,6 @@
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface iReviewDatabase
+    public interface IReviewDatabase
     {
         bool addReview(int customerId, string review, int rating);
         bool updateReview(int customerId, string review, int rating);

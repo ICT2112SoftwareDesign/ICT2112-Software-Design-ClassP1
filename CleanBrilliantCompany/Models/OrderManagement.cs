@@ -60,9 +60,14 @@ namespace CleanBrilliantCompany.Models
             return true;
         }
 
-        public List<Product> GetAllProducts()
+        public List<Product> getAllProducts()
         {
-            return _product.GetAllProducts();
+            return _product.getAllProducts();
+        }
+
+        public Product GetOneProduct(int productId)
+        {
+            return _product.GetProductDetails(productId);
         }
     }
 

@@ -13,19 +13,26 @@ namespace CleanBrilliantCompany.Controllers
         private readonly SupportManagement _supportManagement;
         private readonly ChatbotService _chatbotService;
         private readonly OrderManagement _orderManagement;
+        private readonly CartManagement _cartManagement;
+        private readonly IProduct _productService;
+
 
         public CustomerPageController(
             ILogger<CustomerPageController> logger, 
             CustomerManagement customerManagement, 
             SupportManagement supportManagement,
             ChatbotService chatbotService,
-            OrderManagement orderManagement) 
+            OrderManagement orderManagement,
+            CartManagement cartManagement,
+            IProduct productService) 
         {
             _logger = logger;
             _customerManagement = customerManagement;
             _supportManagement = supportManagement;
             _chatbotService = chatbotService;
             _orderManagement = orderManagement;
+            _cartManagement = cartManagement;
+            _productService = productService;
         }
 
         public IActionResult CustomerDetails()
@@ -51,7 +58,6 @@ namespace CleanBrilliantCompany.Controllers
 
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }
-
         [HttpPost]
         public IActionResult updateCustomerDetails(string username, string email, string address)
         {
@@ -197,15 +203,171 @@ namespace CleanBrilliantCompany.Controllers
             
         // }
 
-        public IActionResult GetAllProducts()
+        public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
         {
-            var products = _orderManagement.GetAllProducts();
-            var productDetails = new List<Dictionary<string, object>>();
-            foreach (var product in products)
+            List<Product> products = _productService.getAllProducts();
+            
+            // Apply search filter
+            if (!string.IsNullOrEmpty(query))
             {
-                productDetails.Add(product.GetProductDetails());
+                products = products.Where(p => p.GetProductDetails()["ProductName"].ToString().Contains(query, System.StringComparison.OrdinalIgnoreCase)).ToList();
             }
+            
+            // Apply category filter
+            if (filters != "All")
+            {
+                products = products.Where(p => p.GetProductDetails()["Category"].ToString() == filters).ToList();
+            }
+            
+            // Apply sorting
+            products = sortOrder == "asc" 
+                ? products.OrderBy(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList() 
+                : products.OrderByDescending(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList();
+            
+            // Convert to a list of dictionaries
+            var productDetails = products.Select(product => product.GetProductDetails()).ToList();
+            
             return View("~/Views/Products/Index.cshtml", productDetails);
+        }
+
+        public List<Product> FilterProducts(List<string> categories)
+        {
+            var allProducts = _productService.getAllProducts();
+            return allProducts.FindAll(p => categories.Contains(p.GetProductDetails()["Category"].ToString()));
+        }
+        
+
+
+        // CART INPUT CONTROLLER METHODS
+
+        [HttpPost]
+        public IActionResult AddToCart(int productId, int quantity)
+        {
+            // Retrieve customer ID from the session using the correct key
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            if (quantity <= 0)
+            {
+                TempData["Error"] = "Quantity must be greater than zero.";
+                return RedirectToAction("GetAllProducts"); // Redirect back to the product page
+            }
+
+            var success = _cartManagement.AddToCart(customerID.Value, productId, quantity);
+            if (success)
+            {
+                TempData["Success"] = "Product added to cart successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to add product to cart.";
+            }
+
+            return RedirectToAction("GetAllProducts"); // Redirect back to the product page
+        }
+
+        [HttpPost]
+        public IActionResult UpdateQuantity(int productId, int quantity)
+        {
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            if (quantity <= 0)
+            {
+                TempData["Error"] = "Quantity must be greater than zero.";
+                return RedirectToAction("ViewCart");
+            }
+
+            var success = _cartManagement.UpdateQuantity(customerID.Value, productId, quantity);
+            if (success)
+            {
+                TempData["Success"] = "Cart updated successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to update cart.";
+            }
+
+            return RedirectToAction("ViewCart");
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromCart(int productId)
+        {
+            // Retrieve customer ID from the session
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Call the RemoveFromCart method in CartManagement
+            var success = _cartManagement.RemoveFromCart(customerID.Value, productId);
+            if (success)
+            {
+                TempData["Success"] = "Product removed from cart successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to remove product from cart.";
+            }
+
+            return RedirectToAction("ViewCart"); // Redirect back to the cart page
+        }
+        
+
+        public IActionResult ViewCart()
+        {
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            var cartData = _cartManagement.ViewCart(customerID.Value);
+            var products = new Dictionary<int, Dictionary<string, object>>();
+
+        foreach (var item in cartData)
+        {
+            var product = _productService.GetProductDetails(item.Key);
+            if (product != null)
+            {
+                var productDetails = product.GetProductDetails();
+                productDetails["CostPrice"] = Convert.ToDecimal(productDetails["CostPrice"]); // Ensure CostPrice is decimal
+                products[item.Key] = productDetails;
+            }
+        }
+
+        ViewBag.Products = products;
+        ViewBag.Total = cartData.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
+
+            return View("~/Views/Cart/Cart.cshtml", cartData);
+        }
+
+        
+        
+
+        public IActionResult ProductDetail(int productId)
+        {
+            var product = _orderManagement.GetOneProduct(productId);
+
+            if (product == null)
+            {
+                return Content("Product not found");
+            }
+
+            var productDetails = product.GetProductDetails();
+            return View("~/Views/Products/ProductDetails.cshtml", productDetails);
         }
     }
 }
