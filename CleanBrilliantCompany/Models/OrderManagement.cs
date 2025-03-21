@@ -5,7 +5,7 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class OrderManagement
+    public class OrderManagement : IOrder
     {
     
         private readonly IOrderDatabase _orderDatabase;
@@ -64,7 +64,7 @@ namespace CleanBrilliantCompany.Models
                 };
 
                 // Save the order to the database
-                return _orderDatabase.InsertOrder(order);
+                return _orderDatabase.insertOrder(order);
             }
             catch (Exception ex)
             {
@@ -88,6 +88,44 @@ namespace CleanBrilliantCompany.Models
             }
 
             return serviceCosts[serviceType];
+        }
+
+        // Implementation of getOrderDetails
+        public OrderRDM getOrderDetails(int orderId)
+        {
+            return _orderDatabase.getOrderById(orderId);
+        }
+
+        // Implementation of getOrderHistory
+        public List<OrderRDM> getOrderHistory(int customerId)
+        {
+            return _orderDatabase.getOrdersByCustomerId(customerId);
+        }
+
+        // Implementation of cancelOrder
+        public bool cancelOrder(int orderId)
+        {
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null || order.Status == "Cancelled")
+            {
+                return false;
+            }
+
+            order.Status = "Cancelled";
+            return _orderDatabase.updateOrder(order);
+        }
+
+        // Implementation of updateOrderStatus
+        public bool updateOrderStatus(int orderId, string status)
+        {
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null)
+            {
+                return false;
+            }
+
+            order.Status = status;
+            return _orderDatabase.updateOrder(order);
         }
     }
 }

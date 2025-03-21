@@ -1,0 +1,22 @@
+@model List<CleanBrilliantCompany.Models.OrderRDM>
+
+<div class="container mt-5">
+    <h3 class="font-weight-bold">To Receive Orders</h3>
+    <ul class="list-group">
+        @if (Model != null && Model.Count > 0)
+        {
+            @foreach (var order in Model)
+            {
+                <li class="list-group-item">
+                    <strong>Order ID:</strong> @order.OrderID <br />
+                    <strong>Total:</strong> @order.OrderTotal <br />
+                    <strong>Date:</strong> @order.OrderDate.ToShortDateString()
+                </li>
+            }
+        }
+        else
+        {
+            <li class="list-group-item">No orders to receive.</li>
+        }
+    </ul>
+</div>

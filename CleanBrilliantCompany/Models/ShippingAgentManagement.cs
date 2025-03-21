@@ -1,12 +1,18 @@
 using System.Collections.Generic;
 using CleanBrilliantCompany.Interfaces;
 
-// Assuming Service is an enum, define it here if it doesn't exist elsewhere
 public enum Service
 {
-    Standard,
+    OneDay,
+    ThreeDays,
+    SevenDays
 }
 
+public enum ShippingMethod
+{
+    Air,
+    Truck
+}
 
 namespace CleanBrilliantCompany.Models
 {
@@ -14,22 +20,19 @@ namespace CleanBrilliantCompany.Models
     {
         public List<string> getShippingAgentList(Service shippingType)
         {
-            // Example implementation
-            var agents = new List<string>();
+            // All shipping agents are available for all service types
+            return new List<string> { "DHL", "ParcelForce" };
+        }
 
-            switch (shippingType)
-            {
-                case Service.Standard:
-                    agents.Add("DHL");
-                    agents.Add("ParcelForce");
-                    break;
-                // Add more cases as needed
-                default:
-                    agents.Add("Default Shipping Agent");
-                    break;
-            }
 
-            return agents;
+        public List<string> getServiceTypes()
+        {
+            return new List<string> { "1 Day", "3 Days", "7 Days" };
+        }
+
+        public List<string> getShippingMethods()
+        {
+            return new List<string> { "Air", "Truck" };
         }
     }
 }

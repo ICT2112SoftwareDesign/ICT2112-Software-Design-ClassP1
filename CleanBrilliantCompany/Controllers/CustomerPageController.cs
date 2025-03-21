@@ -60,8 +60,9 @@ namespace CleanBrilliantCompany.Controllers
             else
             {
                 ViewBag.Message = "No customer details available.";
-            }
+            } 
 
+    
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }
         [HttpPost]
@@ -361,30 +362,29 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // Load product details into ViewBag
-            var products = new Dictionary<int, Dictionary<string, object>>();
-            foreach (var item in cart)
-            {
-                var product = _productService.GetProductDetails(item.Key);
-                if (product != null)
-                {
-                    products[item.Key] = product.GetProductDetails();
-                }
-            }
+            var products = _cartManagement.getCartProductDetails(cart);
 
-             // Default shipping type
-            var selectedShippingType = Service.Standard;
+             // Fetch available shipping options
+            var defaultServiceType = Service.OneDay; // Default to "1 Day" service
+            var serviceTypes = _shippingAgents.getServiceTypes();
+            var shippingMethods = _shippingAgents.getShippingMethods();
+            var shippingAgents = _shippingAgents.getShippingAgentList(defaultServiceType);
 
-            // Fetch available shipping agents for the default shipping type
-            var shippingAgents = _shippingAgents.getShippingAgentList(selectedShippingType);
+             // Calculate the cart total
+            decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
 
-            // Pass Data to the view
+            // Pass data to the view
             ViewBag.Products = products; // Product details (e.g., name, price)
             ViewBag.Cart = cart;         // Cart items (product ID and quantity)
-            ViewBag.CartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
+            ViewBag.CartTotal = cartTotal;
             ViewBag.CustomerAddress = customerAddress; // Pass the customer's address (empty if missing)
-            ViewBag.SelectedDeliveryType = "7 Days"; // Default to "One Week Delivery"
-            ViewBag.ShippingAgents = shippingAgents; // Available shipping agents
-
+            ViewBag.ServiceTypes = serviceTypes;       // Available service types
+            ViewBag.ShippingMethods = shippingMethods; // Available shipping methods
+            ViewBag.ShippingAgents = shippingAgents;   // Available shipping agents
+            ViewBag.SelectedServiceType = "1 Day"; // Default value
+            ViewBag.SelectedShippingType = "Air"; // Default value
+            ViewBag.SelectedShippingAgent = "DHL"; // Default value
+            
             return View("~/Views/Order/Checkout.cshtml");
         }
 
@@ -432,24 +432,23 @@ namespace CleanBrilliantCompany.Controllers
             // Calculate the cart total
             decimal cartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
             
-            // Fetch available shipping agents for the selected shipping type
-            var selectedShippingType = Enum.TryParse<Service>(shippingType, out var shippingTypeEnum)
-                ? shippingTypeEnum
-                : Service.Standard;
-
-            var shippingAgents = _shippingAgents.getShippingAgentList(selectedShippingType);
+            // Fetch available shipping options
+            var selectedServiceEnum = Enum.TryParse<Service>(serviceType, out var serviceEnum) ? serviceEnum : Service.OneDay;
+            var shippingAgents = _shippingAgents.getShippingAgentList(selectedServiceEnum);
 
             // Pass updated values back to the view
             ViewBag.Products = products;
             ViewBag.Cart = cart;
             ViewBag.CartTotal = cartTotal;
             ViewBag.CustomerAddress = deliveryAddress;
+            ViewBag.ServiceTypes = _shippingAgents.getServiceTypes();
+            ViewBag.ShippingMethods = _shippingAgents.getShippingMethods();
+            ViewBag.ShippingAgents = shippingAgents;
             ViewBag.SelectedServiceType = serviceType;
             ViewBag.SelectedShippingType = shippingType;
             ViewBag.SelectedShippingAgent = shippingAgent;
             ViewBag.ShippingFee = shippingFee;
-            ViewBag.FinalTotal = cartTotal + shippingFee; // Update the final total
-            ViewBag.ShippingAgents = shippingAgents;
+            ViewBag.FinalTotal = cartTotal + shippingFee;
 
             return View("~/Views/Order/Checkout.cshtml");
         }   
@@ -480,7 +479,7 @@ namespace CleanBrilliantCompany.Controllers
             // Calculate the cart total
             decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
 
-        // Calculate the shipping fee
+            // Calculate the shipping fee
             decimal shippingFee;
             try
             {
@@ -501,9 +500,9 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.OrderDetails = new Dictionary<string, string>
             {
                 { "DeliveryAddress", deliveryAddress },
-                { "ServiceType", serviceType },
-                { "ShippingType", shippingType },
-                { "ShippingAgent", shippingAgent }
+                { "serviceType", serviceType },
+                { "shippingType", shippingType },
+                { "shippingAgent", shippingAgent }
             };
 
             // Pass the cart to the Payment view
@@ -576,6 +575,59 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Order/OrderConfirmation.cshtml");
         }
 
+        [HttpGet]
+        public IActionResult ToShip()
+        {
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Fetch orders with status "Pending"
+            var orders = _orderManagement.getOrderHistory(customerId.Value)
+                                        .Where(o => o.Status == "Pending")
+                                        .ToList();
+
+            return View("~/Views/Order/ToShip.cshtml", orders);
+        }
+
+        [HttpGet]
+        public IActionResult ToReceive()
+        {
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Fetch orders with status "Shipped"
+            var orders = _orderManagement.getOrderHistory(customerId.Value)
+                                        .Where(o => o.Status == "Shipped")
+                                        .ToList();
+
+            return View("~/Views/Order/ToReceive.cshtml", orders);
+        }
+
+        [HttpGet]
+        public IActionResult Completed()
+        {
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Fetch orders with status "Completed"
+            var orders = _orderManagement.getOrderHistory(customerId.Value)
+                                        .Where(o => o.Status == "Completed")
+                                        .ToList();
+
+            return View("~/Views/Order/Completed.cshtml", orders);
+        }
 
 
 

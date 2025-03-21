@@ -17,9 +17,9 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Delivery Address:</strong> @orderDetails["DeliveryAddress"]</p>
-                    <p><strong>Service Type:</strong> @orderDetails["ServiceType"]</p>
-                    <p><strong>Shipping Type:</strong> @orderDetails["ShippingType"]</p>
-                    <p><strong>Shipping Agent:</strong> @orderDetails["ShippingAgent"]</p>
+                    <p><strong>Service Type:</strong> @orderDetails["serviceType"]</p>
+                    <p><strong>Shipping Type:</strong> @orderDetails["shippingType"]</p>
+                    <p><strong>Shipping Agent:</strong> @orderDetails["shippingAgent"]</p>
                     <hr>
                     <p><strong>Products Total:</strong> @cartTotal.ToString("C")</p>
                     <p><strong>Shipping Fee:</strong> @shippingFee.ToString("C")</p>
@@ -37,9 +37,9 @@
                     <form asp-action="processPayment" method="post">
                         <!-- Hidden fields to pass order details -->
                         <input type="hidden" name="deliveryAddress" value="@orderDetails["DeliveryAddress"]" />
-                        <input type="hidden" name="serviceType" value="@orderDetails["ServiceType"]" />
-                        <input type="hidden" name="shippingType" value="@orderDetails["ShippingType"]" />
-                        <input type="hidden" name="shippingAgent" value="@orderDetails["ShippingAgent"]" />
+                        <input type="hidden" name="serviceType" value="@orderDetails["serviceType"]" />
+                        <input type="hidden" name="shippingType" value="@orderDetails["shippingType"]" />
+                        <input type="hidden" name="shippingAgent" value="@orderDetails["shippingAgent"]" />
                         
                         <div class="form-group">
                             <label for="cardName">Cardholder Name</label>
