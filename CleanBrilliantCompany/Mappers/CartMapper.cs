@@ -244,6 +244,35 @@ namespace CleanBrilliantCompany.Mappers
 
             cartData = new Dictionary<int, int>();
             return false;
-        }
+                }
+        public bool clearCart(int customerID)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // Delete the cart row for the customer
+                        var query = "DELETE FROM dbo.Cart WHERE customerID = @CustomerID";
+                        var command = new SqlCommand(query, connection, transaction);
+                        command.Parameters.AddWithValue("@CustomerID", customerID);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+                        transaction.Commit();
+
+                        Console.WriteLine($"Cart deleted for CustomerID: {customerID}. Rows affected: {rowsAffected}");
+                        return rowsAffected > 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error in clearCart: {ex.Message}");
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+            }
+        }          
     }
 }

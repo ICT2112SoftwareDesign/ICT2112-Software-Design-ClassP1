@@ -331,26 +331,12 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Cart/Cart.cshtml", cartData);
         }
 
-        
-        
-
-        public IActionResult ProductDetail(int productId)
-        {
-            var product = _orderManagement.GetOneProduct(productId);
-
-            if (product == null)
-            {
-                return Content("Product not found");
-            }
-
-            var productDetails = product.GetProductDetails();
-            return View("~/Views/Products/ProductDetails.cshtml", productDetails);
-        }
 
 
 
         // ORDER INPUT CONTROLLER METHODS
 
+        // Display checkout Page (After pressing Checkout button)
         [HttpGet]
         public IActionResult Checkout()
         {
@@ -391,6 +377,7 @@ namespace CleanBrilliantCompany.Controllers
             // Fetch available shipping agents for the default shipping type
             var shippingAgents = _shippingAgents.getShippingAgentList(selectedShippingType);
 
+            // Pass Data to the view
             ViewBag.Products = products; // Product details (e.g., name, price)
             ViewBag.Cart = cart;         // Cart items (product ID and quantity)
             ViewBag.CartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
@@ -400,6 +387,8 @@ namespace CleanBrilliantCompany.Controllers
 
             return View("~/Views/Order/Checkout.cshtml");
         }
+
+        // Process the checkout form (Update shipping details)
         [HttpPost]
         public IActionResult Checkout(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
         {
@@ -474,28 +463,108 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.ShippingAgents = shippingAgents;
 
             return View("~/Views/Order/Checkout.cshtml");
-        }
+        }   
 
-       [HttpPost]
-        public IActionResult PlaceOrder(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
+
+        [HttpPost]
+        public IActionResult placeOrder(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
         {
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            // Retrieve customer ID from the session
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
-                return RedirectToAction("Login", "BeforeLoginPage");
+                return RedirectToAction("login", "BeforeLoginPage");
             }
 
-            var cart = _cartManagement.viewCart(customerID.Value);
+            // Retrieve the cart from the database
+            var cart = _cartManagement.viewCart(customerId.Value);
             if (cart == null || !cart.Any())
             {
                 TempData["Error"] = "Your cart is empty.";
-                return RedirectToAction("GetAllProducts", "CustomerPage");
+                return RedirectToAction("getAllProducts", "CustomerPage");
             }
 
-            // Delegate the order creation to OrderManagement
-            var orderID = _orderManagement.createOrderFromCart(
-                customerID.Value,
+            // Calculate the cart total
+            decimal cartTotal = 0;
+            var products = new Dictionary<int, Dictionary<string, object>>();
+            foreach (var item in cart)
+            {
+                var product = _productService.GetProductDetails(item.Key);
+                if (product != null)
+                {
+                    var productDetails = product.GetProductDetails();
+                    products[item.Key] = productDetails;
+                    cartTotal += Convert.ToDecimal(productDetails["CostPrice"]) * item.Value;
+                }
+            }
+
+            // Calculate the shipping fee
+            var serviceCosts = new Dictionary<string, decimal>
+            {
+                { "1 Day", 10.00m },
+                { "3 Days", 5.00m },
+                { "7 Days", 0.00m }
+            };
+
+            if (!serviceCosts.ContainsKey(serviceType))
+            {
+                TempData["Error"] = "Invalid service type selected.";
+                return RedirectToAction("checkout");
+            }
+
+            decimal shippingFee = serviceCosts[serviceType];
+            decimal finalTotal = cartTotal + shippingFee;
+
+            // Pass order details to the Payment view
+            ViewBag.CartTotal = cartTotal;
+            ViewBag.ShippingFee = shippingFee;
+            ViewBag.FinalTotal = finalTotal;
+            ViewBag.OrderDetails = new Dictionary<string, string>
+            {
+                { "DeliveryAddress", deliveryAddress },
+                { "ServiceType", serviceType },
+                { "ShippingType", shippingType },
+                { "ShippingAgent", shippingAgent }
+            };
+
+            // Pass the cart to the Payment view
+            ViewBag.Cart = cart;
+
+            return View("~/Views/Order/Payment.cshtml");
+        }
+
+       [HttpPost]
+        public IActionResult processPayment(string deliveryAddress, string serviceType, string shippingType, string shippingAgent, 
+                                            string cardName, string cardNumber, string expiryDate, string cvv)
+        {
+            // Retrieve customer ID from the session
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("login", "BeforeLoginPage");
+            }
+
+            // Retrieve the cart from the database
+            var cart = _cartManagement.viewCart(customerId.Value);
+            if (cart == null || !cart.Any())
+            {
+                TempData["Error"] = "Your cart is empty.";
+                return RedirectToAction("getAllProducts", "CustomerPage");
+            }
+
+            // Validate payment details (mocked for now)
+            if (string.IsNullOrWhiteSpace(cardName) || string.IsNullOrWhiteSpace(cardNumber) || 
+                string.IsNullOrWhiteSpace(expiryDate) || string.IsNullOrWhiteSpace(cvv))
+            {
+                TempData["Error"] = "Please enter all payment details.";
+                return RedirectToAction("placeOrder", new { deliveryAddress, serviceType, shippingType, shippingAgent });
+            }
+
+            // Create the order
+            var orderId = _orderManagement.createOrderFromCart(
+                customerId.Value,
                 deliveryAddress,
                 serviceType,
                 shippingType,
@@ -503,17 +572,61 @@ namespace CleanBrilliantCompany.Controllers
                 cart
             );
 
-            if (orderID > 0)
+            if (orderId > 0)
             {
-                TempData["Success"] = "Order placed successfully!";
-                _cartManagement.clearCart(customerID.Value); // Clear the cart after placing the order
-                return RedirectToAction("OrderConfirmation", new { orderID });
+                // Clear the cart after the order is successfully created
+                var cartCleared = _cartManagement.clearCart(customerId.Value);
+                if (!cartCleared)
+                {
+                    TempData["Error"] = "Order placed, but failed to clear the cart. Please contact support.";
+                }
+
+                TempData["Success"] = "Payment processed and order placed successfully!";
+                return RedirectToAction("orderConfirmation", new { orderId });
             }
             else
             {
-                TempData["Error"] = "Failed to place the order. Please try again.";
-                return RedirectToAction("Checkout");
+                TempData["Error"] = "Failed to process payment. Please try again.";
+                return RedirectToAction("placeOrder", new { deliveryAddress, serviceType, shippingType, shippingAgent });
             }
         }
+
+        [HttpGet]
+        public IActionResult orderConfirmation(int orderId)
+        {
+            ViewBag.OrderId = orderId;
+            return View("~/Views/Order/OrderConfirmation.cshtml");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

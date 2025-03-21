@@ -9,5 +9,6 @@ namespace CleanBrilliantCompany.Interfaces
         bool removeFromCart(int customerID, int productId); // Updated method name
         bool getCart(int customerID, out Dictionary<int, int> productsInCart); 
         bool hasProductInCart(int customerID, int productId);
+        bool clearCart(int customerID);
     }
 }

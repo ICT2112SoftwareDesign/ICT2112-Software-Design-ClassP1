@@ -125,6 +125,20 @@ namespace CleanBrilliantCompany.Models
             return false;
         }
 
+        // Clears the cart after Order is placed [Not in Class Diagram]
+        public bool clearCart(int customerID)
+        {
+            // Call the clearCart method in the cartDatabase (CartMapper)
+            var success = cartDatabase.clearCart(customerID);
+            if (success)
+            {
+                // Notify observers that the cart has been cleared
+                notifyObservers();
+            }
+            return success;
+        }
+
+
         // Retrieves the cart for a specific customer [Check if inside class diagram]
         public Dictionary<int, int> viewCart(int customerID)
         {
