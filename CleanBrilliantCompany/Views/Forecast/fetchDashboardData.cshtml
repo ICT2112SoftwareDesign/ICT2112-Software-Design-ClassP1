@@ -2,119 +2,530 @@
 
 @{
     ViewData["Title"] = "Forecast Dashboard";
-}
-
-<h1>📊 Forecast Dashboard</h1>
-
-<div class="dashboard-container">
-    <h3>🆔 Dashboard Details</h3>
-    <p><strong>Dashboard ID:</strong> @Model.GetDashBoardID()</p>
-    <p><strong>Generated Date:</strong> @Model.GetGeneratedDate().ToString("yyyy-MM-dd HH:mm")</p>
-    <p><strong>Validity Duration:</strong> @Model.GetValidityDuration() days</p>
-
-    <h3>🗓 Date Range</h3>
-    <p><strong>Start Date:</strong> @Model.GetStartDate().ToString("yyyy-MM-dd")</p>
-    <p><strong>End Date:</strong> @Model.GetEndDate().ToString("yyyy-MM-dd")</p>
-
-    <h3>📈 Forecast Metrics</h3>
-    <p><strong>Metrics Count:</strong> @Model.GetMetrics().Count</p>
-
-    <table class="forecast-table">
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th>Forecasted Demand</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var metric in Model.GetMetrics())
-            {
-                <tr>
-                    <td>@metric.getProductId()</td>
-                    <td class="product-name">@metric.getProductName()</td>
-                    <td>@metric.getForecastedStock()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-<hr>
-
-@{
-    // Calculate the allowed minimum forecast month (one month after today's date)
     var minAllowed = DateTime.Today.AddMonths(1);
     var minValue = minAllowed.ToString("yyyy-MM"); // Format as "yyyy-MM"
 }
 
-<hr>
-<h3>🔄 Generate New Forecast</h3>
+<!DOCTYPE html>
+<html lang="en">
 
-<form method="post" action="/forecast/generateForecast">
-    <label>Forecast Type:</label>
-    <select name="type" id="forecastType" onchange="toggleSlider()">
-        <option value="stock">Stock Forecast</option>
-        <option value="price">PriceScenario Forecast</option>
-    </select>
+<head>
 
-    <div id="sliderContainer" style="display: none; margin-top: 10px;">
-        <label>Price Adjustment (%):</label>
-        <input type="range" id="priceSlider" name="priceAdjustment" min="-100" max="100" value="0" step="1" oninput="updateSliderValue()">
-        <span id="sliderValue">0%</span>
-    </div>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <label>Select Forecast Month:</label>
-    <input type="month" name="month" min="@minValue" required />
+    <title>CleanBrilliantCompany Dashboard</title>
 
-    <button type="submit">Generate Forecast</button>
-</form>
+    <!-- Custom fonts for this template (optional) -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Bootstrap CSS (using Bootstrap 5 CDN for Cost Dashboard) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for SB Admin 2 template -->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
 
-<style>
-    .forecast-table {
+    <style>
+        /* ✅ Put your custom styling here!*/
+        .container,
+        .container-sm,
+        .container-md,
+        .container-lg,
+        .container-xl {
+        max-width: 100vw !important; /* Adjust the value based on your requirement */
+        }
+        /* Container styles */
+        .dashboard-container {
+        margin: 20px 0;
+        }
+        /* Table styles */
+        .forecast-table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 10px;
-    }
+        }
 
         .forecast-table th, .forecast-table td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        text-align: left;
         }
 
         .forecast-table thead {
-            background-color: #f8f9fa;
-            font-weight: bold;
+        background-color: #f2f2f2;
         }
 
-    .product-name {
-        text-align: left; /* Align product name to the left */
-        padding-left: 20px;
-    }
-
-    /* Style for the slider */
-    #priceSlider {
-        width: 100%;
-        margin-top: 5px;
-    }
-</style>
-
-<script>
-    function toggleSlider() {
-        var forecastType = document.getElementById("forecastType").value;
-        var sliderContainer = document.getElementById("sliderContainer");
-
-        if (forecastType === "price") {
-            sliderContainer.style.display = "block";
-        } else {
-            sliderContainer.style.display = "none";
+        .forecast-table tbody tr:nth-child(odd) {
+        background-color: #fafafa;
         }
-    }
 
-    function updateSliderValue() {
-        var slider = document.getElementById("priceSlider");
-        var sliderValue = document.getElementById("sliderValue");
-        sliderValue.textContent = slider.value + "%";
-    }
-</script>
+        .forecast-table tbody tr:hover {
+        background-color: #f1f1f1;
+        }
+        /* Form styles */
+        /* form { */
+        /*     margin-top: 20px; */
+        /*     padding: 10px; */
+        /*     border: 1px solid #ddd; */
+        /*     background-color: #f9f9f9; */
+        /* } */
+
+        /*     form label { */
+        /*         display: block; */
+        /*         margin-top: 10px; */
+        /*     } */
+
+        /*     form input, form select, form button { */
+        /*         margin-top: 5px; */
+        /*         padding: 6px; */
+        /*         width: 100%; */
+        /*         box-sizing: border-box; */
+        /*     } */
+
+        #priceForecastOptions {
+        margin-top: 10px;
+        }
+    </style>
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="d-flex flex-column">
+                    <div class="sidebar-brand-icon rotate-n-0">
+                        <i class="fas fa-cloud fa-sm" style="font-size:1rem"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-3">AdvanceAnalytics</div>
+                </div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Section A
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Link A</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Section A2</h6>
+                        <a class="collapse-item" href="#">Link A</a>
+                        <a class="collapse-item" href="#">Link B</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>Link B</span>
+                    </a>
+                </li>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Section B
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Pages</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Login Screens:</h6>
+                        <a class="collapse-item" href="login.html">Login</a>
+                        <a class="collapse-item" href="register.html">Register</a>
+                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Other Pages:</h6>
+                        <a class="collapse-item" href="404.html">404 Page</a>
+                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Link A</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Link B</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                            aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                            aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                        placeholder="Search for..." aria-label="Search"
+                                        aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                            aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Spending Alert: We've noticed unusually high spending for your account.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">7</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                            aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
+                                        alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div class="font-weight-bold">
+                                        <div class="text-truncate">
+                                            Hi there! I am wondering if you can help me with a
+                                            problem I've been having.
+                                        </div>
+                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Anthony Jones</span>
+                                <img class="img-profile rounded-circle"
+                                src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                            aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+                <!-- PLACE YOUR CONTNENT HERE -->
+                <!------------------------------------------------------------------------------------>
+                <!------------------------------------------------------------------------------------>
+                <!------------------------------------------------------------------------------------>
+                <!-- Begin Page Content -->
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                    @* <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> *@
+                    @*     <i class="fas fa-download fa-sm text-white-50"></i> Generate Report *@
+                    @* </a> *@
+                </div>
+
+
+                <div class="container-fluid">
+                    <h4 class="mb-3">🔄 Generate New Forecast</h4>
+
+                    <form method="post" action="/Forecast/GenerateForecast" class="row g-3 align-items-center">
+                        <input value="stock" name="type" type="hidden" />
+
+                        <div class="col-auto">
+                            <label for="monthInput" class="col-form-label">Select Forecast Month:</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="month" id="monthInput" name="month" min="@minValue" required class="form-control" />
+                        </div>
+
+                        <!-- This div toggles only when "price" forecast is selected -->
+                        <div id="priceForecastOptions" class="col-auto" style="display:none;">
+                            <label for="priceAdjustment" class="col-form-label">Price Adjustment Factor:</label>
+                            <input type="number" id="priceAdjustment" name="priceAdjustment" value="0" class="form-control" />
+                        </div>
+
+                        <div class="col-auto">
+                            <button class="btn btn-primary" type="submit">Generate Forecast</button>
+                        </div>
+                    </form>
+                    <hr />
+
+
+                   
+
+                    <div class="container-fluid mb-5">
+                        <h4 class="mb-3">Dashboard Info</h4>
+                        <div class="dashboard-info">
+                            <p><strong>Dashboard ID:</strong> @Model.GetDashBoardID()</p>
+                            <p><strong>Generated Date:</strong> @Model.GetGeneratedDate()</p>
+                            <p><strong>Start Date:</strong> @Model.GetStartDate()</p>
+                            <p><strong>End Date:</strong> @Model.GetEndDate()</p>
+                        </div>
+                    </div>
+                    @* <h4>💲 Apply Price Adjustment</h4> *@
+                    
+
+                    <!-- Metrics container wrapped in a div for partial updates -->
+                    <div id="metrics-container">
+                        @Html.Partial("_MetricsPartial", Model)
+                    </div>
+
+                    <hr />
+
+
+                    
+                </div>
+                <!-- End Page Content -->
+                <!------------------------------------------------------------------------------------>
+                <!------------------------------------------------------------------------------------>
+                <!------------------------------------------------------------------------------------>
+
+
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; CBC 2025</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery, Bootstrap, and SB Admin 2 scripts -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+
+
+    <!-- Chart.js and Bootstrap 5 scripts for Cost Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Your Custom JS Script Here -->
+    <script>
+        // Toggle additional options for price forecast.
+        document.getElementById("forecastType").addEventListener("change", function() {
+            var priceOptions = document.getElementById("priceForecastOptions");
+            priceOptions.style.display = (this.value === "price") ? "block" : "none";
+        });
+        
+        // Update display immediately while dragging the slider.
+        // function updateSliderDisplay(slider) {
+        //     var productId = slider.dataset.productId;
+        //     var value = slider.value;
+        //     document.getElementById("slider-value-" + productId).textContent = value + "%";
+        // }
+
+        
+
+        
+    </script>
+</body>
+
+</html>

@@ -58,6 +58,33 @@ namespace CleanBrilliantCompany.Services.Forecast
             return Math.Max(1 - (priceChange * sensitivityFactor), 0);
         }
 
+        public ForecastMetrics generateScenarioPricing(Dictionary<int, int> aggregatedSales, int productId, string productName, int adjustmentFactor)
+        {
+           
 
+            int minSales = aggregatedSales.Values.Min();
+            int maxSales = aggregatedSales.Values.Max();
+
+            // Get past sales for the given product
+            int pastSales = aggregatedSales.TryGetValue(productId, out int totalSales) ? totalSales : 0;
+
+            // Normalize past sales between 0 and 1
+            double normalizedSales = (maxSales == minSales) ? 1 : (pastSales - minSales) / (double)(maxSales - minSales);
+
+            // Calculate base multiplier (scales between 0.5 - 1.5)
+            double baseMultiplier = 0.5 + (normalizedSales * 1);
+
+            // Apply inverse price impact multiplier (high price reduces demand)
+            double priceMultiplier = GetPriceImpactMultiplier(normalizedSales, adjustmentFactor);
+
+            // Compute predicted demand
+            int predictedDemand = (int)Math.Round(pastSales * baseMultiplier * priceMultiplier);
+
+            // Ensure predicted demand is not negative
+            predictedDemand = Math.Max(predictedDemand, 0);
+
+            // Return forecast for a single product
+            return new PriceScenarioForecast(productId, predictedDemand, productName, adjustmentFactor, 0);
+        }
     }
 }

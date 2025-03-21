@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using CleanBrilliantCompany.Interfaces.Forecast;
 
 namespace CleanBrilliantCompany.Models.Forecast
@@ -7,16 +8,30 @@ namespace CleanBrilliantCompany.Models.Forecast
     public class ForecastDashboard
     {
         // Properties
+        [JsonInclude]
+
         private int DashBoardID { get; set; }
+        [JsonInclude]
+
         private DateTime StartDate { get; set; }
+        [JsonInclude]
+
         private DateTime EndDate { get; set; }
+        [JsonInclude]
+
         private DateTime GeneratedDate { get; set; }
+        [JsonInclude]
+
         private int ValidityDuration { get; set; }
+        [JsonInclude]
+
         private List<ForecastMetrics> MetricsList { get; set; } = new List<ForecastMetrics>();
 
 
-    
 
+        public ForecastDashboard()
+        {
+        }
         public ForecastDashboard(DateTime startDate, DateTime endDate, List<ForecastMetrics> metricsList)
         {
             this.StartDate= startDate;
@@ -82,7 +97,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             return MetricsList;
         }
 
-        private void SetMetrics(List<ForecastMetrics> metrics)
+        public void SetMetrics(List<ForecastMetrics> metrics)
         {
             MetricsList = metrics;
         }

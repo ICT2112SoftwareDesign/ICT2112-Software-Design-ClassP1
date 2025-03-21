@@ -6,10 +6,24 @@ using CleanBrilliantCompany.Models.Forecast;
 using CleanBrilliantCompany.Services;
 using CleanBrilliantCompany.Services.Forecast;
 using CleanBrilliantCompany.Services.Notification;
+using DotNetEnv;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);// Load .env file
+Env.Load();
 
+// Get the connection string from environment variables
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new Exception("SQL_CONNECTION_STRING is not set. Please check your .env file.");
+}
+
+// Add DbContext (if using Entity Framework Core)
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
 // Register services
 builder.Services.AddScoped<IStockPredictionService, SimpleStockPrediction>();
 builder.Services.AddScoped<IScenarioPricingService, SimplePriceScenario>();
@@ -24,6 +38,8 @@ builder.Services.AddScoped<IForecastingFacade, ForecastFacade>();
 builder.Services.AddScoped<ForecastControl>();
 builder.Services.AddScoped<ISales>(); //TODO to be modified with actual ISale
 builder.Services.AddScoped<IProduct>(); //TODO to be modified with actual ISale
+builder.Services.AddSession();
+builder.Services.AddMemoryCache();
 
 
 
@@ -43,12 +59,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}")
+app.MapControllerRoute(name: "default", pattern: "{controller=Forecast}/{action=fetchDashboardData}/{id?}")
     .WithStaticAssets();
 
 app.Run();

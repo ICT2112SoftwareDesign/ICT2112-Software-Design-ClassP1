@@ -52,6 +52,16 @@ namespace CleanBrilliantCompany.Services
             //TODO: Implement this method
 
         }
+        public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth,int productId, String productName, int priceAdjustment)
+        {
+            var salesList = _isale.getSalesData(selectedMonth.Month);
+            Dictionary<int, int>  aggregatedSales = aggregateResults(salesList);
+
+            ForecastMetrics metric = _scenarioPricingService.generateScenarioPricing( aggregatedSales,  productId,  productName, priceAdjustment);
+            return metric;
+            //TODO: Implement this method
+
+        }
 
         private void getSalesAndProduct(DateTime selectedMonth, out List<ProductDTO> productList, out Dictionary<int, int> aggregatedSales)
         {

@@ -39,6 +39,23 @@ namespace CleanBrilliantCompany.Models.Forecast
                 _ => new List<ForecastMetrics>(), // Default to empty if type is invalid
             };
             this.dashboard = new ForecastDashboard(startDate, endDate, metricList);
+
+            return this.dashboard;
+        }
+
+        public ForecastDashboard updateProductPriceAdjustment(int productId, String productName, int priceAdjustment,ForecastDashboard existingDashboard)
+        {
+
+            ForecastMetrics newMetric = forecastingFacade.updateProductPriceAdjustment(existingDashboard.GetStartDate(),productId, productName, priceAdjustment);
+            List<ForecastMetrics> oldMetrics = existingDashboard.GetMetrics();
+            List<ForecastMetrics> updatedMetrics = existingDashboard.GetMetrics()
+            .Where(metric => metric.getProductId() != productId) // Remove the old metric
+            .ToList();
+
+            updatedMetrics.Add(newMetric);
+            updatedMetrics = updatedMetrics.OrderBy(metric => metric.getProductId()).ToList();
+
+            this.dashboard = new ForecastDashboard(existingDashboard.GetStartDate(), existingDashboard.GetEndDate(), updatedMetrics);
             return this.dashboard;
         }
         public ForecastDashboard GetDashboard()

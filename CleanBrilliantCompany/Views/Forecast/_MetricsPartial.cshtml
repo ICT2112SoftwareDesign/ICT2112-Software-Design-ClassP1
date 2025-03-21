@@ -1,0 +1,208 @@
+﻿@model CleanBrilliantCompany.Models.Forecast.ForecastDashboard
+@{
+    Layout = null;
+}
+
+<style>
+    /* Dashboard container styling */
+    .dashboard-container {
+        margin: 20px 0;
+    }
+    /* Table styling */
+    .forecast-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+        .forecast-table th, .forecast-table td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .forecast-table thead {
+            background-color: #f2f2f2;
+        }
+
+        .forecast-table tbody tr:nth-child(odd) {
+            background-color: #fafafa;
+        }
+
+        .forecast-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+    /* Fixed width for the percentage display */
+    .fixed-percentage {
+        display: inline-block;
+        width: 50px; /* Adjust width as needed */
+        text-align: right;
+    }
+</style>
+
+<div class="dashboard-container">
+    <h4>📈 Forecast Metrics</h4>
+    <p><strong>Metrics Count:</strong> @Model.GetMetrics().Count</p>
+    <!-- Price Adjustment Slider (outside the form) -->
+    @{
+        var metrics = Model.GetMetrics() ?? new List<CleanBrilliantCompany.Models.Forecast.ForecastMetrics>();
+        var adjustmentFactors = metrics.Select(metric =>
+        {
+            int adjustmentFactor = 0;
+            if (metric is CleanBrilliantCompany.Models.Forecast.PriceScenarioForecast priceScenario)
+            {
+                adjustmentFactor = priceScenario.getAdjustmentFactor();
+            }
+            return adjustmentFactor;
+        }).ToList();
+
+        bool allSameAndNonZero = adjustmentFactors.Any() &&
+        adjustmentFactors.Distinct().Count() == 1 &&
+        adjustmentFactors.First() != 0;
+        var sliderValue = allSameAndNonZero ? adjustmentFactors.First() : 0;
+
+    }
+    <div class="slider-container">
+        <label>Price Adjustment Factor:</label>
+        <input type="range" id="priceAdjustmentSlider" name="priceAdjustment" min="-90" max="100" step="1" value="@sliderValue"
+               oninput="updateGlobalSliderDisplay(this)" onchange="generateDashboardFromSlider(this)" />
+        @{
+            if (allSameAndNonZero)
+            {
+                <span id="slider-display">@adjustmentFactors.First() % </span>
+            }
+            else
+            {
+                <span id="slider-display">0%</span>
+            }
+        }
+        <input type="hidden" id="forecastMonth" value="@Model.GetStartDate().ToString("yyyy-MM")" />
+    </div>
+    <table class="forecast-table">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Forecasted Demand</th>
+                <th>Price Adjustment (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var metric in Model.GetMetrics() ?? new List<CleanBrilliantCompany.Models.Forecast.ForecastMetrics>())
+            {
+                var adjustmentFactor = 0;
+                if (metric is CleanBrilliantCompany.Models.Forecast.PriceScenarioForecast priceScenario)
+                {
+                    adjustmentFactor = priceScenario.getAdjustmentFactor();
+                }
+                <tr>
+                    <td>@metric.getProductId()</td>
+                    <td class="product-name">@metric.getProductName()</td>
+                    <td>@metric.getForecastedStock()</td>
+                    <td>
+                        <input type="range"
+                               id="slider-@metric.getProductId()"
+                               class="price-slider"
+                               data-product-id="@metric.getProductId()"
+                               data-product-name="@metric.getProductName()"
+                               min="-90" max="100" value="@adjustmentFactor"
+                               oninput="updateSliderDisplay(this)"
+                               onchange="updateSliderValue(this)">
+                        <span id="slider-value-@metric.getProductId()" class="fixed-percentage">@adjustmentFactor%</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Update the displayed percentage immediately as the slider moves.
+    function updateSliderDisplay(slider) {
+        var productId = slider.dataset.productId;
+        var value = slider.value;
+        document.getElementById("slider-value-" + productId).textContent = value + "%";
+    }
+
+    // When slider change is complete, update the server and refresh the page.
+    function updateSliderValue(slider) {
+        var productId = slider.dataset.productId;
+        var productName = slider.dataset.productName;
+        var value = slider.value;
+
+        fetch(`/Forecast/UpdatePriceAdjustment?productId=${productId}&productName=${encodeURIComponent(productName)}&priceAdjustment=${value}`, {
+            method: "POST"
+        })
+        .then(response => response.text())
+        .then(html => {
+            // Refresh the full page with the updated HTML returned from the server.
+            document.getElementById("metrics-container").innerHTML = html; // Update only the relevant section
+
+        })
+        .catch(error => console.error("Error updating price:", error));
+    }
+        function updateGlobalSliderDisplay(slider) {
+            document.getElementById("slider-display").textContent = slider.value + "%";
+        }
+        // When slider stops updating (change event), call the server and update the metrics partial view.
+        function updateSliderValue(slider) {
+            var productId = slider.dataset.productId;
+            var productName = slider.dataset.productName;
+            var value = slider.value;
+
+            fetch(`/Forecast/UpdatePriceAdjustment?productId=${productId}&productName=${encodeURIComponent(productName)}&priceAdjustment=${value}`, {
+                method: "POST"
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Replace only the metrics container's HTML with the new partial view HTML.
+                document.getElementById("metrics-container").innerHTML = html;
+            })
+            .catch(error => console.error("Error updating price:", error));
+        }
+
+            // When the slider value changes, call the same GenerateForecast endpoint.
+                function generateDashboardFromSlider(slider) {
+            var priceAdjustment = slider.value;
+            var forecastMonthElement = document.getElementById("forecastMonth");
+            if (!forecastMonthElement) {
+                console.error("Forecast month element not found.");
+                return;
+            }
+            var forecastMonth = forecastMonthElement.value;
+            if (!forecastMonth) {
+                console.error("Forecast month is empty.");
+                return;
+            }
+
+            // Dynamically create a form to submit a POST request
+            var form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/Forecast/GenerateForecast"; // This should match your POST route
+
+            // Create hidden input for "type"
+            var typeInput = document.createElement("input");
+            typeInput.type = "hidden";
+            typeInput.name = "type";
+            typeInput.value = "price";
+            form.appendChild(typeInput);
+
+            // Create hidden input for "priceAdjustment"
+            var priceInput = document.createElement("input");
+            priceInput.type = "hidden";
+            priceInput.name = "priceAdjustment";
+            priceInput.value = priceAdjustment;
+            form.appendChild(priceInput);
+
+            // Create hidden input for "month"
+            var monthInput = document.createElement("input");
+            monthInput.type = "hidden";
+            monthInput.name = "month";
+            monthInput.value = forecastMonth;
+            form.appendChild(monthInput);
+
+            // Append the form to the body and submit it.
+            document.body.appendChild(form);
+            form.submit();
+        }
+</script>
