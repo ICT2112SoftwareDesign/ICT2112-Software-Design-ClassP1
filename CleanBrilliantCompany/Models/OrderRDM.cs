@@ -7,7 +7,7 @@ namespace CleanBrilliantCompany.Models
         public int OrderID { get; set; }
         public int CustomerID { get; set; }
         public string OrderAddress { get; set; }
-        public string OrderProducts { get; set; }
+        public Dictionary<int, int> OrderProducts { get; set; } // Product ID -> Quantity
         public string OrderShipping { get; set; }
         public int OrderItems { get; set; }
         public DateTime OrderDate { get; set; }

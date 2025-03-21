@@ -40,7 +40,7 @@ namespace CleanBrilliantCompany.Models
             productsInCart = new Dictionary<int, int>(cartProducts);
         }
 
-        // Public method to fetch cart details
+        // Public method to fetch cart details [In class diagram but Not using]
         public Dictionary<int, int> fetchCartDetails(int customerId)
         {
             if (this.customerId == customerId)
@@ -89,12 +89,8 @@ namespace CleanBrilliantCompany.Models
         {
             if (productsInCart.ContainsKey(productId))
             {
-                Console.WriteLine($"Removing ProductID: {productId} from in-memory cart.");
+                
                 productsInCart.Remove(productId);
-            }
-            else
-            {
-                Console.WriteLine($"ProductID: {productId} not found in in-memory cart. No changes made.");
             }
         }
 
@@ -104,13 +100,13 @@ namespace CleanBrilliantCompany.Models
             return productsInCart.ContainsKey(productId);
         }
 
-        // Public method to load the cart data
+        // Public method to load the cart data [Not in Class Diagram]
         public void loadCart(Dictionary<int, int> cartData)
         {
             productsInCart = new Dictionary<int, int>(cartData);
         }
         
-        // Public method to retrieve the products in the cart
+        // Public method to retrieve the products in the cart [Not in Class Diagram]
         public Dictionary<int, int> retrieveProductsInCart()
         {
             return new Dictionary<int, int>(productsInCart);

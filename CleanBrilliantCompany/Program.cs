@@ -26,6 +26,7 @@ builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString))
 builder.Services.AddTransient<CartManagement>();
 builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
 builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
+builder.Services.AddTransient<ICartManagement, CartManagement>();
 
 
 

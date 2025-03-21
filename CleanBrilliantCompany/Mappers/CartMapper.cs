@@ -15,6 +15,7 @@ namespace CleanBrilliantCompany.Mappers
            _connectionString = connectionString;
         }
 
+        // INSIDE CLASS DIAGRAM
         public bool addCart(int customerID, Dictionary<int, int> productsInCart)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -146,6 +147,8 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
+
+        // NOT INSIDE CLASS DIAGRAM
         public bool hasProductInCart(int customerID, int productId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))

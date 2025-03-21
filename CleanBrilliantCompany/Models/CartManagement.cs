@@ -4,7 +4,7 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class CartManagement
+    public class CartManagement :ICartManagement
     {
         private CartRDM cartRDM;
         private ICartDatabase cartDatabase;
@@ -19,19 +19,19 @@ namespace CleanBrilliantCompany.Models
             observers = new List<ICartObserver>();
         }
 
-        // Adds an observer to the list
+        // Adds an observer to the list [NOT IN CLASS DIAGRAM]
         public void addObserver(ICartObserver observer)
         {
             observers.Add(observer);
         }
 
-        // Removes an observer from the list
+        // Removes an observer from the list [NOT IN CLASS DIAGRAM]
         public void removeObserver(ICartObserver observer)
         {
             observers.Remove(observer);
         }
 
-        // Notifies all observers of a change
+        // Notifies all observers of a change [NOT IN CLASS DIAGRAM]
         private void notifyObservers()
         {
             foreach (var observer in observers)
@@ -40,7 +40,7 @@ namespace CleanBrilliantCompany.Models
             }
         }
 
-         // Adds a product to the cart
+         // Adds a product to the cart [INSIDE CLASS DIAGRAM]
         public bool addToCart(int customerID, int productId, int quantity)
         {
             var productDetails = productService.GetProductDetails(productId);
@@ -60,7 +60,7 @@ namespace CleanBrilliantCompany.Models
             return false;
         }
 
-         // Updates the quantity of a product in the cart
+         // Updates the quantity of a product in the cart [INSIDE CLASS DIAGRAM]
         public bool updateQuantity(int customerID, int productId, int quantity)
         {
           
@@ -92,7 +92,7 @@ namespace CleanBrilliantCompany.Models
             }
             return false;
         }
-
+            // Removes a product from the cart [INSIDE CLASS DIAGRAM]
             public bool removeFromCart(int customerID, int productId) 
         {
 
@@ -139,7 +139,7 @@ namespace CleanBrilliantCompany.Models
         }
 
 
-        // Retrieves the cart for a specific customer [Check if inside class diagram]
+        // Retrieves the cart for a specific customer [INSIDE CLASS DIAGRAM]
         public Dictionary<int, int> viewCart(int customerID)
         {
             if (cartDatabase.getCart(customerID, out var cartData))
@@ -152,7 +152,7 @@ namespace CleanBrilliantCompany.Models
             return new Dictionary<int, int>();
         }
 
-        // Get product details for the cart [Check if inside class diagram]
+        // Get product details for the cart [NOT IN CLASS DIAGRAM]
         public Dictionary<int, Dictionary<string, object>> getCartProductDetails(Dictionary<int, int> cart)
         {
             var products = new Dictionary<int, Dictionary<string, object>>();
@@ -171,7 +171,7 @@ namespace CleanBrilliantCompany.Models
             return products;
         }
 
-        // Calculate the total cost of the cart [Check if inside class diagram]
+        // Calculate the total cost of the cart [INSIDE CLASS DIAGRAM]
         public decimal calculateCartTotal(Dictionary<int, int> cart, Dictionary<int, Dictionary<string, object>> products)
         {
             return cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);

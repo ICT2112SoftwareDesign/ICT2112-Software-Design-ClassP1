@@ -414,35 +414,24 @@ namespace CleanBrilliantCompany.Controllers
                 _customerManagement.updateCustomerDetails(customer.GetSession<string>("username"), customer.GetSession<string>("email"), deliveryAddress);
             }
 
-            // Update delivery costs with new service types
-            var serviceCosts = new Dictionary<string, decimal>
+            // Calculate the shipping fee
+            decimal shippingFee;
+            try
             {
-                { "1 Day", 10.00m },
-                { "3 Days", 5.00m },
-                { "7 Days", 0.00m }
-            };
-
-            if (!serviceCosts.ContainsKey(serviceType))
+                shippingFee = _orderManagement.calculateShippingFee(serviceType);
+            }
+            catch (Exception ex)
             {
-                TempData["Error"] = "Invalid service type selected.";
+                TempData["Error"] = ex.Message;
                 return RedirectToAction("Checkout");
             }
 
-            decimal shippingFee = serviceCosts[serviceType];
-            decimal cartTotal = 0;
-            var products = new Dictionary<int, Dictionary<string, object>>();
+            // Fetch product details for the cart
+            var products = _cartManagement.getCartProductDetails(cart);
 
-            foreach (var item in cart)
-            {
-                var product = _productService.GetProductDetails(item.Key);
-                if (product != null)
-                {
-                    var productDetails = product.GetProductDetails();
-                    products[item.Key] = productDetails;
-                    cartTotal += Convert.ToDecimal(productDetails["CostPrice"]) * item.Value;
-                }
-            }
-
+            // Calculate the cart total
+            decimal cartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
+            
             // Fetch available shipping agents for the selected shipping type
             var selectedShippingType = Enum.TryParse<Service>(shippingType, out var shippingTypeEnum)
                 ? shippingTypeEnum
@@ -485,35 +474,24 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("getAllProducts", "CustomerPage");
             }
 
+            // Fetch product details for the cart
+            var products = _cartManagement.getCartProductDetails(cart);
+
             // Calculate the cart total
-            decimal cartTotal = 0;
-            var products = new Dictionary<int, Dictionary<string, object>>();
-            foreach (var item in cart)
+            decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
+
+        // Calculate the shipping fee
+            decimal shippingFee;
+            try
             {
-                var product = _productService.GetProductDetails(item.Key);
-                if (product != null)
-                {
-                    var productDetails = product.GetProductDetails();
-                    products[item.Key] = productDetails;
-                    cartTotal += Convert.ToDecimal(productDetails["CostPrice"]) * item.Value;
-                }
+                shippingFee = _orderManagement.calculateShippingFee(serviceType);
             }
-
-            // Calculate the shipping fee
-            var serviceCosts = new Dictionary<string, decimal>
+            catch (Exception ex)
             {
-                { "1 Day", 10.00m },
-                { "3 Days", 5.00m },
-                { "7 Days", 0.00m }
-            };
-
-            if (!serviceCosts.ContainsKey(serviceType))
-            {
-                TempData["Error"] = "Invalid service type selected.";
-                return RedirectToAction("checkout");
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Checkout");
             }
-
-            decimal shippingFee = serviceCosts[serviceType];
+            
             decimal finalTotal = cartTotal + shippingFee;
 
             // Pass order details to the Payment view
@@ -563,7 +541,7 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // Create the order
-            var orderId = _orderManagement.createOrderFromCart(
+            var orderId = _orderManagement.createOrder(
                 customerId.Value,
                 deliveryAddress,
                 serviceType,
