@@ -1,112 +1,136 @@
 using System;
 using System.Collections.Generic;
-using CleanBrilliantCompany.Interfaces.Forecast;
+using CleanBrilliantCompany.Interfaces;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.Models
 {
-    public class ForecastDashboard
+    // ManufacturerDashboard class inherits from Dashboard
+    public class ManufacturerDashboard : Dashboard
     {
-        // Properties
-        private int DashBoardID { get; set; }
-        private DateTime StartDate { get; set; }
-        private DateTime EndDate { get; set; }
-        private DateTime GeneratedDate { get; set; }
-        private int ValidityDuration { get; set; }
-        private List<ForecastMetrics> MetricsList { get; set; } = new List<ForecastMetrics>();
+        // New attributes specific to the ManufacturerDashboard
+        public Dictionary<int, float> PunctualDeliveryRate { get; set; }
+        public Dictionary<int, float> AverageDeliveryLeadTime { get; set; }
+        public Dictionary<int, float> DefectRate { get; set; }
+        public Dictionary<int, float> DependencyPercentage { get; set; }
+        public Dictionary<int, float> ManufacturerScore { get; set; }
+        public Dictionary<int, List<float>> ManufacturerScoreTrend { get; set; }
+        public Dictionary<int, bool> RiskFlag { get; set; }
 
-
-    
-
-        public ForecastDashboard(DateTime startDate, DateTime endDate, List<ForecastMetrics> metricsList)
+        // Constructor
+        public ManufacturerDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, DashboardType type)
+            : base(0, name, requestedStartDate, requestedEndDate, DateTime.Now, validityDuration, type)
         {
-            this.StartDate= startDate;
-            this.EndDate= endDate;
-            this.MetricsList = metricsList;
-            this.GeneratedDate = DateTime.Now;
-
+            PunctualDeliveryRate = new Dictionary<int, float>();
+            AverageDeliveryLeadTime = new Dictionary<int, float>();
+            DefectRate = new Dictionary<int, float>();
+            DependencyPercentage = new Dictionary<int, float>();
+            ManufacturerScore = new Dictionary<int, float>();
+            ManufacturerScoreTrend = new Dictionary<int, List<float>>();
+            RiskFlag = new Dictionary<int, bool>();
         }
 
-        // Methods
-        public int GetDashBoardID()
+        // Method to add or update punctual delivery rate for a specific manufacturer
+        public void SetPunctualDeliveryRate(int manufacturerId, float rate)
         {
-            return DashBoardID;
+            if (PunctualDeliveryRate.ContainsKey(manufacturerId))
+            {
+                PunctualDeliveryRate[manufacturerId] = rate;
+            }
+            else
+            {
+                PunctualDeliveryRate.Add(manufacturerId, rate);
+            }
         }
 
-        private void SetDashBoardID(int dashBoardID)
+        // Method to add or update average delivery lead time for a specific manufacturer
+        public void SetAverageDeliveryLeadTime(int manufacturerId, float leadTime)
         {
-            DashBoardID = dashBoardID;
+            if (AverageDeliveryLeadTime.ContainsKey(manufacturerId))
+            {
+                AverageDeliveryLeadTime[manufacturerId] = leadTime;
+            }
+            else
+            {
+                AverageDeliveryLeadTime.Add(manufacturerId, leadTime);
+            }
         }
 
-        public DateTime GetStartDate()
+        // Method to add or update defect rate for a specific manufacturer
+        public void SetDefectRate(int manufacturerId, float defectRate)
         {
-            return StartDate;
+            if (DefectRate.ContainsKey(manufacturerId))
+            {
+                DefectRate[manufacturerId] = defectRate;
+            }
+            else
+            {
+                DefectRate.Add(manufacturerId, defectRate);
+            }
         }
 
-        private void SetStartDate(DateTime startDate)
+        // Method to add or update dependency percentage for a specific manufacturer
+        public void SetDependencyPercentage(int manufacturerId, float percentage)
         {
-            StartDate = startDate;
+            if (DependencyPercentage.ContainsKey(manufacturerId))
+            {
+                DependencyPercentage[manufacturerId] = percentage;
+            }
+            else
+            {
+                DependencyPercentage.Add(manufacturerId, percentage);
+            }
         }
 
-        public DateTime GetEndDate()
+        // Method to add or update manufacturer score for a specific manufacturer
+        public void SetManufacturerScore(int manufacturerId, float score)
         {
-            return EndDate;
+            if (ManufacturerScore.ContainsKey(manufacturerId))
+            {
+                ManufacturerScore[manufacturerId] = score;
+            }
+            else
+            {
+                ManufacturerScore.Add(manufacturerId, score);
+            }
         }
 
-        private void SetEndDate(DateTime endDate)
+        // Method to add or update manufacturer score trend for a specific manufacturer
+        public void SetManufacturerScoreTrend(int manufacturerId, List<float> scoreTrend)
         {
-            EndDate = endDate;
+            if (ManufacturerScoreTrend.ContainsKey(manufacturerId))
+            {
+                ManufacturerScoreTrend[manufacturerId] = scoreTrend;
+            }
+            else
+            {
+                ManufacturerScoreTrend.Add(manufacturerId, scoreTrend);
+            }
         }
 
-        public DateTime GetGeneratedDate()
+        // Method to add or update risk flag for a specific manufacturer
+        public void SetRiskFlag(int manufacturerId, bool isRisk)
         {
-            return GeneratedDate;
+            if (RiskFlag.ContainsKey(manufacturerId))
+            {
+                RiskFlag[manufacturerId] = isRisk;
+            }
+            else
+            {
+                RiskFlag.Add(manufacturerId, isRisk);
+            }
         }
 
-        private void SetGeneratedDate(DateTime generatedDate)
+        // Overriding abstract method DisplayDashboard to implement specific behavior
+        public override void DisplayDashboard()
         {
-            GeneratedDate = generatedDate;
+            Console.WriteLine($"Displaying Manufacturer Dashboard: {Name}");
+            // Logic to display the Manufacturer Dashboard with additional info
+            Console.WriteLine($"Punctual Delivery Rates: {PunctualDeliveryRate.Count} manufacturers");
+            Console.WriteLine($"Average Delivery Lead Times: {AverageDeliveryLeadTime.Count} manufacturers");
+            Console.WriteLine($"Defect Rates: {DefectRate.Count} manufacturers");
+            Console.WriteLine($"Dependency Percentages: {DependencyPercentage.Count} manufacturers");
+            Console.WriteLine($"Manufacturer Scores: {ManufacturerScore.Count} manufacturers");
+            Console.WriteLine($"Risk Flags: {RiskFlag.Count} manufacturers");
         }
-
-        public int GetValidityDuration()
-        {
-            return ValidityDuration;
-        }
-
-        private void SetValidityDuration(int validityDuration)
-        {
-            ValidityDuration = validityDuration;
-        }
-
-        public List<ForecastMetrics> GetMetrics()
-        {
-            return MetricsList;
-        }
-
-        private void SetMetrics(List<ForecastMetrics> metrics)
-        {
-            MetricsList = metrics;
-        }
-
-        
-
-        // Methods
-        public ForecastDashboard GetDashboard()
-        {
-            return this;
-        }
-
-        //public void populateMetrics(String type)
-        //{
-        //    if (type == "stock")
-        //    {
-        //        this.Metrics.Add(_forecastingFacade.generateStockForecast());
-
-        //    }
-        //    else if (type == "price")
-        //    {
-        //        this.Metrics.Add(_forecastingFacade.generatePriceScenario());
-        //    }
-        //    // Logic to compute or generate matrix-related calculations
-        //}
     }
 }
