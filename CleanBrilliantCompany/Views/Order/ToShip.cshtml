@@ -2,21 +2,41 @@
 
 <div class="container mt-5">
     <h3 class="font-weight-bold">To Ship Orders</h3>
-    <ul class="list-group">
-        @if (Model != null && Model.Count > 0)
-        {
-            @foreach (var order in Model)
-            {
-                <li class="list-group-item">
-                    <strong>Order ID:</strong> @order.OrderID <br />
-                    <strong>Total:</strong> @order.OrderTotal <br />
-                    <strong>Date:</strong> @order.OrderDate.ToShortDateString()
-                </li>
-            }
-        }
-        else
-        {
-            <li class="list-group-item">No orders to ship.</li>
-        }
-    </ul>
+    @foreach (var order in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>Order ID:</strong> @order.OrderID <br />
+                <strong>Status:</strong> @order.Status <br />
+                <strong>Total Price:</strong> $@order.OrderTotal <br />
+                @if (!string.IsNullOrEmpty(order.OrderShipping))
+                    {
+                        var shippingDetails = JsonSerializer.Deserialize<Dictionary<string, object>>(order.OrderShipping);
+                        <strong>Shipping Fee:</strong> $@shippingDetails["ShippingFee"]
+                    }
+                    else
+                    {
+                        <strong>Shipping Fee:</strong> Not Available
+                    }
+                <span class="float-right">
+                    <form method="post" asp-action="CancelOrder">
+                        <input type="hidden" name="orderId" value="@order.OrderID" />
+                        <button type="submit" class="btn btn-danger btn-sm">Cancel Order</button>
+                    </form>
+                </span>
+            </div>
+            <div class="card-body">
+                <ul>
+                    @foreach (var product in order.OrderProductsDetails)
+                    {
+                        <li>
+                            <strong>Product Name:</strong> @product.Value["ProductName"] <br />
+                            <strong>Quantity:</strong> @order.OrderProducts[product.Key] <br />
+                            <strong>Price:</strong> $@product.Value["CostPrice"]
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
 </div>

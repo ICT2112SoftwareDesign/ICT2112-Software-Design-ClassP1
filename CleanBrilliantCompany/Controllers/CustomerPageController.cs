@@ -590,6 +590,12 @@ namespace CleanBrilliantCompany.Controllers
                                         .Where(o => o.Status == "Pending")
                                         .ToList();
 
+            // Fetch product details for each order
+            foreach (var order in orders)
+            {
+                order.OrderProductsDetails = _cartManagement.getCartProductDetails(order.OrderProducts);
+            }
+
             return View("~/Views/Order/ToShip.cshtml", orders);
         }
 
@@ -608,6 +614,12 @@ namespace CleanBrilliantCompany.Controllers
                                         .Where(o => o.Status == "Shipped")
                                         .ToList();
 
+            // Fetch product details for each order
+            foreach (var order in orders)
+            {
+                order.OrderProductsDetails = _cartManagement.getCartProductDetails(order.OrderProducts);
+            }
+
             return View("~/Views/Order/ToReceive.cshtml", orders);
         }
 
@@ -621,14 +633,64 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            // Fetch orders with status "Completed"
+            // Fetch orders with status "Completed" or "Canceled"
             var orders = _orderManagement.getOrderHistory(customerId.Value)
-                                        .Where(o => o.Status == "Completed")
+                                        .Where(o => o.Status == "Completed" || o.Status == "Canceled")
                                         .ToList();
+
+            // Fetch product details for each order
+            foreach (var order in orders)
+            {
+                order.OrderProductsDetails = _cartManagement.getCartProductDetails(order.OrderProducts);
+            }
 
             return View("~/Views/Order/Completed.cshtml", orders);
         }
+        [HttpPost]
+        public IActionResult CancelOrder(int orderId)
+        {
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
 
+            var success = _orderManagement.cancelOrder(orderId, customerId.Value);
+            if (success)
+            {
+                TempData["Success"] = "Order canceled successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to cancel the order. Please try again.";
+            }
+
+            return RedirectToAction("ToShip");
+        }
+
+        [HttpPost]
+        public IActionResult RequestRefund(int orderId)
+        {
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            var success = _orderManagement.requestRefund(orderId, customerId.Value);
+            if (success)
+            {
+                TempData["Success"] = "Refund request submitted successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to submit refund request. Please try again.";
+            }
+
+            return RedirectToAction("Completed");
+        }
 
 
 

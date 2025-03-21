@@ -46,7 +46,8 @@ namespace CleanBrilliantCompany.Models
                 {
                     ShippingAgent = shippingAgent,
                     ShippingMethod = shippingType,
-                    ServiceType = serviceType
+                    ServiceType = serviceType,
+                    ShippingFee = shippingFee // Include the shipping fee here
                 };
                 string orderShippingJson = System.Text.Json.JsonSerializer.Serialize(shippingDetails);
 
@@ -127,5 +128,35 @@ namespace CleanBrilliantCompany.Models
             order.Status = status;
             return _orderDatabase.updateOrder(order);
         }
+
+        public bool cancelOrder(int orderId, int customerId)
+        {
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null || order.CustomerID != customerId || order.Status != "Pending")
+            {
+                return false; // Cannot cancel the order
+            }
+
+            order.Status = "Canceled";
+            return _orderDatabase.updateOrder(order);
+        }
+
+        public bool requestRefund(int orderId, int customerId)
+        {
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null || order.CustomerID != customerId || order.Status != "Completed")
+            {
+                return false; // Cannot request a refund
+            }
+
+            order.Status = "RefundRequested";
+            return _orderDatabase.updateOrder(order);
+        }
+
+
+
+
+
+
     }
 }

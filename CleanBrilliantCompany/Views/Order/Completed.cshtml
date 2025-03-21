@@ -1,22 +1,37 @@
 @model List<CleanBrilliantCompany.Models.OrderRDM>
 
 <div class="container mt-5">
-    <h3 class="font-weight-bold">Completed Orders</h3>
-    <ul class="list-group">
-        @if (Model != null && Model.Count > 0)
-        {
-            @foreach (var order in Model)
-            {
-                <li class="list-group-item">
-                    <strong>Order ID:</strong> @order.OrderID <br />
-                    <strong>Total:</strong> @order.OrderTotal <br />
-                    <strong>Date:</strong> @order.OrderDate.ToShortDateString()
-                </li>
-            }
-        }
-        else
-        {
-            <li class="list-group-item">No completed orders.</li>
-        }
-    </ul>
+    <h3 class="font-weight-bold">Completed and Canceled Orders</h3>
+    @foreach (var order in Model.Where(o => o.Status == "Completed" || o.Status == "Canceled"))
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>Order ID:</strong> @order.OrderID <br />
+                <strong>Status:</strong> @order.Status <br />
+                <strong>Total Price:</strong> $@order.OrderTotal <br />
+                <strong>Shipping Fee:</strong> $@order.OrderShipping
+                @if (order.Status == "Completed")
+                {
+                    <span class="float-right">
+                        <form method="post" asp-action="RequestRefund">
+                            <input type="hidden" name="orderId" value="@order.OrderID" />
+                            <button type="submit" class="btn btn-warning btn-sm">Request Refund</button>
+                        </form>
+                    </span>
+                }
+            </div>
+            <div class="card-body">
+                <ul>
+                    @foreach (var product in order.OrderProductsDetails)
+                    {
+                        <li>
+                            <strong>Product Name:</strong> @product.Value["ProductName"] <br />
+                            <strong>Quantity:</strong> @order.OrderProducts[product.Key] <br />
+                            <strong>Price:</strong> $@product.Value["CostPrice"]
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
 </div>

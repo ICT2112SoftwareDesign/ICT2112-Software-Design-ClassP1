@@ -13,5 +13,7 @@ namespace CleanBrilliantCompany.Models
         public DateTime OrderDate { get; set; }
         public string Status { get; set; }
         public decimal OrderTotal { get; set; }
+
+        public Dictionary<int, Dictionary<string, object>> OrderProductsDetails { get; set; } 
     }
 }
