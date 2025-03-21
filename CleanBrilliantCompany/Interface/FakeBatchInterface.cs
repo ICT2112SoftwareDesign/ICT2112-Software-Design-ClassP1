@@ -15,7 +15,7 @@ public class FakeBatchInterface {
                 expiryDate: new DateTime(2021, 12, 31), 
                 receiveDate: new DateTime(2021, 01, 01), 
                 manufactureDate: new DateTime(2021, 01, 01), 
-                quantity: 100, 
+                quantity: 450, 
                 salesPrice: 0) 
             },
         { 
@@ -89,46 +89,46 @@ public class FakeBatchInterface {
                     stockId:1, 
                     batchCode:1, 
                     date:new DateTime(2021, 12, 30), 
-                    quantity:100, 
-                    recordedAt:new DateTime(2021, 12, 31)
+                    quantity:450, 
+                    recordedAt:new DateTime(2021, 12, 30)
                     ),
                 new RawStockHistoryData(2, 1, new DateTime(2021, 12, 31), 100, new DateTime(2021, 12, 31))
             }
         },
         { 2, new List<RawStockHistoryData>
             {
-                new RawStockHistoryData(3, 2, new DateTime(2025, 04, 17), 20, new DateTime(2025, 03, 12)),
+                new RawStockHistoryData(3, 2, new DateTime(2025, 04, 17), 50, new DateTime(2025, 03, 12)),
                 new RawStockHistoryData(4, 2, new DateTime(2025, 04, 18), 20, new DateTime(2025, 03, 12))
             }
         },
         { 3, new List<RawStockHistoryData>
             {
-                new RawStockHistoryData(5, 3, new DateTime(2025, 04, 25), 30, new DateTime(2025, 03, 11)),
+                new RawStockHistoryData(5, 3, new DateTime(2025, 04, 25), 60, new DateTime(2025, 03, 11)),
                 new RawStockHistoryData(6, 3, new DateTime(2025, 04, 26), 30, new DateTime(2025, 03, 11))
             }
         },
         { 4, new List<RawStockHistoryData>
             {
                 new RawStockHistoryData(7, 4, new DateTime(2025, 04, 10), 300, new DateTime(2025, 03, 13)),
-                new RawStockHistoryData(8, 4, new DateTime(2025, 04, 11), 300, new DateTime(2025, 03, 13))
+                new RawStockHistoryData(8, 4, new DateTime(2025, 04, 11), 10, new DateTime(2025, 03, 13))
             }
         },
         { 5, new List<RawStockHistoryData>
             {
                 new RawStockHistoryData(9, 5, new DateTime(2025, 04, 18), 800, new DateTime(2025, 03, 11)),
-                new RawStockHistoryData(10, 5, new DateTime(2025, 04, 19), 800, new DateTime(2025, 03, 11))
+                new RawStockHistoryData(10, 5, new DateTime(2025, 04, 19), 70, new DateTime(2025, 03, 11))
             }
         },
         { 6, new List<RawStockHistoryData>
             {
                 new RawStockHistoryData(11, 6, new DateTime(2025, 04, 17), 200, new DateTime(2025, 03, 11)),
-                new RawStockHistoryData(12, 6, new DateTime(2025, 04, 18), 200, new DateTime(2025, 03, 11))
+                new RawStockHistoryData(12, 6, new DateTime(2025, 04, 18), 50, new DateTime(2025, 03, 11))
             }
         },
         { 7, new List<RawStockHistoryData>
             {
                 new RawStockHistoryData(13, 7, new DateTime(2005, 06, 19), 100, new DateTime(2025, 03, 12)),
-                new RawStockHistoryData(14, 7, new DateTime(2005, 06, 20), 100, new DateTime(2025, 03, 12))
+                new RawStockHistoryData(14, 7, new DateTime(2005, 06, 20), 20, new DateTime(2025, 03, 12))
             }
         }
     };

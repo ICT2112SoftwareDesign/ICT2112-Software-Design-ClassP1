@@ -37,14 +37,8 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
         
         int earliestQuantity = quantityPerDay[firstDate]; 
         int latestQuantity = quantityPerDay[lastDate]; 
-        // Console.WriteLine("Earliest Quantity: " + earliestQuantity);  
-        // Console.WriteLine("Latest Quantity: " + latestQuantity); 
-        int stockUsed = earliestQuantity - latestQuantity; 
-        // Console.WriteLine("Stock Used: " + stockUsed); 
-        // Console.WriteLine("Total Quantity: " + totalQuantity);
-        // if totalQuantity is 0 , return 0 
-        // else return the percentage of stock used 
-        //Console.WriteLine ("TurnOverRate that i am returning: " + ((float)stockUsed / totalQuantity) * 100); 
+        int stockUsed = totalQuantity - latestQuantity; 
+
         return totalQuantity == 0 ? 0 : ((float)stockUsed / totalQuantity) * 100; 
     }    
 

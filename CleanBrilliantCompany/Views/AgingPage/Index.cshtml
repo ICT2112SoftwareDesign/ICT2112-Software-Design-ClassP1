@@ -339,76 +339,90 @@
 
                     <div class="container-fluid">
                             <!-- You can choose to place your content here and keep the heading above -->
-
-
                             @model AgingDashboardRdm
+                            <h2>Aging Dashboard</h2>
 
-                            <h2> aging dashboard</h2>
-
-                            @if (Model != null)
-                            {
-                                <div>
-                                    <p><strong>Dashboard Name</strong> @Model.Name</p>
-                                    <p><strong>Generated On:</strong> @(Model.GeneratedDate?.ToString("yyyy-MM-dd") ?? "Not Generated")</p>
-                                    <p><strong>Validity Duration:</strong> @Model.ValidityDuration days</p>
-                                </div>
-
-                                <h3>Analytics</h3>
-
-                                @if (Model.getProductToBatchMap().Any())
+                                @if (Model != null)
                                 {
-                                    @foreach (var product in Model.getProductToBatchMap())
+                                    <div>
+                                        <p><strong>Dashboard Name:</strong> @Model.Name</p>
+                                        <p><strong>Generated On:</strong> @(Model.GeneratedDate?.ToString("yyyy-MM-dd") ?? "Not Generated")</p>
+                                        <p><strong>Validity Duration:</strong> @Model.ValidityDuration days</p>
+                                    </div>
+
+                                    <h3>Analytics</h3>
+
+                                    <div class="mb-4">
+                                        <button class="btn btn-outline-primary me-2" id="showBatchView">Batch View</button>
+                                        <button class="btn btn-outline-secondary" id="showProductView">Product View</button>
+                                    </div>
+
+                                    @if (Model.getProductToBatchMap().Any())
                                     {
-                                        <div class = "card p-3 mb-3">
-                                            <h4>Product ID: @product.Key</h4>
 
-                                            @foreach (var batchcode in product.Value)
-                                            {
-                                                <div class ="mb-3">
-                                                    <h5>batch Code : @batchcode</h5>
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th> Metric Name</th>
-                                                                <th> value</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach (var analytics in Model.GetBatchAnalytics(batchcode))
-                                                            {
-                                                                @foreach (var entry in analytics.CalculateBatchSummary()) 
+                                        <div id="batchViewContainer">
+                                            <!-- your current batch-level chart rendering here -->
+                                            <div class="row">
+                                                @* ✅ Loop through each product *@
+                                                @foreach (var product in Model.getProductToBatchMap())
+                                                {
+                                                    <div class="col-12">
+                                                        <h4 class="text-primary">Product ID: @product.Key</h4>
+
+                                                        @* ✅ Get all unique metrics from all batches in this product *@
+                                                        @{
+                                                            var productMetrics = product.Value
+                                                                .SelectMany(batch => Model.GetBatchAnalytics(batch)
+                                                                    .SelectMany(analytics => analytics.CalculateBatchSummary().Keys))
+                                                                .Distinct()
+                                                                .ToList();
+                                                        }
+
+                                                        @* ✅ Loop through each metric and create a chart comparing batches *@
+
+                                                        @for (int i = 0; i < productMetrics.Count; i += 2)
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="card p-3 mb-3">
+                                                                        <h5>@productMetrics[i]</h5>
+                                                                        <canvas id="chart-@product.Key-@productMetrics[i]"></canvas>
+                                                                    </div>
+                                                                </div>
+
+                                                                @if (i + 1 < productMetrics.Count)
                                                                 {
-                                                                    <tr>
-                                                                        <td> @entry.Key</td>
-                                                                        <td> @entry.Value</td>
-                                                                    </tr>
+                                                                    <div class="col-md-6">
+                                                                        <div class="card p-3 mb-3">
+                                                                            <h5>@productMetrics[i + 1]</h5>
+                                                                            <canvas id="chart-@product.Key-@productMetrics[i + 1]"></canvas>
+                                                                        </div>
+                                                                    </div>
                                                                 }
-                                                            } 
-                                                        </tbody> 
-                                                    </table>
-                                                     <!-- 🎨 Chart Container for this batch -->
-                                                    <canvas id="chart-@batchcode" width="400" height="200"></canvas>
-                                                </div>   
-                                            }
+                                                            </div>
+                                                        }
+
+                                                    </div>
+                                                }
+                                            </div>
                                         </div>
-                                    }
-                                } 
-                                else {
-                                    <p> No analytics data available</p>
+
+                                        <div id="productViewContainer" style="display: none;">
+                                            <!-- product-level chart canvases go here -->
+                                        </div>
+
+                                        
+                                    } else {
+                                        <p>No analytics data available</p>
+                                        }
+                                } else {
+                                    <p>No dashboard available</p>
                                     }
 
-                            } 
-                            else
-                            {
-                                <p> No dashboard available</p>  
-                            }
-
-                            <div class="mt-4">
-                                <button class="btn btn-primary" id="generateDashboard"> 
-                                    Generate Dashboard 
-                                </button>
+                                <div class="mt-4">
+                                    <button class="btn btn-primary" id="generateDashboard">Generate Dashboard</button>
+                                </div>
                             </div>
-                    </div>
 
 
 
@@ -477,8 +491,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Your Custom JS Script Here -->
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <script>
+
+        document.getElementById("showBatchView").addEventListener("click", () => {
+            document.getElementById("batchViewContainer").style.display = "block";
+            document.getElementById("productViewContainer").style.display = "none";
+        });
+
+        document.getElementById("showProductView").addEventListener("click", () => {
+            document.getElementById("batchViewContainer").style.display = "none";
+            document.getElementById("productViewContainer").style.display = "block";
+            });
+            
     // Generate Dashboard Button Click Event
     document.getElementById("generateDashboard").addEventListener("click", function () {
         fetch('@Url.Action("GenerateDashboard","AgingPage")', {
@@ -502,51 +528,99 @@
             });
     });
 
-    // Initialize Charts on Page Load
     document.addEventListener("DOMContentLoaded", function () {
         @foreach (var product in Model.getProductToBatchMap())
         {
-            @foreach (var batchcode in product.Value)
+            var productKey = product.Key;
+            var batchList = product.Value;
+            var metrics = batchList
+                .SelectMany(batch => Model.GetBatchAnalytics(batch)
+                    .SelectMany(analytics => analytics.CalculateBatchSummary().Keys))
+                .Distinct();
+
+            foreach (var metric in metrics)
             {
-                var metrics = Model.GetBatchAnalytics(batchcode)
-                    .SelectMany(a => a.CalculateBatchSummary())
-                    .ToDictionary(e => e.Key, e => e.Value);
+                var batchData = new Dictionary<int, object>();
+
+                foreach (var batchcode in batchList)
+                {
+                    var batchMetrics = Model.GetBatchAnalytics(batchcode)
+                        .SelectMany(a => a.CalculateBatchSummary())
+                        .ToDictionary(e => e.Key, e => e.Value);
+
+                    if (batchMetrics.ContainsKey(metric))
+                    {
+                        batchData[batchcode] = batchMetrics[metric];
+                    }
+                }
+
+                var chartId = $"chart-{productKey}-{metric}";
+                var jsChartId = $"{productKey}{metric}";
+                var valuesJson = Json.Serialize(batchData.Values);
+                var labelsJson = Json.Serialize(batchData.Keys);
 
                 <text>
-                const ctx_@batchcode = document.getElementById('chart-@batchcode').getContext('2d');
+                    const ctx_@jsChartId = document.getElementById('@chartId').getContext('2d');
+                    let dataValues_@jsChartId = @Html.Raw(valuesJson);
+                    let batchLabels_@jsChartId = @Html.Raw(labelsJson);
 
-                new Chart(ctx_@batchcode, {
-                    type: 'bar',
-                    data: {
-                        labels: @Html.Raw(Json.Serialize(metrics.Keys)), // Extracts metric names
-                        datasets: [{
-                            label: 'Batch @batchcode Metrics',
-                            data: @Html.Raw(Json.Serialize(metrics.Values)), // Extracts metric values
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.6)',
-                                'rgba(54, 162, 235, 0.6)',
-                                'rgba(255, 206, 86, 0.6)',
-                                'rgba(75, 192, 192, 0.6)',
-                                'rgba(153, 102, 255, 0.6)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
+            
+                    let chartType_@jsChartId = "bar";
+                    let indexAxis_@(jsChartId) = "x"; // Default to vertical bar chart 
+
+                    if ("@metric" === "RemainingDays") {
+                        indexAxis_@(jsChartId) = "y"; // Switch to horizontal bar chart
                     }
-                });
+
+                    if (typeof dataValues_@(jsChartId)[0] === "boolean") {
+                        // Store the original boolean values for color mapping
+                        var booleanValues_@jsChartId = [...dataValues_@(jsChartId)];
+                        
+                        // Create color array based on original boolean values
+                        var barColors_@jsChartId = booleanValues_@(jsChartId).map(value => 
+                            value ? "red" : "green"); // true = green, false = red (or swap if preferred)
+                        
+                        // Convert all values to 1 for consistent height
+                        dataValues_@(jsChartId) = dataValues_@(jsChartId).map(value => 1);
+                    }
+
+                    new Chart(ctx_@jsChartId, {
+                        type: chartType_@jsChartId,
+                        data: {
+                            labels: batchLabels_@jsChartId,
+                            datasets: [{
+                                label: "@metric",
+                                data: dataValues_@jsChartId,
+                                backgroundColor: typeof barColors_@jsChartId !== "undefined" ? barColors_@jsChartId : [
+                                    'rgba(255, 99, 132, 0.6)',
+                                    'rgba(54, 162, 235, 0.6)',
+                                    'rgba(255, 206, 86, 0.6)',
+                                    'rgba(75, 192, 192, 0.6)',
+                                    'rgba(153, 102, 255, 0.6)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            indexAxis: indexAxis_@(jsChartId), 
+                            scales: chartType_@jsChartId === "bar" ? {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            } : {}
+                        }
+                    });
                 </text>
-            }
         }
-    });
+    }
+});
 </script>
+
 
 </body>
 
 </html>
+
+
+
