@@ -340,6 +340,19 @@
                     <div class="container-fluid">
                             <!-- You can choose to place your content here and keep the heading above -->
                             @model AgingDashboardRdm
+
+                            @{
+                                var productToBatchMap = Model != null ? Model.getProductToBatchMap() : new Dictionary<int, List<int>>();
+                                var allMetrics = Model != null
+                                    ? productToBatchMap
+                                        .SelectMany(p => p.Value
+                                            .SelectMany(batch => Model.GetBatchAnalytics(batch)
+                                                .SelectMany(a => a.CalculateBatchSummary().Keys)))
+                                        .Distinct()
+                                        .ToList()
+                                    : new List<string>();
+                            }
+
                             <h2>Aging Dashboard</h2>
 
                                 @if (Model != null)
@@ -357,14 +370,24 @@
                                         <button class="btn btn-outline-secondary" id="showProductView">Product View</button>
                                     </div>
 
-                                    @if (Model.getProductToBatchMap().Any())
+@*                                  
+                                    var productToBatchMap = Model.getProductToBatchMap();
+                                    var allMetrics = productToBatchMap
+                                        .SelectMany(p => p.Value
+                                            .SelectMany(batch => Model.GetBatchAnalytics(batch)
+                                                .SelectMany(a => a.CalculateBatchSummary().Keys)))
+                                        .Distinct()
+                                        .ToList(); *@
+                                    
+
+                                    @if (productToBatchMap.Any())
                                     {
 
                                         <div id="batchViewContainer">
                                             <!-- your current batch-level chart rendering here -->
-                                            <div class="row">
+                                            
                                                 @* ✅ Loop through each product *@
-                                                @foreach (var product in Model.getProductToBatchMap())
+                                                @foreach (var product in productToBatchMap)
                                                 {
                                                     <div class="col-12">
                                                         <h4 class="text-primary">Product ID: @product.Key</h4>
@@ -404,7 +427,7 @@
 
                                                     </div>
                                                 }
-                                            </div>
+                                            
                                         </div>
 
                                         <div id="productViewContainer" style="display: none;">
@@ -503,32 +526,46 @@
         document.getElementById("showProductView").addEventListener("click", () => {
             document.getElementById("batchViewContainer").style.display = "none";
             document.getElementById("productViewContainer").style.display = "block";
-            });
             
-    // Generate Dashboard Button Click Event
-    document.getElementById("generateDashboard").addEventListener("click", function () {
-        fetch('@Url.Action("GenerateDashboard","AgingPage")', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Server Response", data);
-                if (data.success) {
-                    alert("Dashboard generated successfully");
-                    location.reload();
-                } else {
-                    alert("Failed to generate dashboard");
+            // Show all canvas elements
+            document.querySelectorAll("#productViewContainer canvas").forEach(canvas => {
+                canvas.style.display = "block";
+                });
+            });
+
+        // Generate Dashboard Button Click Event
+        document.getElementById("generateDashboard").addEventListener("click", function () 
+        {
+            fetch('@Url.Action("GenerateDashboard","AgingPage")', 
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Server Response", data);
+                    if (data.success) {
+                        alert("Dashboard generated successfully");
+                        location.reload();
+                    } else {
+                        alert("Failed to generate dashboard");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+           generateBatchCharts(); 
+           generateProductCharts();
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
+    const allMetrics = @Html.Raw(Json.Serialize(allMetrics));
+
+    function generateBatchCharts() {
         @foreach (var product in Model.getProductToBatchMap())
         {
             var productKey = product.Key;
@@ -614,7 +651,78 @@
                 </text>
         }
     }
-});
+    }
+
+    function generateProductCharts()
+    {
+
+        @foreach (var metric in allMetrics)
+        {
+            var productLabels = new List<int>();
+            var productValues = new List<float>();
+
+            foreach (var product in productToBatchMap)
+            {
+                var batchCodes = product.Value;
+                var allAnalytics = batchCodes
+                    .SelectMany(batch => Model.GetBatchAnalytics(batch))
+                    .ToList();
+
+                var matchingValues = allAnalytics
+                    .SelectMany(a => a.CalculateBatchSummary())
+                    .Where(kv => kv.Key == metric)
+                    .Select(kv => Convert.ToSingle(kv.Value))
+                    .ToList();
+
+                if (matchingValues.Any())
+                {
+                    productLabels.Add(product.Key);
+                    productValues.Add(matchingValues.Average()); // Use Sum/Max/etc if preferred
+                }
+            }
+
+            var safeId = metric.Replace(" ", "").Replace("-", "").Replace(".", "");
+            var labelsJson = Json.Serialize(productLabels);
+            var valuesJson = Json.Serialize(productValues);
+
+            <text>
+                const canvas_@safeId = document.createElement('canvas');
+                canvas_@(safeId).id = "product-chart-@safeId";
+                canvas_@(safeId).classList.add("mb-4");
+                canvas_@(safeId).style.display = "none"; // default hidden
+
+                document.getElementById("productViewContainer").appendChild(canvas_@safeId);
+
+                const ctx_@safeId = canvas_@(safeId).getContext("2d");
+
+                new Chart(ctx_@safeId, {
+                    type: 'bar',
+                    data: {
+                        labels: @Html.Raw(labelsJson),
+                        datasets: [{
+                            label: '@metric',
+                            data: @Html.Raw(valuesJson),
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Comparison Across Products – @metric'
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            </text>
+        }
+    }
 </script>
 
 
