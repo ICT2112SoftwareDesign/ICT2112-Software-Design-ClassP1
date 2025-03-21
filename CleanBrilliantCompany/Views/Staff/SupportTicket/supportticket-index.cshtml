@@ -1,0 +1,36 @@
+@model List<SupportTicketDTO>
+
+<h2>Support Tickets</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Customer ID</th>
+            <th>Order ID</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.TicketId</td>
+                <td>@ticket.CustomerId</td>
+                <td>@ticket.OrderId</td>
+                <td>@ticket.Status</td>
+                <td>@ticket.CreatedAt</td>
+                <td>
+                    <a href="@Url.Action("Details", "SupportTicket", new { ticketId = ticket.TicketId })">View</a>
+                    <form method="post" action="@Url.Action("UpdateStatus", "SupportTicket", new { ticketId = ticket.TicketId, status = "Closed" })">
+                        <button type="submit">Close</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("CreateTicket", "SupportTicket")">Create New Ticket</a>

@@ -34,10 +34,5 @@ namespace CleanBrilliantCompany.Controllers.Staff
         {
             return View(); // Renders Views/Staff/Reorder.cshtml
         }
-        [HttpGet("supportticket")]
-        public IActionResult SupportTicket()
-        {
-            return View(); // Renders Views/Staff/SupportTicket.cshtml
-        }
     }
 }
