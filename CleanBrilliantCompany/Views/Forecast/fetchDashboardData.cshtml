@@ -452,63 +452,67 @@
                 <!-- Begin Page Content -->
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Forecast Dashboard</h1>
+                    <h1 class="h3 mb-0 text-gray-800 px-4">Forecast Dashboard</h1>
                     @* <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> *@
                     @*     <i class="fas fa-download fa-sm text-white-50"></i> Generate Report *@
                     @* </a> *@
                 </div>
+               <div class="container-fluid p-4"> 
 
+                <div class="p-4 bg-white rounded shadow-sm mb-4">
+                    <h4 class="mb-3 d-flex align-items-center">
+                        <i class="fas fa-sync-alt me-2"></i> Generate New Forecast
+                    </h4>
 
-                
-
-                <div class="container-fluid p-4">
-                    @* <h4 class="mb-3">🔄 Generate New Forecast</h4> *@
-
-                    <div class="p-4 bg-white rounded shadow-sm mb-4">
-                        <h4 class="mb-3"><i class="fas fa-sync-alt"></i> Generate New Forecast</h4>
-
-                        <!-- Quick Select Chips -->
-                        <div class="d-flex flex-column align-items-center mb-3">
-                            <strong class="mb-2">Quick Select:</strong>
-                            <div class="d-flex flex-wrap justify-content-center">
-                                @foreach (var chip in quickChips)
-                                {
-                                    <form method="post" action="/Forecast/GenerateForecast" class="d-inline">
-                                        <input type="hidden" name="type" value="stock" />
-                                        <input type="hidden" name="month" value="@chip" />
-                                        <button type="submit" class="quick-select-chip btn btn-light border rounded-pill px-3 mx-2 my-1">
-                                            @chip
-                                        </button>
-                                    </form>
-                                }
-                            </div>
+                    <!-- Quick Select Chips - Vertically Aligned -->
+                    <div class="mb-4 text-center">
+                        <div class="fw-bold mb-2">Quick Select:</div>
+                        <div class="d-flex flex-wrap justify-content-center">
+                            @foreach (var chip in quickChips)
+                            {
+                                <form method="post" action="/Forecast/GenerateForecast" class="d-inline">
+                                    <input type="hidden" name="type" value="stock" />
+                                    <input type="hidden" name="month" value="@chip" />
+                                    <button type="submit" class="quick-select-chip btn btn-light border rounded-pill px-3 mx-1 my-1">
+                                        @chip
+                                    </button>
+                                </form>
+                            }
                         </div>
-
-                        <!-- OR Divider -->
-                        <div class="or-divider-container text-center my-4">
-                            <span class="or-divider">— or —</span>
-                        </div>
-
-                        <!-- Manual Month Selection Form -->
-                        <form method="post" action="/Forecast/GenerateForecast" class="d-flex flex-column align-items-center">
-                            <input type="hidden" name="type" value="stock" />
-
-                            <label for="monthInput" class="mb-2"><strong>Select Forecast Month:</strong></label>
-
-                            <div class="d-flex">
-                                <input type="month" id="monthInput" name="month" min="@minValue" required class="form-control me-2" style="width: 200px;" />
-                                <button class="btn btn-primary" type="submit">Generate Forecast</button>
-                            </div>
-                        </form>
                     </div>
 
+                    <!-- OR Divider (Centered with Line) -->
+                    <div class="d-flex align-items-center my-3">
+                        <hr class="flex-grow-1" />
+                        <span class="mx-2 text-muted fw-bold">or</span>
+                        <hr class="flex-grow-1" />
+                    </div>
+
+                    <!-- Manual Month Selection Form (Now Below Quick Select) -->
+                    <div class="text-center">
+                        <form method="post" action="/Forecast/GenerateForecast" class="d-flex justify-content-center align-items-center gap-2">
+                            <input type="hidden" name="type" value="stock" />
+
+                            <label for="monthInput" class="fw-bold me-2">Select Forecast Month:</label>
+                            <input type="month" id="monthInput" name="month" min="@minValue" required class="form-control w-auto" />
+
+                            <button class="btn btn-primary ms-2" type="submit">Generate Forecast</button>
+                        </form>
+                    </div>
+                </div>
+
+
+               
+              
                     <hr />
 
 
                     <div class="p-4 bg-white rounded shadow-sm mb-4">
 
 
-                        <h4 class="mb-3">Dashboard Info</h4>
+                        <h4 class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-chart-line me-2"></i> Dashboard Info
+                        </h4>
                         <div class="dashboard-info">
                             <p><strong>Dashboard ID:</strong> @Model.GetDashBoardID()</p>
                             <p><strong>Generated Date:</strong> @Model.GetGeneratedDate()</p>
