@@ -3,6 +3,7 @@
 //using System.Threading.Tasks;
 //using CleanBrilliantCompany.Interfaces;
 //using CleanBrilliantCompany.Models;
+//using CleanBrilliantCompany.Models.CalculatorImplementation;
 
 //namespace CleanBrilliantCompany
 //{
@@ -15,26 +16,15 @@
 //            string recipientAddress = "Buckingham Palace, London, SW1A 1AA, United Kingdom";
 //            string transportMode = "Air";
 
-//            // Hardcoded items list for weight calculation.
-//            List<ShipmentControl.Item> items = new List<ShipmentControl.Item>
-//            {
-//                new ShipmentControl.Item { Name = "Bleach", Weight = 2.0, Quantity = 2 },
-//                new ShipmentControl.Item { Name = "Detergent", Weight = 1.0, Quantity = 4 }
-//            };
-
 //            // Create the routing service instance.
 //            IRoutingService routingService = new RoutingAPI();
 
 //            // Create the ShipmentControl instance.
 //            ShipmentControl shipmentControl = new ShipmentControl(routingService);
 
-//            // Calculate total weight from items.
-//            double totalWeight = shipmentControl.CalculateTotalWeight(items);
-
-//            // Asynchronously create a shipment using the specified transport mode.
+//            // Asynchronously create a shipment using the specified parameters.
 //            ShipmentSDM shipment = await shipmentControl.CreateShipmentAsync(
 //                orderId: 101,
-//                totalWeight: totalWeight,
 //                shippingMethod: transportMode,
 //                senderAddress: senderAddress,
 //                recipientAddress: recipientAddress
@@ -48,19 +38,10 @@
 //                Console.WriteLine(seg);
 //            }
 
-//            // Calculate and display total emissions.
-//            float totalEmission = 0f;
-//            foreach (var seg in shipment.RouteSegments)
-//            {
-//                float factor = seg.Mode switch
-//                {
-//                    TransportMode.Air => 1.5f,
-//                    TransportMode.Sea => 0.1f,
-//                    TransportMode.Truck => 0.5f,
-//                    _ => 1.0f
-//                };
-//                totalEmission += seg.Distance * (float)shipment.TotalWeight * factor;
-//            }
+//            // Instantiate the carbon footprint calculator.
+//            CalculateShipmentCFImpl cfCalculator = new CalculateShipmentCFImpl();
+//            // Calculate the total carbon footprint for the shipment.
+//            float totalEmission = cfCalculator.CalculateCarbonFootprint(shipment);
 //            Console.WriteLine($"\nTotal Emission: {totalEmission} kg CO2");
 
 //            Console.WriteLine("\nPress any key to exit...");
@@ -68,3 +49,4 @@
 //        }
 //    }
 //}
+

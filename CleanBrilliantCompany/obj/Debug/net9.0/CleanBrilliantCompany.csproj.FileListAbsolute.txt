@@ -3466,7 +3466,6 @@ C:\Users\PC\OneDrive - Singapore Institute Of Technology\Desktop\Work\School\ICT
 C:\Users\PC\OneDrive - Singapore Institute Of Technology\Desktop\Work\School\ICT2112\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\refint\CleanBrilliantCompany.dll
 C:\Users\PC\OneDrive - Singapore Institute Of Technology\Desktop\Work\School\ICT2112\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.pdb
 C:\Users\PC\OneDrive - Singapore Institute Of Technology\Desktop\Work\School\ICT2112\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\appsettings.Development.json
-C:\Users\PC\OneDrive - Singapore Institute Of Technology\Desktop\Work\School\ICT2112\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\appsettings.json
 C:\Users\PC\OneDrive - Singapore Institute Of Technology\Desktop\Work\School\ICT2112\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\CleanBrilliantCompany.staticwebassets.runtime.json
 C:\Users\PC\OneDrive - Singapore Institute Of Technology\Desktop\Work\School\ICT2112\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\CleanBrilliantCompany.staticwebassets.endpoints.json
 C:\Users\PC\OneDrive - Singapore Institute Of Technology\Desktop\Work\School\ICT2112\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\CleanBrilliantCompany.exe

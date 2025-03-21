@@ -4,35 +4,28 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
 {
     public class CalculateShipmentCFImpl
     {
-        // calculate shipment
+        // Calculate the carbon footprint for a shipment.
         public float CalculateCarbonFootprint(ShipmentSDM shipment)
         {
-            //TransportMode tm = shipment.getRouteSegments().getTransportMode();
-            // float transport_factor = 0.0f;
-            // if(tm == TransportMode.AIR){
-            //     transport_factor = 1.5f;
-            // }
-            // else if(tm == TransportMode.TRUCK){
-            //     transport_factor = 0.5f;
-            // }
-            // else if(tm == TransportMode.SEA){
-            //     transport_factor = 0.1f;
-            // }
+            float totalEmission = 0.0f;
 
-            // List<Item> itemList = IOrder.getOrderDetails(shipment.getOrderId())          <--- this returns a list of items
-            // retrieve each product from order -> foreach i in itemList
-            // int productId = i.getProductId()
-            // total_cf += IProduct.getProductDetails(productId).getCarbonFootprint()
-            // endloop
+            // Iterate over each route segment of the shipment.
+            foreach (var segment in shipment.RouteSegments)
+            {
+                // Determine the emission factor based on the transport mode.
+                float factor = segment.Mode switch
+                {
+                    TransportMode.Air => 1.5f,
+                    TransportMode.Sea => 0.1f,
+                    TransportMode.Truck => 0.5f,
+                    _ => 1.0f,
+                };
 
-            // total_cf += [staff carbon emission if have]
-            // total_cf * transport_factor
+                // Calculate emission for the segment and add it to the total.
+                totalEmission += segment.Distance * (float)shipment.TotalWeight * factor;
+            }
 
-            // add carbonFootprintId/productId/shipmentId into carbonFootprintRecord DB
-            // return total_cf;
-
-
-            return 0.0f;
+            return totalEmission;
         }
     }
 }
