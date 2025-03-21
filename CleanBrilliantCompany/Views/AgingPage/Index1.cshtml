@@ -1,0 +1,134 @@
+@model AgingDashboardRdm
+
+<h2> aging dashboard</h2>
+
+@if (Model != null)
+{
+    <div>
+        <p><strong>Dashboard Name</strong> @Model.Name</p>
+        <p><strong>Generated On:</strong> @(Model.GeneratedDate?.ToString("yyyy-MM-dd") ?? "Not Generated")</p>
+        <p><strong>Validity Duration:</strong> @Model.ValidityDuration days</p>
+    </div>
+
+     <h3>Analytics</h3>
+
+    @if (Model.getProductToBatchMap().Any())
+    {
+        @foreach (var product in Model.getProductToBatchMap())
+        {
+            <div class = "card p-3 mb-3">
+                <h4>Product ID: @product.Key</h4>
+
+                @foreach (var batchcode in product.Value)
+                {
+                    <div class ="mb-3">
+                        <h5>batch Code : @batchcode</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th> Metric Name</th>
+                                    <th> value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var analytics in Model.GetBatchAnalytics(batchcode))
+                                {
+                                    @foreach (var entry in analytics.CalculateBatchSummary()) 
+                                    {
+                                        <tr>
+                                            <td> @entry.Key</td>
+                                            <td> @entry.Value</td>
+                                        </tr>
+                                    }
+                                } 
+                            </tbody> 
+                        </table>
+                    </div>   
+                }
+            </div>
+        }
+    } 
+    else {
+        <p> No analytics data available</p>
+        }
+
+} 
+else
+{
+    <p> No dashboard available</p>  
+}
+
+<div class="mt-4">
+    <button class="btn btn-primary" id="generateDashboard"> 
+        Generate Dashboard 
+    </button>
+</div>
+
+
+
+<script>
+    document.getElementById("generateDashboard").addEventListener("click",function() {
+        fetch('@Url.Action("GenerateDashboard","AgingPage")',{
+        method: 'POST',
+        headers : {
+            'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Server Response", data);
+                if (data.success) {
+                    alert("Dashboard generated successfully");
+                    location.reload();
+                } else {
+                    alert("Failed to generate dashboard");
+                }
+                }) 
+        .catch(error => {
+            console.error('Error:', error);
+        }); 
+
+    });
+</script>
+
+
+      @* @if (Model.getBatchAnalyticsMap().Any())
+      {
+        @foreach (var batchEntry in Model.getBatchAnalyticsMap()){
+            <div class="card p-3 mb-3">
+                <h4> Batch Code: @batchEntry.Key</h4>
+                <table class="table table-bordered"> 
+                    <thead>
+                        <tr>
+                            <th> Metric Name</th>
+                            <th> value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var analytics in batchEntry.Value)
+                        {
+                            @foreach (var entry in analytics.CalculateBatchSummary()) 
+                            {
+                                <tr>
+                                    <td> @entry.Key</td>
+                                    <td> @entry.Value</td> 
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>  
+            }
+        }
+        else 
+        {
+            <p> No analytics data available</p>
+        } 
+
+} else{
+    <p> No dashboard available</p> 
+}
+<div class="mt-4">
+    <button class="btn btn-primary" id="generateDashboard"> 
+        Generate Dashboard 
+    </button>
+</div> *@
