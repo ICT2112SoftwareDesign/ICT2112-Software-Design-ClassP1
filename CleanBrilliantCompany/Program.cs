@@ -1,5 +1,19 @@
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddSingleton<CostSimulation>();  
+
+// ✅ Register CostMapper as a service
+builder.Services.AddScoped<CostMapper>();
+
+// ✅ Register CostControl (also requires logger)
+builder.Services.AddScoped<CostControl>();
+builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>();  // ✅ Added Logger
+// ✅ Register Visualization Service
+builder.Services.AddScoped<IVisualizationService, VisualizationService>();
+
+builder.Services.AddScoped<IAlertService, InAppAlert>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -14,16 +28,20 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller=Home}/{action=Index}/{id?}")
+//     .WithStaticAssets();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=CostPage}/{action=Index}/{id?}");
 
 app.Run();

@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CleanBrilliantCompany Dashboard</title>
+
+    <!-- Custom fonts for this template (optional) -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Bootstrap CSS (using Bootstrap 5 CDN for Cost Dashboard) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for SB Admin 2 template -->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+
+    <style>
+        /* ✅ Make alerts section scrollable */
+        #alertsContainer {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl 
+    {
+        max-width: 100vw !important; /* Adjust the value based on your requirement */
+    }
+    </style>
+
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+              <div class="d-flex flex-column">
+                <div class="sidebar-brand-icon rotate-n-0">
+                    <i class="fas fa-cloud fa-sm" style="font-size:1rem"></i>    
+                </div>
+                <div class="sidebar-brand-text mx-3">AdvanceAnalytics</div>
+              </div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Section A
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Link A</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Section A2</h6>
+                        <a class="collapse-item" href="#">Link A</a>
+                        <a class="collapse-item" href="#">Link B</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Link B</span></a>
+                </li>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Section B
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Pages</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Login Screens:</h6>
+                        <a class="collapse-item" href="login.html">Login</a>
+                        <a class="collapse-item" href="register.html">Register</a>
+                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Other Pages:</h6>
+                        <a class="collapse-item" href="404.html">404 Page</a>
+                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Link A</span></a>
+            </li>
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Link B</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <form
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Spending Alert: We've noticed unusually high spending for your account.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">7</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div class="font-weight-bold">
+                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
+                                            problem I've been having.</div>
+                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                            alt="...">
+                                        <div class="status-indicator"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">I have the photos that you ordered last month, how
+                                            would you like them sent to you?</div>
+                                        <div class="small text-gray-500">Jae Chun · 1d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
+                                            alt="...">
+                                        <div class="status-indicator bg-warning"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Last month's report looks great, I am very happy with
+                                            the progress so far, keep up the good work!</div>
+                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
+                                            told me that people say this to all dogs, even if they aren't good...</div>
+                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Anthony Jones</span>
+                                <img class="img-profile rounded-circle"
+                                    src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- PLACE YOUR CONTNENT HERE -->
+
+                <!------------------------------------------------------------------------------------>
+                <!------------------------------------------------------------------------------------> 
+                <!------------------------------------------------------------------------------------>
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Cost Dashboard - @Model.Name</h1>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                    </div>
+
+                    <!-- NEW MAIN CONTENT: Cost Dashboard -->
+                    <div class="container-fluid">
+                        <h2>-</h2>
+                        <p>Generated Date: @Model.StartDate.ToShortDateString()   |   Validity Date: @Model.EndDate.ToShortDateString()</p>
+
+                        <!-- Charts Section -->
+                   <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h2 class="h4 mb-2 text-gray-800">Supplier Makeup</h2>
+                                    <canvas id="supplierChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                             <div class="card h-100">
+                                <div class="card-body d-flex flex-column">
+                                    <h2 class="h4 mb-2 text-gray-800">Avg Batch Price per Manufacturer</h2>
+                                    <div class="flex-grow-1">
+                                        <canvas id="avgBatchPriceChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body d-flex flex-column">
+                                    <h2 class="h4 mb-2 text-gray-800">Supplier & Batch Cost Overview</h2>
+                                    <div class="flex-grow-1">
+                                        <canvas id="overviewChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                        <h3 class="mt-5 mb-3 text-gray-800">🏭 Manufacturer Analytics</h3>
+                        <div class="mb-3">
+                            <label for="manufacturerSelect" class="form-label">Select a Manufacturer</label>
+                            <select id="manufacturerSelect" class="form-select">
+                                <option value="">-- Select Manufacturer --</option>
+                            </select>
+                        </div>
+
+                        
+
+                        <!-- Placeholder for Manufacturer Details -->
+                        <div id="manufacturerDetails" class="mt-3"></div>
+
+                        <!-- Placeholder for displaying batches -->
+                        <div id="batchResults"></div>
+                        <!-- Graph Containers -->
+                        <div id="graphContainer" style="display: none;">
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h2 class="h5 mb-0 text-gray-800">Cheapest vs Most Expensive Item</h2>
+                                            <canvas id="cheapestExpensiveChart" style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h2 class="h5 mb-0 text-gray-800">Last 5 Batches Received</h2>
+                                            <canvas id="recentBatchesChart" style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="mt-5 mb-3 text-gray-800">📊 Product Analytics</h3>
+
+                        <!-- Product Dropdown -->
+                        <div class="mb-3">
+                            <label for="productSelect" class="form-label">Select a Product</label>
+                            <select id="productSelect" class="form-select">
+                                <option value="">-- Select Product --</option>
+                            </select>
+                        </div>
+
+                        <!-- Placeholder for Product Details -->
+                        <div id="productDetails" class="mt-3"></div>
+
+                        <!-- Placeholder for displaying product batches -->
+                        <div id="productBatchResults"></div>
+
+                        <!-- Graph Containers -->
+                        <div id="productGraphContainer" style="display: none;">
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h2 class="h5 mb-0 text-gray-800">Cheapest vs Most Expensive Batch</h2>
+                                            <canvas id="cheapestExpensiveProductChart" style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h2 class="h5 mb-0 text-gray-800">Recent Batch Transactions</h2>
+                                            <canvas id="recentBatchesProductChart" style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alerts & Notifications Card -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="mb-0 text-gray-800">Alerts & Notifications</h2>
+                                        <div id="alertsContainer" class="mt-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+           
+                    </div>
+                    <!-- END NEW MAIN CONTENT -->
+
+
+
+                </div>
+                <!-- End Page Content -->
+                <!------------------------------------------------------------------------------------>
+                <!------------------------------------------------------------------------------------> 
+                <!------------------------------------------------------------------------------------>
+
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; CBC 2025</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery, Bootstrap, and SB Admin 2 scripts -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Chart.js and Bootstrap 5 scripts for Cost Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+(function() {
+  // Global chart instances to avoid duplicates
+  let recentProductBatchesChartInstance = null;
+  let recentBatchesChartInstance = null;
+
+  // Run when DOM is fully loaded
+  document.addEventListener("DOMContentLoaded", () => {
+    initProductDropdown();
+    initManufacturerDropdown();
+    fetchAvgBatchPriceChart();
+    fetchOverviewChart();
+    fetchCostVisualization();
+    fetchSupplierComparison();
+    fetchAlerts();
+
+    // Set up event listeners
+    document.getElementById("productSelect").addEventListener("change", onProductChange);
+    document.getElementById("manufacturerSelect").addEventListener("change", onManufacturerChange);
+  });
+
+  /* ---------------------- Product Functions ---------------------- */
+
+  function initProductDropdown() {
+    fetch("/CostPage/GetAllProducts")
+      .then(res => res.json())
+      .then(data => {
+        const select = document.getElementById("productSelect");
+        select.innerHTML = `<option value="">-- Select Product --</option>`;
+        data.forEach(productId => {
+          const option = document.createElement("option");
+          option.value = productId;
+          option.textContent = `Product ${productId}`;
+          select.appendChild(option);
+        });
+        console.log("[DEBUG] Product dropdown populated:", data);
+      })
+      .catch(error => console.error("Error fetching products:", error));
+  }
+
+  function onProductChange(event) {
+    const productId = event.target.value;
+    const graphContainer = document.getElementById("productGraphContainer");
+
+    if (!productId) {
+      console.log("[DEBUG] No product selected.");
+      document.getElementById("productDetails").innerHTML = "";
+      document.getElementById("productBatchResults").innerHTML = "";
+      graphContainer.style.display = "none";
+      return;
+    }
+
+    graphContainer.style.display = "block";
+    console.log(`[DEBUG] Fetching details for Product ID: ${productId}`);
+    fetchProductBatches(productId);
+    fetchRecentProductBatches(productId);
+    fetchCheapestExpensiveProduct(productId);
+  }
+
+  function fetchProductBatches(productId) {
+    fetch(`/CostPage/GetBatchesByProduct?productId=${productId}`)
+      .then(res => res.json())
+      .then(batches => {
+        console.log("[DEBUG] Batches received:", batches);
+        if (!batches || batches.length === 0) {
+          document.getElementById("productDetails").innerHTML = "<p>No product details available.</p>";
+          return;
+        }
+        renderProductDetails(batches);
+      })
+      .catch(error => console.error("Error fetching product batches:", error));
+  }
+
+  function renderProductDetails(batches) {
+    const container = document.getElementById("productDetails");
+    container.innerHTML = `
+      <div class="card">
+        <div class="card-body">
+          <h5>Product ID: ${batches[0].productId}</h5>
+          <p><strong>Manufacturer ID:</strong> ${batches[0].manufacturerId}</p>
+        <p><strong>No. of Batches:</strong> ${batches.length}</p>        
+        </div>
+      </div>
+      <div class="mt-3">
+        <h5>Batch Details</h5>
+        <div class="accordion" id="batchAccordion">
+          ${batches.map((batch, index) => `
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="batchHeading-${index}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#batchCollapse-${index}" aria-expanded="false">
+                  Batch Code: ${batch.batchCode}, Price: $${batch.batchPrice}
+                </button>
+              </h2>
+              <div id="batchCollapse-${index}" class="accordion-collapse collapse" aria-labelledby="batchHeading-${index}">
+                <div class="accordion-body">
+                  <strong>Batch Price:</strong> ${batch.batchPrice} <br />
+                  <strong>Batch Quantity:</strong> ${batch.batchQuantity} <br />
+                  <strong>Expiry Date:</strong> ${new Date(batch.expiryDate).toLocaleDateString()} <br />
+                  <strong>Receive Date:</strong> ${new Date(batch.receiveDate).toLocaleDateString()} <br />
+                  <strong>Manufacture Date:</strong> ${new Date(batch.manufactureDate).toLocaleDateString()} <br />
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+
+  function fetchRecentProductBatches(productId) {
+    fetch(`/CostPage/GetRecentBatchesByProduct?productId=${productId}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("[DEBUG] Calling renderRecentProductBatchesChart...");
+        renderRecentProductBatchesChart(data);
+      })
+      .catch(error => console.error("Error fetching recent batch transactions:", error));
+  }
+
+  function renderRecentProductBatchesChart(data) {
+    console.log("[DEBUG] Received batch data:", data);
+    if (!data || data.length === 0) {
+      console.log("[DEBUG] No recent batch data available.");
+      return;
+    }
+    const canvas = document.getElementById("recentBatchesProductChart");
+    if (!canvas) {
+      console.log("[DEBUG] Canvas element not found!");
+      return;
+    }
+    const ctx = canvas.getContext("2d");
+    if (window.recentProductBatchesChartInstance) {
+      window.recentProductBatchesChartInstance.destroy();
+    }
+    const labels = data.map(batch => `Batch ${batch.batchCode}`);
+    const prices = data.map(batch => batch.batchPrice);
+    window.recentProductBatchesChartInstance = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Batch Price ($)",
+          data: prices,
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 2,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { 
+            beginAtZero: true,
+            title: { display: true, text: "Batch Price ($)" }
+          },
+          x: { title: { display: true, text: "Recent Batches" } }
+        }
+      }
+    });
+  }
+
+  function fetchCheapestExpensiveProduct(productId) {
+    fetch(`/CostPage/GetCheapestAndMostExpensiveByProduct?productId=${productId}`)
+      .then(res => res.json())
+      .then(data => renderCheapestExpensiveProductChart(data))
+      .catch(error => console.error("Error fetching cheapest & most expensive batch:", error));
+  }
+
+  function renderCheapestExpensiveProductChart(data) {
+    const ctx = document.getElementById("cheapestExpensiveProductChart").getContext("2d");
+    const labels = [
+      `📉 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
+      `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
+    ];
+    const values = [
+      data.cheapestBatch?.batchPrice || 0,
+      data.mostExpensiveBatch?.batchPrice || 0
+    ];
+    const backgroundColors = [
+      "rgba(54, 162, 235, 0.6)",
+      "rgba(255, 99, 132, 0.6)"
+    ];
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Batch Price ($)",
+          data: values,
+          backgroundColor: backgroundColors,
+          borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
+        }
+      }
+    });
+  }
+
+  /* -------------------- Manufacturer Functions -------------------- */
+
+  function initManufacturerDropdown() {
+    fetch("/CostPage/GetSupplierComparison")
+      .then(res => res.json())
+      .then(data => {
+        const select = document.getElementById("manufacturerSelect");
+        select.innerHTML = `<option value="">-- Select Manufacturer --</option>`;
+        data.forEach(manufacturer => {
+          const option = document.createElement("option");
+          option.value = manufacturer.manufacturerId;
+          option.textContent = manufacturer.manufacturerName;
+          select.appendChild(option);
+        });
+        console.log("[DEBUG] Manufacturer dropdown populated:", data);
+      })
+      .catch(error => console.error("Error fetching manufacturers:", error));
+  }
+
+  function onManufacturerChange(event) {
+    const manufacturerId = event.target.value;
+    const graphContainer = document.getElementById("graphContainer");
+
+    if (!manufacturerId) {
+      console.log("[DEBUG] No manufacturer selected.");
+      document.getElementById("manufacturerDetails").innerHTML = "";
+      document.getElementById("batchResults").innerHTML = "";
+      graphContainer.style.display = "none";
+      return;
+    }
+
+    graphContainer.style.display = "block";
+    console.log(`[DEBUG] Fetching details for Manufacturer ID: ${manufacturerId}`);
+    fetchManufacturerDetails(manufacturerId);
+    fetchManufacturerBatches(manufacturerId);
+    fetchCheapestExpensiveManufacturer(manufacturerId);
+    fetchRecentBatchesManufacturer(manufacturerId);
+  }
+
+  function fetchManufacturerDetails(manufacturerId) {
+    fetch(`/CostPage/GetManufacturerById?manufacturerId=${manufacturerId}`)
+      .then(res => res.json())
+      .then(manufacturer => {
+        document.getElementById("manufacturerDetails").innerHTML = `
+          <div class="card">
+            <div class="card-body">
+              <h5>${manufacturer.companyName}</h5>
+              <p><strong>Email:</strong> ${manufacturer.email}</p>
+              <p><strong>Address:</strong> ${manufacturer.address}</p>
+            </div>
+          </div>
+        `;
+      })
+      .catch(error => console.error("Error fetching manufacturer details:", error));
+  }
+
+  function fetchManufacturerBatches(manufacturerId) {
+    fetch(`/CostPage/GetBatchesByManufacturer?manufacturerId=${manufacturerId}`)
+      .then(res => res.json())
+      .then(batches => renderManufacturerBatchAccordion(batches))
+      .catch(error => console.error("Error fetching batches:", error));
+  }
+
+  function renderManufacturerBatchAccordion(batches) {
+    const container = document.getElementById("batchResults");
+    if (!batches || batches.length === 0) {
+      container.innerHTML = "<p>No batches available for this manufacturer.</p>";
+      return;
+    }
+    container.innerHTML = `
+      <div class="accordion" id="manufacturerBatchAccordion">
+        ${batches.map((batch, index) => `
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="manufacturerBatchHeading-${index}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#manufacturerBatchCollapse-${index}" aria-expanded="false">
+                Batch Code: ${batch.batchCode}, Product ID: ${batch.productId}, Batch Price: $${batch.batchPrice}
+              </button>
+            </h2>
+            <div id="manufacturerBatchCollapse-${index}" class="accordion-collapse collapse" aria-labelledby="manufacturerBatchHeading-${index}">
+              <div class="accordion-body">
+                <strong>Product ID:</strong> ${batch.productId} <br />
+                <strong>Batch Price:</strong> ${batch.batchPrice} <br />
+                <strong>Batch Quantity:</strong> ${batch.batchQuantity} <br />
+                <strong>Expiry Date:</strong> ${batch.expiryDate} <br />
+                <strong>Receive Date:</strong> ${batch.receiveDate} <br />
+                <strong>Manufacture Date:</strong> ${batch.manufactureDate} <br />
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function fetchCheapestExpensiveManufacturer(manufacturerId) {
+    fetch(`/CostPage/GetCheapestAndMostExpensiveByManufacturer?manufacturerId=${manufacturerId}`)
+      .then(res => res.json())
+      .then(data => renderCheapestExpensiveChart(data))
+      .catch(error => console.error("Error fetching cheapest & most expensive batch:", error));
+  }
+
+  function renderCheapestExpensiveChart(data) {
+    const ctx = document.getElementById("cheapestExpensiveChart").getContext("2d");
+    const labels = [
+      `📉 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
+      `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
+    ];
+    const values = [
+      data.cheapestBatch?.batchPrice || 0,
+      data.mostExpensiveBatch?.batchPrice || 0
+    ];
+    const backgroundColors = [
+      "rgba(54, 162, 235, 0.6)",
+      "rgba(255, 99, 132, 0.6)"
+    ];
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Batch Price ($)",
+          data: values,
+          backgroundColor: backgroundColors,
+          borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
+        }
+      }
+    });
+  }
+
+  function fetchRecentBatchesManufacturer(manufacturerId) {
+    fetch(`/CostPage/GetRecentBatchesByManufacturer?manufacturerId=${manufacturerId}`)
+      .then(res => res.json())
+      .then(data => renderRecentBatchesChart(data))
+      .catch(error => console.error("Error fetching recent batches:", error));
+  }
+
+  function renderRecentBatchesChart(data) {
+    const ctx = document.getElementById("recentBatchesChart").getContext("2d");
+    if (recentBatchesChartInstance) {
+      recentBatchesChartInstance.destroy();
+    }
+    const labels = data.map(batch => `Batch ${batch.batchCode}`);
+    const prices = data.map(batch => batch.batchPrice);
+    recentBatchesChartInstance = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Batch Price ($)",
+          data: prices,
+          backgroundColor: "rgba(255, 206, 86, 0.6)",
+          borderColor: "rgba(255, 206, 86, 1)",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { 
+            beginAtZero: true,
+            title: { display: true, text: "Batch Price ($)" }
+          },
+          x: { title: { display: true, text: "Recent Batches" } }
+        }
+      }
+    });
+  }
+
+  /* -------------------- Other Charts & Alerts -------------------- */
+
+  function fetchAvgBatchPriceChart() {
+    fetch("/CostPage/GetAvgBatchPriceByManufacturer")
+      .then(res => res.json())
+      .then(data => renderAvgBatchPriceChart(data))
+      .catch(error => console.error("Error fetching Avg Batch Price:", error));
+  }
+
+  function renderAvgBatchPriceChart(data) {
+    const ctx = document.getElementById("avgBatchPriceChart").getContext("2d");
+    const labels = data.map(item => item.companyName);
+    const avgPrices = data.map(item => item.avgBatchPrice);
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Avg Batch Price ($)",
+          data: avgPrices,
+          backgroundColor: "rgba(255, 159, 64, 0.6)",
+          borderColor: "rgba(255, 159, 64, 1)",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { tooltip: { enabled: true } },
+        scales: { 
+          y: { beginAtZero: true, title: { display: true, text: "Average Batch Price ($)" } },
+          x: { display: false }
+        }
+      }
+    });
+  }
+
+  function fetchOverviewChart() {
+    fetch("/CostPage/GetCheapestAndMostExpensiveOverview")
+      .then(res => res.json())
+      .then(data => renderOverviewChart(data))
+      .catch(error => console.error("Error fetching supplier & batch overview:", error));
+  }
+
+  function renderOverviewChart(data) {
+    const ctx = document.getElementById("overviewChart").getContext("2d");
+    const labels = [
+      `💰 Cheapest Supplier (${data.cheapestSupplier.companyName})`,
+      `💲 Most Expensive Supplier (${data.mostExpensiveSupplier.companyName})`,
+      `📦 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
+      `🚀 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
+    ];
+    const values = [
+      data.cheapestSupplier?.avgBatchPrice || 0,
+      data.mostExpensiveSupplier?.avgBatchPrice || 0,
+      data.cheapestBatch?.batchPrice || 0,
+      data.mostExpensiveBatch?.batchPrice || 0
+    ];
+    const backgroundColors = [
+      "rgba(75, 192, 192, 0.6)",
+      "rgba(255, 99, 132, 0.6)",
+      "rgba(54, 162, 235, 0.6)",
+      "rgba(255, 206, 86, 0.6)"
+    ];
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Cost ($)",
+          data: values,
+          backgroundColor: backgroundColors,
+          borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { x: { beginAtZero: true, title: { display: true, text: "Price ($)" } } },
+        plugins: { tooltip: { enabled: true } }
+      }
+    });
+  }
+
+  function fetchCostVisualization() {
+    fetch("/CostPage/GetCostVisualization")
+      .then(res => res.json())
+      .then(data => renderCostChart(data))
+      .catch(error => console.error("Error fetching Cost Visualization:", error));
+  }
+
+  function renderCostChart(data) {
+    const ctx = document.getElementById("costChart").getContext("2d");
+    const labels = data.map(item => `Batch ${item.batchCode}`);
+    const prices = data.map(item => item.batchPrice);
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Batch Prices",
+          data: prices,
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1
+        }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+  }
+
+  function fetchSupplierComparison() {
+    fetch("/CostPage/GetSupplierComparison")
+      .then(res => res.json())
+      .then(data => renderSupplierChart(data))
+      .catch(error => console.error("Error fetching Supplier Comparison:", error));
+  }
+
+  function generateHighlightColors(count) {
+    const highlightColors = [
+      "rgba(255, 159, 64, 0.6)",
+      "rgba(255, 99, 132, 0.6)",
+      "rgba(54, 162, 235, 0.6)",
+      "rgba(255, 206, 86, 0.6)",
+      "rgba(75, 192, 192, 0.6)",
+      "rgba(153, 102, 255, 0.6)",
+      "rgba(255, 153, 102, 0.6)",
+      "rgba(102, 255, 153, 0.6)",
+      "rgba(102, 204, 255, 0.6)",
+      "rgba(204, 102, 255, 0.6)"
+    ];
+    return Array.from({ length: count }, (_, i) => highlightColors[i % highlightColors.length]);
+  }
+
+  function renderSupplierChart(data) {
+    const ctx = document.getElementById("supplierChart").getContext("2d");
+    const labels = data.map(item => item.manufacturerName);
+    const batchCounts = data.map(item => item.batchCount);
+    const backgroundColors = generateHighlightColors(labels.length);
+    new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Batches per Supplier",
+          data: batchCounts,
+          backgroundColor: backgroundColors,
+          borderColor: "#ffffff",
+          borderWidth: 1
+        }]
+      },
+      options: { 
+        responsive: true,
+        plugins: { legend: { position: "right" } }
+      }
+    });
+  }
+
+  function fetchAlerts() {
+    fetch("/CostPage/GetAlerts")
+      .then(res => res.json())
+      .then(data => {
+        if (data.alerts && data.alerts.length > 0) {
+          displayAlerts(data.alerts);
+        }
+      })
+      .catch(error => console.error("Error fetching Alerts:", error));
+  }
+
+  function displayAlerts(alerts) {
+    const alertsContainer = document.getElementById("alertsContainer");
+    alertsContainer.innerHTML = "";
+    alerts.forEach(alert => {
+      const alertDiv = document.createElement("div");
+      alertDiv.className = "alert alert-danger alert-dismissible fade show";
+      alertDiv.setAttribute("role", "alert");
+      alertDiv.innerHTML = `
+        <strong>⚠ Note:</strong> ${alert.message} <br>
+        <small>Generated on ${new Date(alert.timestamp).toLocaleString()}</small>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      `;
+      alertsContainer.appendChild(alertDiv);
+    });
+  }
+})();
+</script>
+</body>
+
+</html>

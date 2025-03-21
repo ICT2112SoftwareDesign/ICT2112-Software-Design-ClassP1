@@ -18,7 +18,12 @@ public class HomeController : Controller
         return View();
     }
 
-        public IActionResult Charts()
+    public IActionResult Cards()
+    {
+        return View();
+    }
+
+    public IActionResult Charts()
     {
         return View();
     }

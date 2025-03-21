@@ -1,7 +1,7 @@
 public abstract class Dashboard {
     // your priv fields 
     private int _dashboardId;
-    private string _name;
+    private string _name = string.Empty;
     private DateTime _requestedStartDate;
     private DateTime _requestedEndDate;
     private DateTime? _generatedDate;
@@ -72,7 +72,7 @@ public abstract class Dashboard {
     public int RetrieveValidityDuration() => GetValidityDuration();
 
     //! I made this abstract so the children must implement this
-    public abstract Dashboard CreateNewDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration)
+    public abstract Dashboard CreateNewDashboard(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration);
     
 
     // Public Method for Updating a Dashboard
