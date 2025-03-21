@@ -54,26 +54,40 @@ namespace CleanBrilliantCompany.Models
         private decimal getOrderTotal() => orderTotal;
         private void setOrderTotal(decimal orderTotal) => this.orderTotal = orderTotal;
         
-        // Method to create an order
-        public bool createOrder(int orderId, int customerId, DateTime orderDate, string orderAddress, Dictionary<int, int> orderProducts, Dictionary<string, string> orderShipping, decimal orderTotal)
+        // Public Method to Create an Order
+        public void CreateOrder(
+            int orderId,
+            int customerId,
+            DateTime orderDate,
+            string orderAddress,
+            Dictionary<int, int> orderProducts,
+            Dictionary<string, string> orderShipping,
+            decimal orderTotal)
         {
-            setOrderId(orderId);
-            setCustomerId(customerId);
-            setOrderDate(orderDate);
-            setOrderAddress(orderAddress);
-            setOrderProducts(orderProducts);
-            setOrderShipping(orderShipping);
-            setStatus(OrderStatus.Pending);
-            setOrderTotal(orderTotal);
-
-            // Additional logic to save the order to the database can be added here
-
-            return true; // Return true if the order is created successfully
+            this.orderId = orderId;
+            this.customerId = customerId;
+            this.orderDate = orderDate;
+            this.orderAddress = orderAddress;
+            this.orderProducts = orderProducts;
+            this.orderShipping = orderShipping;
+            this.status = OrderStatus.Pending; // Default status
+            this.orderTotal = orderTotal;
         }
 
-        // Method to calculate the total cost of the order
-        public decimal calculateTotal(Dictionary<int, decimal> productPrices)
+        // Public Method to Update the Order Status
+        public void UpdateStatus(OrderStatus newStatus)
         {
+            this.status = newStatus;
+        }
+
+        // Public Method to Calculate the Total Cost of the Order
+        public decimal CalculateTotal(Dictionary<int, decimal> productPrices)
+        {
+            if (orderProducts == null || orderProducts.Count == 0)
+            {
+                throw new InvalidOperationException("OrderProducts is empty. Cannot calculate total.");
+            }
+
             decimal total = 0;
             foreach (var item in orderProducts)
             {
@@ -83,6 +97,22 @@ namespace CleanBrilliantCompany.Models
                 }
             }
             return total;
+        }
+
+        // Public Method to Get Order Details
+        public Dictionary<string, object> GetOrderDetails()
+        {
+            return new Dictionary<string, object>
+            {
+                { "OrderId", orderId },
+                { "CustomerId", customerId },
+                { "OrderDate", orderDate },
+                { "OrderAddress", orderAddress },
+                { "OrderProducts", orderProducts },
+                { "OrderShipping", orderShipping },
+                { "OrderStatus", status },
+                { "OrderTotal", orderTotal }
+            };
         }
     }
 

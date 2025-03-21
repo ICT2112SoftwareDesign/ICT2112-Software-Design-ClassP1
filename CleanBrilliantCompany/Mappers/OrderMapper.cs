@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
 using Newtonsoft.Json;
+using Microsoft.Data.SqlClient;
 
 namespace CleanBrilliantCompany.Mappers
 {
@@ -16,25 +16,28 @@ namespace CleanBrilliantCompany.Mappers
             _connectionString = connectionString;
         }
 
-        public int CreateOrder(OrderRDM order)
+        public int createOrder(OrderRDM order)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var command = new SqlCommand(
-                    "INSERT INTO Orders (CustomerID, OrderAddress, OrderProducts, OrderShipping, OrderDate, Status, OrderTotal) OUTPUT INSERTED.OrderID VALUES (@CustomerID, @OrderAddress, @OrderProducts, @OrderShipping, @OrderDate, @Status, @OrderTotal)",
-                    connection
-                );
+                var query = @"
+                    INSERT INTO CustOrder (customerID, orderAddress, orderProducts, orderShipping, orderItems, orderDate, Status, orderTotal)
+                    VALUES (@CustomerID, @OrderAddress, @OrderProducts, @OrderShipping, @OrderItems, @OrderDate, @Status, @OrderTotal);
+                    SELECT SCOPE_IDENTITY();";
 
-                //command.Parameters.AddWithValue("@CustomerID", order.retrieveCustomerId());
-                //command.Parameters.AddWithValue("@OrderAddress", order.retrieveOrderAddress());
-                //command.Parameters.AddWithValue("@OrderProducts", JsonConvert.SerializeObject(order.retrieveOrderProducts()));
-                //command.Parameters.AddWithValue("@OrderShipping", JsonConvert.SerializeObject(order.retrieveOrderShipping()));
-                //command.Parameters.AddWithValue("@OrderDate", order.retrieveOrderDate());
-                //command.Parameters.AddWithValue("@Status", order.retrieveStatus().ToString());
-                //command.Parameters.AddWithValue("@OrderTotal", order.retrieveOrderTotal());
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@CustomerID", order.CustomerID);
+                command.Parameters.AddWithValue("@OrderAddress", order.OrderAddress);
+                command.Parameters.AddWithValue("@OrderProducts", order.OrderProducts);
+                command.Parameters.AddWithValue("@OrderShipping", order.OrderShipping);
+                command.Parameters.AddWithValue("@OrderItems", order.OrderItems);
+                command.Parameters.AddWithValue("@OrderDate", order.OrderDate);
+                command.Parameters.AddWithValue("@Status", order.Status);
+                command.Parameters.AddWithValue("@OrderTotal", order.OrderTotal);
 
                 connection.Open();
-                return (int)command.ExecuteScalar();
+                var result = command.ExecuteScalar();
+                return result != null ? Convert.ToInt32(result) : 0;
             }
         }
 

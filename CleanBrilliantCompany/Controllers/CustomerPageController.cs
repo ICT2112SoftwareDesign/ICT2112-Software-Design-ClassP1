@@ -395,20 +395,14 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.Cart = cart;         // Cart items (product ID and quantity)
             ViewBag.CartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
             ViewBag.CustomerAddress = customerAddress; // Pass the customer's address (empty if missing)
-            ViewBag.SelectedDeliveryType = "One Week Delivery"; // Default to "One Week Delivery"
+            ViewBag.SelectedDeliveryType = "7 Days"; // Default to "One Week Delivery"
             ViewBag.ShippingAgents = shippingAgents; // Available shipping agents
 
             return View("~/Views/Order/Checkout.cshtml");
         }
-
         [HttpPost]
-        public IActionResult Checkout (string deliveryType, string deliveryAddress, string shippingType)
+        public IActionResult Checkout(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
         {
-            // Set default values if any parameter is null
-            deliveryType ??= "One Week Delivery"; // Default delivery type
-            deliveryAddress ??= "Default Address"; // Default address (if applicable)
-            shippingType ??= "Air"; // Default shipping type    
-
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerID == null)
             {
@@ -423,29 +417,29 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("GetAllProducts", "CustomerPage");
             }
 
-            // Save the address if it is provided
+            // Save the address if provided
             if (!string.IsNullOrEmpty(deliveryAddress))
             {
                 var customer = _customerManagement.getCustomer(customerID.Value);
-                customer.SetSession("customerAddress", deliveryAddress); // Update the address in the session
-                _customerManagement.updateCustomerDetails(customer.GetSession<string>("username"), customer.GetSession<string>("email"), deliveryAddress); // Save to the database
+                customer.SetSession("customerAddress", deliveryAddress);
+                _customerManagement.updateCustomerDetails(customer.GetSession<string>("username"), customer.GetSession<string>("email"), deliveryAddress);
             }
 
-            // Calculate the shipping fee
-            var deliveryCosts = new Dictionary<string, decimal>
+            // Update delivery costs with new service types
+            var serviceCosts = new Dictionary<string, decimal>
             {
-                { "One Week Delivery", 0.00m },
-                { "Three Day Delivery", 5.00m },
-                { "Next Day Delivery", 10.00m }
+                { "1 Day", 10.00m },
+                { "3 Days", 5.00m },
+                { "7 Days", 0.00m }
             };
 
-            if (!deliveryCosts.ContainsKey(deliveryType))
+            if (!serviceCosts.ContainsKey(serviceType))
             {
-                TempData["Error"] = "Invalid delivery type selected.";
+                TempData["Error"] = "Invalid service type selected.";
                 return RedirectToAction("Checkout");
             }
 
-            decimal shippingFee = deliveryCosts[deliveryType];
+            decimal shippingFee = serviceCosts[serviceType];
             decimal cartTotal = 0;
             var products = new Dictionary<int, Dictionary<string, object>>();
 
@@ -459,28 +453,67 @@ namespace CleanBrilliantCompany.Controllers
                     cartTotal += Convert.ToDecimal(productDetails["CostPrice"]) * item.Value;
                 }
             }
-            // Parse the selected shipping type
-                if (!Enum.TryParse<Service>(shippingType, out var selectedShippingType))
-                {
-                    TempData["Error"] = "Invalid shipping type selected.";
-                    return RedirectToAction("Checkout");
-                }
 
-                // Fetch available shipping agents for the selected shipping type
-                var shippingAgents = _shippingAgents.getShippingAgentList(selectedShippingType);
+            // Fetch available shipping agents for the selected shipping type
+            var selectedShippingType = Enum.TryParse<Service>(shippingType, out var shippingTypeEnum)
+                ? shippingTypeEnum
+                : Service.Standard;
 
-                // Pass updated values to the view
-                ViewBag.ShippingFee = shippingFee;
-                ViewBag.CartTotal = cartTotal;
-                ViewBag.FinalTotal = cartTotal + shippingFee;
-                ViewBag.CustomerAddress = deliveryAddress;
-                ViewBag.Cart = cart;
-                ViewBag.Products = products;
-                ViewBag.SelectedDeliveryType = deliveryType;
-                ViewBag.SelectedShippingType = shippingType;
-                ViewBag.ShippingAgents = shippingAgents;
+            var shippingAgents = _shippingAgents.getShippingAgentList(selectedShippingType);
 
-                return View("~/Views/Order/Checkout.cshtml");
+            // Pass updated values back to the view
+            ViewBag.Products = products;
+            ViewBag.Cart = cart;
+            ViewBag.CartTotal = cartTotal;
+            ViewBag.CustomerAddress = deliveryAddress;
+            ViewBag.SelectedServiceType = serviceType;
+            ViewBag.SelectedShippingType = shippingType;
+            ViewBag.SelectedShippingAgent = shippingAgent;
+            ViewBag.ShippingFee = shippingFee;
+            ViewBag.FinalTotal = cartTotal + shippingFee; // Update the final total
+            ViewBag.ShippingAgents = shippingAgents;
+
+            return View("~/Views/Order/Checkout.cshtml");
+        }
+
+       [HttpPost]
+        public IActionResult PlaceOrder(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
+        {
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
             }
+
+            var cart = _cartManagement.viewCart(customerID.Value);
+            if (cart == null || !cart.Any())
+            {
+                TempData["Error"] = "Your cart is empty.";
+                return RedirectToAction("GetAllProducts", "CustomerPage");
+            }
+
+            // Delegate the order creation to OrderManagement
+            var orderID = _orderManagement.createOrderFromCart(
+                customerID.Value,
+                deliveryAddress,
+                serviceType,
+                shippingType,
+                shippingAgent,
+                cart
+            );
+
+            if (orderID > 0)
+            {
+                TempData["Success"] = "Order placed successfully!";
+                _cartManagement.clearCart(customerID.Value); // Clear the cart after placing the order
+                return RedirectToAction("OrderConfirmation", new { orderID });
+            }
+            else
+            {
+                TempData["Error"] = "Failed to place the order. Please try again.";
+                return RedirectToAction("Checkout");
+            }
+        }
     }
 }

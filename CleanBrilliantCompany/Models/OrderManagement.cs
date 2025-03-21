@@ -18,6 +18,56 @@ namespace CleanBrilliantCompany.Models
             
         }
 
+        public int createOrderFromCart(
+            int customerID,
+            string deliveryAddress,
+            string serviceType,
+            string shippingType,
+            string shippingAgent,
+            Dictionary<int, int> cart)
+        {
+            // Calculate the total price
+            decimal cartTotal = 0;
+            var products = new Dictionary<int, Dictionary<string, object>>();
+            foreach (var item in cart)
+            {
+                var product = _product.GetProductDetails(item.Key);
+                if (product != null)
+                {
+                    var productDetails = product.GetProductDetails();
+                    products[item.Key] = productDetails;
+                    cartTotal += Convert.ToDecimal(productDetails["CostPrice"]) * item.Value;
+                }
+            }
+
+            // Serialize the shipping details into JSON
+            var shippingDetails = new
+            {
+                ShippingAgent = shippingAgent,
+                ShippingMethod = shippingType,
+                ServiceType = serviceType
+            };
+            string orderShippingJson = System.Text.Json.JsonSerializer.Serialize(shippingDetails);
+
+            // Create the order object
+            var order = new OrderRDM
+            {
+                CustomerID = customerID,
+                OrderAddress = deliveryAddress,
+                OrderProducts = string.Join(", ", products.Select(p => $"{p.Value["ProductName"]} x {cart[p.Key]}")),
+                OrderShipping = orderShippingJson,
+                OrderItems = cart.Count,
+                OrderDate = DateTime.Now,
+                Status = "Pending",
+                OrderTotal = cartTotal
+            };
+
+            // Save the order to the database
+            return _orderDatabase.createOrder(order);
+        }
+
+        
+
        //public int CreateOrder(int customerId, string orderAddress, string deliveryTime, Service shippingType, string shippingAgent, Dictionary<int, int> orderProducts, decimal orderTotal)
        // {
             // Create a new order
@@ -83,22 +133,5 @@ namespace CleanBrilliantCompany.Models
         {
             return _shippingAgents.getShippingAgentList(shippingType);
         }
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
     }
 }

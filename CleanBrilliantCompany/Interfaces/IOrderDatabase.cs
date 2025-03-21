@@ -6,7 +6,7 @@ namespace CleanBrilliantCompany.Interfaces
     public interface IOrderDatabase
     {
         // Add a new order to the database and return the generated order ID
-        int CreateOrder(OrderRDM order);
+        int createOrder(OrderRDM order);
 
         // Retrieve a specific order by its ID
         OrderRDM RetrieveOrder(int orderId);
