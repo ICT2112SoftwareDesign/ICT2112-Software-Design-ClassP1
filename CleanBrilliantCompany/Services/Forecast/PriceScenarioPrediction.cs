@@ -4,10 +4,10 @@ using CleanBrilliantCompany.Models.Forecast;
 
 namespace CleanBrilliantCompany.Services.Forecast
 {
-    public class SimplePriceScenario : IScenarioPricingService
+    public class PriceScenarioPrediction : IPredictionService
     {
         //prediction for a all product
-        public List<ForecastMetrics> generateScenarioPricing(Dictionary<int, int> aggregatedSales, List<ProductDTO> productList, int adjustmentFactor)
+        public List<ForecastMetrics> generateForecastMetric(Dictionary<int, int> aggregatedSales, List<ProductDTO> productList, int adjustmentFactor)
         {
             int minSales = aggregatedSales.Values.Min();
             int maxSales = aggregatedSales.Values.Max();
@@ -74,35 +74,29 @@ namespace CleanBrilliantCompany.Services.Forecast
         }
 
         //prediction for a single product
-        public ForecastMetrics generateScenarioPricing(Dictionary<int, int> aggregatedSales, int productId, string productName, int adjustmentFactor)
+        public ForecastMetrics updateMetric(Dictionary<int, int> aggregatedSales, int productId, string productName, int adjustmentFactor)
         {
            
 
             int minSales = aggregatedSales.Values.Min();
             int maxSales = aggregatedSales.Values.Max();
             double normalizedSales;
-            double baseMultiplier;
+            double baseMultiplier=1.5;
             double priceMultiplier;
             int predictedDemand;
             // Get past sales for the given product
             int pastSales = aggregatedSales.TryGetValue(productId, out int totalSales) ? totalSales : 0;
-            if (adjustmentFactor == 0)
-            {
-                baseMultiplier = 1.5;
-                predictedDemand = (int)Math.Round(pastSales * baseMultiplier);
-            }
-            else
-            {
-                // Normalize past sales between 0 and 1
-                normalizedSales = (maxSales == minSales) ? 1 : (pastSales - minSales) / (double)(maxSales - minSales);
-                // Calculate base multiplier (scales between 0.5 - 1.5)
-                baseMultiplier = 0.5 + (normalizedSales * 1);
-                // Apply inverse price impact multiplier (high price reduces demand)
-                priceMultiplier = GetPriceImpactMultiplier(normalizedSales, adjustmentFactor);
-                // Compute predicted demand
-                 predictedDemand = (int)Math.Round(pastSales * baseMultiplier * priceMultiplier);
-            }
-         
+            
+            
+            // Normalize past sales between 0 and 1
+            normalizedSales = (maxSales == minSales) ? 1 : (pastSales - minSales) / (double)(maxSales - minSales);
+            // Calculate base multiplier (scales between 0.5 - 1.5)
+            // Apply inverse price impact multiplier (high price reduces demand)
+            priceMultiplier = GetPriceImpactMultiplier(normalizedSales, adjustmentFactor);
+            // Compute predicted demand
+             predictedDemand = (int)Math.Round(pastSales * baseMultiplier * priceMultiplier);
+           
+        
             
             // Ensure predicted demand is not negative
             predictedDemand = Math.Max(predictedDemand, 0);

@@ -7,9 +7,9 @@ using System.Linq;
 
 namespace CleanBrilliantCompany.Services.Forecast
 {
-    public class SimpleStockPrediction : IStockPredictionService
+    public class StockForecastPrediction : IPredictionService
     {
-        public List<ForecastMetrics> generateStockPrediction(Dictionary<int, int> aggregatedSales, List<ProductDTO> productList)
+        public List<ForecastMetrics> generateForecastMetric(Dictionary<int, int> aggregatedSales, List<ProductDTO> productList,int adjustmentFactor=0)
         {
             // Dictionary to store forecasted stock values for each product
             var forecastDictionary = productList.ToDictionary(
@@ -41,6 +41,21 @@ namespace CleanBrilliantCompany.Services.Forecast
                 .ToList();
 
             return forecastList;
+        }
+
+        public ForecastMetrics updateMetric(Dictionary<int, int> aggregatedSales, int productId, string productName, int adjustmentFactor=0)
+        {
+            int forecastValue = 0;
+
+            // Check if there are past sales for this product
+            if (aggregatedSales.TryGetValue(productId, out int totalSales))
+            {
+                // Compute average of past sales and increase by 50%
+                forecastValue = (int)Math.Round(totalSales * 1.5);
+            }
+
+            // Return a single ForecastMetrics (e.g., StockForecast)
+            return new StockForecast(productId, forecastValue, productName);
         }
     }
 }

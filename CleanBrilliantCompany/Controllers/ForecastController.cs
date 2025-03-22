@@ -13,14 +13,14 @@ namespace CleanBrilliantCompany.Controllers
     [Route("[controller]")]
     public class ForecastController : Controller
     {
-        private readonly ForecastControl _forecastControl;
+        private readonly ForecastFacade _forecastFacade;
         private readonly IMemoryCache _cache;
         private const string DashboardCacheKey = "Dashboard_User123"; // Adjust key for user-specific caching
 
         // Inject ForecastControl and IMemoryCache via DI
-        public ForecastController(ForecastControl forecastControl, IMemoryCache cache)
+        public ForecastController(ForecastFacade forecastControl, IMemoryCache cache)
         {
-            _forecastControl = forecastControl;
+            _forecastFacade = forecastControl;
             _cache = cache;
         }
 
@@ -39,7 +39,7 @@ namespace CleanBrilliantCompany.Controllers
             // Retrieve the dashboard from cache; if not present, get it from ForecastControl
             if (!_cache.TryGetValue(DashboardCacheKey, out ForecastDashboard dashboard))
             {
-                dashboard = _forecastControl.GetDashboard();
+                dashboard = _forecastFacade.getLatestDashboard();
                 _cache.Set(DashboardCacheKey, dashboard, new MemoryCacheEntryOptions
                 {
                     SlidingExpiration = TimeSpan.FromMinutes(30)
@@ -49,7 +49,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost("generateForecast")]
-        public IActionResult GenerateForecast(string type, string month, int? priceAdjustment)
+        public IActionResult GenerateForecast(string type, string month, int priceAdjustment=0)
         {
             // Append "-01" to convert the month string into a full date (e.g., "2025-03-01")
             if (!DateTime.TryParse(month + "-01", out DateTime forecastMonth))
@@ -57,10 +57,10 @@ namespace CleanBrilliantCompany.Controllers
                 return BadRequest("Invalid month format.");
             }
             
-                
+            
             // Generate the forecast dashboard using ForecastControl
-            ForecastDashboard dashboard = _forecastControl.generateDashboard(
-                type, forecastMonth, forecastMonth.AddMonths(1).AddDays(-1), priceAdjustment
+            ForecastDashboard dashboard = _forecastFacade.generateDashboard(
+                 forecastMonth, priceAdjustment
             );
 
             // Store the generated dashboard in the memory cache
@@ -88,7 +88,7 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // Update the dashboard using ForecastControl logic
-            ForecastDashboard updatedDashboard = _forecastControl.updateProductPriceAdjustment(productId, productName, priceAdjustment,dashboard);
+            ForecastDashboard updatedDashboard = _forecastFacade.updateMetric(productId, dashboard, priceAdjustment);
 
             // Save the updated dashboard back into the cache
             _cache.Set(DashboardCacheKey, updatedDashboard, new MemoryCacheEntryOptions
