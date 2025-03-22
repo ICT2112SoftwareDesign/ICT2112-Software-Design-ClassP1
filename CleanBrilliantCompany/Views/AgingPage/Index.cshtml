@@ -370,15 +370,7 @@
                                         <button class="btn btn-outline-secondary" id="showProductView">Product View</button>
                                     </div>
 
-@*                                  
-                                    var productToBatchMap = Model.getProductToBatchMap();
-                                    var allMetrics = productToBatchMap
-                                        .SelectMany(p => p.Value
-                                            .SelectMany(batch => Model.GetBatchAnalytics(batch)
-                                                .SelectMany(a => a.CalculateBatchSummary().Keys)))
-                                        .Distinct()
-                                        .ToList(); *@
-                                    
+                            
 
                                     @if (productToBatchMap.Any())
                                     {
@@ -511,11 +503,10 @@
 
     <!-- Chart.js and Bootstrap 5 scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Your Custom JS Script Here -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <script>
 
         document.getElementById("showBatchView").addEventListener("click", () => {
@@ -565,17 +556,13 @@
 
     const allMetrics = @Html.Raw(Json.Serialize(allMetrics));
 
-    function generateBatchCharts() {
+    function generateBatchCharts() 
+    {
         @foreach (var product in Model.getProductToBatchMap())
         {
             var productKey = product.Key;
             var batchList = product.Value;
-            var metrics = batchList
-                .SelectMany(batch => Model.GetBatchAnalytics(batch)
-                    .SelectMany(analytics => analytics.CalculateBatchSummary().Keys))
-                .Distinct();
-
-            foreach (var metric in metrics)
+            foreach (var metric in allMetrics)
             {
                 var batchData = new Dictionary<int, object>();
 
@@ -595,62 +582,107 @@
                 var jsChartId = $"{productKey}{metric}";
                 var valuesJson = Json.Serialize(batchData.Values);
                 var labelsJson = Json.Serialize(batchData.Keys);
-
+                
                 <text>
-                    const ctx_@jsChartId = document.getElementById('@chartId').getContext('2d');
-                    let dataValues_@jsChartId = @Html.Raw(valuesJson);
-                    let batchLabels_@jsChartId = @Html.Raw(labelsJson);
-
-            
-                    let chartType_@jsChartId = "bar";
-                    let indexAxis_@(jsChartId) = "x"; // Default to vertical bar chart 
-
-                    if ("@metric" === "RemainingDays") {
-                        indexAxis_@(jsChartId) = "y"; // Switch to horizontal bar chart
-                    }
-
-                    if (typeof dataValues_@(jsChartId)[0] === "boolean") {
-                        // Store the original boolean values for color mapping
-                        var booleanValues_@jsChartId = [...dataValues_@(jsChartId)];
-                        
-                        // Create color array based on original boolean values
-                        var barColors_@jsChartId = booleanValues_@(jsChartId).map(value => 
-                            value ? "red" : "green"); // true = green, false = red (or swap if preferred)
-                        
-                        // Convert all values to 1 for consistent height
-                        dataValues_@(jsChartId) = dataValues_@(jsChartId).map(value => 1);
-                    }
-
-                    new Chart(ctx_@jsChartId, {
-                        type: chartType_@jsChartId,
-                        data: {
-                            labels: batchLabels_@jsChartId,
-                            datasets: [{
-                                label: "@metric",
-                                data: dataValues_@jsChartId,
-                                backgroundColor: typeof barColors_@jsChartId !== "undefined" ? barColors_@jsChartId : [
-                                    'rgba(255, 99, 132, 0.6)',
-                                    'rgba(54, 162, 235, 0.6)',
-                                    'rgba(255, 206, 86, 0.6)',
-                                    'rgba(75, 192, 192, 0.6)',
-                                    'rgba(153, 102, 255, 0.6)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            indexAxis: indexAxis_@(jsChartId), 
-                            scales: chartType_@jsChartId === "bar" ? {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            } : {}
-                        }
-                    });
+                    renderChart(
+                        "@chartId", "@metric", @Html.Raw(labelsJson), @Html.Raw(valuesJson),null,"bar","@(metric == "RemainingDays" ? "y" : "x")"
+                        ); 
                 </text>
+
+            }
         }
     }
+
+
+    Chart.register(ChartDataLabels); 
+    function renderChart ( chartId, chartLabel, labels, data , barColors = null, chartType = "bar", indexAxis = "x")
+    {
+        const ctx = document.getElementById(chartId).getContext('2d'); 
+
+        // 🧠 Check for boolean values and convert accordingly
+        let finalData = data;
+        let finalColors = barColors;
+        let max = Math.min(Math.max(...data),100) ; 
+        if (typeof data[0] === "boolean") 
+        {
+            // Convert booleans to 1s
+            finalData = data.map(val => val ? 1 : 1); // Always height of 1
+            finalColors = data.map(val => val ? "red" : "green"); // Green for true, red for false
+            max = 1.5
+        }
+
+        new Chart( ctx , 
+        {
+            type: chartType, 
+            data : 
+            {
+                labels : labels,
+                datasets:[
+                {
+                    label : chartLabel,
+                    data : finalData,
+                    backgroundColor: finalColors || 
+                    [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)'
+                    ],
+                borderWidth : 1 
+                }]
+            },
+            options: 
+            {
+                responsive: true,
+                indexAxis: indexAxis,
+                plugins : 
+                {
+                    tooltip : 
+                    {
+                        //on hover controls what is appearing
+                        callbacks: 
+                        {
+                            label: function(context)
+                            {
+                                if (typeof data[0] === "boolean") {
+                                    return data[context.dataIndex] ? "Expired" : "Still Good";
+                                }
+                                return context.dataset.label + ": " + context.parsed.y; 
+                            }
+                        }
+                    },
+                    datalabels: 
+                    {
+                        color: 'black',
+                        anchor: 'end',
+                        align: 'top',
+                        font: { weight: 'bold' },
+                        formatter: function(value, context) {
+                            if (typeof data[0] === "boolean") {
+                                return data[context.dataIndex] ? "Expired" : "Still Good";
+                            }
+                            return ""; // No label if not boolean
+                        }
+                    }
+                },
+                scales: chartType === "bar" ? 
+                {
+                    y: 
+                    {
+                        beginAtZero: true,
+                        max: max,
+                        ticks: 
+                        {
+                            // if data is boolean , we can use 0/1 
+                            callback : function (value) {
+                                  return typeof data[0] === "boolean" ? (value === 1 ? chartLabel : "") : value;
+                            }
+                        }
+                    }
+                } : {}
+            }
+        });
     }
 
     function generateProductCharts()
@@ -723,6 +755,9 @@
             </text>
         }
     }
+
+
+
 </script>
 
 
