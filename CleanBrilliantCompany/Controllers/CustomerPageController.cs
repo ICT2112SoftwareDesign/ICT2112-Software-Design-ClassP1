@@ -18,6 +18,8 @@ namespace CleanBrilliantCompany.Controllers
         private readonly CartManagement _cartManagement;
         private readonly IProduct _productService;
 
+        private readonly ReviewManagement _reviewManagement; 
+
         private readonly IShippingAgents _shippingAgents;
 
 
@@ -29,7 +31,8 @@ namespace CleanBrilliantCompany.Controllers
             OrderManagement orderManagement,
             CartManagement cartManagement,
             IProduct productService,
-            IShippingAgents shippingAgents) 
+            IShippingAgents shippingAgents,
+            ReviewManagement reviewManagement) 
         {
             _logger = logger;
             _customerManagement = customerManagement;
@@ -39,6 +42,7 @@ namespace CleanBrilliantCompany.Controllers
             _cartManagement = cartManagement;
             _productService = productService;
             _shippingAgents = shippingAgents;
+            _reviewManagement = reviewManagement;
         }
 
         public IActionResult CustomerDetails()
@@ -691,6 +695,62 @@ namespace CleanBrilliantCompany.Controllers
 
             return RedirectToAction("Completed");
         }
+
+
+        //REVIEW INPUT CONTROLLER METHODS 
+
+        [HttpPost]
+        public IActionResult SubmitReivew (string reviewText, int rating, int productId)
+        { 
+            if(!_reviewManagement.WriteReview(reviewText, rating, productId))
+            { 
+                TempData["Error"] = "Failed to submit review. Make sure all fields are valid.";
+            }
+            else
+            {
+                TempData["Success"] = "Review submitted successfully!";
+            }
+
+            return RedirectToAction("GetAllProducts"); // gotta check where to go next. 
+        }
+
+        [HttpPost]
+        public IActionResult EditReview(int reviewId, string reviewText, int rating)
+        {
+            if (!_reviewManagement.EditReview(reviewId, reviewText, rating))
+            {
+                TempData["Error"] = "Failed to edit review. Please try again.";
+            }
+            else
+            {
+                TempData["Success"] = "Review updated successfully!";
+            }
+
+            return RedirectToAction("GetAllProducts");
+        }
+        [HttpPost]
+        public IActionResult RemoveReview(int reviewId)
+        {
+            if (!_reviewManagement.DeleteReview(reviewId))
+            {
+                TempData["Error"] = "Failed to delete review.";
+            }
+            else
+            {
+                TempData["Success"] = "Review deleted successfully!";
+            }
+
+            return RedirectToAction("GetAllProducts");
+        }
+
+        [HttpGet]
+        public IActionResult ViewReviews()
+        {
+            var reviews = _reviewManagement.ViewReviews();
+            return View("~/Views/Review/ReviewHTML.cshtml", reviews);
+        }
+
+
 
 
 

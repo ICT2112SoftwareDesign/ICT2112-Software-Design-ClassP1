@@ -61,9 +61,8 @@ namespace CleanBrilliantCompany.Models
             this.productId = productId;
         }
     
-        public bool CreateReview(int reviewId, int customerId, string review, int rating, int productId)
+        public bool CreateReview(int customerId, string review, int rating, int productId)
         {
-            this.reviewId = reviewId;
             this.customerId = customerId;
             this.review = review;
             this.rating = rating;
