@@ -1,10 +1,9 @@
 ﻿using CleanBrilliantCompany.DTO;
 using System.Collections.Generic;
-using CleanBrilliantCompany.Models.Forecast;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.DataSource.Interface;
 
-namespace CleanBrilliantCompany.Interfaces.Forecast
+namespace CleanBrilliantCompany.Models.Forecast
 {
     public class ForecastFacade
     {
@@ -38,20 +37,37 @@ namespace CleanBrilliantCompany.Interfaces.Forecast
         }
         public ForecastDashboard generateDashboard(DateTime selectedMonth, int adjustmentFactor = 0)
         {
+            
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
             getSalesAndProduct(selectedMonth, out productList, out aggregatedSales);//to be updated to accept selectedMonth to pull data for exact months
-            ForecastDashboard dashboard = new ForecastDashboard(0, selectedMonth, selectedMonth.AddMonths(1).AddDays(-1), DateTime.Now, 0, new List<ForecastMetrics>()
+            ForecastDashboard dashboard = _forecastRepository.getDashboard(selectedMonth.Month, selectedMonth.Year);
+            if (dashboard == null)
+            {
+                 dashboard = new ForecastDashboard(0, selectedMonth, selectedMonth.AddMonths(1).AddDays(-1), DateTime.Now, 0, new List<ForecastMetrics>()
 );
 
-            foreach (ProductDTO product in productList)
-            {
-                ForecastMetrics metric = _metricFactory.GenerateForecastMetric(product.ID, aggregatedSales, product, adjustmentFactor);
-                dashboard.AddMetric(metric);
+                foreach (ProductDTO product in productList)
+                {
+                    ForecastMetrics metric = _metricFactory.GenerateForecastMetric(product.ID, aggregatedSales, product, adjustmentFactor);
+                    dashboard.AddMetric(metric);
 
+                }
+                _forecastRepository.saveDashboard(dashboard);
+                //Save to repo
+                //List<ForecastMetrics> metrics = _stockPredictionService.generateStockPrediction(aggregatedSales, productList);
             }
-            //Save to repo
-            //List<ForecastMetrics> metrics = _stockPredictionService.generateStockPrediction(aggregatedSales, productList);
+            else
+            {
+                foreach (var metric in dashboard.GetMetrics())
+                {
+                    var product = productList.FirstOrDefault(p => p.ID == metric.getProductId());
+                    metric.setProductName(product.Name);
+                    
+                }
+            }
+            
+
             return dashboard;
 
         }

@@ -7,6 +7,12 @@ namespace CleanBrilliantCompany.Models.Forecast
     {
         
         public StockForecast() { }
+        public StockForecast(int productId, int stockRequired)
+        {
+            this.setProductId(productId);
+            this.setForecastedStock(stockRequired);
+
+        }
         public StockForecast(int productId, int stockRequired, string productName)
         {
             this.setProductId(productId);

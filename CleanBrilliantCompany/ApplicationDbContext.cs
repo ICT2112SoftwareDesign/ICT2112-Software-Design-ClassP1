@@ -7,7 +7,7 @@ public class ApplicationDbContext : DbContext
     //public DbSet<DashboardTable> Dashboards { get; set; }
     //public DbSet<AgingAnalyticsDetailsTable> AgingAnalyticsDetails { get; set; }
     public DbSet<ForecastDashboardDTO>  ForecastDashboards { get; set; }
-    //public DbSet<ForecastMetrics> ForecastMetrics { get; set; }
+    public DbSet<MetricDTO> ForecastMetrics { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -28,8 +28,8 @@ public class ApplicationDbContext : DbContext
         //    .HasKey(a => a.AnalyticsId);  // Set AnalyticsId as the primary key
         modelBuilder.Entity<ForecastDashboardDTO>().ToTable("ForecastDashboard");
         modelBuilder.Entity<ForecastDashboardDTO>().HasKey(d => d.DashBoardID);
-        //modelBuilder.Entity<StockForecast>().ToTable("StockForecast");
-        //modelBuilder.Entity<StockForecast>().HasKey(d => d.getProductID());
+        modelBuilder.Entity<MetricDTO>().ToTable("ForecastMetrics");
+        modelBuilder.Entity<MetricDTO>().HasKey(d => d.MetricsID);
 
         base.OnModelCreating(modelBuilder);
     }

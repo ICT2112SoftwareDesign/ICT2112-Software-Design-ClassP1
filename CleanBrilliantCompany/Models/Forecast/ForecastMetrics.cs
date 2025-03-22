@@ -10,7 +10,10 @@ namespace CleanBrilliantCompany.Models.Forecast
         private int productId { get; set; }
         private int forecastedStock { get; set; }
         private String productName {  get; set; }
-
+        public int getMetricId()
+        {
+            return metricId;
+        }
 
         public int getProductId()
         {

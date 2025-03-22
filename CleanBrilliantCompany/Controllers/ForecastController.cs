@@ -2,7 +2,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using CleanBrilliantCompany.DataSource.Interface;
-using CleanBrilliantCompany.Interfaces.Forecast;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.Forecast;
 using Microsoft.AspNetCore.Mvc;
