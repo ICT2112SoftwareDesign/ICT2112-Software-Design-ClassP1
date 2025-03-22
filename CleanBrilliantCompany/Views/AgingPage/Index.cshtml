@@ -364,7 +364,9 @@
                                     </div>
 
                                     <h3>Analytics</h3>
-
+                                    <div class="mb-3">
+                                        <input id="productSearchInput" type="text" class="form-control" placeholder="Search by Product ID...">
+                                    </div>
                                     <div class="mb-4">
                                         <button class="btn btn-outline-primary me-2" id="showBatchView">Batch View</button>
                                         <button class="btn btn-outline-secondary" id="showProductView">Product View</button>
@@ -381,7 +383,7 @@
                                                 @* ✅ Loop through each product *@
                                                 @foreach (var product in productToBatchMap)
                                                 {
-                                                    <div class="col-12">
+                                                    <div class="product-section col-12" data-product-id="@product.Key">
                                                         <h4 class="text-primary">Product ID: @product.Key</h4>
 
                                                         @* ✅ Get all unique metrics from all batches in this product *@
@@ -509,11 +511,28 @@
     <!-- Your Custom JS Script Here -->
     <script>
 
+        // filtering the product sections based on the search input
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.getElementById("productSearchInput");
+
+            input.addEventListener("input", function () {
+                const query = input.value.trim().toLowerCase();
+                const productSections = document.querySelectorAll(".product-section");
+
+                productSections.forEach(section => {
+                    const productId = section.getAttribute("data-product-id").toLowerCase();
+                    section.style.display = productId.includes(query) ? "block" : "none";
+                });
+            });
+        });
+
+        // Show Batch View Button Click Event
         document.getElementById("showBatchView").addEventListener("click", () => {
             document.getElementById("batchViewContainer").style.display = "block";
             document.getElementById("productViewContainer").style.display = "none";
         });
-
+        
+        // Show Product View Button Click Event
         document.getElementById("showProductView").addEventListener("click", () => {
             document.getElementById("batchViewContainer").style.display = "none";
             document.getElementById("productViewContainer").style.display = "block";
@@ -556,6 +575,9 @@
 
     const allMetrics = @Html.Raw(Json.Serialize(allMetrics));
 
+
+
+
     function generateBatchCharts() 
     {
         @foreach (var product in Model.getProductToBatchMap())
@@ -582,12 +604,36 @@
                 var jsChartId = $"{productKey}{metric}";
                 var valuesJson = Json.Serialize(batchData.Values);
                 var labelsJson = Json.Serialize(batchData.Keys);
-                
-                <text>
-                    renderChart(
-                        "@chartId", "@metric", @Html.Raw(labelsJson), @Html.Raw(valuesJson),null,"bar","@(metric == "RemainingDays" ? "y" : "x")"
-                        ); 
-                </text>
+                Console.WriteLine("valuesJson" + valuesJson); 
+                Console.WriteLine("labelsJson" + labelsJson); 
+                var axis = metric == "RemainingDays" ? "y" : "x";
+
+                // need to mod the data for deadstockpercentage as each value should be 100 percent but 2 different colors 
+                if (metric == "DeadStockPercentage")
+                {
+                    var deadstockValues = batchData.Values.Select(v => Convert.ToDouble(v)).ToList();
+                    var usedValues = deadstockValues.Select(v => 100 - v).ToList();
+
+                    var usedJson = Json.Serialize(usedValues);
+                    var deadJson = Json.Serialize(deadstockValues);
+
+                    <text>
+                        renderStackedChart(
+                            "@chartId",
+                            @Html.Raw(labelsJson),
+                            @Html.Raw(usedJson),
+                            @Html.Raw(deadJson)
+                        );
+                    </text>
+                } else 
+                {
+                    <text>
+                        renderChart(
+                            "@chartId", "@metric", @Html.Raw(labelsJson), @Html.Raw(valuesJson),null,"bar","@axis"
+                            ); 
+                    </text>                    
+                }
+
 
             }
         }
@@ -595,14 +641,58 @@
 
 
     Chart.register(ChartDataLabels); 
+
+    function renderStackedChart(chartId, labels, usedData, deadData) 
+    {
+        const ctx = document.getElementById(chartId).getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Used Stock',
+                        data: usedData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        stack: 'stack1'
+                    },
+                    {
+                        label: 'Dead Stock',
+                        data: deadData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        stack: 'stack1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                },
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true, beginAtZero: true }
+                }
+            }
+        });
+    }
+
+
     function renderChart ( chartId, chartLabel, labels, data , barColors = null, chartType = "bar", indexAxis = "x")
     {
+        console.log ("chartLabel", chartLabel); 
+        console.log ("labels", labels); 
         const ctx = document.getElementById(chartId).getContext('2d'); 
 
         // 🧠 Check for boolean values and convert accordingly
         let finalData = data;
         let finalColors = barColors;
         let max = Math.min(Math.max(...data),100) ; 
+
         if (typeof data[0] === "boolean") 
         {
             // Convert booleans to 1s
@@ -610,6 +700,7 @@
             finalColors = data.map(val => val ? "red" : "green"); // Green for true, red for false
             max = 1.5
         }
+        
 
         new Chart( ctx , 
         {
