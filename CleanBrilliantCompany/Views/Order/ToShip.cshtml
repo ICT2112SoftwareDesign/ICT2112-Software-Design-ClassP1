@@ -9,15 +9,6 @@
                 <strong>Order ID:</strong> @order.OrderID <br />
                 <strong>Status:</strong> @order.Status <br />
                 <strong>Total Price:</strong> $@order.OrderTotal <br />
-                @if (!string.IsNullOrEmpty(order.OrderShipping))
-                    {
-                        var shippingDetails = JsonSerializer.Deserialize<Dictionary<string, object>>(order.OrderShipping);
-                        <strong>Shipping Fee:</strong> $@shippingDetails["ShippingFee"]
-                    }
-                    else
-                    {
-                        <strong>Shipping Fee:</strong> Not Available
-                    }
                 <span class="float-right">
                     <form method="post" asp-action="CancelOrder">
                         <input type="hidden" name="orderId" value="@order.OrderID" />
