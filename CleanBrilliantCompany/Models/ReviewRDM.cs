@@ -6,7 +6,7 @@ namespace CleanBrilliantCompany.Models
     {
             private int reviewId;
             private int customerId;
-            private string review;
+            private string reviewText;
             private int rating;
             private int productId;
 
@@ -33,12 +33,12 @@ namespace CleanBrilliantCompany.Models
 
         public string GetReview()
         {
-            return review;
+            return reviewText;
         }
 
-        public void SetReview(string review)
+        public void SetReview(string reviewText)
         {
-            this.review = review;
+            this.reviewText = reviewText;
         }
 
         public int GetRating()
@@ -61,10 +61,10 @@ namespace CleanBrilliantCompany.Models
             this.productId = productId;
         }
     
-        public bool CreateReview(int customerId, string review, int rating, int productId)
+        public bool CreateReview(int customerId, string reviewText, int rating, int productId)
         {
             this.customerId = customerId;
-            this.review = review;
+            this.reviewText = reviewText;
             this.rating = rating;
             this.productId = productId;
 

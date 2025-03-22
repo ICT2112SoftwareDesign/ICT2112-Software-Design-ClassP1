@@ -1,6 +1,7 @@
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Observers;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,16 @@ builder.Services.AddSingleton<ICustomerDatabase>(provider => {
     return new CustomerMapper(connectionString, observer);
 });
 
+// 1. Register the Review Observer
+builder.Services.AddSingleton<IReviewQueryObserver, ReviewActivityLogger>(); // You can change to another implementation later
+
+// 2. Register the ReviewDatabase Mapper (depends on IReviewQueryObserver)
+builder.Services.AddSingleton<IReviewDatabase>(provider =>
+{
+    var observer = provider.GetRequiredService<IReviewQueryObserver>();
+    return new ReviewMapper(connectionString, observer);
+});
+
 // Finally the management (which depends on the mapper)
 builder.Services.AddTransient<CustomerManagement>();
 
@@ -39,6 +50,7 @@ builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
 builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
 builder.Services.AddTransient<ICartManagement, CartManagement>();
 builder.Services.AddTransient<WishlistManagement>();
+builder.Services.AddTransient<ReviewManagement>();
 
 var app = builder.Build();
 

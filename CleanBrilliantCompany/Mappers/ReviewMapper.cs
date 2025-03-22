@@ -39,11 +39,17 @@ namespace CleanBrilliantCompany.Mappers
                 int rowsAffected = command.ExecuteNonQuery();
                 bool success = rowsAffected > 0;
 
-                _observer.NotifyDBReviewQueryStatus();
+                if (success)
+                    _observer.OnReviewSubmitted(customerId, productId, rating);
+                else
+                    _observer.OnReviewQueryFailed(customerId, "Insert operation returned 0 rows affected.");
+
                 return success;
             }
-            catch (Exception)
+            catch (Exception ex)
             { 
+                _observer.OnReviewQueryFailed(customerId, ex.Message);
+
                 return false; 
             }
 
@@ -69,12 +75,16 @@ namespace CleanBrilliantCompany.Mappers
                 int rowsAffected = command.ExecuteNonQuery();
                 bool success = rowsAffected > 0;
 
-                _observer.NotifyDBReviewQueryStatus();
+                if (success)
+                    _observer.OnReviewUpdated(reviewId, customerId, rating);
+                else
+                    _observer.OnReviewQueryFailed(customerId, "Update operation returned 0 rows affected.");
+
                 return success;
             }
-             catch (Exception)
+             catch (Exception ex)
             {
-                // TODO: log exception
+                _observer.OnReviewQueryFailed(customerId, ex.Message);
                 return false;
             }
 
@@ -98,7 +108,7 @@ namespace CleanBrilliantCompany.Mappers
                 int rowsAffected = command.ExecuteNonQuery();
                 bool success = rowsAffected > 0;
 
-                _observer.NotifyDBReviewQueryStatus();
+                //_observer.NotifyDBReviewQueryStatus();
                 return success;
             }
             catch (Exception)

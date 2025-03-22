@@ -6,24 +6,24 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class ReviewManagement : IReviewQueryObserver
+    public class ReviewManagement 
     {    
         private ReviewRDM reviewRDM; 
         private IReviewDatabase reviewDatabase;
         private IProduct productService;
         private IHttpContextAccessor _httpContextAccessor;
-
-        private IReviewQueryObserver _observer; 
+        private readonly IReviewQueryObserver _observer;
 
         
         
 
 
-        public ReviewManagement(IReviewDatabase reviewDatabase, IProduct productService, IHttpContextAccessor httpContextAccessor)
+        public ReviewManagement(IReviewDatabase reviewDatabase, IProduct productService, IHttpContextAccessor httpContextAccessor, IReviewQueryObserver observer)
         {
             this.reviewDatabase = reviewDatabase;
             this.productService = productService;
             this._httpContextAccessor = httpContextAccessor;
+            this._observer = observer;
             this.reviewRDM = new ReviewRDM();
         }
 
@@ -61,10 +61,13 @@ namespace CleanBrilliantCompany.Models
             bool success = reviewRDM.CreateReview(customerId.Value, reviewText, rating, productId); // 0 as placeholder
 
 
-            if (success)
+             if (success)
             {
                 success = reviewDatabase.addReview(customerId.Value, reviewText, rating, productId);
-                NotifyDBReviewQueryStatus();
+                if (success)
+                    _observer.OnReviewSubmitted(customerId.Value, productId, rating);
+                else
+                    _observer.OnReviewQueryFailed(customerId.Value, "Database insert failed.");
             }
 
             return success;
@@ -86,7 +89,11 @@ namespace CleanBrilliantCompany.Models
 
             bool success = reviewDatabase.updateReview(customerId.Value, reviewText, rating, reviewId);
 
-            NotifyDBReviewQueryStatus();
+            if (success)
+                _observer.OnReviewUpdated(reviewId, customerId.Value, rating);
+            else
+                _observer.OnReviewQueryFailed(customerId.Value, "Update failed in database.");
+
 
             return success;
         }
@@ -99,7 +106,10 @@ namespace CleanBrilliantCompany.Models
                 return false;
 
             bool success = reviewDatabase.deleteReview(customerId.Value, reviewId);
-            NotifyDBReviewQueryStatus();
+            if (success)
+                _observer.OnReviewDeleted(reviewId, customerId.Value);
+            else
+                _observer.OnReviewQueryFailed(customerId.Value, "Failed to delete review from database.");
 
             return success;
         }
@@ -111,10 +121,10 @@ namespace CleanBrilliantCompany.Models
             return ConvertToReviewModel(reviewDatabase.GetAllReviews());
         }
 
-         public void NotifyDBReviewQueryStatus()
-        {
+        // public void NotifyDBReviewQueryStatus()
+        //{
             // Hook for observer pattern – logging, monitoring, etc.
-        }
+        //}
 
          private bool VerifyReviewOwnership(int reviewId, int customerId)
         {
