@@ -15,109 +15,117 @@
 }
 
 <div class="container mt-5">
-    <h2 class="text-center">Checkout</h2>
+    <h2 class="text-center mb-4">Checkout</h2>
 
     @if (cart == null || !cart.Any())
     {
         <div class="alert alert-info text-center">
-            Your cart is empty. <a asp-controller="CustomerPage" asp-action="GetAllProducts">Continue shopping</a>.
+                Your cart is empty. <a asp-controller="CustomerPage" asp-action="GetAllProducts">Continue shopping</a>.
         </div>
     }
     else
     {
-        <!-- Cart Table -->
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in cart)
-                {
-                    var product = products[item.Key];
-                    <tr>
-                        <td>@product["ProductName"]</td>
-                        <td>@item.Value</td>
-                        <td>$@(Convert.ToDecimal(product["CostPrice"]) * item.Value)</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-       <!-- Address Form -->
-        <form id="checkoutForm" asp-action="Checkout" method="post">
-            <div class="form-group">
-            <label for="deliveryAddress">Delivery Address</label>
-                <textarea id="deliveryAddress" name="deliveryAddress" class="form-control" rows="3" placeholder="Enter your delivery address" required>@ViewBag.CustomerAddress</textarea>
-            </div>  
-            <div class="form-group">
-                <label for="serviceType">Service Type</label>
-                <select id="serviceType" name="serviceType" class="form-control">
-                    @foreach (var serviceOption in serviceTypes)
-                    {
-                        if (serviceOption == selectedServiceType)
-                        {
-                            <option value="@serviceOption" selected>@serviceOption</option>
-                        }
-                        else
-                        {
-                            <option value="@serviceOption">@serviceOption</option>
-                        }
-                    }
-                </select>
+        <div class="row">
+            <!-- Shipping Details -->
+            <div class="col-md-6">
+                <h4 class="mb-3">Shipping Details</h4>
+                <form id="checkoutForm" asp-action="Checkout" method="post">
+                    <div class="form-group">
+                        <label for="deliveryAddress">Shipping Address (Postal Code, Street Name & Building Unit)</label>
+                        <textarea id="deliveryAddress" name="deliveryAddress" class="form-control" rows="3" placeholder="Enter your delivery address" required>@ViewBag.CustomerAddress</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="serviceType">Delivery Time</label>
+                        <select id="serviceType" name="serviceType" class="form-control">
+                            @foreach (var serviceOption in serviceTypes)
+                            {
+                                if (serviceOption == selectedServiceType)
+                                {
+                                    <option value="@serviceOption" selected>@serviceOption</option>
+                                }
+                                else
+                                {
+                                    <option value="@serviceOption">@serviceOption</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="shippingType">Shipping Type</label>
+                        <select id="shippingType" name="shippingType" class="form-control">
+                            @foreach (var shippingOption in shippingMethods)
+                            {
+                                if (shippingOption == selectedShippingType)
+                                {
+                                    <option value="@shippingOption" selected>@shippingOption</option>
+                                }
+                                else
+                                {
+                                    <option value="@shippingOption">@shippingOption</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="shippingAgent">Shipping Agent</label>
+                        <select id="shippingAgent" name="shippingAgent" class="form-control">
+                            @foreach (var agent in shippingAgents)
+                            {
+                                if (agent == selectedShippingAgent)
+                                {
+                                    <option value="@agent" selected>@agent</option>
+                                }
+                                else
+                                {
+                                    <option value="@agent">@agent</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="shippingType">Shipping Type</label>
-                <select id="shippingType" name="shippingType" class="form-control">
-                    @foreach (var shippingOption in shippingMethods)
-                    {
-                        if (shippingOption == selectedShippingType)
-                        {
-                            <option value="@shippingOption" selected>@shippingOption</option>
-                        }
-                        else
-                        {
-                            <option value="@shippingOption">@shippingOption</option>
-                        }
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="shippingAgent">Shipping Agent</label>
-                <select id="shippingAgent" name="shippingAgent" class="form-control">
-                    @foreach (var agent in shippingAgents)
-                    {
-                        if (agent == selectedShippingAgent)
-                        {
-                            <option value="@agent" selected>@agent</option>
-                        }
-                        else
-                        {
-                            <option value="@agent">@agent</option>
-                        }
-                    }
-                </select>
-            </div>
-        </form>
 
-<!-- Total Breakdown -->
-<div class="text-right mt-4">
-    <h5>Total Product Price: @cartTotal.ToString("C")</h5>
-    <h5>Total Shipping Fee: @shippingFee.ToString("C")</h5>
-    <h4><strong>Total: @finalTotal.ToString("C")</h4>
-</div>
+            <!-- Order Summary -->
+            <div class="col-md-6">
+                <h4 class="mb-3">Order Summary</h4>
+                <table class="table table-hover table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in cart)
+                        {
+                            var product = products[item.Key];
+                            <tr>
+                                <td>@product["ProductName"]</td>
+                                <td>@item.Value</td>
+                                <td>$@(Convert.ToDecimal(product["CostPrice"]) * item.Value)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="text-right mt-3">
+                    <h5>Total Product Price: @cartTotal.ToString("C")</h5>
+                    <h5>Total Shipping Fee: @shippingFee.ToString("C")</h5>
+                    <h4><strong>Total: @finalTotal.ToString("C")</strong></h4>
+                </div>
+            </div>
+        </div>
 
-<!-- Place Order Button -->
-<form asp-action="PlaceOrder" method="post">
-    <input type="hidden" id="hiddenDeliveryAddress" name="deliveryAddress" value="@customerAddress" />
-    <input type="hidden" name="serviceType" value="@selectedServiceType" />
-    <input type="hidden" name="shippingType" value="@selectedShippingType" />
-    <input type="hidden" name="shippingAgent" value="@selectedShippingAgent" />
-    <button type="submit" class="btn btn-primary btn-block" id="placeOrderButton">Place Order</button>
-</form>
+        <!-- Place Order Button -->
+        <div class="text-center mt-4">
+            <form asp-action="PlaceOrder" method="post">
+                <input type="hidden" id="hiddenDeliveryAddress" name="deliveryAddress" value="@customerAddress" />
+                <input type="hidden" name="serviceType" value="@selectedServiceType" />
+                <input type="hidden" name="shippingType" value="@selectedShippingType" />
+                <input type="hidden" name="shippingAgent" value="@selectedShippingAgent" />
+                <button type="submit" class="btn btn-primary btn-block" id="placeOrderButton">Place Order</button>
+            </form>
+        </div>
     }
 </div>
 
