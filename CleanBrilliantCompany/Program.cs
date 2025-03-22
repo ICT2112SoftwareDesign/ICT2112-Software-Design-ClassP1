@@ -16,8 +16,19 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddSingleton<ICustomerDatabase>(new CustomerMapper(connectionString));
+
+// Register the observer first
+builder.Services.AddSingleton<ICustomerQueryObserver, SystemLogger>();
+
+// Then the mapper (which depends on the observer)
+builder.Services.AddSingleton<ICustomerDatabase>(provider => {
+    var observer = provider.GetRequiredService<ICustomerQueryObserver>();
+    return new CustomerMapper(connectionString, observer);
+});
+
+// Finally the management (which depends on the mapper)
 builder.Services.AddTransient<CustomerManagement>();
+
 builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<ChatbotService>();
 builder.Services.AddScoped<IProduct, ProductManagement>(); 
@@ -27,10 +38,8 @@ builder.Services.AddTransient<CartManagement>();
 builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
 builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
 builder.Services.AddTransient<ICartManagement, CartManagement>();
-
-
-
 builder.Services.AddTransient<WishlistManagement>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
