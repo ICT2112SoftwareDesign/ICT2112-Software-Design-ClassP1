@@ -414,7 +414,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // Process the checkout form (Update shipping details)
-        [HttpPost]
+       [HttpPost]
         public IActionResult Checkout(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
         {
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
@@ -432,11 +432,16 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // Save the address if provided
-            if (!string.IsNullOrEmpty(deliveryAddress))
+            if (!string.IsNullOrWhiteSpace(deliveryAddress))
             {
+                // Optionally save the new address to the customer's profile
                 var customer = _customerManagement.getCustomer(customerID.Value);
-                customer.SetSession("customerAddress", deliveryAddress);
-                _customerManagement.updateCustomerDetails(customer.GetSession<string>("username"), customer.GetSession<string>("email"), deliveryAddress);
+                customer.SetSession("customerAddress", deliveryAddress); // Save to session
+            }
+            else
+            {
+                TempData["Error"] = "Delivery address is required.";
+                return RedirectToAction("Checkout");
             }
 
             // Calculate the shipping fee
@@ -465,7 +470,7 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.Products = products;
             ViewBag.Cart = cart;
             ViewBag.CartTotal = cartTotal;
-            ViewBag.CustomerAddress = deliveryAddress;
+            ViewBag.CustomerAddress = deliveryAddress; // Pass the updated address back to the view
             ViewBag.ServiceTypes = _shippingAgents.getServiceTypes();
             ViewBag.ShippingMethods = _shippingAgents.getShippingMethods();
             ViewBag.ShippingAgents = shippingAgents;
@@ -476,7 +481,7 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.FinalTotal = cartTotal + shippingFee;
 
             return View("~/Views/Order/Checkout.cshtml");
-        }   
+        }
 
 
         [HttpPost]
@@ -567,7 +572,7 @@ namespace CleanBrilliantCompany.Controllers
             // Create the order
             var orderId = _orderManagement.createOrder(
                 customerId.Value,
-                deliveryAddress,
+                deliveryAddress, // Ensure this is passed correctly
                 serviceType,
                 shippingType,
                 shippingAgent,
