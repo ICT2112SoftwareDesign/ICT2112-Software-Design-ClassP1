@@ -38,7 +38,7 @@ namespace CleanBrilliantCompany.Models.Forecast
                 "stock" => forecastingFacade.generateStockForecast(startDate),
                 _ => new List<ForecastMetrics>(), // Default to empty if type is invalid
             };
-            this.dashboard = new ForecastDashboard(startDate, endDate, metricList);
+            this.dashboard = new ForecastDashboard(0,startDate, endDate, DateTime.Now,0,metricList);
 
             return this.dashboard;
         }
@@ -55,7 +55,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             updatedMetrics.Add(newMetric);
             updatedMetrics = updatedMetrics.OrderBy(metric => metric.getProductId()).ToList();
 
-            this.dashboard = new ForecastDashboard(existingDashboard.GetStartDate(), existingDashboard.GetEndDate(), updatedMetrics);
+            this.dashboard = new ForecastDashboard(0,existingDashboard.GetStartDate(), existingDashboard.GetEndDate(),DateTime.Now,0, updatedMetrics);
             return this.dashboard;
         }
         public ForecastDashboard GetDashboard()

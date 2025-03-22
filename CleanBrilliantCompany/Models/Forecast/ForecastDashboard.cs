@@ -32,12 +32,14 @@ namespace CleanBrilliantCompany.Models.Forecast
         public ForecastDashboard()
         {
         }
-        public ForecastDashboard(DateTime startDate, DateTime endDate, List<ForecastMetrics> metricsList)
+        public ForecastDashboard(int dashboardID, DateTime startDate, DateTime endDate, DateTime generatedDate, int validityDuration,List<ForecastMetrics> metricsList)
         {
+            this.DashBoardID = dashboardID;
             this.StartDate= startDate;
             this.EndDate= endDate;
+            this.GeneratedDate= generatedDate;
+            this.ValidityDuration= validityDuration;
             this.MetricsList = metricsList;
-            this.GeneratedDate = DateTime.Now;
 
         }
 
