@@ -7,6 +7,7 @@ namespace CleanBrilliantCompany.Interfaces
     {
         OrderRDM getOrderDetails(int orderId);
         List<OrderRDM> getOrderHistory(int customerId);
+        List<OrderRDM> getAllOrders();
         bool cancelOrder(int orderId);
         bool updateOrderStatus(int orderId, string status);
         

@@ -43,7 +43,38 @@ namespace CleanBrilliantCompany.Models
                 return result != null ? Convert.ToInt32(result) : 0;
             }
         }
+        public List<OrderRDM> getAllOrders()
+        {
+            var orders = new List<OrderRDM>();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "SELECT * FROM CustOrder ORDER BY orderDate DESC";
+                var command = new SqlCommand(query, connection);
 
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        orders.Add(new OrderRDM
+                        {
+                            OrderID = Convert.ToInt32(reader["orderID"]),
+                            CustomerID = Convert.ToInt32(reader["customerID"]),
+                            OrderAddress = reader["orderAddress"].ToString(),
+                            OrderProducts = reader["orderProducts"] != DBNull.Value
+                                ? JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString())
+                                : new Dictionary<int, int>(),
+                            OrderShipping = reader["orderShipping"].ToString(),
+                            OrderItems = Convert.ToInt32(reader["orderItems"]),
+                            OrderDate = Convert.ToDateTime(reader["orderDate"]),
+                            Status = reader["Status"].ToString(),
+                            OrderTotal = Convert.ToDecimal(reader["orderTotal"])
+                        });
+                    }
+                }
+            }
+            return orders;
+        }
 
         public OrderRDM getOrderById(int orderId)
         {
@@ -63,8 +94,8 @@ namespace CleanBrilliantCompany.Models
                             OrderID = Convert.ToInt32(reader["orderID"]),
                             CustomerID = Convert.ToInt32(reader["customerID"]),
                             OrderAddress = reader["orderAddress"].ToString(),
-                            OrderProducts = reader["orderProducts"] != DBNull.Value 
-                                ? System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString()) 
+                            OrderProducts = reader["orderProducts"] != DBNull.Value
+                                ? System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString())
                                 : new Dictionary<int, int>(),
                             OrderShipping = reader["orderShipping"].ToString(),
                             OrderItems = Convert.ToInt32(reader["orderItems"]),

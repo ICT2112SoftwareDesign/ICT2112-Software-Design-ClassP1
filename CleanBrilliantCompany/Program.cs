@@ -1,4 +1,5 @@
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Management;
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Observers;
@@ -53,6 +54,7 @@ builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
 builder.Services.AddTransient<ICartManagement, CartManagement>();
 builder.Services.AddTransient<WishlistManagement>();
 builder.Services.AddTransient<ReviewManagement>();
+builder.Services.AddScoped<OrderFulfilmentManagement>();
 
 var app = builder.Build();
 

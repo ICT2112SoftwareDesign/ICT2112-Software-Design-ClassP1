@@ -7,13 +7,13 @@ namespace CleanBrilliantCompany.Models
 {
     public class OrderManagement : IOrder
     {
-    
+
         private readonly IOrderDatabase _orderDatabase;
         private readonly ICartManagement _cartManagement;
 
-        public OrderManagement( IOrderDatabase orderDatabase, ICartManagement cartManagement)
+        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement)
         {
-        
+
             _orderDatabase = orderDatabase;
             _cartManagement = cartManagement;
         }
@@ -72,6 +72,10 @@ namespace CleanBrilliantCompany.Models
                 // Log the error and rethrow or handle it
                 throw new Exception($"Failed to create order: {ex.Message}");
             }
+        }
+        public List<OrderRDM> getAllOrders()
+        {
+            return _orderDatabase.getAllOrders(); // Use the existing method in OrderMapper
         }
 
         public decimal calculateShippingFee(string serviceType)
