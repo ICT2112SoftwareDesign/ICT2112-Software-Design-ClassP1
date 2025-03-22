@@ -367,10 +367,24 @@ namespace CleanBrilliantCompany.Controllers
             // Fetch available shipping options
             var serviceTypes = _shippingAgents.getServiceTypes();
             var shippingMethods = _shippingAgents.getShippingMethods();
-            var defaultServiceType = serviceTypes.FirstOrDefault() ?? "1 Day"; // Use the first available service type
+
+            if (!serviceTypes.Any() || !shippingMethods.Any())
+            {
+                TempData["Error"] = "No shipping options are available at the moment.";
+                return RedirectToAction("GetAllProducts", "CustomerPage");
+            }
+
+            var defaultServiceType = serviceTypes.First(); // Use the first available service type
             var shippingAgents = _shippingAgents.getShippingAgentList(Enum.TryParse<Service>(defaultServiceType, out var serviceEnum) ? serviceEnum : Service.OneDay);
-            var defaultShippingAgent = shippingAgents.FirstOrDefault() ?? "DHL"; // Use the first available shipping agent
-            var defaultShippingType = shippingMethods.FirstOrDefault() ?? "Air"; // Use the first available shipping method
+
+            if (!shippingAgents.Any())
+            {
+                TempData["Error"] = "No shipping agents are available at the moment.";
+                return RedirectToAction("GetAllProducts", "CustomerPage");
+            }
+
+            var defaultShippingAgent = shippingAgents.First(); // Use the first available shipping agent
+            var defaultShippingType = shippingMethods.First(); // Use the first available shipping method
 
             // Calculate the cart total
             decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
@@ -582,7 +596,7 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Order/OrderConfirmation.cshtml");
         }
 
-        [HttpGet]
+       [HttpGet]
         public IActionResult ToShip()
         {
             int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
@@ -597,12 +611,41 @@ namespace CleanBrilliantCompany.Controllers
                                         .Where(o => o.Status == "Pending")
                                         .ToList();
 
-            // Fetch product details for each order
+            // Initialize the shippingDetails dictionary
+            var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
+
+            // Process each order
             foreach (var order in orders)
             {
+                // Fetch product details
                 order.OrderProductsDetails = _cartManagement.getCartProductDetails(order.OrderProducts);
+
+                // Deserialize shipping details from OrderShipping
+                if (!string.IsNullOrEmpty(order.OrderShipping))
+                {
+                    try
+                    {
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.OrderShipping);
+                        if (details != null)
+                        {
+                            // Dynamically calculate the shipping fee
+                            if (details.ContainsKey("ServiceType"))
+                            {
+                                details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
+                            }
+
+                            shippingDetails[order.OrderID] = details;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.OrderID}: {ex.Message}");
+                    }
+                }
             }
 
+            // Pass orders and shipping details to the view
+            ViewBag.ShippingDetails = shippingDetails;
             return View("~/Views/Order/ToShip.cshtml", orders);
         }
 
@@ -621,14 +664,44 @@ namespace CleanBrilliantCompany.Controllers
                                         .Where(o => o.Status == "Shipped")
                                         .ToList();
 
-            // Fetch product details for each order
+            // Initialize the shippingDetails dictionary
+            var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
+
+            // Process each order
             foreach (var order in orders)
             {
+                // Fetch product details
                 order.OrderProductsDetails = _cartManagement.getCartProductDetails(order.OrderProducts);
+
+                // Deserialize shipping details from OrderShipping
+                if (!string.IsNullOrEmpty(order.OrderShipping))
+                {
+                    try
+                    {
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.OrderShipping);
+                        if (details != null)
+                        {
+                            // Dynamically calculate the shipping fee
+                            if (details.ContainsKey("ServiceType"))
+                            {
+                                details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
+                            }
+
+                            shippingDetails[order.OrderID] = details;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.OrderID}: {ex.Message}");
+                    }
+                }
             }
 
+            // Pass orders and shipping details to the view
+            ViewBag.ShippingDetails = shippingDetails;
             return View("~/Views/Order/ToReceive.cshtml", orders);
         }
+
 
         [HttpGet]
         public IActionResult Completed()
@@ -640,20 +713,157 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            // Fetch orders with status "Completed" or "Canceled"
-            var orders = _orderManagement.getOrderHistory(customerId.Value)
-                                        .Where(o => o.Status == "Completed" || o.Status == "Cancelled")
-                                        .ToList();
+            // Fetch all orders for the customer
+            var orders = _orderManagement.getOrderHistory(customerId.Value);
 
-            // Fetch product details for each order
-            foreach (var order in orders)
+            // Filter only Completed orders
+            var completedOrders = orders.Where(o => o.Status == "Completed").ToList();
+
+            // Initialize the shippingDetails dictionary
+            var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
+
+            // Process each completed order to fetch shipping details
+            foreach (var order in completedOrders)
             {
+                // Fetch product details
                 order.OrderProductsDetails = _cartManagement.getCartProductDetails(order.OrderProducts);
+
+                // Deserialize shipping details from OrderShipping
+                if (!string.IsNullOrEmpty(order.OrderShipping))
+                {
+                    try
+                    {
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.OrderShipping);
+                        if (details != null)
+                        {
+                            // Dynamically calculate the shipping fee
+                            if (details.ContainsKey("ServiceType"))
+                            {
+                                details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
+                            }
+
+                            shippingDetails[order.OrderID] = details;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.OrderID}: {ex.Message}");
+                    }
+                }
             }
 
-            return View("~/Views/Order/Completed.cshtml", orders);
+            // Pass the completed orders and shipping details to the view
+            ViewBag.ShippingDetails = shippingDetails;
+            return View("~/Views/Order/Completed.cshtml", completedOrders);
         }
-        [HttpPost]
+
+        [HttpGet]
+        public IActionResult Cancelled()
+        {
+           int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Fetch all orders for the customer
+            var orders = _orderManagement.getOrderHistory(customerId.Value);
+
+            // Filter only Completed orders
+            var cancelledOrders = orders.Where(o => o.Status == "Cancelled").ToList();
+
+            // Initialize the shippingDetails dictionary
+            var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
+
+            // Process each completed order to fetch shipping details
+            foreach (var order in cancelledOrders)
+            {
+                // Fetch product details
+                order.OrderProductsDetails = _cartManagement.getCartProductDetails(order.OrderProducts);
+
+                // Deserialize shipping details from OrderShipping
+                if (!string.IsNullOrEmpty(order.OrderShipping))
+                {
+                    try
+                    {
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.OrderShipping);
+                        if (details != null)
+                        {
+                            // Dynamically calculate the shipping fee
+                            if (details.ContainsKey("ServiceType"))
+                            {
+                                details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
+                            }
+
+                            shippingDetails[order.OrderID] = details;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.OrderID}: {ex.Message}");
+                    }
+                }
+            }
+            // Pass the cancelled orders and shipping details to the view
+            ViewBag.ShippingDetails = shippingDetails;
+            return View("~/Views/Order/Cancelled.cshtml", cancelledOrders);
+        }
+
+        [HttpGet]
+        public IActionResult Refund()
+        {
+           int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerId == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Fetch all orders for the customer
+            var orders = _orderManagement.getOrderHistory(customerId.Value);
+
+            // Filter orders with statuses "Refunded" or "Refund Requested"
+            var refundOrders = orders.Where(o => o.Status == "Refunded" || o.Status == "RefundRequested").ToList();
+
+            // Initialize the shippingDetails dictionary
+            var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
+
+            // Process each completed order to fetch shipping details
+            foreach (var order in refundOrders)
+            {
+                // Fetch product details
+                order.OrderProductsDetails = _cartManagement.getCartProductDetails(order.OrderProducts);
+
+                // Deserialize shipping details from OrderShipping
+                if (!string.IsNullOrEmpty(order.OrderShipping))
+                {
+                    try
+                    {
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.OrderShipping);
+                        if (details != null)
+                        {
+                            // Dynamically calculate the shipping fee
+                            if (details.ContainsKey("ServiceType"))
+                            {
+                                details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
+                            }
+
+                            shippingDetails[order.OrderID] = details;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.OrderID}: {ex.Message}");
+                    }
+                }
+            }
+            // Pass the refund orders and shipping details to the view
+            ViewBag.ShippingDetails = shippingDetails;
+            return View("~/Views/Order/Refund.cshtml", refundOrders);
+        }
+
+         [HttpPost]
         public IActionResult CancelOrder(int orderId)
         {
             int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");

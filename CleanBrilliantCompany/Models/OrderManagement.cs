@@ -47,7 +47,7 @@ namespace CleanBrilliantCompany.Models
                     ShippingAgent = shippingAgent,
                     ShippingMethod = shippingType,
                     ServiceType = serviceType,
-                    ShippingFee = shippingFee // Include the shipping fee here
+                    ShippingFee = shippingFee.ToString("F2") // Include the shipping fee here
                 };
                 string orderShippingJson = System.Text.Json.JsonSerializer.Serialize(shippingDetails);
 
