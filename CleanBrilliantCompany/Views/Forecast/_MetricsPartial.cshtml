@@ -170,7 +170,19 @@
         var sliderValue = allSameAndNonZero ? adjustmentFactors.First() : 0;
 
     }
-   
+    @if (Model != null && Model.GetAlertItemList().Any())
+    {
+        <div class="alert alert-info" role="alert">
+            <strong>Top Demanded Products:</strong>
+            <ul>
+                @foreach (var alert in Model.GetAlertItemList())
+                {
+                    <li>@alert</li>
+                }
+            </ul>
+        </div>
+    }
+
     <div class="global-slider-container">
         <!-- Use a flex container so everything is in one row -->
         <div class="d-flex align-items-center justify-content-between">

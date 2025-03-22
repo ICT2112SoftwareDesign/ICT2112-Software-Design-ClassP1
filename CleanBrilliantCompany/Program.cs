@@ -41,6 +41,8 @@ builder.Services.AddScoped<IForecastRepository, ForecastMapper>();
 //builder.Services.AddScoped<ForecastControl>();
 builder.Services.AddScoped<MetricFactory>();
 builder.Services.AddScoped<ForecastFacade>();
+builder.Services.AddScoped<IAlert, TopDemandAlert>();
+
 
 
 

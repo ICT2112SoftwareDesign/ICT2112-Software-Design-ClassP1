@@ -27,8 +27,8 @@ namespace CleanBrilliantCompany.Models.Forecast
 
         private List<ForecastMetrics> MetricsList { get; set; } = new List<ForecastMetrics>();
 
-
-
+        [JsonInclude]
+        private List<string> AlertItemList { get; set; } = new List<string>(); 
         public ForecastDashboard()
         {
         }
@@ -122,6 +122,15 @@ namespace CleanBrilliantCompany.Models.Forecast
         public void DeleteMetric(int productId)
         {
             MetricsList.RemoveAll(metric => metric.getProductID() == productId);
+        }
+
+        public List<string> GetAlertItemList()
+        {
+            return this.AlertItemList;
+        }
+        public void SetAlertItemList(List<string> list)
+        {
+            this.AlertItemList = list;
         }
 
 

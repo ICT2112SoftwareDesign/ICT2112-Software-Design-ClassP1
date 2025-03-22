@@ -58,7 +58,7 @@ namespace CleanBrilliantCompany.Controllers
             
             
             // Generate the forecast dashboard using ForecastControl
-            ForecastDashboard dashboard = _forecastFacade.generateDashboard(
+            ForecastDashboard dashboard= _forecastFacade.generateDashboard(
                  forecastMonth, priceAdjustment
             );
 

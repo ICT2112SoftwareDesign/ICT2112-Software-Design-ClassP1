@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.DataSource.Interface;
+using CleanBrilliantCompany.Interfaces.Forecast;
 
 namespace CleanBrilliantCompany.Models.Forecast
 {
@@ -14,12 +15,14 @@ namespace CleanBrilliantCompany.Models.Forecast
         private readonly ISales _isale; //simulated interface
         private readonly MetricFactory _metricFactory;
         private readonly IForecastRepository _forecastRepository;
+        private readonly IAlert _alertService;
 
         public ForecastFacade(
         MetricFactory metricFactory,
         IForecastRepository forecastRepository,
         IProduct iProduct,
-        ISales iSale)
+        ISales iSale,
+        IAlert alertService)
         {
             //_stockPredictionService = stockPredictionService;
             //_scenarioPricingService = scenarioPricingService;
@@ -28,6 +31,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             _isale = iSale;
             _metricFactory = metricFactory;
             _forecastRepository = forecastRepository;
+            _alertService = alertService;
 
         }
         public ForecastDashboard getLatestDashboard()
@@ -54,6 +58,7 @@ namespace CleanBrilliantCompany.Models.Forecast
 
                 }
                 _forecastRepository.saveDashboard(dashboard);
+               
                 //Save to repo
                 //List<ForecastMetrics> metrics = _stockPredictionService.generateStockPrediction(aggregatedSales, productList);
             }
@@ -65,6 +70,12 @@ namespace CleanBrilliantCompany.Models.Forecast
                     metric.setProductName(product.Name);
                     
                 }
+            }
+            List<string> alert = new List<string>();
+            if (dashboard.GetMetrics().Count != 0)
+            {
+               alert=_alertService.alert(dashboard.GetMetrics());
+                dashboard.SetAlertItemList(alert);
             }
             
 
@@ -82,6 +93,12 @@ namespace CleanBrilliantCompany.Models.Forecast
             ForecastMetrics metric = _metricFactory.GenerateForecastMetric(productId, aggregatedSales, product, adjustmentFactor);
             dashboard.DeleteMetric(productId);
             dashboard.AddMetric(metric);
+            List<string> alert = new List<string>();
+            if (dashboard.GetMetrics().Count != 0)
+            {
+                alert = _alertService.alert(dashboard.GetMetrics());
+                dashboard.SetAlertItemList(alert);
+            }
 
 
             //Save to repo
