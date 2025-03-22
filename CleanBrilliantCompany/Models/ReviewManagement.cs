@@ -46,7 +46,7 @@ namespace CleanBrilliantCompany.Models
                 return false;
            
              // Validate product exists
-            var product = productService.GetProductDetails(productId);
+            var product = productService.getProductDetails(productId);
             if (product == null)
                 return false;
 

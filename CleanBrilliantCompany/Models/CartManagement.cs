@@ -43,7 +43,7 @@ namespace CleanBrilliantCompany.Models
          // Adds a product to the cart [INSIDE CLASS DIAGRAM]
         public bool addToCart(int customerID, int productId, int quantity)
         {
-            var productDetails = productService.GetProductDetails(productId);
+            var productDetails = productService.getProductDetails(productId);
             if (productDetails != null)
             {
                 // Add the product ID and quantity to the in-memory cart (CartRDM)
@@ -159,7 +159,7 @@ namespace CleanBrilliantCompany.Models
 
             foreach (var item in cart)
             {
-                var product = productService.GetProductDetails(item.Key);
+                var product = productService.getProductDetails(item.Key);
                 if (product != null)
                 {
                     var productDetails = product.GetProductDetails();
