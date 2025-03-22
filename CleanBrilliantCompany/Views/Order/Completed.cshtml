@@ -2,7 +2,7 @@
 
 <div class="container mt-5">
     <h3 class="font-weight-bold">Completed and Canceled Orders</h3>
-    @foreach (var order in Model.Where(o => o.Status == "Completed" || o.Status == "Canceled"))
+    @foreach (var order in Model.Where(o => o.Status == "Completed" || o.Status == "Cancelled"))
     {
         <div class="card mb-3">
             <div class="card-header">

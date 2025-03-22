@@ -338,7 +338,7 @@ namespace CleanBrilliantCompany.Controllers
         // ORDER INPUT CONTROLLER METHODS
 
         // Display checkout Page (After pressing Checkout button)
-        [HttpGet]
+       [HttpGet]
         public IActionResult Checkout()
         {
             // Retrieve customer ID from the session
@@ -364,14 +364,19 @@ namespace CleanBrilliantCompany.Controllers
             // Load product details into ViewBag
             var products = _cartManagement.getCartProductDetails(cart);
 
-             // Fetch available shipping options
-            var defaultServiceType = Service.OneDay; // Default to "1 Day" service
+            // Fetch available shipping options
             var serviceTypes = _shippingAgents.getServiceTypes();
             var shippingMethods = _shippingAgents.getShippingMethods();
-            var shippingAgents = _shippingAgents.getShippingAgentList(defaultServiceType);
+            var defaultServiceType = serviceTypes.FirstOrDefault() ?? "1 Day"; // Use the first available service type
+            var shippingAgents = _shippingAgents.getShippingAgentList(Enum.TryParse<Service>(defaultServiceType, out var serviceEnum) ? serviceEnum : Service.OneDay);
+            var defaultShippingAgent = shippingAgents.FirstOrDefault() ?? "DHL"; // Use the first available shipping agent
+            var defaultShippingType = shippingMethods.FirstOrDefault() ?? "Air"; // Use the first available shipping method
 
-             // Calculate the cart total
+            // Calculate the cart total
             decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
+
+            // Calculate the shipping fee based on the default service type
+            decimal shippingFee = _orderManagement.calculateShippingFee(defaultServiceType);
 
             // Pass data to the view
             ViewBag.Products = products; // Product details (e.g., name, price)
@@ -381,10 +386,12 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.ServiceTypes = serviceTypes;       // Available service types
             ViewBag.ShippingMethods = shippingMethods; // Available shipping methods
             ViewBag.ShippingAgents = shippingAgents;   // Available shipping agents
-            ViewBag.SelectedServiceType = "1 Day"; // Default value
-            ViewBag.SelectedShippingType = "Air"; // Default value
-            ViewBag.SelectedShippingAgent = "DHL"; // Default value
-            
+            ViewBag.SelectedServiceType = defaultServiceType; // Dynamically determined default value
+            ViewBag.SelectedShippingType = defaultShippingType; // Dynamically determined default value
+            ViewBag.SelectedShippingAgent = defaultShippingAgent; // Dynamically determined default value
+            ViewBag.ShippingFee = shippingFee;
+            ViewBag.FinalTotal = cartTotal + shippingFee;
+
             return View("~/Views/Order/Checkout.cshtml");
         }
 
@@ -635,7 +642,7 @@ namespace CleanBrilliantCompany.Controllers
 
             // Fetch orders with status "Completed" or "Canceled"
             var orders = _orderManagement.getOrderHistory(customerId.Value)
-                                        .Where(o => o.Status == "Completed" || o.Status == "Canceled")
+                                        .Where(o => o.Status == "Completed" || o.Status == "Cancelled")
                                         .ToList();
 
             // Fetch product details for each order
@@ -659,7 +666,7 @@ namespace CleanBrilliantCompany.Controllers
             var success = _orderManagement.cancelOrder(orderId, customerId.Value);
             if (success)
             {
-                TempData["Success"] = "Order canceled successfully.";
+                TempData["Success"] = "Order cancelled successfully.";
             }
             else
             {

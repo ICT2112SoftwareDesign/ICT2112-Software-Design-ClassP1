@@ -5,7 +5,7 @@
     var cartTotal = ViewBag.CartTotal ?? 0m;
     var customerAddress = ViewBag.CustomerAddress as string ?? string.Empty;
     var shippingFee = ViewBag.ShippingFee ?? 0m;
-    var finalTotal = ViewBag.FinalTotal ?? 0m;
+    var finalTotal = ViewBag.FinalTotal ?? (cartTotal + shippingFee);
     var shippingAgents = ViewBag.ShippingAgents as List<string> ?? new List<string>();
     var serviceTypes = ViewBag.ServiceTypes as List<string> ?? new List<string>();
     var shippingMethods = ViewBag.ShippingMethods as List<string> ?? new List<string>();

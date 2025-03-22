@@ -137,7 +137,7 @@ namespace CleanBrilliantCompany.Models
                 return false; // Cannot cancel the order
             }
 
-            order.Status = "Canceled";
+            order.Status = "Cancelled";
             return _orderDatabase.updateOrder(order);
         }
 
