@@ -9,16 +9,21 @@ namespace CleanBrilliantCompany.Mappers
     public class CustomerMapper : ICustomerDatabase
     {
         private readonly string _connectionString;
+        private readonly ICustomerQueryObserver _observer;
 
-        public CustomerMapper(string connectionString)
+        public CustomerMapper(string connectionString, ICustomerQueryObserver observer)
         {
             _connectionString = connectionString;
+            _observer = observer;
         }
 
         // Login
         
         public bool VerifyCustomerCredentials(string email, string password)
         {
+            // Notify authentication attempt
+            _observer.onAuthenticationAttempt(email);
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -32,12 +37,30 @@ namespace CleanBrilliantCompany.Mappers
                     var storedPasswordHash = command.ExecuteScalar()?.ToString();
 
                     if (string.IsNullOrEmpty(storedPasswordHash))
-                        return false; 
+                    {
+                        // Notify authentication failure
+                        _observer.onAuthenticationFailure(email, "User not found");
+                        return false;
+                    }
                         
                     var passwordHasher = new PasswordHasher<object>();
                     var result = passwordHasher.VerifyHashedPassword(null, storedPasswordHash, password);
 
-                    return result == PasswordVerificationResult.Success;
+                    bool isAuthenticated = result == PasswordVerificationResult.Success;
+                    
+                    if (isAuthenticated)
+                    {
+                        int customerId = GetIdByEmail(email);
+                        // Notify authentication success
+                        _observer.onAuthenticationSuccess(email, customerId);
+                    }
+                    else
+                    {
+                        // Notify authentication failure
+                        _observer.onAuthenticationFailure(email, "Invalid password");
+                    }
+
+                    return isAuthenticated;
                 }
             }
         }
@@ -64,7 +87,14 @@ namespace CleanBrilliantCompany.Mappers
                     command.Parameters.AddWithValue("@Email", email);
 
                     int result = command.ExecuteNonQuery();
-                    return result > 0;
+                    
+                    if (result > 0)
+                    {
+                        // Notify customer registration
+                        _observer.onCustomerRegistration(username, email);
+                        return true;
+                    }
+                    return false;
                 }
             }
         }
