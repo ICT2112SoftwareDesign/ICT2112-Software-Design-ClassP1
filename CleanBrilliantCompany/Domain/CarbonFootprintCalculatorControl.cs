@@ -6,13 +6,20 @@ using System.Linq;
 
 namespace CleanBrilliantCompany.Domain
 {
-    public class CarbonFootprintCalculatorControl : ICarbonCalculatorQuery
+    public class CarbonFootprintCalculatorControl : ICarbonCalculatorQuery, ICarbonData
     {
         private readonly ICarbonRepositoryQuery _repository;
+        private readonly IProductCFCalculator _productCalculator;
+        private readonly IItemCFCalculator _itemCalculator;
+        private readonly IShipmentCFCalculator _shipmentCalculator;
 
-        public CarbonFootprintCalculatorControl(ICarbonRepositoryQuery repository)
+        public CarbonFootprintCalculatorControl(ICarbonRepositoryQuery repository, IProductCFCalculator productCalculator,
+            IItemCFCalculator itemCalculator, IShipmentCFCalculator shipmentCalculator)
         {
             _repository = repository;
+            _productCalculator = productCalculator;
+            _itemCalculator = itemCalculator;
+            _shipmentCalculator = shipmentCalculator;
         }
 
         public bool getDatabaseQueryStatus()
@@ -69,7 +76,7 @@ namespace CleanBrilliantCompany.Domain
             return comparisonList;
         }
 
-        public List<CarbonFootprintRecordRDM> getEcoFriendlyReport(DateTime startDate, DateTime endDate, string entityType)
+        public List<CarbonFootprintRecordRDM> GetEcoFriendlyReport(DateTime startDate, DateTime endDate, string entityType)
         {
             List<CarbonFootprintRecordRDM> allRecords;
 
@@ -84,6 +91,21 @@ namespace CleanBrilliantCompany.Domain
                 r.isEcoFriendly() &&
                 r.isDateWithinRange(DateOnly.FromDateTime(startDate), DateOnly.FromDateTime(endDate))
             ).ToList();
+        }
+
+        public float CalculateProductCF(float volume, float toxicPercent, int productId)
+        {
+            return _productCalculator.CalculateCarbonFootprint(volume, toxicPercent, productId);
+        }
+
+        public bool CalculateItemCF(int itemId, int productId)
+        {
+            return _itemCalculator.CalculateCarbonFootprint(itemId, productId);
+        }
+
+        public float CalculateShipmentCF(ShipmentSDM shipment)
+        {
+            return _shipmentCalculator.CalculateCarbonFootprint(shipment);
         }
     }
 }

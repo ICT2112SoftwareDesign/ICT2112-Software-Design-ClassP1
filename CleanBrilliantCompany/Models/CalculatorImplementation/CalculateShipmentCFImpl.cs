@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using CleanBrilliantCompany.Interfaces;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace CleanBrilliantCompany.Models.CalculatorImplementation
 {
-    public class CalculateShipmentCFImpl
+    public class CalculateShipmentCFImpl : IShipmentCFCalculator
     {
         // Calculate the carbon footprint for a shipment.
         public float CalculateCarbonFootprint(ShipmentSDM shipment)

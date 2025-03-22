@@ -4,8 +4,13 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface ICarbonData
     {
-        float calculateProductCF(float volume, float toxicPercent);
-        float calculateItemCF(int itemId);
-        float calculateShipmentCF(ShipmentSDM shipment);
+        // Calculate Carbon Footprint for Product
+        float CalculateProductCF(float volume, float toxicPercent, int productId);
+
+        // Calculate Carbon Footprint for Item
+        bool CalculateItemCF(int itemId, int productId);
+
+        // Calculate Carbon Footprint for Shipment
+        float CalculateShipmentCF(ShipmentSDM shipment);
     }
 }

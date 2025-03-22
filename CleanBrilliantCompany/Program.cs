@@ -2,6 +2,7 @@ using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Domain;
 using CleanBrilliantCompany.Interfaces;  // Ensure this matches your actual namespace
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.CalculatorImplementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,11 @@ builder.Services.AddScoped<ICarbonRepositoryQuery, CarbonFootprintMapper>();
 builder.Services.AddScoped<ICarbonRepositoryStatusQuery, CarbonFootprintRepositoryControl>();
 builder.Services.AddScoped<ICarbonManagerQuery, CarbonFootprintManagerControl>();
 builder.Services.AddScoped<ICarbonCalculatorQuery, CarbonFootprintCalculatorControl>();
+
+builder.Services.AddScoped<IProductCFCalculator, CalculateProductCFImpl>();
+builder.Services.AddScoped<IItemCFCalculator, CalculateItemCFImpl>();
+builder.Services.AddScoped<IShipmentCFCalculator, CalculateShipmentCFImpl>();
+builder.Services.AddScoped<ICarbonData, CarbonFootprintCalculatorControl>();
 
 builder.Services.AddScoped<CarbonFootprintManagerControl>();
 builder.Services.AddScoped<CarbonFootprintCalculatorControl>();

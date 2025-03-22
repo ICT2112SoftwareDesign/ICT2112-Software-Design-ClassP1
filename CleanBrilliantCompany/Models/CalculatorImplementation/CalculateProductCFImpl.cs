@@ -2,9 +2,9 @@
 
 namespace CleanBrilliantCompany.Models.CalculatorImplementation
 {
-    public class CalculateProductCFImpl
+    public class CalculateProductCFImpl : IProductCFCalculator
     {
-        public float CalculateCarbonFootprint(int productId, float vol, float tox)
+        public float CalculateCarbonFootprint(float vol, float tox, int productId)
         {
             float carbonFootprint = vol * tox/100;
             // add carbonFootprint and productId into carbonFootprintRecord DB
