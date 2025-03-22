@@ -4,9 +4,9 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class SystemLogger : ICustomerQueryObserver
+    public class CustomerSystemLogger : ICustomerQueryObserver
     {
-        private readonly string _logFilePath = "system_log.txt";
+        private readonly string _logFilePath = "customer_system_log.txt";
         
         public void onAuthenticationAttempt(string email)
         {

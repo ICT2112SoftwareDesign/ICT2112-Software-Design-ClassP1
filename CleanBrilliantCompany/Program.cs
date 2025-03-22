@@ -18,7 +18,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 // Register the observer first
-builder.Services.AddSingleton<ICustomerQueryObserver, SystemLogger>();
+builder.Services.AddSingleton<ICustomerQueryObserver, CustomerSystemLogger>();
 
 // Then the mapper (which depends on the observer)
 builder.Services.AddSingleton<ICustomerDatabase>(provider => {
