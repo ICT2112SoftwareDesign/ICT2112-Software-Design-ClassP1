@@ -5,7 +5,7 @@ namespace CleanBrilliantCompany.Models
     public class WishlistRDM
     {
         private int customerId;
-        private Dictionary<Product, int> productsInWishlist = new Dictionary<Product, int>();
+        private List<int> productsInWishlist = new List<int>();
 
         private int GetCustomerId()
         {
@@ -17,24 +17,17 @@ namespace CleanBrilliantCompany.Models
             this.customerId = customerId;
         }
 
-        private void SetProductsInWishlist(Product product)
+        private void SetProductsInWishlist(List<int> productsInWishlist)
         {
-            if (productsInWishlist.ContainsKey(product))
-            {
-                productsInWishlist[product]++;
-            }
-            else
-            {
-                productsInWishlist[product] = 1;
-            }
+            this.productsInWishlist = productsInWishlist;
         }
 
-        private List<Product> GetProductsInWishlist()
+        private List<int> GetProductsInWishlist()
         {
-            return new List<Product>(productsInWishlist.Keys);
+            return productsInWishlist;
         }
 
-        public List<Product> FetchWishlistDetails()
+        public List<int> FetchWishlistDetails()
         {
             // Implementation logic here
             return GetProductsInWishlist();

@@ -21,6 +21,7 @@ namespace CleanBrilliantCompany.Controllers
         private readonly ReviewManagement _reviewManagement; 
 
         private readonly IShippingAgents _shippingAgents;
+        private readonly IWishlistManagement _wishlistManagement;
 
 
         public CustomerPageController(
@@ -32,7 +33,8 @@ namespace CleanBrilliantCompany.Controllers
             CartManagement cartManagement,
             IProduct productService,
             IShippingAgents shippingAgents,
-            ReviewManagement reviewManagement) 
+            ReviewManagement reviewManagement,
+            IWishlistManagement wishlistManagement) 
         {
             _logger = logger;
             _customerManagement = customerManagement;
@@ -43,6 +45,7 @@ namespace CleanBrilliantCompany.Controllers
             _productService = productService;
             _shippingAgents = shippingAgents;
             _reviewManagement = reviewManagement;
+            _wishlistManagement = wishlistManagement;
         }
 
         public IActionResult CustomerDetails()
@@ -972,9 +975,93 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Review/ReviewHTML.cshtml", reviews);
         }
 
+    // part of ProductInputController
+    [HttpPost]
+    public IActionResult AddToWishlist(int productId)
+    {
+        // Retrieve customer ID from the session
+        int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+        if (customerID == null)
+        {
+            TempData["Error"] = "User not logged in.";
+            return RedirectToAction("Login", "BeforeLoginPage");
+        }
+        
+
+        // Call the wishlist management service
+        var success = _wishlistManagement.addToWishlist(customerID.Value, productId);
+        
+        if (success)
+        {
+            TempData["Success"] = "Product added to wishlist successfully!";
+        }
+        else
+        {
+            TempData["Info"] = "Product is already in your wishlist.";
+        }
+
+        return RedirectToAction("GetAllProducts");
+    }
+
+// part of ProductInputController
+public IActionResult viewWishlist()
+{
+    // Retrieve customer ID from the session
+    int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+    if (customerID == null)
+    {
+        TempData["Error"] = "User not logged in.";
+        return RedirectToAction("Login", "BeforeLoginPage");
+    }
 
 
+    // Get customer details to retrieve the name
+    var customer = _customerManagement.getCustomer(customerID.Value);
+    string customerName = customer?.GetSession<string>("username") ?? "My";
+    // Get wishlist items from wishlist management service
+    var productIds = _wishlistManagement.viewWishlist(customerID.Value);
+    
+    // Get detailed product information for each wishlist item
+    var wishlistProducts = new Dictionary<int, Dictionary<string, object>>();
+    
+    foreach (var productId in productIds)
+    {
+        var product = _productService.getProductDetails(productId);
+        if (product != null)
+        {
+            wishlistProducts.Add(productId, product.GetProductDetails());
+        }
+    }
+    // Pass the customer name to the view
+    ViewBag.CustomerName = customerName;
+    return View("~/Views/Wishlist/WishlistIndex.cshtml", wishlistProducts);
+}
 
+[HttpPost]
+public IActionResult removeFromWishlist(int productId)
+{
+    // Retrieve customer ID from the session
+    int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+    if (customerID == null)
+    {
+        TempData["Error"] = "User not logged in.";
+        return RedirectToAction("Login", "BeforeLoginPage");
+    }
+
+    // Call the wishlist management service
+    var success = _wishlistManagement.removeFromWishlist(customerID.Value, productId);
+    
+    if (success)
+    {
+        TempData["Success"] = "Product removed from wishlist successfully!";
+    }
+    else
+    {
+        TempData["Error"] = "Failed to remove product from wishlist.";
+    }
+
+    return RedirectToAction("viewWishlist");
+}
 
 
 
