@@ -2,7 +2,7 @@
 
 namespace CleanBrilliantCompany.Models.CalculatorImplementation
 {
-    public class CalculateItemCFImpl : IItemCFCalculator
+    public class CalculateItemCFImpl : IItemCFCalculator, IProduct
     {
         public bool CalculateCarbonFootprint(int itemId, int productId)
         {
