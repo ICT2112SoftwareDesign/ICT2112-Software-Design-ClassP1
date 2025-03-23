@@ -40,28 +40,6 @@ namespace CleanBrilliantCompany.Models
             productsInCart = new Dictionary<int, int>(cartProducts);
         }
 
-        // Public method to fetch cart details [In class diagram but Not using]
-        public Dictionary<int, int> fetchCartDetails(int customerId)
-        {
-            if (this.customerId == customerId)
-            {
-                return getProductsInCart();
-            }
-            return new Dictionary<int, int>();
-        }
-
-        // Public method to set the customer ID [not in Class Diagram]
-        public void assignCustomerId(int customerId)
-        {
-            setCustomerId(customerId);
-        }
-
-        // Public method to set the products in the cart [not in Class Diagram]
-        public void updateProductsInCart(Dictionary<int, int> cartProducts)
-        {
-            setProductsInCart(cartProducts);
-        }
-
         // Public method to add a product to the cart [not in Class Diagram]
         public void addProduct(int productId, int quantity)
         {
@@ -100,13 +78,13 @@ namespace CleanBrilliantCompany.Models
             return productsInCart.ContainsKey(productId);
         }
 
-        // Public method to load the cart data [Not in Class Diagram]
+        // Public method to load the cart data 
         public void loadCart(Dictionary<int, int> cartData)
         {
             productsInCart = new Dictionary<int, int>(cartData);
         }
         
-        // Public method to retrieve the products in the cart [Not in Class Diagram]
+        // Public method to retrieve the products in the cart [
         public Dictionary<int, int> retrieveProductsInCart()
         {
             return new Dictionary<int, int>(productsInCart);
