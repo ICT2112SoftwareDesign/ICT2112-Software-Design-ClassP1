@@ -7,7 +7,10 @@ namespace CleanBrilliantCompany.Models.Entity
         Available,
         Reserved,
         Sold,
-        Refunded
+        Refunded,
+        
+        Transferred,
+        Returned
     }
 
     public class Item : ISubject

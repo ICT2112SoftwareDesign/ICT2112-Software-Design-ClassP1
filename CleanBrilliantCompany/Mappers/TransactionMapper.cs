@@ -41,14 +41,29 @@ namespace CleanBrilliantCompany.Models.Mapper
         public void createTransaction(DateTime dateTime, string adjustmentType, int productId, int itemId, int staffId)
         {
             Console.WriteLine("Item is reserved --> Called createTransaction in transactionMapper");
-            // using (SqlConnection connection = new SqlConnection(_connectionString))
-            // {
-            //     connection.Open();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
 
-            //     string insertQuery = @"
-            //     INSERT INTO dbo.ItemTransaction (transactionDateTime, )
-            //     "
-            // }
+                string insertQuery = @"
+                INSERT INTO dbo.ItemTransaction (transactionDateTime, adjustmentType, productId, itemId, staffId)
+                VALUES (@transactionDateTime, @adjustmentType, @productId, @itemid, 1);";
+
+                using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@transactionDateTime", dateTime);
+                    command.Parameters.AddWithValue("@adjustmentType", adjustmentType);
+                    command.Parameters.AddWithValue("@productId", productId);
+                    command.Parameters.AddWithValue("itemId", itemId);
+
+                    int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+                    
+                    if (rowsAffected > 0 ) {
+                        Console.WriteLine("Transaction successfully added into the database.");
+                    }
+
+                }
+            }
         }
         // public bool createTransaction(DateTime dateTime, ItemStatus adjustmentType, int productId, int itemId, int staffId)
         // {
