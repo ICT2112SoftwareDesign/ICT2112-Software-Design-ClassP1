@@ -16,6 +16,8 @@ namespace CleanBrilliantCompany.Models.Mapper
             _connectionString = connectionString;
         }
 
+        //FOR ITEMID --> INCLUDE A SORT BY ITEMID --> ALL TRANSACTIONS WILL BE GROUPED BY ITEMID AND SORTED IN ASC/DESC ORDER
+
         public bool getDatabaseQueryStatus(SqlDataReader reader, int rowsAffected = -1)
         {
             try
@@ -65,32 +67,53 @@ namespace CleanBrilliantCompany.Models.Mapper
                 }
             }
         }
-        // public bool createTransaction(DateTime dateTime, ItemStatus adjustmentType, int productId, int itemId, int staffId)
-        // {
-        //     Console.WriteLine("Called createTransaction in transactionMapper");
-        //     // using (SqlConnection connection = new SqlConnection(_connectionString))
-        //     // {
-        //     //     connection.Open();
 
-        //     //     string insertQuery = @"
-        //     // INSERT INTO dbo.Item (productId, salePrice, batchCode, warehouseId, itemStatus) 
-        //     // VALUES (@productId, @salePrice, @batchCode, @warehouseId, @itemStatus);";
+        //Add another one for getting transaction by productName after if have time
 
-        //     //     using (SqlCommand command = new SqlCommand(insertQuery, connection))
-        //     //     {
-        //     //         command.Parameters.AddWithValue("@itemId", itemId);
-        //     //         command.Parameters.AddWithValue("@productId", productId);
-        //     //         command.Parameters.AddWithValue("@salePrice", salePrice);
-        //     //         command.Parameters.AddWithValue("@batchCode", batchCode);
-        //     //         command.Parameters.AddWithValue("@warehouseId", warehouseId);
-        //     //         command.Parameters.AddWithValue("@itemStatus", status.ToString());
+        public List<Transaction> getTransactionByDateTime(DateTime dateTime)
+        {
+            List<Transaction> transactions = new List<Transaction>();
 
-        //     //         int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
-        //     //         return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
-        //     //     }
-        //     // }
-        // }
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                
+                string query = "SELECT transactionId, transactionDateTime, adjustmentType, productId, itemId, staffId " +
+               "FROM ItemTransaction WHERE CAST(transactionDateTime AS DATE) = @transactionDateTime";
 
+                using (SqlCommand command = new SqlCommand(query,connection))
+                {
+                    command.Parameters.AddWithValue("@transactionDateTime", dateTime);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            while (reader.Read())
+                            {
+                                 Transaction transaction = new Transaction(
+                                    reader.GetInt32(reader.GetOrdinal("transactionId")),
+                                    reader.GetDateTime(reader.GetOrdinal("transactionDateTime")),
+                                    reader.GetString(reader.GetOrdinal("adjustmentType")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("staffId"))
+                                );         
+
+                                transactions.Add(transaction);                      
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No data found for the query");
+                        }
+                    }
+                }
+
+            }
+
+            return transactions;
+        }
 
         public List<Transaction> getAllTransactions()
         {
@@ -138,11 +161,6 @@ namespace CleanBrilliantCompany.Models.Mapper
             }
             return transactions;
         }
-
-        // public bool getDatabaseQueryStatus(Microsoft.Data.SqlClient.SqlDataReader reader, int rowsAffected = -1)
-        // {
-        //     throw new NotImplementedException();
-        // }
 
         // // Find a transaction by ID
         // public Transaction Find(int transactionId)

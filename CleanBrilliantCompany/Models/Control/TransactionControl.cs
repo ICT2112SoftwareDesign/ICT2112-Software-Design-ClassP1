@@ -43,18 +43,27 @@ namespace CleanBrilliantCompany.Models.Control
                 case ItemStatus.Reserved:
                     Console.WriteLine($"Item {itemId}: {productName} is Reserved.");
                     stringStatus = "Reserved";
-                    //Add Logic here to add into ItemTransaction table
                     //Fields to pass in: transactionDate, adjustmentType, productId, itemId, staffId
                     _transactionMapper.createTransaction(transactionDate, stringStatus, productId, itemId, staffId);
                     break;
 
                 case ItemStatus.Sold:
                     Console.WriteLine($"Item {itemId}: {productName} is Sold.");
+                    stringStatus = "Sold";
+                    _transactionMapper.createTransaction(transactionDate, stringStatus, productId, itemId, staffId);
                     break;
 
                 case ItemStatus.Refunded:
                     Console.WriteLine($"Item {itemId}: {productName} is Refunded.");
+                    stringStatus = "Refunded";
+                    _transactionMapper.createTransaction(transactionDate, stringStatus, productId, itemId, staffId);
                     break;
+
+                case ItemStatus.Transferred:
+                    Console.WriteLine($"Item {itemId}: {productName} is Transferred.");
+                    stringStatus = "Transferred";
+                    _transactionMapper.createTransaction(transactionDate, stringStatus, productId, itemId, staffId);
+                    break;          
 
                 default:
                     Console.WriteLine($"Item {itemId}: {productName} status is unknown.");
@@ -78,6 +87,11 @@ namespace CleanBrilliantCompany.Models.Control
         public List<Transaction> getAllTransactions()
         {
             return _transactionMapper.getAllTransactions();
+        }
+
+        public List<Transaction> getTransactionByDateTime(DateTime dateTime)
+        {
+            return _transactionMapper.getTransactionByDateTime(dateTime);
         }
 
         //Missing Method 1: getTransactionByItem(itemId): List<Transaction>
