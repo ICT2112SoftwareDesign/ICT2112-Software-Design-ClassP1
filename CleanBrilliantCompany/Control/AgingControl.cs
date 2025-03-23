@@ -24,6 +24,7 @@ public class AgingControl
             Console.WriteLine("⚠ No dashboard found.");
             return; // No data to load
         }
+        Console.WriteLine($"📊 Dashboard found: {dashboardDto.Name} generated on : {dashboardDto.GeneratedDate}");
 
         // Step 2: Retrieve analytics data for the dashboard
         var analyticsDtos = agingMapper.GetAgingAnalytics(dashboardDto.DashboardId);
@@ -138,12 +139,12 @@ public class AgingControl
         var id = dashboards.Any() ? dashboards.Max(x => x.DashboardId) + 1 : 1;
 
         var dashboard = new AgingDashboardRdm(
-            id,
-            "Aging Dashboard new",
-            DateTime.Now,
-            DateTime.Now.AddDays(180),
-            180,
-            1
+            id: id,
+            name: "Aging Dashboard new",
+            requestedStartDate: DateTime.Now,
+            requestedEndDate: DateTime.Now.AddDays(180),
+            validityDuration: 180,
+            type: 1
         );
 
         var fakeInterface = new FakeBatchInterface(); 
@@ -168,7 +169,36 @@ public class AgingControl
         return dashboard;
     }
 
+    public void generateNewDashboard(AgingDashboardInputDTO dto) 
+    {
+        // setting id to 0 since i am not using it to generate the id 
+        var dashboard = new AgingDashboardRdm(
+            id: 0,
+            name: "Aging Dashboard new",
+            requestedStartDate: dto.RequestedStartDate,
+            requestedEndDate: dto.RequestedEndDate,
+            validityDuration: dto.ValidityDuration,
+            type: 1
+        );
 
+        var fakeInterface = new FakeBatchInterface(); 
+        var batches = fakeInterface.getAllProductBatch(); 
+        // Console.WriteLine("Amount of batches: " + batches.Count); 
+        // Console.WriteLine("batch productid : " + batches[0].ProductId); 
+        // Retrieve all stock histories for all batches
+        var stockHistories = new List<RawStockHistoryData>(); 
+        foreach (var batch in batches)
+        {
+            var stockHistory = fakeInterface.getStockHistoryByBatch(batch.BatchCode);
+            stockHistories.AddRange(stockHistory);  // Efficiently add all records at once
+        }
 
+        // Use the existing populateAnalytics method
+        dashboard.populateAnalytics(batches, stockHistories);
+
+        // Add to the list and save
+        //dashboards.Add(dashboard); 
+        agingMapper.saveDashboardandAnalytics(dashboard); 
+    }
 
 }

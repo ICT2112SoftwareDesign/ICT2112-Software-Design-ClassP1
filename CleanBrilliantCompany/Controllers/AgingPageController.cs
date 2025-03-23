@@ -27,17 +27,30 @@ public class AgingPageController : Controller
         return View(latestDashboard); 
     } 
 
+    // [HttpPost]
+    // public IActionResult GenerateDashboard()
+    // {
+    //     var newDashboard = agingControl.generateNewDashboard();
+
+    //     //might wanna post the data to the datebase 
+
+    //     // log the new dashboard 
+    //     logger.LogInformation("New dashboard generated: {0}", newDashboard.Name); 
+    //     return Json(new { success = true, message = "New dashboard generated!", data = newDashboard });
+
+
+    // }
+
     [HttpPost]
-    public IActionResult GenerateDashboard()
+    public IActionResult GenerateDashboard(AgingDashboardInputDTO dto)
     {
-        var newDashboard = agingControl.generateNewDashboard();
+        if (!ModelState.IsValid)
+            return View(); // or handle the error gracefully
 
-        //might wanna post the data to the datebase 
+        agingControl.generateNewDashboard(dto);
 
-        // log the new dashboard 
-        logger.LogInformation("New dashboard generated: {0}", newDashboard.Name); 
-        return Json(new { success = true, message = "New dashboard generated!", data = newDashboard });
-
-
+        logger.LogInformation("New dashboard generated");
+        return RedirectToAction("Index"); // or return a partial, etc.
     }
+
 }
