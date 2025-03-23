@@ -17,7 +17,7 @@ namespace CleanBrilliantCompany.Models
         public bool createAccount(string username, string password, string email)
         {
             // Check if customer already exists
-            if (_customerDatabase.CustomerExists(email))
+            if (_customerDatabase.customerExists(email))
             {
                 return false;
             }
@@ -30,14 +30,14 @@ namespace CleanBrilliantCompany.Models
             return string.Empty;
         }
 
-        public int GetIdByEmail(string email)
+        public int getIdByEmail(string email)
         {
-            return _customerDatabase.GetIdByEmail(email);
+            return _customerDatabase.getIdByEmail(email);
         }
 
-        public CustomerRDM getCustomer(int loggedInId)
+        public CustomerRDM getCustomer(int customerId)
         {
-            return _customerDatabase.getCustomer(loggedInId);
+            return _customerDatabase.getCustomer(customerId);
         }
 
         public bool customerEmailExists(int customerId, string email){
@@ -48,14 +48,14 @@ namespace CleanBrilliantCompany.Models
             return _customerDatabase.customerUsernameExists(customerId, username);
         }
 
-        public bool updateCustomerDetails(string username, string email, string address)
+        public bool updateCustomerDetails(int customerId, string username, string email, string address)
         {
-            return _customerDatabase.updateCustomerDetails(username, email, address);
+            return _customerDatabase.updateCustomerDetails(customerId, username, email, address);
         }
 
-         public bool UpdatePasswordDetails(string password)
+         public bool updatePassword(int customerId, string password)
         {
-            return false;
+            return _customerDatabase.updatePassword(customerId, password);
         }
 
         public bool notifyDBCustomerQueryStatus()
@@ -64,10 +64,10 @@ namespace CleanBrilliantCompany.Models
             return false;
         }
 
-        public bool AuthenticateCustomer(string email, string password)
+        public bool authenticateCustomer(string email, string password)
         {
             // Call the method in CustomerMapper to verify credentials
-            return _customerDatabase.VerifyCustomerCredentials(email, password);
+            return _customerDatabase.verifyCustomerCredentials(email, password);
         }
     }
 }

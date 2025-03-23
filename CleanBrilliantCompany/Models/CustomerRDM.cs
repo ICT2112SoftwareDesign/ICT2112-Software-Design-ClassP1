@@ -60,7 +60,7 @@ namespace CleanBrilliantCompany.Models
             this.customerAddress = address;
         }
 
-        public T GetSession<T>(string propertyName)
+        public T getSession<T>(string propertyName)
         {
             switch (propertyName)
             {
@@ -80,7 +80,7 @@ namespace CleanBrilliantCompany.Models
         }
 
         // Set method
-        public void SetSession<T>(string propertyName, T value)
+        public void setSession<T>(string propertyName, T value)
         {
             switch (propertyName)
             {
@@ -122,7 +122,7 @@ namespace CleanBrilliantCompany.Models
             return string.Empty;
         }
 
-        public bool updateCustomerAddress(int customerId, string address)
+        public bool  Address(int customerId, string address)
         {
             // Implementation logic here
             return false;

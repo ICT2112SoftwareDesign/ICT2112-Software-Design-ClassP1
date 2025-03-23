@@ -6,17 +6,18 @@ namespace CleanBrilliantCompany.Interfaces
     {
         // For login/register
         bool createCustomer(string username, string password, string email);
-        bool VerifyCustomerCredentials(string email, string password);
-        bool CustomerExists(string email);
+        bool verifyCustomerCredentials(string email, string password);
+        bool customerExists(string email);
 
         // For update
         bool customerEmailExists(int customerId, string email);
         bool customerUsernameExists(int customerId, string username);
-        bool updateCustomerDetails(string username, string email, string address);
+        bool updateCustomerDetails(int customerId, string username, string email, string address);
+        bool updatePassword(int customerId, string password);
 
         // For session
-        int GetIdByEmail(string email);
-        CustomerRDM getCustomer(int loggedInId);
+        int getIdByEmail(string email);
+        CustomerRDM getCustomer(int customerId);
         
     }
 }
