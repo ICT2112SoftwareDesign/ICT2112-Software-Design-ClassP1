@@ -15,10 +15,13 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     
 
     // constructor 
-    public StockTurnOverAnalyticsDetails(int batchCode, Dictionary<DateTime, int> quantityPerDay, int totalQuantity) : base(batchCode, "StockTurnOverAnalyticsDetails"){
-        this.quantityPerDay = quantityPerDay; 
+    public StockTurnOverAnalyticsDetails(int batchCode, int totalQuantity) : base(batchCode, "StockTurnOverAnalyticsDetails"){
         this.totalQuantity = totalQuantity; 
     } 
+    public void setQuantityPerDay(Dictionary<DateTime, int> quantityPerDay){
+        this.quantityPerDay = quantityPerDay; 
+    }   
+    
 
     // constructor for retrieving from the database 
     public StockTurnOverAnalyticsDetails(int batchCode, float turnOverRate, float DeadStockPercentage) : base(batchCode, "StockTurnOverAnalyticsDetails"){
@@ -43,6 +46,7 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     }    
 
     public float calculateDeadStockPercentage(){
+        // if no quantityPerDay, return 100 
         if (!quantityPerDay.Any()) return 100; 
         DateTime latestDate = quantityPerDay.Keys.Max(); 
         int latestQuantity = quantityPerDay[latestDate];

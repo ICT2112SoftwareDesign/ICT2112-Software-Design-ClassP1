@@ -77,7 +77,29 @@ public class FakeBatchInterface {
                 manufactureDate: new DateTime(2025, 03, 01), 
                 quantity: 100, 
                 salesPrice: 100) 
-            }
+            },
+        {
+            113, new RawBatchData(
+                batchCode: 113, 
+                productId: 990, 
+                expiryDate: new DateTime(2027, 06, 20), 
+                receiveDate: new DateTime(2025, 03, 12), 
+                manufactureDate: new DateTime(2025, 03, 01), 
+                quantity: 20, 
+                salesPrice: 100)
+        },
+        {
+            112, new RawBatchData(
+                batchCode: 112, 
+                productId: 909, 
+                expiryDate: new DateTime(2027, 06, 20), 
+                receiveDate: new DateTime(2025, 03, 12), 
+                manufactureDate: new DateTime(2025, 03, 01), 
+                quantity: 20, 
+                salesPrice: 100)
+
+        }
+            
     };
 
     // Initialize fake stock history data

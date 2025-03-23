@@ -351,6 +351,8 @@
                                         .Distinct()
                                         .ToList()
                                     : new List<string>();
+
+                                var productToNameMap = Model != null ? Model.getProductIDToNameMap() : new Dictionary<int, String>();
                             }
 
                             <h2>Aging Dashboard</h2>
@@ -385,7 +387,7 @@
                                                 {
                                                     <div class="product-section col-12" data-product-id="@product.Key">
                                                         <h4 class="text-primary">Product ID: @product.Key</h4>
-
+                                                        <h4 class="text-primary">Product Name: @productToNameMap[product.Key]</h4>
                                                         @* ✅ Get all unique metrics from all batches in this product *@
                                                         @{
                                                             var productMetrics = product.Value
@@ -686,6 +688,7 @@
     {
         console.log ("chartLabel", chartLabel); 
         console.log ("labels", labels); 
+        console.log ("data", data); 
         const ctx = document.getElementById(chartId).getContext('2d'); 
 
         // 🧠 Check for boolean values and convert accordingly
@@ -738,6 +741,9 @@
                             {
                                 if (typeof data[0] === "boolean") {
                                     return data[context.dataIndex] ? "Expired" : "Still Good";
+                                }
+                                if (indexAxis === "y") {
+                                    return context.dataset.label + ": " + context.parsed.x; 
                                 }
                                 return context.dataset.label + ": " + context.parsed.y; 
                             }

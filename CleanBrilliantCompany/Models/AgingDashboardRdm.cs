@@ -4,11 +4,15 @@ public class AgingDashboardRdm : Dashboard
 {
 
 
+    // batchCode to list of analytics 
     private Dictionary<int , List <AbstractAnalyticsDetails>> batchAnalyticsMap;   
-    //private Dictionary<int, int> batchToProductMap = new Dictionary<int, int>();
 
+    // productID to list of batchCode 
     private Dictionary <int, List<int>> productToBatchMap = new Dictionary<int, List<int>>();
 
+    // productID to productName 
+    private Dictionary <int , String > productIDToNameMap = new Dictionary<int, string>(); 
+    
     // this is for db 
     public AgingDashboardRdm(int id, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type, DateTime? generatedDate = null)
         : base(id ,name, requestedStartDate, requestedEndDate, validityDuration, type, generatedDate)
@@ -40,6 +44,14 @@ public class AgingDashboardRdm : Dashboard
             productToBatchMap.Add(productId, new List<int> {batchCode}); 
         }
     }
+
+    public Dictionary<int, string> getProductIDToNameMap() => productIDToNameMap; 
+
+    public void addProductToNameMap(int productId, string productName){
+        if (!productIDToNameMap.ContainsKey(productId)){
+            productIDToNameMap.Add(productId, productName); 
+        }
+    } 
     public void populateAnalytics(List<RawBatchData> rawBatchData, List<RawStockHistoryData> rawStockHistoryData) {
         // so for each rawanalyticsdata i need to create 2 instances since 
         // i have 2 types of agingAnalytics
@@ -72,13 +84,16 @@ public class AgingDashboardRdm : Dashboard
                 batchCode, 
                 rawBatch.ReceiveDate, 
                 rawBatch.ExpiryDate); 
-
+        
             // create stock turnover analytics 
             var stockTurnOverAnalytics = new StockTurnOverAnalyticsDetails(
-                batchCode, 
-                stockHistoryMap[batchCode], 
+                batchCode,  
                 rawBatch.Quantity); 
 
+            // set the quantity per day for the stockTurnOverAnalytics
+            if (stockHistoryMap.ContainsKey(batchCode)){
+                stockTurnOverAnalytics.setQuantityPerDay(stockHistoryMap[batchCode]); 
+            }
             // add the analytics to the batchAnalyticsMap 
             addBatchAnalytics(batchCode, storageLifeCycleAnalytics);
             addBatchAnalytics(batchCode, stockTurnOverAnalytics); 
