@@ -102,9 +102,9 @@
                 </div>
                 <div class="card-body">
                     <div class="btn-group mb-3" role="group" aria-label="Trend View Toggle">
-                        <button class="btn btn-outline-primary active" id="toggle-daily">Daily</button>
+                        <button class="btn btn-outline-primary active" id="toggle-monthly">Monthly</button>
                         <button class="btn btn-outline-primary" id="toggle-weekly">Weekly</button>
-                        <button class="btn btn-outline-primary" id="toggle-monthly">Monthly</button>
+                        <button class="btn btn-outline-primary" id="toggle-daily">Daily</button>
                     </div>
                     <canvas id="carbonTrendChart" class="shared-chart-size"></canvas>
                 </div>
@@ -237,7 +237,7 @@
             });
         }
 
-        renderTrendChart(trendDataDaily.labels, trendDataDaily.values);
+        renderTrendChart(trendDataMonthly.labels, trendDataMonthly.values);
 
         document.getElementById("toggle-daily").addEventListener("click", () => {
             setActiveButton("toggle-daily");
