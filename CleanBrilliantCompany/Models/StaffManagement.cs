@@ -4,7 +4,7 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class StaffManagement
+    public class StaffManagement : IStaffDetails
     {
         private readonly IStaffDatabase _staffDatabase;
 
@@ -12,24 +12,6 @@ namespace CleanBrilliantCompany.Models
         public StaffManagement(IStaffDatabase staffDatabase)
         {
             _staffDatabase = staffDatabase;
-        }
-
-        // ✅ Authenticate Staff Login (Checks username & password)
-        public bool Login(string username, string password)
-        {
-            return _staffDatabase.VerifyStaffCredentials(username, password);
-        }
-
-        // ✅ Logout Staff (Clears session, implementation in controller)
-        public void Logout()
-        {
-            // Session management is handled in ApplicationController, so no direct logic needed here.
-        }
-
-        // ✅ Check if Staff is Authenticated (Session-based check)
-        public bool IsAuthenticated(int staffId)
-        {
-            return _staffDatabase.StaffExists(staffId);
         }
 
         // 🔹 Get All Staff (Admin functionality - placeholder)
@@ -69,14 +51,14 @@ namespace CleanBrilliantCompany.Models
             return false; // To be implemented later
         }
 
-        public bool AuthenticateStaff(string email, string password)
-        {
-            return _staffDatabase.VerifyStaffCredentials(email, password);
-        }
-
         public int GetIdByEmail(string email)
         {
             return _staffDatabase.GetIdByEmail(email);
+        }
+
+        public StaffRDM GetStaffDetails(int staffId)
+        {
+            return _staffDatabase.GetStaff(staffId);
         }
     }
 }

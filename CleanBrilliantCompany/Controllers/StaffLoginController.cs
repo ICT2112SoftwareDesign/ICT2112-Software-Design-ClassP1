@@ -1,21 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Controllers
 {
     public class StaffLoginController : ApplicationController
     {
-        private readonly ILogger<StaffLoginController> _logger;
-        private readonly StaffManagement _staffManagement;
+        private readonly IStaffAuthentication _staffAuthentication;
 
-        public StaffLoginController(ILogger<StaffLoginController> logger, StaffManagement staffManagement, IHttpContextAccessor httpContextAccessor)
+        public StaffLoginController(IStaffAuthentication staffAuthentication, IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
-            _logger = logger;
-            _staffManagement = staffManagement;
+            _staffAuthentication = staffAuthentication;
         }
 
-        // Serves Staff Login Page
         public IActionResult Login()
         {
             return View("~/Views/StaffLogin/Login.cshtml");
@@ -24,8 +22,8 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult AuthenticateStaff(string email, string password)
         {
-            bool isAuthenticated = _staffManagement.AuthenticateStaff(email, password);
-            int loggedInStaffId = _staffManagement.GetIdByEmail(email);
+            bool isAuthenticated = _staffAuthentication.Login(email, password);
+            int loggedInStaffId = _staffAuthentication.GetIdByEmail(email);
 
             if (isAuthenticated && loggedInStaffId > 0)
             {
@@ -39,7 +37,7 @@ namespace CleanBrilliantCompany.Controllers
 
         public IActionResult StaffLogout()
         {
-            base.Logout();
+            _staffAuthentication.Logout(HttpContext);
             return RedirectToAction("Login");
         }
     }

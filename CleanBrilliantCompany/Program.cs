@@ -15,7 +15,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Adding services for Staff
 builder.Services.AddScoped<StaffManagement>();
+builder.Services.AddScoped<StaffAuthentication>();
 builder.Services.AddScoped<IStaffDatabase>(sp => new StaffMapper(connectionString));
+
+// This is where I add all the interfaces other users can use
+builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();
 
 var app = builder.Build();
 
