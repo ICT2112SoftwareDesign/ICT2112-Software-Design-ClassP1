@@ -1057,6 +1057,24 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Review/ReviewHTML.cshtml", reviews);
         }
 
+        [HttpGet]
+        public IActionResult ViewReviewsByProduct(int productId)
+        {
+            var product = _productService.getProductDetails(productId);
+            if (product == null)
+            {
+                TempData["Error"] = "Product not found.";
+                return RedirectToAction("GetAllProducts");
+            }
+
+            var reviews = _reviewManagement.ViewReviewsByProduct(productId);
+
+            ViewBag.ProductName = product.GetProductDetails()["ProductName"];
+            ViewBag.ProductId = productId;
+
+            return View("~/Views/Review/ProductReviews.cshtml", reviews);
+        }
+
     // part of ProductInputController
     [HttpPost]
     public IActionResult AddToWishlist(int productId)
