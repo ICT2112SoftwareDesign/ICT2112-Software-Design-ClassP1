@@ -730,6 +730,13 @@ namespace CleanBrilliantCompany.Controllers
 
             // Filter only Completed orders
             var completedOrders = orders.Where(o => o.Status == "Completed").ToList();
+             // 🆕 Get all reviewed product IDs by this customer
+            var reviewedProductIds = _reviewManagement
+                .ViewReviewsByCustomer(customerId.Value)
+                .Select(r => r.GetProductId())
+                .ToHashSet(); // Efficient lookup
+
+            ViewBag.ReviewedProductIds = reviewedProductIds;
 
             // Initialize the shippingDetails dictionary
             var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
