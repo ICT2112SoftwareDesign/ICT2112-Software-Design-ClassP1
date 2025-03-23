@@ -80,5 +80,15 @@
         {
             this.dateCreated = dateCreated;
         }
+
+        public double calculateSelfEmission()
+        {
+            return carbonEmission;
+        }
+
+        public DateTime retrieveDateCreated()
+        {
+            return dateCreated;
+        }
     }
 }

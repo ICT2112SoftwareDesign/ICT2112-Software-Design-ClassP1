@@ -29,6 +29,10 @@ builder.Services.AddScoped<ICarbonData, CarbonFootprintCalculatorControl>();
 
 builder.Services.AddScoped<CarbonFootprintCalculatorControl>();
 
+builder.Services.AddScoped<ProductCarbonFootprintControl>();
+builder.Services.AddScoped<ItemCarbonFootprintControl>();
+builder.Services.AddScoped<OrderCarbonFootprintControl>();
+
 // Mappers
 builder.Services.AddScoped<IProductCarbonFootprintDB, ProductCFMapper>();
 builder.Services.AddScoped<IItemCarbonFootprintDB, ItemCFMapper>();

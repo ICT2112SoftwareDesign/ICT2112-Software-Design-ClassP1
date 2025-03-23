@@ -97,5 +97,10 @@
         {
             return carbonEmission;
         }
+
+        public DateTime retrieveDateCreated()
+        {
+            return dateCreated;
+        }
     }
 }

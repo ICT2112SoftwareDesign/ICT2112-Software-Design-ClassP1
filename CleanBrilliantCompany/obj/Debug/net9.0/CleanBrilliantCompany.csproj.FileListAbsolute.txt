@@ -7044,3 +7044,4 @@ C:\Users\rayne\Cloud-Drive\SIT\Y2T2\SD\ICT2112-Software-Design-ClassP1\CleanBril
 C:\Users\rayne\Cloud-Drive\SIT\Y2T2\SD\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
 C:\Users\rayne\Cloud-Drive\SIT\Y2T2\SD\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.csproj.AssemblyReference.cache
 C:\Users\rayne\Cloud-Drive\SIT\Y2T2\SD\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBri.30C836DB.Up2Date
+C:\Users\Matthew\Downloads\ICT2112_Software_Design\Project\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\appsettings.json

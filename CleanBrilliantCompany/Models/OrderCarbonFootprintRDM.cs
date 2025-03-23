@@ -104,5 +104,20 @@
         {
             this.dateCreated = dateCreated;
         }
+
+        public string retrieveTransportMode()
+        {
+            return transportMode;
+        }
+
+        public double calculateSelfEmission()
+        {
+            return carbonEmission;
+        }
+
+        public DateTime retrieveDateCreated()
+        {
+            return dateCreated;
+        }
     }
 }
