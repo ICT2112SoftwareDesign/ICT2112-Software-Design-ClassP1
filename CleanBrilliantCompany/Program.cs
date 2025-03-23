@@ -67,4 +67,16 @@ app.MapControllerRoute(
     pattern: "alerts",
     defaults: new { controller = "Alert", action = "Index" });
 
+// Sustainable Resource Inventory is Low
+// URL: http://localhost:5258/sustainable-ingredient/resources
+app.MapControllerRoute(
+    name: "sustainableIngredient",
+    pattern: "sustainable-ingredient/resources",
+    defaults: new
+    {
+        controller = "SustainableIngredients",
+        action = "Index"
+    }
+);
+
 app.Run();
