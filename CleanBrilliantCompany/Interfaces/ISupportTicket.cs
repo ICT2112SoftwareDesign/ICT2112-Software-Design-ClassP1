@@ -1,8 +1,8 @@
 namespace CleanBrilliantCompany.Interfaces
 {
+    // just for testing
     public interface ISupportTicket
     {
-        bool createSupportTicket(int custID, int orderID);
-        string getTicketOutcome(int tickID);
+        bool createTicket(int customerID, int orderID, string ticketDetails);
     }
 }

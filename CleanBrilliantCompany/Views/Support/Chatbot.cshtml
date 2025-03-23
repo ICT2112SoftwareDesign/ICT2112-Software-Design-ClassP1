@@ -83,6 +83,17 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
+    <script>
+    // Function to scroll the chat to the bottom
+        function scrollChatToBottom() {
+            var chatBody = document.querySelector('.card-body');
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Call the function when the page loads
+        window.onload = scrollChatToBottom;
+    </script>
+
 </body>
 </html>
 

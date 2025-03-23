@@ -14,7 +14,7 @@ namespace CleanBrilliantCompany.Controllers
         private readonly ILogger<CustomerPageController> _logger;
         private readonly CustomerManagement _customerManagement;
         private readonly SupportManagement _supportManagement;
-        private readonly ChatbotService _chatbotService;
+        private readonly IChatbot _chatbotService;
         private readonly OrderManagement _orderManagement;
         private readonly CartManagement _cartManagement;
         private readonly IProduct _productService;
@@ -29,7 +29,7 @@ namespace CleanBrilliantCompany.Controllers
             ILogger<CustomerPageController> logger, 
             CustomerManagement customerManagement, 
             SupportManagement supportManagement,
-            ChatbotService chatbotService,
+            IChatbot chatbotService,
             OrderManagement orderManagement,
             CartManagement cartManagement,
             IProduct productService,
@@ -139,32 +139,30 @@ namespace CleanBrilliantCompany.Controllers
 
         // HelpCenterInputController Methods
 
-        // public IActionResult submitQuery(String query)
-        // {
-            
-        // }
-
         public IActionResult viewFAQs(String query)
         {
-            List<String> faqs = _supportManagement.FetchFAQs();
+            Dictionary<string, string> faqs = _supportManagement.FetchFAQs();
             ViewBag.FAQs = faqs;
 
             return View("~/Views/Support/FAQs.cshtml");
         }
 
-        // public IActionResult trackTicket(Int32 ticketId)
-        // {
+        public IActionResult escalateIssue(Int32 orderID, String issueDescription)
+        {
+            // Retrieve customer ID from the session using the correct key
+            int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
             
-        // }
+            bool success = _supportManagement.createSupportTicket(customerID, orderID, issueDescription);
+            return RedirectToAction("viewFAQs");
+        }
 
-        // public IActionResult escalateIssue(Int32 ticketId)
-        // {
-            
-        // }
+        // ChatbotInputController Methods
 
-        // // ChatbotInputController Methods
-
-         // Method to start chat session and return current chat history
         public IActionResult startChatSession()
         {
             string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
@@ -174,19 +172,25 @@ namespace CleanBrilliantCompany.Controllers
                 ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson) 
                 : new List<Dictionary<string, string>>();
 
-            // Pass the chat history to the ViewBag
             ViewBag.ChatHistory = chatHistory;
             
             return View("~/Views/Support/Chatbot.cshtml");
         }
 
-        // Method to send a user message and get bot response
         [HttpPost]
         public IActionResult provideAutomatedResponse(String query)
         {
+            // Retrieve customer ID from the session using the correct key
+            int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
             if (string.IsNullOrEmpty(query)) return RedirectToAction("startChatSession");
 
-            string botResponse = _supportManagement.handleCustomerChatbotQuery(query);
+            string botResponse = _supportManagement.handleCustomerChatbotQuery(customerID, query);
 
             string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
 
@@ -195,16 +199,11 @@ namespace CleanBrilliantCompany.Controllers
                 ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson) 
                 : new List<Dictionary<string, string>>();
 
-            // Create separate dictionaries for user and bot messages
             var userMessage = new Dictionary<string, string> { { "user", query } };
             var botMessage = new Dictionary<string, string> { { "bot", botResponse } };
 
-            // Add both messages to chat history
             chatHistory.Add(userMessage);
             chatHistory.Add(botMessage);
-
-            // Print for debugging
-            Console.WriteLine("Chat History: " + JsonSerializer.Serialize(chatHistory));
 
             // Store updated chat history back in session
             HttpContext.Session.SetString("ChatHistory", JsonSerializer.Serialize(chatHistory));
@@ -213,9 +212,20 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("startChatSession");
         }
 
-        // public IActionResult escalateToAgent(String query)
+        // public IActionResult escalateToAgent(Int32 orderID, String query)
         // {
+        //     // Retrieve customer ID from the session using the correct key
+        //     int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+        //     if (customerID == null)
+        //     {
+        //         TempData["Error"] = "User not logged in.";
+        //         return RedirectToAction("Login", "BeforeLoginPage");
+        //     }
             
+        //     bool success = _supportManagement.escalateToHumanAgent(customerID, orderID, query);
+        //     ViewBag.escalateIssue = success;
+
+        //     return RedirectToAction("startChatSession");
         // }
 
         public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
