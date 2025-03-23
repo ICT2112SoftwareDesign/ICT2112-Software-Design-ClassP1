@@ -20,10 +20,10 @@ namespace CleanBrilliantCompany.Mappers
             _observer = observer;
         }
 
-        public bool addReview(int customerId, string review, int rating, int productId)
+        public bool addReview(int customerId, string reviewText, int rating, int productId)
         { 
             string sql = @"
-                INSERT INTO Reviews (CustomerId, ReviewText, Rating, ProductId)
+                INSERT INTO Review (CustomerId, Review, Rating, ProductId)
                 VALUES (@CustomerId, @Review, @Rating, @ProductId);
             "; 
             try
@@ -31,7 +31,7 @@ namespace CleanBrilliantCompany.Mappers
                 using var connection = new SqlConnection(_connectionString); 
                 using var command = new SqlCommand(sql, connection); 
                  command.Parameters.AddWithValue("@CustomerId", customerId);
-                command.Parameters.AddWithValue("@Review", review);
+                command.Parameters.AddWithValue("@Review", reviewText);
                 command.Parameters.AddWithValue("@Rating", rating);
                 command.Parameters.AddWithValue("@ProductId", productId);
 
@@ -58,8 +58,8 @@ namespace CleanBrilliantCompany.Mappers
         public bool updateReview(int customerId, string review, int rating, int reviewId)
         { 
             string sql = @"
-                UPDATE Reviews
-                SET ReviewText = @Review, Rating = @Rating
+                UPDATE Review
+                SET review = @Review, Rating = @Rating
                 WHERE ReviewId = @ReviewId AND CustomerId = @CustomerId;
             ";
             try
@@ -93,7 +93,7 @@ namespace CleanBrilliantCompany.Mappers
          public bool deleteReview(int customerId, int reviewId)
         {
             string sql = @"
-                DELETE FROM Reviews
+                DELETE FROM Review
                 WHERE ReviewId = @ReviewId AND CustomerId = @CustomerId;
             ";
 
@@ -108,19 +108,24 @@ namespace CleanBrilliantCompany.Mappers
                 int rowsAffected = command.ExecuteNonQuery();
                 bool success = rowsAffected > 0;
 
-                //_observer.NotifyDBReviewQueryStatus();
+                if (success)
+                    _observer.OnReviewDeleted(reviewId, customerId);
+                else
+                    _observer.OnReviewQueryFailed(customerId, "Delete operation returned 0 rows affected.");
+                    
                 return success;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO: log exception
+                _observer.OnReviewQueryFailed(customerId, ex.Message);
+
                 return false;
             }
         }
 
         public List<ReviewRDM> GetAllReviews()
         {
-            string sql = "SELECT ReviewId, CustomerId, ReviewText, Rating, ProductId FROM Reviews;";
+            string sql = "SELECT ReviewId, CustomerId, review, Rating, ProductId FROM Review;";
             var reviews = new List<ReviewRDM>();
 
             try
@@ -136,7 +141,7 @@ namespace CleanBrilliantCompany.Mappers
                     var review = new ReviewRDM();
                     review.SetReviewId(Convert.ToInt32(reader["ReviewId"]));
                     review.SetCustomerId(Convert.ToInt32(reader["CustomerId"]));
-                    review.SetReview(reader["ReviewText"].ToString());
+                    review.SetReview(reader["review"].ToString());
                     review.SetRating(Convert.ToInt32(reader["Rating"]));
                     review.SetProductId(Convert.ToInt32(reader["ProductId"]));
 

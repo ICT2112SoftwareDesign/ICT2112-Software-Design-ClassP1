@@ -19,7 +19,7 @@ namespace CleanBrilliantCompany.Mappers
 
         // Login
         
-        public bool VerifyCustomerCredentials(string email, string password)
+        public bool verifyCustomerCredentials(string email, string password)
         {
             // Notify authentication attempt
             _observer.onAuthenticationAttempt(email);
@@ -50,7 +50,7 @@ namespace CleanBrilliantCompany.Mappers
                     
                     if (isAuthenticated)
                     {
-                        int customerId = GetIdByEmail(email);
+                        int customerId = getIdByEmail(email);
                         // Notify authentication success
                         _observer.onAuthenticationSuccess(email, customerId);
                     }
@@ -100,7 +100,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // To check if customer exists 
-        public bool CustomerExists(string email)
+        public bool customerExists(string email)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -119,7 +119,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // For session
-        public int GetIdByEmail(string email)
+        public int getIdByEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -174,10 +174,10 @@ namespace CleanBrilliantCompany.Mappers
                         {
                             CustomerRDM customer = new CustomerRDM();
 
-                            customer.SetSession("username", reader.GetString(reader.GetOrdinal("username")));
-                            customer.SetSession("email", reader.GetString(reader.GetOrdinal("email"))); 
-                            customer.SetSession("password", reader.GetString(reader.GetOrdinal("password"))); 
-                            customer.SetSession("customerAddress", reader.IsDBNull(reader.GetOrdinal("customerAddress")) ? null : reader.GetString(reader.GetOrdinal("customerAddress")));
+                            customer.setSession("username", reader.GetString(reader.GetOrdinal("username")));
+                            customer.setSession("email", reader.GetString(reader.GetOrdinal("email"))); 
+                            customer.setSession("password", reader.GetString(reader.GetOrdinal("password"))); 
+                            customer.setSession("customerAddress", reader.IsDBNull(reader.GetOrdinal("customerAddress")) ? null : reader.GetString(reader.GetOrdinal("customerAddress")));
 
                             return customer;
                         }
@@ -225,7 +225,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
         
-        public bool updateCustomerDetails(string username, string email, string address){
+        public bool updateCustomerDetails(int customerId, string username, string email, string address){
             if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(address)){
                 return false;
             }
@@ -236,21 +236,64 @@ namespace CleanBrilliantCompany.Mappers
                 string query = @"
                     UPDATE dbo.Customer 
                     SET username = @Username, email = @Email, customerAddress = @Address 
-                    WHERE email = @Email";
+                    WHERE customerId = @CustomerId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
+                    command.Parameters.AddWithValue("@CustomerId", customerId);
                     command.Parameters.AddWithValue("@Username", username);
                     command.Parameters.AddWithValue("@Email", email);
                     command.Parameters.AddWithValue("@Address", address);
 
                     int result = command.ExecuteNonQuery();
-                    return result > 0;
+                    if (result > 0){
+                        // Notify authentication failure
+                        _observer.onUpdateDetailsSuccess(customerId, username, email, address);
+                        return true;
+                    }
+                    else{
+                        _observer.onUpdatedDetailsFailure(customerId, username, email, address, "Unable to update details to database.");
+                        return false;
+                    }
                 }
+                
             }
 
         }
 
+        public bool updatePassword(int customerId, string password){
+            if(string.IsNullOrEmpty(password)){
+                return false;
+            }
+            var passwordHasher = new PasswordHasher<object>();
+            string hashedPassword = passwordHasher.HashPassword(null, password);
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    UPDATE dbo.Customer 
+                    SET password = @Password
+                    WHERE customerId = @CustomerId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", customerId);
+                    command.Parameters.AddWithValue("@Password", hashedPassword);
+
+                    int result = command.ExecuteNonQuery();
+                    if(result > 0){
+                        _observer.onUpdatePasswordSuccess(customerId, password);
+                        return true;
+                    }
+                    else{
+                        _observer.onUpdatePasswordFailure(customerId, password, "Unable to update details to database.");
+                        return false;
+                    }
+                }
+            }
+
+        }
         public bool notifyDBCustomerQueryStatus()
         {
             // Implementation logic here

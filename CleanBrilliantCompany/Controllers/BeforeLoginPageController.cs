@@ -33,8 +33,8 @@ namespace CleanBrilliantCompany.Controllers
         {
             //Console.WriteLine($"Received Email: {email}");
             //Console.WriteLine($"Received Password: {password}");
-            bool isAuthenticated = _customerManagement.AuthenticateCustomer(email, password);
-            int loggedInCustomerId = _customerManagement.GetIdByEmail(email);
+            bool isAuthenticated = _customerManagement.authenticateCustomer(email, password);
+            int loggedInCustomerId = _customerManagement.getIdByEmail(email);
 
             if (isAuthenticated && loggedInCustomerId > 0)
             {

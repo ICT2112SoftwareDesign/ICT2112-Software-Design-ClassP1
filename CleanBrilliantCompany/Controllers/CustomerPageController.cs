@@ -60,10 +60,10 @@ namespace CleanBrilliantCompany.Controllers
             if (customerDetails != null)
             {
                 ViewBag.CustomerId = loggedInId;
-                ViewBag.Email = customerDetails.GetSession<string>("email");
-                ViewBag.Password = customerDetails.GetSession<string>("password");
-                ViewBag.Username = customerDetails.GetSession<string>("username");
-                ViewBag.CustomerAddress = customerDetails.GetSession<string>("customerAddress");
+                ViewBag.Email = customerDetails.getSession<string>("email");
+                ViewBag.Password = customerDetails.getSession<string>("password");
+                ViewBag.Username = customerDetails.getSession<string>("username");
+                ViewBag.CustomerAddress = customerDetails.getSession<string>("customerAddress");
             }
             else
             {
@@ -87,8 +87,8 @@ namespace CleanBrilliantCompany.Controllers
                 return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
             }
 
-            bool isEmailChanged = email != customerDetails.GetSession<string>("email");
-            bool isUsernameChanged = username != customerDetails.GetSession<string>("username");
+            bool isEmailChanged = email != customerDetails.getSession<string>("email");
+            bool isUsernameChanged = username != customerDetails.getSession<string>("username");
 
             if (isEmailChanged || isUsernameChanged)
             {
@@ -100,7 +100,7 @@ namespace CleanBrilliantCompany.Controllers
                     return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
                 }
             }
-            bool updateSuccessful = _customerManagement.updateCustomerDetails(username, email, address);
+            bool updateSuccessful = _customerManagement.updateCustomerDetails(loggedInId, username, email, address);
             if (updateSuccessful)
             {
                 CustomerDetails();
@@ -128,11 +128,35 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdatePassword(string password)
+        public IActionResult updatePassword(string newPassword, string confirmPassword)
         {
+            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+            
+            if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
+            {
+                ViewBag.Message = "New password and Confirm Password Cannot be Empty";
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml"); 
+            }
 
-            return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Message = "Passwords do not match!";
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml"); 
+            }
 
+            bool passwordSuccess = _customerManagement.updatePassword(loggedInId, newPassword);
+            if(passwordSuccess){
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+            }
+            else{
+                ViewBag.Message = "Password failed to update!";
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+            }
+            
         }
 
         // INPUT CONTROLLER METHODS
@@ -259,6 +283,25 @@ namespace CleanBrilliantCompany.Controllers
         {
             var allProducts = _productService.getAllProducts();
             return allProducts.FindAll(p => categories.Contains(p.GetProductDetails()["Category"].ToString()));
+        }
+
+        [HttpGet]
+        public IActionResult ProductDetail(int productId)
+        {
+            var product = _productService.getProductDetails(productId);
+            if (product == null)
+            {
+                TempData["Error"] = "Product not found.";
+                return RedirectToAction("GetAllProducts");
+            }
+
+            var productDetails = product.GetProductDetails();
+
+            var reviews = _reviewManagement.ViewReviewsByProduct(productId);
+
+            ViewBag.ProductReviews = reviews;
+            ViewBag.ProductId = productId;
+            return View("~/Views/Products/ProductDetails.cshtml", productDetails);
         }
         
 
@@ -394,7 +437,7 @@ namespace CleanBrilliantCompany.Controllers
 
             // Retrieve customer details using CustomerManagement
             var customer = _customerManagement.getCustomer(customerID.Value);
-            string customerAddress = customer?.GetSession<string>("customerAddress") ?? string.Empty;
+            string customerAddress = customer?.getSession<string>("customerAddress") ?? string.Empty;
 
             // Load the cart for the customer
             var cart = _cartManagement.viewCart(customerID.Value);
@@ -475,7 +518,7 @@ namespace CleanBrilliantCompany.Controllers
             {
                 // Optionally save the new address to the customer's profile
                 var customer = _customerManagement.getCustomer(customerID.Value);
-                customer.SetSession("customerAddress", deliveryAddress); // Save to session
+                customer.setSession("customerAddress", deliveryAddress); // Save to session
             }
             else
             {
@@ -766,6 +809,13 @@ namespace CleanBrilliantCompany.Controllers
 
             // Filter only Completed orders
             var completedOrders = orders.Where(o => o.Status == "Completed").ToList();
+             // 🆕 Get all reviewed product IDs by this customer
+            var reviewedProductIds = _reviewManagement
+                .ViewReviewsByCustomer(customerId.Value)
+                .Select(r => r.GetProductId())
+                .ToHashSet(); // Efficient lookup
+
+            ViewBag.ReviewedProductIds = reviewedProductIds;
 
             // Initialize the shippingDetails dictionary
             var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
@@ -935,7 +985,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult RequestRefund(int orderId)
+        public IActionResult RequestRefund(int orderId, string refundReason, string refundImage, string refundVideo)
         {
             int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerId == null)
@@ -944,7 +994,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            var success = _orderManagement.requestRefund(orderId, customerId.Value);
+            var success = _orderManagement.requestRefund(orderId, customerId.Value, refundReason, refundImage, refundVideo);
             if (success)
             {
                 TempData["Success"] = "Refund request submitted successfully.";
@@ -959,10 +1009,53 @@ namespace CleanBrilliantCompany.Controllers
 
 
         //REVIEW INPUT CONTROLLER METHODS 
+        [HttpGet]
+        public IActionResult RateProduct (int productId)
+        { 
+            var product = _productService.getProductDetails(productId); 
+            if (product == null)
+            { 
+                TempData["Error"] = "Product Not found"; 
+                return RedirectToAction("Completed"); 
+            }
+            ViewBag.ProductId = productId; 
+            ViewBag.ProductName = product.GetProductDetails()["ProductName"]; 
+
+            return View("~/Views/Review/RateProduct.cshtml");
+        }
+
+        [HttpGet]
+        public IActionResult EditReview(int productId)
+        { 
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+                if (customerId == null)
+                    return RedirectToAction("Login", "BeforeLoginPage");
+
+                var review = _reviewManagement
+                    .ViewReviewsByCustomer(customerId.Value)
+                    .FirstOrDefault(r => r.GetProductId() == productId);
+
+                if (review == null)
+                {
+                    TempData["Error"] = "Review not found.";
+                    return RedirectToAction("Completed");
+                }
+
+                var product = _productService.getProductDetails(productId);
+
+                ViewBag.ProductId = productId;
+                ViewBag.ProductName = product?.GetProductDetails()["ProductName"];
+                ViewBag.ReviewText = review.GetReview();
+                ViewBag.Rating = review.GetRating();
+                ViewBag.ReviewId = review.GetReviewId();
+
+                return View("~/Views/Review/RateProduct.cshtml");
+        }
 
         [HttpPost]
-        public IActionResult SubmitReivew (string reviewText, int rating, int productId)
-        { 
+        public IActionResult SubmitReview (string reviewText, int rating, int productId)
+        {    
+            Console.WriteLine($"Review: {reviewText}, Rating: {rating}, ProductID: {productId}");
             if(!_reviewManagement.WriteReview(reviewText, rating, productId))
             { 
                 TempData["Error"] = "Failed to submit review. Make sure all fields are valid.";
@@ -972,8 +1065,23 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Success"] = "Review submitted successfully!";
             }
 
-            return RedirectToAction("GetAllProducts"); // gotta check where to go next. 
+            return RedirectToAction("Completed"); // gotta check where to go next. 
         }
+        [HttpPost]
+            public IActionResult SubmitEditedReview(int reviewId, string reviewText, int rating, int productId)
+            {
+                if (!_reviewManagement.EditReview(reviewId, reviewText, rating))
+                {
+                    TempData["Error"] = "Failed to update review.";
+                }
+                else
+                {
+                    TempData["Success"] = "Review updated successfully!";
+                }
+
+                return RedirectToAction("Completed");
+            }
+
 
         [HttpPost]
         public IActionResult EditReview(int reviewId, string reviewText, int rating)
@@ -990,25 +1098,60 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("GetAllProducts");
         }
         [HttpPost]
-        public IActionResult RemoveReview(int reviewId)
-        {
+        public IActionResult DeleteReview(int reviewId)
+        {   
+            Console.WriteLine($"Deleting review with ID: {reviewId}");
+
             if (!_reviewManagement.DeleteReview(reviewId))
             {
                 TempData["Error"] = "Failed to delete review.";
             }
             else
             {
-                TempData["Success"] = "Review deleted successfully!";
+                TempData["Success"] = "Review deleted successfully.";
             }
 
-            return RedirectToAction("GetAllProducts");
+            return RedirectToAction("Completed");
         }
+
+        //[HttpPost]
+        //public IActionResult RemoveReview(int reviewId)
+        //{
+         //   if (!_reviewManagement.DeleteReview(reviewId))
+         //   {
+          //      TempData["Error"] = "Failed to delete review.";
+          //  }
+         //   else
+          //  {
+        //        TempData["Success"] = "Review deleted successfully!";
+         //   }
+
+         //   return RedirectToAction("GetAllProducts");
+       // }
 
         [HttpGet]
         public IActionResult ViewReviews()
         {
             var reviews = _reviewManagement.ViewReviews();
             return View("~/Views/Review/ReviewHTML.cshtml", reviews);
+        }
+
+        [HttpGet]
+        public IActionResult ViewReviewsByProduct(int productId)
+        {
+            var product = _productService.getProductDetails(productId);
+            if (product == null)
+            {
+                TempData["Error"] = "Product not found.";
+                return RedirectToAction("GetAllProducts");
+            }
+
+            var reviews = _reviewManagement.ViewReviewsByProduct(productId);
+
+            ViewBag.ProductName = product.GetProductDetails()["ProductName"];
+            ViewBag.ProductId = productId;
+
+            return View("~/Views/Review/ProductReviews.cshtml", reviews);
         }
 
     // part of ProductInputController
@@ -1053,7 +1196,7 @@ public IActionResult viewWishlist()
 
     // Get customer details to retrieve the name
     var customer = _customerManagement.getCustomer(customerID.Value);
-    string customerName = customer?.GetSession<string>("username") ?? "My";
+    string customerName = customer?.getSession<string>("username") ?? "My";
     // Get wishlist items from wishlist management service
     var productIds = _wishlistManagement.viewWishlist(customerID.Value);
     

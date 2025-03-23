@@ -10,12 +10,14 @@ namespace CleanBrilliantCompany.Models
     
         private readonly IOrderDatabase _orderDatabase;
         private readonly ICartManagement _cartManagement;
+        // private readonly ISubmitRefund _submitRefund;
 
-        public OrderManagement( IOrderDatabase orderDatabase, ICartManagement cartManagement)
+        // Place ISubmitRefund submitRefund in params
+        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement)
         {
-        
             _orderDatabase = orderDatabase;
             _cartManagement = cartManagement;
+            // _submitRefund = submitRefund;
         }
 
         public int createOrder(
@@ -141,15 +143,18 @@ namespace CleanBrilliantCompany.Models
             return _orderDatabase.updateOrder(order);
         }
 
-        public bool requestRefund(int orderId, int customerId)
+        public bool requestRefund(int orderId, int customerId, string refundReason, string refundImage, string refundVideo)
         {
             var order = _orderDatabase.getOrderById(orderId);
             if (order == null || order.CustomerID != customerId || order.Status != "Completed")
             {
                 return false; // Cannot request a refund
             }
-
+            Console.WriteLine($"{refundReason}, {refundImage}, {refundVideo}, {customerId}");
             order.Status = "RefundRequested";
+
+            // I cant do this without concrete implementation of submit refund yet
+            // _submitRefund.submitRefund(orderId, customerId, order.Status, refundReason, refundImage, refundVideo);
             return _orderDatabase.updateOrder(order);
         }
 

@@ -15,7 +15,7 @@ namespace CleanBrilliantCompany.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        // Get Customer Session From Here (Hopefully it works)
+        // Get Customer Session From Here
         public CustomerRDM GetCustomerSession()
         {
             int loggedInId = _httpContextAccessor.HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
