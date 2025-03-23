@@ -15,16 +15,30 @@ namespace CleanBrilliantCompany.DomainControl
 
         public bool addItemCF(int itemId, int productId, double carbonEmission, string ecoStatus, DateTime dateCreated)
         {
-            bool result = _mapper.insertItemCF(itemId, productId, carbonEmission, ecoStatus, dateCreated);
-            _lastQuerySuccess = result;
-            return result;
+            try
+            {
+                _mapper.insertItemCF(itemId, productId, carbonEmission, ecoStatus, dateCreated);
+                _lastQuerySuccess = _mapper.getQueryStatus();
+            }
+            catch
+            {
+                _lastQuerySuccess = false;
+            }
+            return _lastQuerySuccess;
         }
 
         public bool updateAllItemCF()
         {
-            bool result = _mapper.updateAllItemCF();
-            _lastQuerySuccess = result;
-            return result;
+            try
+            {
+                _mapper.updateAllItemCF();
+                _lastQuerySuccess = _mapper.getQueryStatus();
+            }
+            catch
+            {
+                _lastQuerySuccess = false;
+            }
+            return _lastQuerySuccess;
         }
 
         public double getItemCarbonFootprint(int itemCFId)
@@ -32,7 +46,7 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 double value = _mapper.retrieveItemCarbonFootprint(itemCFId);
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return value;
             }
             catch
@@ -47,7 +61,7 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 var list = _mapper.retrieveAllItemCarbonFootprint();
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return list;
             }
             catch
@@ -62,7 +76,7 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 float total = _mapper.retrieveTotalCarbonFootprint();
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return total;
             }
             catch

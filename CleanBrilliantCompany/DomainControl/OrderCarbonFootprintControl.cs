@@ -15,9 +15,17 @@ namespace CleanBrilliantCompany.DomainControl
 
         public bool addOrderCF(int orderId, string transportMode, double orderWeight, double distance, double carbonEmission, string ecoStatus, DateTime dateCreated)
         {
-            bool result = _mapper.insertOrderCF(orderId, transportMode, orderWeight, distance, carbonEmission, ecoStatus, dateCreated);
-            _lastQuerySuccess = result;
-            return result;
+            try
+            {
+                _mapper.insertOrderCF(orderId, transportMode, orderWeight, distance, carbonEmission, ecoStatus, dateCreated);
+                _lastQuerySuccess = _mapper.getQueryStatus();
+            }
+            catch
+            {
+                _lastQuerySuccess = false;
+            }
+
+            return _lastQuerySuccess;
         }
 
         public double getOrderCarbonFootprint(int orderCFId)
@@ -25,7 +33,7 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 double value = _mapper.retrieveOrderCarbonFootprint(orderCFId);
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return value;
             }
             catch
@@ -40,7 +48,7 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 var list = _mapper.retrieveAllOrderCarbonFootprint();
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return list;
             }
             catch
@@ -55,7 +63,7 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 float total = _mapper.retrieveTotalCarbonFootprint();
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return total;
             }
             catch

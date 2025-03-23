@@ -18,7 +18,7 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 _mapper.insertProductCF(productId, productName, productCategory, carbonEmission, ecoStatus, dateCreated);
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
             }
             catch
             {
@@ -34,7 +34,7 @@ namespace CleanBrilliantCompany.DomainControl
             {
                 double productCF = 0;
                 productCF = _mapper.retrieveProductCarbonFootprint(productCFId);
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return productCF;
             }
             catch
@@ -49,7 +49,7 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 List<ProductCarbonFootprintRDM> list = _mapper.retrieveAllProductCarbonFootprint();
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return list;
             }
             catch
@@ -65,7 +65,7 @@ namespace CleanBrilliantCompany.DomainControl
             {
                 float total = 0;
                 total = _mapper.retrieveTotalCarbonFootprint();
-                _lastQuerySuccess = true;
+                _lastQuerySuccess = _mapper.getQueryStatus();
                 return total;
             }
             catch
