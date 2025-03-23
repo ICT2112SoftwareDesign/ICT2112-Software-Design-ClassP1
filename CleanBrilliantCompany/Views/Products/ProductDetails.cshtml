@@ -73,11 +73,12 @@
                 <input type="hidden" name="productId" value="@Model["ProductId"]" />
                 <button type="submit" class="btn btn-wishlist">Add to Wishlist</button>
             </form>
-        </div>
+        
 
-        <div class="review-section">
-            <h3>Reviews</h3>
-            <p>No reviews yet. Be the first to leave a review!</p>
+           <form method="get" asp-action="ViewReviewsByProduct" asp-controller="CustomerPage">
+                    <input type="hidden" name="productId" value="@Model["ProductId"]" />
+                    <button type="submit" class="btn btn-sm btn-info mt-2">View Reviews</button>
+            </form>
         </div>
         
     </div>

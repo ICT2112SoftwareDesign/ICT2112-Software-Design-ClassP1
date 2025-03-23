@@ -236,6 +236,11 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             var productDetails = product.GetProductDetails();
+
+            var reviews = _reviewManagement.ViewReviewsByProduct(productId);
+
+            ViewBag.ProductReviews = reviews;
+            ViewBag.ProductId = productId;
             return View("~/Views/Products/ProductDetails.cshtml", productDetails);
         }
         

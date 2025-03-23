@@ -113,10 +113,7 @@
                     <button type="submit" class="btn btn-wishlist">Add to Wishlist</button>
                 </form>
                 <a class="nav-link text-dark" asp-controller="CustomerPage" asp-action="ProductDetail" asp-route-productId="@product["ProductId"]">View Details</a>
-                <form method="get" asp-action="ViewReviewsByProduct" asp-controller="CustomerPage">
-                    <input type="hidden" name="productId" value="@product["ProductId"]" />
-                    <button type="submit" class="btn btn-sm btn-info mt-2">View Reviews</button>
-                </form>
+              
                 <div id="details-@product["ProductId"]" class="product-details">
                     <p><strong>Category:</strong> @product["Category"]</p>
                     <p><strong>Manufacturer ID:</strong> @product["ManufacturerId"]</p>
