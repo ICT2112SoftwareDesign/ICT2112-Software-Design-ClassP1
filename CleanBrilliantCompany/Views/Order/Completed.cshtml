@@ -138,6 +138,10 @@
                                     else
                                     {
                                         <span class="text-success">✔️ Already Reviewed</span>
+                                          <form method="get" asp-action="EditReview" asp-controller="CustomerPage">
+                                            <input type="hidden" name="productId" value="@product.Key" />
+                                            <button type="submit" class="btn btn-outline-warning btn-sm">Edit Review</button>
+                                        </form>
                                     }
                                 </li>
                             }

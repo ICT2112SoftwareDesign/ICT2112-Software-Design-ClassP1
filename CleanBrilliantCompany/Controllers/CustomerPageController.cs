@@ -945,6 +945,34 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Review/RateProduct.cshtml");
         }
 
+        [HttpGet]
+        public IActionResult EditReview(int productId)
+        { 
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+                if (customerId == null)
+                    return RedirectToAction("Login", "BeforeLoginPage");
+
+                var review = _reviewManagement
+                    .ViewReviewsByCustomer(customerId.Value)
+                    .FirstOrDefault(r => r.GetProductId() == productId);
+
+                if (review == null)
+                {
+                    TempData["Error"] = "Review not found.";
+                    return RedirectToAction("Completed");
+                }
+
+                var product = _productService.getProductDetails(productId);
+
+                ViewBag.ProductId = productId;
+                ViewBag.ProductName = product?.GetProductDetails()["ProductName"];
+                ViewBag.ReviewText = review.GetReview();
+                ViewBag.Rating = review.GetRating();
+                ViewBag.ReviewId = review.GetReviewId();
+
+                return View("~/Views/Review/RateProduct.cshtml");
+        }
+
         [HttpPost]
         public IActionResult SubmitReview (string reviewText, int rating, int productId)
         {    
@@ -960,6 +988,21 @@ namespace CleanBrilliantCompany.Controllers
 
             return RedirectToAction("Completed"); // gotta check where to go next. 
         }
+        [HttpPost]
+            public IActionResult SubmitEditedReview(int reviewId, string reviewText, int rating, int productId)
+            {
+                if (!_reviewManagement.EditReview(reviewId, reviewText, rating))
+                {
+                    TempData["Error"] = "Failed to update review.";
+                }
+                else
+                {
+                    TempData["Success"] = "Review updated successfully!";
+                }
+
+                return RedirectToAction("Completed");
+            }
+
 
         [HttpPost]
         public IActionResult EditReview(int reviewId, string reviewText, int rating)
@@ -976,19 +1019,36 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("GetAllProducts");
         }
         [HttpPost]
-        public IActionResult RemoveReview(int reviewId)
-        {
+        public IActionResult DeleteReview(int reviewId)
+        {   
+            Console.WriteLine($"Deleting review with ID: {reviewId}");
+
             if (!_reviewManagement.DeleteReview(reviewId))
             {
                 TempData["Error"] = "Failed to delete review.";
             }
             else
             {
-                TempData["Success"] = "Review deleted successfully!";
+                TempData["Success"] = "Review deleted successfully.";
             }
 
-            return RedirectToAction("GetAllProducts");
+            return RedirectToAction("Completed");
         }
+
+        //[HttpPost]
+        //public IActionResult RemoveReview(int reviewId)
+        //{
+         //   if (!_reviewManagement.DeleteReview(reviewId))
+         //   {
+          //      TempData["Error"] = "Failed to delete review.";
+          //  }
+         //   else
+          //  {
+        //        TempData["Success"] = "Review deleted successfully!";
+         //   }
+
+         //   return RedirectToAction("GetAllProducts");
+       // }
 
         [HttpGet]
         public IActionResult ViewReviews()

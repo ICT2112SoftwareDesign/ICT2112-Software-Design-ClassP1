@@ -2,26 +2,62 @@
     ViewData["Title"] = "Rate Product";
     var productId = ViewBag.ProductId;
     var productName = ViewBag.ProductName;
+    var reviewText = ViewBag.ReviewText ?? "";
+    var rating = ViewBag.Rating ?? "";
+    var reviewId = ViewBag.ReviewId;
+    var successMessage = TempData["Success"] as string;
+    var errorMessage = TempData["Error"] as string;
 }
 
-<h2>Review Product</h2>
+<h2>@(reviewId != null ? "Edit Your Review" : "Rate Product")</h2>
 
 <div class="mb-3">
     <p><strong>Product:</strong> @productName</p>
 </div>
 
-<form method="post" asp-action="SubmitReview" asp-controller="CustomerPage">
-    <input type="hidden" name="productId" value="@ViewBag.ProductId" />
-    
+<!-- ✅ Success/Error Messages -->
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success">@successMessage</div>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<!-- ✅ Review Form -->
+<form method="post" asp-action="@(reviewId != null ? "SubmitEditedReview" : "SubmitReview")" asp-controller="CustomerPage">
+    <input type="hidden" name="productId" value="@productId" />
+
+    @if (reviewId != null)
+    {
+        <input type="hidden" name="reviewId" value="@reviewId" />
+    }
+
     <div class="form-group">
         <label for="reviewText">Your Review</label>
-        <textarea name="reviewText" class="form-control" required></textarea>
+        <textarea name="reviewText" class="form-control" required>@reviewText</textarea>
     </div>
 
     <div class="form-group">
-        <label for="rating">Rating (1-5)</label>
-        <input type="number" name="rating" class="form-control" min="1" max="5" required />
+        <label for="rating">Rating (1 to 5)</label>
+        <input type="number" name="rating" class="form-control" min="1" max="5" value="@rating" required />
     </div>
 
-    <button type="submit" class="btn btn-success">Submit Review</button>
+    <div class="form-group d-flex gap-2 align-items-center">
+        <button type="submit" class="btn btn-success">
+            @(reviewId != null ? "Update Review" : "Submit Review")
+        </button>
+
+        <a href="@Url.Action("Completed", "CustomerPage")" class="btn btn-secondary ml-2">Cancel</a>
+    </div>
 </form>
+
+<!-- ✅ Separate Delete Form (Not Nested!) -->
+@if (reviewId != null)
+{
+    <form method="post" asp-action="DeleteReview" asp-controller="CustomerPage" onsubmit="return confirm('Are you sure you want to delete this review?');" class="mt-2">
+        <input type="hidden" name="reviewId" value="@reviewId" />
+        <button type="submit" class="btn btn-danger">Delete Review</button>
+    </form>
+}
