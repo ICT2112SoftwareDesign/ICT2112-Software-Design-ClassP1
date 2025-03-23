@@ -5,12 +5,19 @@ namespace CleanBrilliantCompany.Interfaces
     public interface ICartManagement
     {
         // Adds a product to the cart
-        bool AddToCart(int customerId, int productId, int quantity);
+        bool addToCart(int customerId, int productId, int quantity);
 
         // Updates the quantity of a product in the cart
-        bool UpdateQuantity(int customerId, int productId, int quantity);
+        bool updateQuantity(int customerId, int productId, int quantity);
 
         // Removes a product from the cart
-        bool RemoveFromCart(int customerId, int productId);
+        bool removeFromCart(int customerId, int productId);
+
+         // Retrieves the products in the cart
+        Dictionary<int, Dictionary<string, object>> getCartProductDetails(Dictionary<int, int> cart);
+
+        // Calculates the total price of the products in the cart
+        decimal calculateCartTotal(Dictionary<int, int> cart, Dictionary<int, Dictionary<string, object>> products);
+
     }
 }

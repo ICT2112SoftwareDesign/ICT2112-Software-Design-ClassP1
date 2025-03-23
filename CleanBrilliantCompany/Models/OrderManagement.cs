@@ -1,83 +1,162 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class OrderManagement
+    public class OrderManagement : IOrder
     {
-        private readonly IProduct _product;
+    
+        private readonly IOrderDatabase _orderDatabase;
+        private readonly ICartManagement _cartManagement;
 
-        public OrderManagement(IProduct product)
+        public OrderManagement( IOrderDatabase orderDatabase, ICartManagement cartManagement)
         {
-            _product = product;
+        
+            _orderDatabase = orderDatabase;
+            _cartManagement = cartManagement;
         }
 
-        public bool createOrder(int customerId, DateTime orderDate, string orderAddress, Dictionary<int, int> orderProducts, List<Item> orderItems)
+        public int createOrder(
+            int customerId,
+            string deliveryAddress,
+            string serviceType,
+            string shippingType,
+            string shippingAgent,
+            Dictionary<int, int> cart)
         {
-            // Implementation for creating an order
-            return true;
+            try
+            {
+                // Fetch product details for the cart
+                var products = _cartManagement.getCartProductDetails(cart);
+                if (products == null || products.Count == 0)
+                {
+                    throw new Exception("Failed to fetch product details for the cart.");
+                }
+
+                // Calculate the cart total
+                decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
+
+                // Calculate the shipping fee
+                decimal shippingFee = calculateShippingFee(serviceType);
+
+                // Serialize the shipping details into JSON
+                var shippingDetails = new
+                {
+                    ShippingAgent = shippingAgent,
+                    ShippingMethod = shippingType,
+                    ServiceType = serviceType,
+                    ShippingFee = shippingFee.ToString("F2") // Include the shipping fee here
+                };
+                string orderShippingJson = System.Text.Json.JsonSerializer.Serialize(shippingDetails);
+
+                // Create the order object
+                var order = new OrderRDM
+                {
+                    CustomerID = customerId,
+                    OrderAddress = deliveryAddress,
+                    OrderProducts = cart, // Store the cart dictionary directly
+                    OrderShipping = orderShippingJson,
+                    OrderItems = cart.Count,
+                    OrderDate = DateTime.Now,
+                    Status = "Pending",
+                    OrderTotal = cartTotal + shippingFee
+                };
+
+                // Save the order to the database
+                return _orderDatabase.insertOrder(order);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and rethrow or handle it
+                throw new Exception($"Failed to create order: {ex.Message}");
+            }
         }
 
-        public bool makePayment()
+        public decimal calculateShippingFee(string serviceType)
         {
-            // Implementation for making a payment
-            return true;
+            var serviceCosts = new Dictionary<string, decimal>
+            {
+                { "1 Day", 10.00m },
+                { "3 Days", 5.00m },
+                { "7 Days", 0.00m }
+            };
+
+            if (!serviceCosts.ContainsKey(serviceType))
+            {
+                throw new Exception("Invalid service type selected.");
+            }
+
+            return serviceCosts[serviceType];
         }
 
-        public List<Order> getOrderHistory(int customerId)
+        // Implementation of getOrderDetails
+        public OrderRDM getOrderDetails(int orderId)
         {
-            // Implementation for getting order history
-            return new List<Order>();
+            return _orderDatabase.getOrderById(orderId);
         }
 
-        public string getOrderStatus(int customerId)
+        // Implementation of getOrderHistory
+        public List<OrderRDM> getOrderHistory(int customerId)
         {
-            // Implementation for getting order status
-            return "Order Status";
+            return _orderDatabase.getOrdersByCustomerId(customerId);
         }
 
+        // Implementation of cancelOrder
         public bool cancelOrder(int orderId)
         {
-            // Implementation for canceling an order
-            return true;
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null || order.Status == "Cancelled")
+            {
+                return false;
+            }
+
+            order.Status = "Cancelled";
+            return _orderDatabase.updateOrder(order);
         }
 
-        public bool requestReturn(int orderId)
+        // Implementation of updateOrderStatus
+        public bool updateOrderStatus(int orderId, string status)
         {
-            // Implementation for requesting a return
-            return true;
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null)
+            {
+                return false;
+            }
+
+            order.Status = status;
+            return _orderDatabase.updateOrder(order);
         }
 
-        public void changeNotificationSetting()
+        public bool cancelOrder(int orderId, int customerId)
         {
-            // Implementation for changing notification settings
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null || order.CustomerID != customerId || order.Status != "Pending")
+            {
+                return false; // Cannot cancel the order
+            }
+
+            order.Status = "Cancelled";
+            return _orderDatabase.updateOrder(order);
         }
 
-        public bool notifyDBOrderQueryStatus()
+        public bool requestRefund(int orderId, int customerId)
         {
-            // Implementation for notifying DB order query status
-            return true;
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null || order.CustomerID != customerId || order.Status != "Completed")
+            {
+                return false; // Cannot request a refund
+            }
+
+            order.Status = "RefundRequested";
+            return _orderDatabase.updateOrder(order);
         }
 
-        public List<Product> getAllProducts()
-        {
-            return _product.getAllProducts();
-        }
 
-        public Product GetOneProduct(int productId)
-        {
-            return _product.GetProductDetails(productId);
-        }
-    }
 
-    public class Item
-    {
-        // Implementation for Item class
-    }
 
-    public class Order
-    {
-        // Implementation for Order class
+
+
     }
 }

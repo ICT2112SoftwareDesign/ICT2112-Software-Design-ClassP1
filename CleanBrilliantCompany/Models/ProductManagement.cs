@@ -13,7 +13,7 @@ namespace CleanBrilliantCompany.Models
             new Product(4, "Ultra Germ Killa Bleach", "Bleach", 40.0f, 104, "Package4", 4.0f, 20, 400, 40, 8)
         };
 
-        public Product GetProductDetails(int productId)
+        public Product getProductDetails(int productId)
         {
             return products.Find(p => p.GetProductID() == productId) 
                    ?? new Product(0, "Default", "Default", 0.0f, 0, "Default", 0.0f, 0, 0, 0, 0);

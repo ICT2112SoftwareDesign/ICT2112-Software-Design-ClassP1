@@ -1,0 +1,140 @@
+@model List<CleanBrilliantCompany.Models.OrderRDM>
+@{
+    var shippingDetails = ViewBag.ShippingDetails as Dictionary<int, Dictionary<string, string>>;
+}
+
+<div class="container mt-5">
+    <h3 class="font-weight-bold mb-4">Order Status</h3>
+
+    <!-- First Row: Navigation for To Pay, To Ship, To Receive -->
+    <div class="row mb-4">
+        <!-- To Pay -->
+        <div class="col-sm-3 mb-3">
+            <a asp-controller="CustomerPage" asp-action="ViewCart" class="text-decoration-none">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-wallet" style="margin-right: 5px;"></i>To Pay</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- To Ship -->
+        <div class="col-sm-3 mb-3">
+            <a asp-controller="CustomerPage" asp-action="ToShip" class="text-decoration-none">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-box" style="margin-right: 5px;"></i>To Ship</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- To Receive -->
+        <div class="col-sm-3 mb-3">
+            <a asp-controller="CustomerPage" asp-action="ToReceive" class="text-decoration-none">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-truck" style="margin-right: 5px;"></i>To Receive</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Second Row: Navigation for Completed, Refund, Cancelled -->
+    <div class="row mb-4">
+        <!-- Completed -->
+        <div class="col-sm-3 mb-3">
+            <a asp-controller="CustomerPage" asp-action="Completed" class="text-decoration-none">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-check-circle" style="margin-right: 5px; color: green;"></i>Completed</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Refund -->
+        <div class="col-sm-3 mb-3">
+            <a asp-controller="CustomerPage" asp-action="Refund" class="text-decoration-none">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-undo" style="margin-right: 5px; color: orange;"></i>Refund</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Cancelled -->
+        <div class="col-sm-3 mb-3">
+            <a asp-controller="CustomerPage" asp-action="Cancelled" class="text-decoration-none">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-times-circle" style="margin-right: 5px; color: red;"></i>Cancelled</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Completed Orders Section -->
+    <h3 class="font-weight-bold mb-4">Completed Orders</h3>
+    @foreach (var order in Model)
+    {
+        var details = (shippingDetails != null && shippingDetails.ContainsKey(order.OrderID)) ? shippingDetails[order.OrderID] : null;
+        // Dynamically set the header color based on the order status
+        var headerClass = order.Status == "Cancelled" ? "bg-danger text-white" : "bg-success text-white";
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header @headerClass">
+                <h5 class="mb-0">Order ID: @order.OrderID</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Order Details -->
+                    <div class="col-md-6">
+                        <h6 class="font-weight-bold">Order Details</h6>
+                        <p><strong>Status:</strong> @order.Status</p>
+                        <p><strong>Total Price:</strong> $@order.OrderTotal</p>
+                    </div>
+
+                    <!-- Shipping Details -->
+                    @if (details != null)
+                    {
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">Shipping Details</h6>
+                            <p><strong>Service Type:</strong> @details["ServiceType"]</p>
+                            <p><strong>Shipping Method:</strong> @details["ShippingMethod"]</p>
+                            <p><strong>Shipping Agent:</strong> @details["ShippingAgent"]</p>
+                            <p><strong>Shipping Fee:</strong> $@(details.ContainsKey("ShippingFee") ? details["ShippingFee"] : "0.00")</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Product Details -->
+                <div class="mt-4">
+                    <h6 class="font-weight-bold">Products</h6>
+                    <ul class="list-group">
+                        @foreach (var product in order.OrderProductsDetails)
+                        {
+                            <li class="list-group-item">
+                                <strong>Product Name:</strong> @product.Value["ProductName"] <br />
+                                <strong>Quantity:</strong> @order.OrderProducts[product.Key] <br />
+                                <strong>Price:</strong> $@product.Value["CostPrice"]
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Request Refund Button -->
+                <div class="mt-3">
+                    <form asp-action="RequestRefund" method="post">
+                        <input type="hidden" name="orderId" value="@order.OrderID" />
+                        <button type="submit" class="btn btn-warning">Request Refund</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
