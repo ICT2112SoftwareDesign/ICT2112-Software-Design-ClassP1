@@ -22,10 +22,10 @@ namespace CleanBrilliantCompany.Models
         }
 
         // 🔹 Get Specific Staff Details
-        public StaffRDM GetStaff(int staffId)
-        {
-            return _staffDatabase.GetStaff(staffId);
-        }
+        //public StaffRDM GetStaff(int staffId)
+        //{
+        //    return _staffDatabase.GetStaffDetails(staffId);
+        //}
 
         // 🔹 Create a New Staff Member
         public bool CreateStaff(string name, string contactNo, string address, string role, string email, string password)
@@ -58,7 +58,7 @@ namespace CleanBrilliantCompany.Models
 
         public StaffRDM GetStaffDetails(int staffId)
         {
-            return _staffDatabase.GetStaff(staffId);
+            return _staffDatabase.GetStaffDetails(staffId);
         }
     }
 }

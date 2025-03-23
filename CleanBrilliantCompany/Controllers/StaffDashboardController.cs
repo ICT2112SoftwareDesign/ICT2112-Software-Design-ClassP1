@@ -24,7 +24,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "StaffLogin");
             }
 
-            var staffDetails = _staffManagement.GetStaff((int)staffId);
+            var staffDetails = _staffManagement.GetStaffDetails((int)staffId);
             ViewBag.StaffName = staffDetails?.Username ?? "Unknown";
             return View("~/Views/StaffPage/Index.cshtml");
         }

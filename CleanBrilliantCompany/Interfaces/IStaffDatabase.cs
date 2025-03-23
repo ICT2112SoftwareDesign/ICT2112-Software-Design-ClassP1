@@ -20,7 +20,7 @@ namespace CleanBrilliantCompany.Interfaces
 
         int GetIdByEmail(string email); // ✅ Add this line
 
-        StaffRDM GetStaff(int staffId);
+        StaffRDM GetStaffDetails(int staffId);
         List<StaffRDM> GetAllStaff();
 
         // 🔹 Validation Checks

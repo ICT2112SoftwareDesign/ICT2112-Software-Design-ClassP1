@@ -139,7 +139,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // ✅ Get Staff Details
-        public StaffRDM GetStaff(int staffId)
+        public StaffRDM GetStaffDetails(int staffId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
