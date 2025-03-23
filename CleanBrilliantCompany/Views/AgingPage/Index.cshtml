@@ -28,7 +28,17 @@
     {
         max-width: 100vw !important;  /* DO NOT REMOVE AH ._. */
     }
-        
+
+    .shared-chart-size 
+    {
+    width: 100% !important;
+    max-height: 320px;   /* 👈 restrict how tall it can grow */
+    height: 300px;        /* optional: make height consistent */
+    display: block;
+    margin: 0 auto;
+    }
+
+
     </style>
 
 </head>
@@ -398,26 +408,42 @@
                                                         }
 
                                                         @* ✅ Loop through each metric and create a chart comparing batches *@
+                                                        @{
+                                                            var mainMetrics = productMetrics.Where(m => m != "RemainingDays").ToList();
+                                                            var hasDonut = productMetrics.Contains("RemainingDays");
+                                                        }
 
-                                                        @for (int i = 0; i < productMetrics.Count; i += 2)
+                                                        @for (int i = 0; i < mainMetrics.Count; i += 2)
                                                         {
-                                                            <div class="row">
+                                                            <div class="row align-items-start">
                                                                 <div class="col-md-6">
                                                                     <div class="card p-3 mb-3">
-                                                                        <h5>@productMetrics[i]</h5>
-                                                                        <canvas id="chart-@product.Key-@productMetrics[i]"></canvas>
+                                                                        <h5>@mainMetrics[i]</h5>
+                                                                        <canvas id="chart-@product.Key-@mainMetrics[i]" class="shared-chart-size"></canvas>
                                                                     </div>
                                                                 </div>
 
-                                                                @if (i + 1 < productMetrics.Count)
+                                                                @if (i + 1 < mainMetrics.Count)
                                                                 {
                                                                     <div class="col-md-6">
                                                                         <div class="card p-3 mb-3">
-                                                                            <h5>@productMetrics[i + 1]</h5>
-                                                                            <canvas id="chart-@product.Key-@productMetrics[i + 1]"></canvas>
+                                                                            <h5>@mainMetrics[i + 1]</h5>
+                                                                            <canvas id="chart-@product.Key-@mainMetrics[i + 1]" class="shared-chart-size"></canvas>
                                                                         </div>
                                                                     </div>
                                                                 }
+                                                            </div>
+                                                        }
+
+                                                        @if (hasDonut)
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="card p-3 mb-3">
+                                                                        <h5>RemainingDays</h5>
+                                                                        <canvas id="chart-@product.Key-RemainingDays" class="shared-chart-size"></canvas>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         }
 
@@ -593,7 +619,7 @@
                 foreach (var batchcode in batchList)
                 {
                     var batchMetrics = Model.GetBatchAnalytics(batchcode)
-                        .SelectMany(a => a.CalculateBatchSummary())
+                        .SelectMany(a => a.CalculateBatchSummary()) 
                         .ToDictionary(e => e.Key, e => e.Value);
 
                     if (batchMetrics.ContainsKey(metric))
@@ -608,7 +634,7 @@
                 var labelsJson = Json.Serialize(batchData.Keys);
                 Console.WriteLine("valuesJson" + valuesJson); 
                 Console.WriteLine("labelsJson" + labelsJson); 
-                var axis = metric == "RemainingDays" ? "y" : "x";
+                var axis = metric == "StorageDuration" ? "y" : "x";
 
                 // need to mod the data for deadstockpercentage as each value should be 100 percent but 2 different colors 
                 if (metric == "DeadStockPercentage")
@@ -627,7 +653,24 @@
                             @Html.Raw(deadJson)
                         );
                     </text>
-                } else 
+
+                } else if (metric == "RemainingDays")
+                {
+                    var RemainingDaysList = batchData.Values.Select(v => Convert.ToInt32(v)).ToList(); 
+                    int expiringSoon = RemainingDaysList.Count(v => v <= 30); 
+                    int medium = RemainingDaysList.Count(v => v > 30 && v <= 90); 
+                    int safe = RemainingDaysList.Count(v => v > 90); 
+                    var binLabels = Json.Serialize(new[] { "Expiring Soon (≤30)", "Medium (30–90)", "Safe (>90)" });
+                    var binCounts = Json.Serialize(new[] { expiringSoon, medium, safe });
+
+                    <text>
+                        renderDonutChart(
+                            "@chartId",
+                            @Html.Raw(binLabels),
+                            @Html.Raw(binCounts)
+                        ); 
+                    </text> 
+                }else 
                 {
                     <text>
                         renderChart(
@@ -642,7 +685,57 @@
     }
 
 
+
+
     Chart.register(ChartDataLabels); 
+
+    function renderDonutChart(chartId, labels, data, colors) 
+    {
+        const ctx = document.getElementById(chartId).getContext('2d');
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors || [
+                        'rgba(75, 192, 192, 0.7)',   // Fresh
+                        'rgba(255, 205, 86, 0.7)',   // Medium
+                        'rgba(255, 99, 132, 0.7)'    // Long
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 205, 86, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true, // ✅ allows height control from CSS
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Remaining Days Distribution'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw} batch(es)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
 
     function renderStackedChart(chartId, labels, usedData, deadData) 
     {
