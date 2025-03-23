@@ -18,39 +18,38 @@ namespace CleanBrilliantCompany.Controllers
             _agingControl = new AgingControl(_productControl); // Testing
         }
 
-        public async Task<IActionResult> displayProducts()
+        // To change idk where yall put the stuffs
+        public async Task<IActionResult> Index()
         {
             var products = _productControl.getAllProducts();
+            // return View("~/Views/Product/TestProduct.cshtml", products);
+
+            return View(products);
+        }
+
+        public async Task<IActionResult> displayProducts()
+        {
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+
+            List<Product> products = _productControl.getAllProducts();
+
+            foreach (var product in products)
+            {
+                productInfo.Add(product.retrieveProductInfo());
+            }
             //_agingControl.testProductInterfaceMethods(); // Just to see the iProduct working
 
-            return View("~/Views/Product/TestProduct.cshtml", products);
+            return View("~/Views/Product/TestProduct.cshtml", productInfo);
         }
-
-        public async Task<IActionResult> displayProductBatch()
-        {
-            var productBatches = _productControl.getAllProductBatch();
-
-            return View("~/Views/Product/ProductBatch.cshtml", productBatches);
-        }
-        // public async Task<IActionResult> displayProductBatch()
-        // {
-        //     var productBatches = await _productControl.getAllProductBatch();
-
-        //     return View("~/Views/Product/ProductBatch.cshtml", productBatches);
-        // }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(Product product)
+        public async Task<IActionResult> CreateProduct(string productName, string productCategory, float productCost, 
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid product data.");
-            }
-
-            _productControl.createProduct(product.ProductName, product.ProductCategory, 
-                                        product.ProductCost, product.ManufacturerId, product.ProductWeight, 
-                                        product.Quantity, product.Volume, product.ToxicityPercentage, 
-                                        product.CarbonFootprint, product.ProductState);
+            _productControl.createProduct(productName, productCategory, 
+                                        productCost, manufacturerId, weight, 
+                                        quantity, volume, toxicityPercentage, 
+                                        carbonFootprint, productState);
 
             return RedirectToAction("displayProducts");
         }
@@ -67,27 +66,34 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public async Task<IActionResult> FetchProduct(int productId)
         {
-            var product = _productControl.getProductDetails(productId);
-            return View("~/Views/Product/FetchProduct.cshtml", product);
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+            Product product = _productControl.getProductDetails(productId);
+
+            if (product != null)
+            {
+                productInfo.Add(product.retrieveProductInfo());
+            }
+            return View("~/Views/Product/TestProduct.cshtml", productInfo);
         }
 
         [HttpPost]
-        public async Task<IActionResult> FetchUpdateProduct(int productId)
+        public async Task<IActionResult> UpdateProduct(int productId, string productName, string productCategory, float productCost, 
+        int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
-            var product = _productControl.getProductDetails(productId);
-            return View("~/Views/Product/UpdateProduct.cshtml", product);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateProduct(Product product)
-        {
-            _productControl.updateProduct(product.ProductId, product.ProductName, product.ProductCategory, 
-                                        product.ProductCost, product.ManufacturerId, product.ProductWeight, 
-                                        product.Quantity, product.Volume, product.ToxicityPercentage, 
-                                        product.CarbonFootprint, product.ProductState);;
+            _productControl.updateProduct(productId, productName, productCategory, 
+                                        productCost, manufacturerId, productWeight, 
+                                        quantity, volume, toxicityPercentage, 
+                                        carbonFootprint, productState);;
             return RedirectToAction("displayProducts");
         }
 
+        // Product Batch
+        public async Task<IActionResult> displayProductBatch()
+        {
+            var productBatches = _productControl.getAllProductBatch();
+
+            return View("~/Views/Product/ProductBatch.cshtml", productBatches);
+        }
 
         [HttpGet]
         public async Task<IActionResult> ProductBatch()
@@ -122,18 +128,39 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> FetchBatchStockHistory(int batchCode)
+        public async Task<IActionResult> FetchBatchStockHistoryByCode(int batchCode)
         {
-            var batch =  _productControl.getBatchDetails(batchCode);
             var stockHistory = _productControl.getStockHistoryByBatch(batchCode);
 
-            var viewModel = new BatchDetailsViewModel
-            {
-                ProductBatches = batch != null ? new List<ProductBatch> { batch } : new List<ProductBatch>(),
-                StockHistory = stockHistory ?? new List<StockHistory>()
-            };
+            return View("~/Views/Product/StockHistoryBatch.cshtml", stockHistory);
+        }
 
-            return View("~/Views/Product/StockHistoryBatch.cshtml", viewModel);
+        [HttpPost]
+        public async Task<IActionResult> FetchBatchStockHistoryByDate(DateOnly stockTakeDate)
+        {
+            var stockHistory = _productControl.getStockHistoryByDate(stockTakeDate);
+
+            // SHow the query for the time being
+            foreach (var kvp in stockHistory)
+            {
+                int batchCode = kvp.Key;
+                List<StockHistory> records = kvp.Value;
+
+                Console.WriteLine($"Batch Code: {batchCode}");
+                Console.WriteLine("-----------------------------");
+
+                foreach (var stock in records)
+                {
+                    Console.WriteLine($"Stock ID: {stock.StockId}");
+                    Console.WriteLine($"Stock Take Date: {stock.StockTakeDate}");
+                    Console.WriteLine($"Quantity: {stock.Quantity}");
+                    Console.WriteLine($"Recorded Date: {stock.RecordedDate}");
+                    Console.WriteLine();
+                }
+            }
+
+            //Just for now, need to fix views
+            return RedirectToAction("displayProducts");
         }        
     }
 }

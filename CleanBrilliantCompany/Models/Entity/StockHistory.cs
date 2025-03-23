@@ -21,17 +21,17 @@ namespace CleanBrilliantCompany.Models.Entity
     {
         public int StockId { get; set; } 
         public int BatchCode { get; set; } 
-        public DateTime StockCheckDate { get; set; } 
+        public DateOnly StockTakeDate { get; set; } 
         public int Quantity { get; set; } 
-        public DateTime TimeRecorded { get; set; } 
+        public DateTime RecordedDate { get; set; } // Change to DateTime currently is Time in database, change name to recordedDate
 
-        public StockHistory(int stockId, int batchCode, DateTime stockCheckDate, int quantity, DateTime timeRecorded)
+        public StockHistory(int stockId, int batchCode, DateOnly stockTakeDate, int quantity, DateTime recordedDate)
         {
             StockId = stockId;
             BatchCode = batchCode;
-            StockCheckDate = stockCheckDate;
+            StockTakeDate = stockTakeDate;
             Quantity = quantity;
-            TimeRecorded = timeRecorded;
+            RecordedDate = recordedDate;
         }
 
         public StockHistory() { }

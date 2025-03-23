@@ -60,20 +60,19 @@ namespace CleanBrilliantCompany.Mappers
                         {
                             if (reader.Read())
                             {
-                                return new Product
-                                {
-                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                    ProductName = reader.GetString(reader.GetOrdinal("productName")),
-                                    ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
-                                    ProductCost = (float)reader.GetDouble(reader.GetOrdinal("productCost")),
-                                    ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
-                                    ProductWeight = (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    Volume = reader.GetInt32(reader.GetOrdinal("volume")),
-                                    ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
-                                    CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
-                                    ProductState = reader.GetString(reader.GetOrdinal("productState"))
-                                };
+                                return new Product(
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetString(reader.GetOrdinal("productCategory")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("productCost")),
+                                    reader.GetInt32(reader.GetOrdinal("manufacturerId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    reader.GetInt32(reader.GetOrdinal("volume")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
+                                    reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
+                                    reader.GetString(reader.GetOrdinal("productState"))
+                                );
                             }
                         }
                     }
@@ -82,7 +81,6 @@ namespace CleanBrilliantCompany.Mappers
 
             return null;
         }
-
 
         public string insert(string productName, string category, float productCost, 
         int manufacturerId, float productWeight, int quantity, int volume, 
@@ -253,20 +251,22 @@ namespace CleanBrilliantCompany.Mappers
                         {
                             while (reader.Read())
                             {
-                                products.Add(new Product
-                                {
-                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                    ProductName = reader.GetString(reader.GetOrdinal("productName")),
-                                    ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
-                                    ProductCost = (float)reader.GetDouble(reader.GetOrdinal("productCost")),
-                                    ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
-                                    ProductWeight = (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    Volume = reader.GetInt32(reader.GetOrdinal("volume")),
-                                    ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
-                                    CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
-                                    ProductState = reader.GetString(reader.GetOrdinal("productState"))
-                                });
+                                Product product = new Product(
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetString(reader.GetOrdinal("productCategory")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("productCost")),
+                                    reader.GetInt32(reader.GetOrdinal("manufacturerId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    reader.GetInt32(reader.GetOrdinal("volume")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
+                                    reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
+                                    reader.GetString(reader.GetOrdinal("productState"))
+                                );
+
+                                // Add the product to the list
+                                products.Add(product);
                             }
                         }
                     }
@@ -399,6 +399,46 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // StockHistory
+        public List<StockHistory> findAllStockHistory()
+        {
+            List<StockHistory> stockHistoryList = new List<StockHistory>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = @"
+                    SELECT stockId, batchCode, stockTakeDate, quantity, recordedDate
+                    FROM dbo.StockHistory
+                    ORDER BY stockTakeDate DESC";  // Orders by most recent stock check
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            while (reader.Read())
+                            {
+                                DateTime stockTakeDateTime = reader.GetDateTime(reader.GetOrdinal("stockTakeDate"));
+                                DateOnly stockTakeDate = DateOnly.FromDateTime(stockTakeDateTime);
+                                stockHistoryList.Add(new StockHistory
+                                {
+                                    StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
+                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    StockTakeDate = stockTakeDate,
+                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    RecordedDate = reader.GetDateTime(reader.GetOrdinal("recordedDate"))
+                                });
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            return stockHistoryList;
+        }
+
         public List<StockHistory> findStockHistoryByBatchCode(int batchCode)
         {
             List<StockHistory> stockHistoryList = new List<StockHistory>();
@@ -408,188 +448,39 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 string query = @"
-                    SELECT stockId, batchCode, stockCheckDate, quantity, timeRecorded
+                    SELECT stockId, batchCode, stockTakeDate, quantity, recordedDate
                     FROM dbo.StockHistory
                     WHERE batchCode = @BatchCode
-                    ORDER BY stockCheckDate DESC";  // Orders by most recent stock check
+                    ORDER BY stockTakeDate DESC";  // Orders by most recent stock check
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@BatchCode", batchCode);
-
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (getDatabaseQueryStatus(reader))
                         {
                             while (reader.Read())
                             {
-                                // If timeRecorded is of type TIME, we convert it to DateTime
-                                DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
+                                // Convert DateTime to Date
+                                DateTime stockTakeDateTime = reader.GetDateTime(reader.GetOrdinal("stockTakeDate"));
+                                DateOnly stockTakeDate = DateOnly.FromDateTime(stockTakeDateTime);
                                 stockHistoryList.Add(new StockHistory
                                 {
                                     StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
                                     BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
+                                    // StockTakeDate = reader.GetDateTime(reader.GetOrdinal("stockTakeDate")),
+                                    StockTakeDate = stockTakeDate,
                                     Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
-                                    TimeRecorded = timeRecorded
+                                    RecordedDate = reader.GetDateTime(reader.GetOrdinal("recordedDate"))
+                                    // RecordedDate = recordedDate
                                 });
                             }
                         }
                     }
                 }
             }
-
             return stockHistoryList;
-        }
-
-        // // StockHistory
-        // public async Task<List<StockHistory>> findStockHistoryByBatchCode(int batchCode)
-        // {
-        //     List<StockHistory> stockHistoryList = new List<StockHistory>();
-
-        //     using (SqlConnection connection = new SqlConnection(_connectionString))
-        //     {
-        //         await connection.OpenAsync();
-
-        //         string query = @"
-        //             SELECT stockId, batchCode, stockCheckDate, quantity, timeRecorded
-        //             FROM dbo.StockHistory
-        //             WHERE batchCode = @BatchCode
-        //             ORDER BY stockCheckDate DESC";  // Orders by most recent stock check
-
-        //         using (SqlCommand command = new SqlCommand(query, connection))
-        //         {
-        //             command.Parameters.AddWithValue("@BatchCode", batchCode);
-
-        //             using (SqlDataReader reader = await command.ExecuteReaderAsync())
-        //             {
-        //                 while (await reader.ReadAsync())
-        //                 {
-        //                     // If timeRecorded is of type TIME, we convert it to DateTime
-        //                     DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
-        //                     stockHistoryList.Add(new StockHistory
-        //                     {
-        //                         StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
-        //                         BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-        //                         StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
-        //                         Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-        //                         // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
-        //                         TimeRecorded = timeRecorded
-        //                     });
-        //                 }
-        //             }
-        //         }
-        //     }
-
-        //     return stockHistoryList;
-        // }
-
-
-        // Interface Methods
-        public async Task<Product> getDatabaseQueryStatus(Task<Product> task)
-        {
-            try
-            {
-                return await task;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return null;
-            }
-        }
-
-        public async Task<string> getDatabaseQueryStatus(Task<string> task)
-        {
-            try
-            {
-                return await task;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database insert failed: {ex.Message}");
-                return $"Database insert failed: {ex.Message}";
-            }
-        }
-
-        public async Task<(string status, List<Product> products)> getDatabaseQueryStatus(Task<List<Product>> task)
-        {
-            try
-            {
-                List<Product> products = await task;
-
-                if (products.Count > 0)
-                {
-                    return ("Query executed successfully", products);
-                }
-                else
-                {
-                    return ("No products found", products);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return ($"Database query failed: {ex.Message}", new List<Product>());
-            }
-        }
-
-        public async Task<(string status, List<ProductBatch> batch)> getDatabaseQueryStatus(Task<List<ProductBatch>> batch)
-        {
-            try
-            {
-                List<ProductBatch> batchList = await batch;
-
-                if (batchList.Count > 0)
-                {
-                    return ("Query executed successfully", batchList);
-                }
-                else
-                {
-                    return ("No product batches found", batchList);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return ($"Database query failed: {ex.Message}", new List<ProductBatch>()); 
-            }
-        }
-
-        public async Task<ProductBatch> getDatabaseQueryStatus(Task<ProductBatch> task)
-        {
-            try
-            {
-                return await task;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return null;
-            }
-        }
-
-        public async Task<(string status, List<StockHistory> stockHistory)> getDatabaseQueryStatus(Task<List<StockHistory>> task)
-        {
-            try
-            {
-                List<StockHistory> stockHistoryList = await task;
-
-                if (stockHistoryList.Count > 0)
-                {
-                    return ("Query executed successfully", stockHistoryList);
-                }
-                else
-                {
-                    return ("No stock history found", stockHistoryList);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return ($"Database query failed: {ex.Message}", new List<StockHistory>());
-            }
         }
     }
 }
