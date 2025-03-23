@@ -1,0 +1,193 @@
+﻿using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models;
+using Microsoft.Data.SqlClient;
+
+namespace CleanBrilliantCompany.Data
+{
+    public class ItemCFMapper : IItemCarbonFootprintDB
+    {
+        private bool _querySuccess;
+        private readonly string _connectionString;
+
+        public ItemCFMapper(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentNullException("Connection string not found");
+        }
+
+        public bool insertItemCF(int itemId, int productId, double carbonEmission, string ecoStatus, DateTime dateCreated)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                    INSERT INTO ItemCarbonFootprint 
+                    (itemId, productId, carbonEmission, ecoStatus, dateCreated)
+                    VALUES 
+                    (@itemId, @productId, @carbonEmission, @ecoStatus, @dateCreated)";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@itemId", itemId);
+                        command.Parameters.AddWithValue("@productId", productId);
+                        command.Parameters.AddWithValue("@carbonEmission", carbonEmission);
+                        command.Parameters.AddWithValue("@ecoStatus", ecoStatus);
+                        command.Parameters.AddWithValue("@dateCreated", dateCreated);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                _querySuccess = true;
+                return _querySuccess;
+            }
+            catch (Exception ex)
+            {
+                _querySuccess = false;
+                return _querySuccess;
+            }
+        }
+
+        public bool updateAllItemCF()
+        {
+            try
+            {
+                // TODO: replace with actual update logic for all item CFs (recalculate based on new storage duration)
+                _querySuccess = true;
+                return true;
+            }
+            catch
+            {
+                _querySuccess = false;
+                return false;
+            }
+        }
+
+        public double retrieveItemCarbonFootprint(int itemCFId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                    SELECT carbonEmission 
+                    FROM ItemCarbonFootprint 
+                    WHERE itemCFId = @itemCFId";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@itemCFId", itemCFId);
+
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            _querySuccess = true;
+                            return Convert.ToDouble(result);
+                        }
+                        else
+                        {
+                            _querySuccess = false;
+                            return 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _querySuccess = false;
+                return 0;
+            }
+        }
+
+        public List<ItemCarbonFootprintRDM> retrieveAllItemCarbonFootprint()
+        {
+            List<ItemCarbonFootprintRDM> results = new List<ItemCarbonFootprintRDM>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = "SELECT * FROM ItemCarbonFootprint";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int itemCFId = Convert.ToInt32(reader["itemCFId"]);
+                            int itemId = Convert.ToInt32(reader["itemId"]);
+                            int productId = Convert.ToInt32(reader["productId"]);
+                            double carbonEmission = Convert.ToDouble(reader["carbonEmission"]);
+                            string ecoStatus = reader["ecoStatus"]?.ToString() ?? string.Empty;
+                            DateTime dateCreated = Convert.ToDateTime(reader["dateCreated"]);
+
+                            var rdm = new ItemCarbonFootprintRDM(
+                                itemCFId,
+                                itemId,
+                                productId,
+                                carbonEmission,
+                                ecoStatus,
+                                dateCreated
+                            );
+
+                            results.Add(rdm);
+                        }
+                    }
+                }
+
+                _querySuccess = true;
+                return results;
+            }
+            catch (Exception ex)
+            {
+                _querySuccess = false;
+                return new List<ItemCarbonFootprintRDM>();
+            }
+        }
+
+        public float retrieveTotalCarbonFootprint()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = "SELECT SUM(carbonEmission) FROM ItemCarbonFootprint";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            _querySuccess = true;
+                            return Convert.ToSingle(result);
+                        }
+                        else
+                        {
+                            _querySuccess = true;
+                            return 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _querySuccess = false;
+                return 0;
+            }
+        }
+
+        public bool getQueryStatus()
+        {
+            return _querySuccess;
+        }
+    }
+}
