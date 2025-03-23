@@ -1,4 +1,5 @@
 @model List<CleanBrilliantCompany.Models.OrderRDM>
+
 @{
     var shippingDetails = ViewBag.ShippingDetails as Dictionary<int, Dictionary<string, string>>;
 }
@@ -116,13 +117,34 @@
                     <h6 class="font-weight-bold">Products</h6>
                     <ul class="list-group">
                         @foreach (var product in order.OrderProductsDetails)
-                        {
-                            <li class="list-group-item">
-                                <strong>Product Name:</strong> @product.Value["ProductName"] <br />
-                                <strong>Quantity:</strong> @order.OrderProducts[product.Key] <br />
-                                <strong>Price:</strong> $@product.Value["CostPrice"]
-                            </li>
-                        }
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Product Name:</strong> @product.Value["ProductName"] <br />
+                                        <strong>Quantity:</strong> @order.OrderProducts[product.Key] <br />
+                                        <strong>Price:</strong> $@product.Value["CostPrice"]
+                                    </div>
+                                    @{
+                                        var reviewedProducts = ViewBag.ReviewedProductIds as HashSet<int>;
+                                        bool isReviewed = reviewedProducts != null && reviewedProducts.Contains(product.Key);
+                                    }
+                                   @if (!isReviewed)
+                                    {
+                                        <form method="get" asp-action="RateProduct" asp-controller="CustomerPage">
+                                            <input type="hidden" name="productId" value="@product.Key" />
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">Rate</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success">✔️ Already Reviewed</span>
+                                          <form method="get" asp-action="EditReview" asp-controller="CustomerPage">
+                                            <input type="hidden" name="productId" value="@product.Key" />
+                                            <button type="submit" class="btn btn-outline-warning btn-sm">Edit Review</button>
+                                        </form>
+                                    }
+                                </li>
+                            }
                     </ul>
                 </div>
 
@@ -133,6 +155,10 @@
                         <button type="submit" class="btn btn-warning">Request Refund</button>
                     </form>
                 </div>
+
+                
+
+                
             </div>
         </div>
     }

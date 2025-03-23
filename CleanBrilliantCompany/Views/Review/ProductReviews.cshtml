@@ -1,0 +1,28 @@
+@model List<ReviewRDM>
+@{
+    ViewData["Title"] = "Product Reviews";
+    var productName = ViewBag.ProductName;
+    var productId = ViewBag.ProductId;
+}
+
+<h2>Reviews for @productName</h2>
+
+@if (Model != null && Model.Any())
+{
+    <ul class="list-group mt-4">
+        @foreach (var review in Model)
+        {
+            <li class="list-group-item">
+                <strong>Customer:</strong> @review.GetCustomerId() <br />
+                <strong>Rating:</strong> @review.GetRating() <br />
+                <strong>Review:</strong> @review.GetReview()
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No reviews for this product yet.</p>
+}
+
+<a href="@Url.Action("GetAllProducts", "CustomerPage")" class="btn btn-secondary mt-3">Back to Products</a>

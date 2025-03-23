@@ -137,6 +137,18 @@ namespace CleanBrilliantCompany.Models
             return rawReviews; // can map if needed
         }
 
+        public List<ReviewRDM> ViewReviewsByCustomer(int customerId)
+        { 
+             var allReviews = reviewDatabase.GetAllReviews();
+            return allReviews.Where(r => r.GetCustomerId() == customerId).ToList();
+        }
+
+        public List<ReviewRDM> ViewReviewsByProduct(int productId)
+        {
+            var allReviews = reviewDatabase.GetAllReviews();
+            return allReviews.Where(r => r.GetProductId() == productId).ToList();
+        }
+
 
 
     }
