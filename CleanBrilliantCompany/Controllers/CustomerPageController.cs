@@ -224,6 +224,25 @@ namespace CleanBrilliantCompany.Controllers
             var allProducts = _productService.getAllProducts();
             return allProducts.FindAll(p => categories.Contains(p.GetProductDetails()["Category"].ToString()));
         }
+
+        [HttpGet]
+        public IActionResult ProductDetail(int productId)
+        {
+            var product = _productService.getProductDetails(productId);
+            if (product == null)
+            {
+                TempData["Error"] = "Product not found.";
+                return RedirectToAction("GetAllProducts");
+            }
+
+            var productDetails = product.GetProductDetails();
+
+            var reviews = _reviewManagement.ViewReviewsByProduct(productId);
+
+            ViewBag.ProductReviews = reviews;
+            ViewBag.ProductId = productId;
+            return View("~/Views/Products/ProductDetails.cshtml", productDetails);
+        }
         
 
 
