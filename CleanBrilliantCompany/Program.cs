@@ -1,5 +1,6 @@
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Domain;
+using CleanBrilliantCompany.DomainControl;
 using CleanBrilliantCompany.Interfaces;  // Ensure this matches your actual namespace
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.CalculatorImplementation;
@@ -21,19 +22,32 @@ builder.Services.AddScoped<IFeedbackSubmission, FeedbackSubmission>();
 builder.Services.AddScoped<IFeedbackRetrieval, FeedbackRetrieval>();
 builder.Services.AddScoped<IFeedbackManagement, FeedbackManagement>();
 
-builder.Services.AddScoped<ICarbonRepositoryQuery, CarbonFootprintMapper>();
-builder.Services.AddScoped<ICarbonRepositoryStatusQuery, CarbonFootprintRepositoryControl>();
-builder.Services.AddScoped<ICarbonManagerQuery, CarbonFootprintManagerControl>();
-builder.Services.AddScoped<ICarbonCalculatorQuery, CarbonFootprintCalculatorControl>();
-
 builder.Services.AddScoped<IProductCFCalculator, CalculateProductCFImpl>();
 builder.Services.AddScoped<IItemCFCalculator, CalculateItemCFImpl>();
 builder.Services.AddScoped<IShipmentCFCalculator, CalculateShipmentCFImpl>();
 builder.Services.AddScoped<ICarbonData, CarbonFootprintCalculatorControl>();
 
-builder.Services.AddScoped<CarbonFootprintManagerControl>();
 builder.Services.AddScoped<CarbonFootprintCalculatorControl>();
-builder.Services.AddScoped<CarbonFootprintRepositoryControl>();
+
+// Mappers
+builder.Services.AddScoped<IProductCarbonFootprintDB, ProductCFMapper>();
+builder.Services.AddScoped<IItemCarbonFootprintDB, ItemCFMapper>();
+builder.Services.AddScoped<IOrderCarbonFootprintDB, OrderCFMapper>();
+
+// Product CF Controls
+builder.Services.AddScoped<IProductCF, ProductCarbonFootprintControl>();
+builder.Services.AddScoped<IProductCFManagement, ProductCarbonFootprintControl>();
+builder.Services.AddScoped<IProductCFQuery, ProductCarbonFootprintControl>();
+
+// Item CF Controls
+builder.Services.AddScoped<IItemCF, ItemCarbonFootprintControl>();
+builder.Services.AddScoped<IItemCFManagement, ItemCarbonFootprintControl>();
+builder.Services.AddScoped<IItemCFQuery, ItemCarbonFootprintControl>();
+
+// Order CF Controls
+builder.Services.AddScoped<IOrderCF, OrderCarbonFootprintControl>();
+builder.Services.AddScoped<IOrderCFManagement, OrderCarbonFootprintControl>();
+builder.Services.AddScoped<IOrderCFQuery, OrderCarbonFootprintControl>();
 
 var app = builder.Build();
 
