@@ -923,10 +923,25 @@ namespace CleanBrilliantCompany.Controllers
 
 
         //REVIEW INPUT CONTROLLER METHODS 
+        [HttpGet]
+        public IActionResult RateProduct (int productId)
+        { 
+            var product = _productService.getProductDetails(productId); 
+            if (product == null)
+            { 
+                TempData["Error"] = "Product Not found"; 
+                return RedirectToAction("Completed"); 
+            }
+            ViewBag.ProductId = productId; 
+            ViewBag.ProductName = product.GetProductDetails()["ProductName"]; 
+
+            return View("~/Views/Review/RateProduct.cshtml");
+        }
 
         [HttpPost]
-        public IActionResult SubmitReivew (string reviewText, int rating, int productId)
-        { 
+        public IActionResult SubmitReview (string reviewText, int rating, int productId)
+        {    
+            Console.WriteLine($"Review: {reviewText}, Rating: {rating}, ProductID: {productId}");
             if(!_reviewManagement.WriteReview(reviewText, rating, productId))
             { 
                 TempData["Error"] = "Failed to submit review. Make sure all fields are valid.";
@@ -936,7 +951,7 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Success"] = "Review submitted successfully!";
             }
 
-            return RedirectToAction("GetAllProducts"); // gotta check where to go next. 
+            return RedirectToAction("Completed"); // gotta check where to go next. 
         }
 
         [HttpPost]
