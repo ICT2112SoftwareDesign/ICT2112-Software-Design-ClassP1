@@ -23,12 +23,27 @@
 <body id="page-top">
 
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    @* <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Carbon Footprint Dashboard</h1>
         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
             <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
         </a>
+    </div> *@
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Carbon Footprint Dashboard</h1>
+        <div>
+            <a href="/feedback" class="btn btn-sm btn-primary shadow-sm mr-2">
+                <i class="fas fa-comment-dots fa-sm text-white-50"></i> Feedback
+            </a>
+            <a href="/manager" class="btn btn-sm btn-info shadow-sm mr-2">
+                <i class="fas fa-eye fa-sm text-white-50"></i> Manager View Feedback
+            </a>
+            <a href="#" class="btn btn-sm btn-success shadow-sm">
+                <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+            </a>
+        </div>
     </div>
+
 
     <!-- Summary Cards -->
     <div class="row">
@@ -118,7 +133,7 @@
             values: [@Model.EcoFriendlyProductCount, @Model.NonEcoFriendlyProductCount]
         };
 
-         const transportModeData = {
+        const transportModeData = {
             labels: @Html.Raw(Json.Serialize(Model.OrderTransportBreakdown.Keys)),
             values: @Html.Raw(Json.Serialize(Model.OrderTransportBreakdown.Values))
         };
@@ -148,8 +163,8 @@
                     label: "Product Eco Status",
                     data: ecoProductData.values,
                     backgroundColor: [
-                        'rgba(75, 192, 192, 0.6)',    
-                        'rgba(255, 99, 132, 0.6)'     
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
                     ],
                     borderColor: [
                         'rgba(75, 192, 192, 1)',
@@ -180,8 +195,8 @@
                     label: "Transport Mode",
                     data: transportModeData.values,
                     backgroundColor: [
-                        'rgba(255, 159, 64, 0.6)',   
-                        'rgba(54, 162, 235, 0.6)',   
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
                         'rgba(153, 102, 255, 0.6)'
                     ],
                     borderColor: [
