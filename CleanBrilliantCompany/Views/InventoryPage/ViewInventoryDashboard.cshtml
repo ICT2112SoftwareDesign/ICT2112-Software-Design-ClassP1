@@ -21,9 +21,10 @@ else if (Model == null)
 }
 else
 {
-    <h1>Inventory Dashboard (ID: @Model.GetDashboardId())</h1>
-    <h2>@Model.Name</h2>
-    <p>Period: @Model.RequestedStartDate.ToString("d") to @Model.RequestedEndDate.ToString("d")</p>
+    <h1>@Model.Name (ID: @Model.GetDashboardId())</h1>
+    @* <h2>@Model.Name</h2> *@
+    @* <p>Period: @Model.RequestedStartDate.ToString("d") to @Model.RequestedEndDate.ToString("d")</p> *@
+    <p>Data for: @Model.RequestedStartDate.ToString("yyyy-MM-dd")</p>
     <p>Generated: @Model.GeneratedDate.ToString("d")</p>
     <p>Validity Duration: @Model.ValidityDuration days</p>
 
@@ -33,47 +34,64 @@ else
     @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Get the chart data from ViewBag
-        const chartData = @Html.Raw(ViewBag.ChartData);
+        try {
+            const chartData = @Html.Raw(ViewBag.ChartData);
+            console.log("Chart Data:", chartData);
 
-        // Render the chart using Chart.js
-        const ctx = document.getElementById('stockLevelChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar', // You can change this to 'line', 'pie', etc.
-            data: chartData,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Stock Level (Units)'
+            if (!chartData || !chartData.labels || !chartData.datasets) {
+                throw new Error("Invalid chart data");
+            }
+
+            const ctx = document.getElementById('stockLevelChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Stock Level (Units)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Products'
+                            }
                         }
                     },
-                    x: {
-                        title: {
+                    plugins: {
+                        legend: {
                             display: true,
-                            text: 'Products'
+                            position: 'top'
                         }
                     }
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error("Error rendering chart:", error);
+        }
     </script>
     }
 
     @if (stockLevels.Any())
     {
+        <h3>Stock Levels</h3>
         <ul>
             @foreach (var stock in stockLevels)
             {
-                <li>Product @stock.Key: @stock.Value units (Threshold: @Model.GetThreshold(stock.Key))</li>
+                var stockStatus = Model.GetStockStatus(stock.Key);
+                var statusDescription = stockStatus switch
+                {
+                    "L" => "Low Stock",
+                    "N" => "Normal",
+                    "O" => "Over Stock",
+                    _ => "Unknown"
+                };
+                var replenish = Model.GetReplenishmentStatus(stock.Key) == true ? "Yes" : "No";
+                <li>Product @stock.Key: @stock.Value units (Threshold: @Model.GetThreshold(stock.Key), Status: @statusDescription, Replenish: @replenish)</li>
             }
         </ul>
     }
@@ -82,7 +100,10 @@ else
         <p>No stock levels available for this dashboard.</p>
     }
 
-    <a asp-action="CreateDashboard">Create a new dashboard</a>
+    @* <a asp-action="CreateDashboard">Create a new dashboard</a> *@
+    <form asp-action="CreateDashboard" method="post" style="display: inline;">
+        <button type="submit">Create New Dashboard</button>
+    </form>
 
     <form asp-action="GenerateReport" method="post">
         <button type="submit">Generate Report</button>

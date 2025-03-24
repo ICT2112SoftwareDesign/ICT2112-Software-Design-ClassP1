@@ -18,12 +18,32 @@ namespace CleanBrilliantCompany.Control
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));
         }
 
-        public void CreateDashboard(string name, DateTime startDate, DateTime endDate, int validityDuration)
+        public void CreateDashboard(string name, int validityDuration)
         {
-            var newDashboard = new InventoryDashboardRDM(name, startDate, endDate, validityDuration)
+            var newDashboard = new InventoryDashboardRDM(name, validityDuration)
             {
                 Type = 2
             };
+
+            // Fetch stock levels from IProduct
+            var stockLevels = _productService.GetProductStockLevels();
+
+            // Get existing thresholds or set defaults
+            var thresholds = new Dictionary<int, int>();
+            foreach(var productId in stockLevels.Keys)
+            {
+                if (!thresholds.ContainsKey(productId))
+                {
+                    // Set a default threshold (e.g., 100) for new products
+                    thresholds[productId] = 100;
+                }
+            }
+
+            // Update dashboard with stock levels and thresholds
+            newDashboard.UpdateDashboardData(stockLevels, thresholds);
+            newDashboard.UpdateReplenishmentStatus();
+
+            // Save the dashboard with the updated data
             _inventoryRepository.SaveDashboard(newDashboard);
         }
 
@@ -35,41 +55,7 @@ namespace CleanBrilliantCompany.Control
                 throw new InvalidOperationException("No dashboard available. Please create a dashboard first.");
             }
 
-            // Fetch stock levels from IProduct
-            var stockLevels = _productService.GetProductStockLevels();
-
-            // Get existing thresholds or set defaults
-            var thresholds = new Dictionary<int, int>();
-            foreach (var productId in stockLevels.Keys)
-            {
-                if (!thresholds.ContainsKey(productId))
-                {
-                    // Set a default threshold (e.g., 100) for new products
-                    thresholds[productId] = 100;
-                }
-            }
-
-            // Update the dashboard with stock levels and thresholds
-            dashboard.UpdateDashboardData(stockLevels, thresholds);
-            dashboard.UpdateReplenishmentStatus();
-
-            // Persist the updated dashboard
-            _inventoryRepository.SaveDashboard(dashboard);
-
             return dashboard;
-        }
-
-        public void UpdateDashboard(Dictionary<int, int> stockUpdates)
-        {
-            var dashboard = FetchDashboard();
-            Dictionary<int, int> latestStockLevels = FetchLatestStockLevels();
-            Dictionary<int, int> latestThresholds = FetchLatestThresholds();
-
-            dashboard.UpdateDashboardData(latestStockLevels, latestThresholds);
-            dashboard.UpdateReplenishmentStatus();
-
-            _inventoryRepository.SaveDashboard(dashboard);
-            Console.WriteLine("Dashboard updated with latest stock and threshold values.");
         }
 
         public string GenerateReport()
@@ -120,7 +106,7 @@ namespace CleanBrilliantCompany.Control
         {
             var dashboard = FetchDashboard();
             return dashboard.GetAllStockLevels()
-                .Where(stock => stock.Value < dashboard.GetThreshold(stock.Key))
+                .Where(stock => stock.Value < dashboard.GetThreshold(stock.Key) * 0.35)
                 .Select(stock => stock.Key)
                 .ToList();
         }
@@ -129,7 +115,7 @@ namespace CleanBrilliantCompany.Control
         {
             var dashboard = FetchDashboard();
             return dashboard.GetAllStockLevels()
-                .Where(stock => stock.Value > dashboard.GetThreshold(stock.Key) * 1.5)
+                .Where(stock => stock.Value > dashboard.GetThreshold(stock.Key) * 1.6)
                 .Select(stock => stock.Key)
                 .ToList();
         }
@@ -168,14 +154,14 @@ namespace CleanBrilliantCompany.Control
         {
             try
             {
-                var stockLevels = _productService.GetProductStockLevels();
+                // Fetch data from the dashboard
+                var dashboard = FetchDashboard();
+                var stockLevels = dashboard.GetAllStockLevels();
                 if (stockLevels == null || !stockLevels.Any())
                 {
                     throw new InvalidOperationException("No stock level data available.");
                 }
 
-                // Fetch data from the dashboard
-                var dashboard = FetchDashboard();
                 var thresholds = dashboard.GetAllThresholds();
 
                 var labels = stockLevels.Keys.Select(id => $"Product {id}").ToList();
@@ -187,23 +173,23 @@ namespace CleanBrilliantCompany.Control
                     labels = labels,
                     datasets = new[]
                     {
-                new
-                {
-                    label = "Stock Levels",
-                    data = stockData,
-                    backgroundColor = "rgba(75, 192, 192, 0.2)",
-                    borderColor = "rgba(75, 192, 192, 1)",
-                    borderWidth = 1
-                },
-                new
-                {
-                    label = "Thresholds",
-                    data = thresholdData,
-                    backgroundColor = "rgba(255, 99, 132, 0.2)",
-                    borderColor = "rgba(255, 99, 132, 1)",
-                    borderWidth = 1
-                }
-            }
+                        new
+                        {
+                            label = "Stock Levels",
+                            data = stockData,
+                            backgroundColor = "rgba(75, 192, 192, 0.2)",
+                            borderColor = "rgba(75, 192, 192, 1)",
+                            borderWidth = 1
+                        },
+                        new
+                        {
+                            label = "Thresholds",
+                            data = thresholdData,
+                            backgroundColor = "rgba(255, 99, 132, 0.2)",
+                            borderColor = "rgba(255, 99, 132, 1)",
+                            borderWidth = 1
+                        }
+                    }
                 };
 
                 return System.Text.Json.JsonSerializer.Serialize(chartData);
@@ -215,15 +201,15 @@ namespace CleanBrilliantCompany.Control
                     labels = new string[] { },
                     datasets = new[]
                     {
-                new
-                {
-                    label = "Stock Levels",
-                    data = new int[] { },
-                    backgroundColor = "rgba(75, 192, 192, 0.2)",
-                    borderColor = "rgba(75, 192, 192, 1)",
-                    borderWidth = 1
-                }
-            }
+                        new
+                        {
+                            label = "Stock Levels",
+                            data = new int[] { },
+                            backgroundColor = "rgba(75, 192, 192, 0.2)",
+                            borderColor = "rgba(75, 192, 192, 1)",
+                            borderWidth = 1
+                        }
+                    }
                 };
                 return System.Text.Json.JsonSerializer.Serialize(errorChartData);
             }

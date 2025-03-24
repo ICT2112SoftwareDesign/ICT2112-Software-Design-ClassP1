@@ -29,8 +29,8 @@ namespace CleanBrilliantCompany.Models
             private set => throw new InvalidOperationException("Use SetReplenishmentStatus to modify ReplenishmentStatus.");
         }
 
-        public InventoryDashboardRDM(string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration)
-            : base(name, requestedStartDate, requestedEndDate, validityDuration)
+        public InventoryDashboardRDM(string name, int validityDuration)
+            : base(name, DateTime.Now, DateTime.Now, validityDuration)
         {
             _stockLevel = new Dictionary<int, int>();
             _threshold = new Dictionary<int, int>();
@@ -44,7 +44,6 @@ namespace CleanBrilliantCompany.Models
             _threshold = new Dictionary<int, int>();
             _replenishmentStatus = new Dictionary<int, bool>();
         }
-
 
         public int GetDashboardId()
         {
@@ -116,19 +115,49 @@ namespace CleanBrilliantCompany.Models
             _replenishmentStatus[productId] = replenishmentStatus;
         }
 
+        public string GetStockStatus(int productId)
+        {
+            EnsureProductExists(productId);
+            var stockLevel = _stockLevel[productId];
+            var threshold = _threshold[productId];
+
+            if (stockLevel < threshold * 0.35)
+            {
+                return "L"; // Low Stock
+            }
+            else if (stockLevel > threshold * 1.6)
+            {
+                return "O"; // Over Stock
+            }
+            else
+            {
+                return "N"; // Normal
+            }
+        }
+
+        public Dictionary<int, string> GetAllStockStatuses()
+        {
+            var statuses = new Dictionary<int, string>();
+            foreach (var productId in _stockLevel.Keys)
+            {
+                statuses[productId] = GetStockStatus(productId);
+            }
+            return statuses;
+        }
+
         public bool IsLowStock(int productId)
         {
-            return _stockLevel[productId] < _threshold[productId];
+            return _stockLevel[productId] < _threshold[productId] * 0.35;
         }
 
         public bool IsOverStock(int productId)
         {
-            return _stockLevel[productId] > _threshold[productId] * 1.5;
+            return _stockLevel[productId] > _threshold[productId] * 1.6;
         }
 
         public bool NeedsReplenishment(int productId)
         {
-            return _stockLevel[productId] < _threshold[productId];
+            return _stockLevel[productId] < _threshold[productId] * 0.35; // DOUBLE CHECK THIS LATER!!
         }
 
         public void UpdateDashboardData(Dictionary<int, int> stockLevels, Dictionary<int, int> thresholds)
@@ -148,7 +177,7 @@ namespace CleanBrilliantCompany.Models
         {
             foreach (var productId in _stockLevel.Keys)
             {
-                bool needsReplenishment = _stockLevel[productId] < _threshold[productId];
+                bool needsReplenishment = _stockLevel[productId] < _threshold[productId] * 0.35;
                 SetReplenishmentStatus(productId, needsReplenishment);
             }
         }

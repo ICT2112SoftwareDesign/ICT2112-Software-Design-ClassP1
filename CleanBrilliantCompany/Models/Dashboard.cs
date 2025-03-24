@@ -7,10 +7,10 @@ public abstract class Dashboard
     private DateTime _generatedDate;
     private int _validityDuration;
 
-    //protected int Type { get; set; }
+    // protected int Type { get; set; }
     public int Type { get; set; }
 
-    // 🔹 DashboardId should be set from the database, so allow protected set
+    // DashboardId should be set from the database, so allow protected set
     public int DashboardId { get; protected set; }
 
     // 🔹 Properties with validation
