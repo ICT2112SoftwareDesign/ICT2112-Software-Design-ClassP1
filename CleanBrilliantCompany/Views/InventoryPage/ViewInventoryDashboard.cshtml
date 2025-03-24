@@ -2,37 +2,107 @@
 
 @{
     ViewData["Title"] = "Inventory Dashboard";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
     var stockLevels = Model?.GetAllStockLevels() ?? new Dictionary<int, int>();
 }
 
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@Model?.Name (ID: @Model?.GetDashboardId())</h1>
+    <div>
+        <form asp-action="CreateDashboard" method="post" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-primary shadow-sm mr-2">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Create New Dashboard
+            </button>
+        </form>
+        <form asp-action="GenerateReport" method="post" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-primary shadow-sm">
+                <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+            </button>
+        </form>
+    </div>
+</div>
+
 @if (ViewData["ErrorMessage"] != null)
 {
-    <div style="color: red;">
+    <div class="alert alert-danger" role="alert">
         <p>@ViewData["ErrorMessage"]</p>
-        <p><a asp-action="CreateDashboard">Create a new dashboard</a></p>
+        <form asp-action="CreateDashboard" method="post" class="d-inline">
+            <button type="submit" class="btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Create a new dashboard
+            </button>
+        </form>
     </div>
 }
 else if (Model == null)
 {
-    <div style="color: red;">
+    <div class="alert alert-danger" role="alert">
         <p>Dashboard data is missing.</p>
-        <p><a asp-action="CreateDashboard">Create a new dashboard</a></p>
+        <form asp-action="CreateDashboard" method="post" class="d-inline">
+            <button type="submit" class="btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Create a new dashboard
+            </button>
+        </form>
     </div>
 }
 else
 {
-    <h1>@Model.Name (ID: @Model.GetDashboardId())</h1>
-    @* <h2>@Model.Name</h2> *@
-    @* <p>Period: @Model.RequestedStartDate.ToString("d") to @Model.RequestedEndDate.ToString("d")</p> *@
-    <p>Data for: @Model.RequestedStartDate.ToString("yyyy-MM-dd")</p>
-    <p>Generated: @Model.GeneratedDate.ToString("d")</p>
-    <p>Validity Duration: @Model.ValidityDuration days</p>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Dashboard Details</h6>
+        </div>
+        <div class="card-body">
+            <p><strong>Data for:</strong> @Model.RequestedStartDate.ToString("yyyy-MM-dd")</p>
+            <p><strong>Generated:</strong> @Model.GeneratedDate.ToString("d")</p>
+            <p><strong>Validity Duration:</strong> @Model.ValidityDuration days</p>
+        </div>
+    </div>
 
-    <h3>Stock Levels Chart</h3>
-    <canvas id="stockLevelChart" width="400" height="200"></canvas>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Stock Levels Chart</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="stockLevelChart" width="400" height="200"></canvas>
+        </div>
+    </div>
 
-    @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @if (stockLevels.Any())
+    {
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Stock Levels</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @foreach (var stock in stockLevels)
+                    {
+                        var stockStatus = Model.GetStockStatus(stock.Key);
+                        var statusDescription = stockStatus switch
+                        {
+                            "L" => "Low Stock",
+                            "N" => "Normal",
+                            "O" => "Over Stock",
+                            _ => "Unknown"
+                        };
+                        var replenish = Model.GetReplenishmentStatus(stock.Key) == true ? "Yes" : "No";
+                        <li class="list-group-item">
+                            Product @stock.Key: @stock.Value units (Threshold: @Model.GetThreshold(stock.Key), Status: @statusDescription, Replenish: @replenish)
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            No stock levels available for this dashboard.
+        </div>
+    }
+}
+
+@section Scripts {
     <script>
         try {
             const chartData = @Html.Raw(ViewBag.ChartData);
@@ -74,38 +144,4 @@ else
             console.error("Error rendering chart:", error);
         }
     </script>
-    }
-
-    @if (stockLevels.Any())
-    {
-        <h3>Stock Levels</h3>
-        <ul>
-            @foreach (var stock in stockLevels)
-            {
-                var stockStatus = Model.GetStockStatus(stock.Key);
-                var statusDescription = stockStatus switch
-                {
-                    "L" => "Low Stock",
-                    "N" => "Normal",
-                    "O" => "Over Stock",
-                    _ => "Unknown"
-                };
-                var replenish = Model.GetReplenishmentStatus(stock.Key) == true ? "Yes" : "No";
-                <li>Product @stock.Key: @stock.Value units (Threshold: @Model.GetThreshold(stock.Key), Status: @statusDescription, Replenish: @replenish)</li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p>No stock levels available for this dashboard.</p>
-    }
-
-    @* <a asp-action="CreateDashboard">Create a new dashboard</a> *@
-    <form asp-action="CreateDashboard" method="post" style="display: inline;">
-        <button type="submit">Create New Dashboard</button>
-    </form>
-
-    <form asp-action="GenerateReport" method="post">
-        <button type="submit">Generate Report</button>
-    </form>
 }
