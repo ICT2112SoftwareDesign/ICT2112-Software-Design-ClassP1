@@ -27,7 +27,22 @@ namespace CleanBrilliantCompany.Models
         {
             LogToFile($"[{DateTime.Now}] New customer registered - Username: {username}, Email: {email}");
         }
-        
+        public void onUpdateDetailsSuccess(int customerId, string username, string email, string address)
+        {
+            LogToFile($"[{DateTime.Now}] Update successful for fields for customer {customerId}: (Username: {username}, Email: {email}, Address: {address})");
+        }
+        public void onUpdatedDetailsFailure(int customerId, string username, string email, string address, string reason)
+        {
+            LogToFile($"[{DateTime.Now}] Update failed for fields for customer {customerId}: (Username: {username}, Email: {email}, Address: {address}). Error: {reason}");
+        }
+        public void onUpdatePasswordSuccess(int customerId, string password)
+        {
+            LogToFile($"[{DateTime.Now}] Update successful for password for customer {customerId}");
+        }
+        public void onUpdatePasswordFailure(int customerId, string password, string reason)
+        {
+            LogToFile($"[{DateTime.Now}] Update failed for password for customer {customerId}. Error: {reason}");
+        }
         private void LogToFile(string message)
         {
             try

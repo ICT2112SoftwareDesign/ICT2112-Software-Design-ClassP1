@@ -13,7 +13,7 @@
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-primary">
+<body>
 
 <div class="container mt-5">
 @if (ViewBag.Message != null)
@@ -21,11 +21,6 @@
     <div class="alert alert-danger">@ViewBag.Message</div>
 }
     <!-- Profile Header -->
-    <div class="profile-header mb-4">
-        <h3 class="font-weight-bold text-white">Orders/Purchases: </h3>
-    </div>
-
-   <!-- Profile Header -->
     <div class="profile-header mb-4">
         <h3 class="font-weight-bold text-white">Orders/Purchases: </h3>
     </div>
@@ -77,18 +72,49 @@
         </div>
     </div>
 
-    <!-- just for change password -->
-    <div class="card p-4">
+    <div class="card p-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
         <h4 class="card-title font-weight-bold">Change Password</h4>
         <form method="post" asp-action="UpdateCustomerDetails">
             <div class="form-group row">
                 <label for="username" class="col-sm-3 col-form-label">Password</label>
                 <div class="col-sm-6 d-flex align-items-center">
-                    <input type="password" class="form-control" id="password" maxlength="10" name="password" value="@ViewBag.Password" />
-                     <i class="fas fa-chevron-right" style="margin-left: 18px;"></i>
+                    <input type="password" class="form-control" id="password" maxlength="10" name="password" value="@ViewBag.Password" disabled />
+                    <i class="fas fa-chevron-right" style="margin-left: 18px;"></i>
                 </div>
             </div>
         </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form method="post" asp-action="updatePassword">
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required />
+                        </div>
+                        <!-- Modal Footer -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-warning">Update Password</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <br>
@@ -118,14 +144,14 @@
 
             <div class="form-group row">
                 <div class="col-sm-12 text-center">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" class="btn btn-warning">Save Changes</button>
                 </div>
             </div>
-             <div class="form-group row">
+             <!-- <div class="form-group row">
                 <div class="col-sm-12 text-center">
                     <button type="submit" class="btn btn-danger">Delete Account</button>
                 </div>
-            </div>
+            </div> -->
         </form>
     </div>
 </div>
@@ -133,6 +159,8 @@
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
 <!-- Core plugin JavaScript-->
 <script src="vendor/jquery-easing/jquery.easing.min.js"></script>

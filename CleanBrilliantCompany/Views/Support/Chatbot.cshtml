@@ -14,32 +14,64 @@
 </head>
     <body class="bg-primary"> <!-- Set the background color to the primary color -->
 
-    <div class="container mt-5">
-        <!-- Header -->
-        <div class="profile-header mb-4">
-            <h3 class="font-weight-bold text-white">Chat With Us:</h3>
-        </div>
+    <section>
+        <div class="container py-5">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-12 col-lg-10 col-xl-8">
+                    <div class="card" id="chat2">
+                        <div class="card-header d-flex justify-content-between align-items-center p-3">
+                            <h5 class="mb-0">Support Bot</h5>
+                        </div>
+                        <div class="card-body" style="overflow-y: auto; height: 400px">
 
-        <div class="card p-4">
-            @{
-                Layout = "_Layout";
-            }
+                            @if (ViewBag.ChatHistory != null)
+                            {
+                                <ul>
+                                    @foreach (var message in ViewBag.ChatHistory)
+                                    {
+                                        @foreach (var kvp in message)
+                                        {
+                                            var key = @kvp.Key;
+                                            var value = @kvp.Value;
 
-            <h2>Chat with our Support Bot</h2>
+                                            @if (key == "user")
+                                            {
+                                                <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                                                    <div>
+                                                        <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">@value</p>
+                                                        <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:06</p>
+                                                    </div>
+                                                </div>
+                                            } 
+                                            else if (key == "bot") {
+                                                <div class="d-flex flex-row justify-content-start">
+                                                    <div>
+                                                        <p class="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary border border-dark">@value</p>
+                                                        <p class="small ms-3 mb-3 rounded-3 text-muted">23:58</p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    }        
+                                </ul>
+                            }
+                        </div>
+                        <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                            <form method="post" asp-action="provideAutomatedResponse" class="w-100">
+                                <div class="form-group d-flex align-items-center">
+                                    <input type="text" id="query" name="query" class="form-control form-control-lg me-2" placeholder="Type message" />
+                                    <button type="submit" class="btn btn-primary mb-2">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
 
-            <div>
-                <pre>@ViewBag.ChatHistory</pre>
-            </div>
-
-            <form method="post" asp-action="provideAutomatedResponse">
-                <div class="form-group">
-                    <label for="userMessage">Your Message:</label>
-                    <input type="text" id="query" name="query" class="form-control" />
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Send</button>
-            </form>
+            </div>
         </div>
-    </div>
+    </section>
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -50,6 +82,17 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+
+    <script>
+    // Function to scroll the chat to the bottom
+        function scrollChatToBottom() {
+            var chatBody = document.querySelector('.card-body');
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Call the function when the page loads
+        window.onload = scrollChatToBottom;
+    </script>
 
 </body>
 </html>

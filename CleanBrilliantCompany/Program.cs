@@ -41,9 +41,11 @@ builder.Services.AddSingleton<IReviewDatabase>(provider =>
 builder.Services.AddTransient<CustomerManagement>();
 
 builder.Services.AddTransient<SupportManagement>();
-builder.Services.AddTransient<ChatbotService>();
+builder.Services.AddTransient<IChatbot, ChatbotService>();
+builder.Services.AddTransient<ISupportTicket, SupportTicketService>();
 builder.Services.AddScoped<IProduct, ProductManagement>(); 
 builder.Services.AddScoped<IWishlistManagement, WishlistManagement>();
+builder.Services.AddScoped<IOrder, OrderManagement>();
 builder.Services.AddTransient<OrderManagement>();
 builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString));
 builder.Services.AddTransient<CartManagement>();

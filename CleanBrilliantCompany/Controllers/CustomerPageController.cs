@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interfaces;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace CleanBrilliantCompany.Controllers
         private readonly ILogger<CustomerPageController> _logger;
         private readonly CustomerManagement _customerManagement;
         private readonly SupportManagement _supportManagement;
-        private readonly ChatbotService _chatbotService;
+        private readonly IChatbot _chatbotService;
         private readonly OrderManagement _orderManagement;
         private readonly CartManagement _cartManagement;
         private readonly IProduct _productService;
@@ -28,7 +29,7 @@ namespace CleanBrilliantCompany.Controllers
             ILogger<CustomerPageController> logger, 
             CustomerManagement customerManagement, 
             SupportManagement supportManagement,
-            ChatbotService chatbotService,
+            IChatbot chatbotService,
             OrderManagement orderManagement,
             CartManagement cartManagement,
             IProduct productService,
@@ -59,10 +60,10 @@ namespace CleanBrilliantCompany.Controllers
             if (customerDetails != null)
             {
                 ViewBag.CustomerId = loggedInId;
-                ViewBag.Email = customerDetails.GetSession<string>("email");
-                ViewBag.Password = customerDetails.GetSession<string>("password");
-                ViewBag.Username = customerDetails.GetSession<string>("username");
-                ViewBag.CustomerAddress = customerDetails.GetSession<string>("customerAddress");
+                ViewBag.Email = customerDetails.getSession<string>("email");
+                ViewBag.Password = customerDetails.getSession<string>("password");
+                ViewBag.Username = customerDetails.getSession<string>("username");
+                ViewBag.CustomerAddress = customerDetails.getSession<string>("customerAddress");
             }
             else
             {
@@ -86,8 +87,8 @@ namespace CleanBrilliantCompany.Controllers
                 return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
             }
 
-            bool isEmailChanged = email != customerDetails.GetSession<string>("email");
-            bool isUsernameChanged = username != customerDetails.GetSession<string>("username");
+            bool isEmailChanged = email != customerDetails.getSession<string>("email");
+            bool isUsernameChanged = username != customerDetails.getSession<string>("username");
 
             if (isEmailChanged || isUsernameChanged)
             {
@@ -99,7 +100,7 @@ namespace CleanBrilliantCompany.Controllers
                     return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
                 }
             }
-            bool updateSuccessful = _customerManagement.updateCustomerDetails(username, email, address);
+            bool updateSuccessful = _customerManagement.updateCustomerDetails(loggedInId, username, email, address);
             if (updateSuccessful)
             {
                 CustomerDetails();
@@ -127,69 +128,128 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdatePassword(string password)
+        public IActionResult updatePassword(string newPassword, string confirmPassword)
         {
+            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+            
+            if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
+            {
+                ViewBag.Message = "New password and Confirm Password Cannot be Empty";
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml"); 
+            }
 
-            return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Message = "Passwords do not match!";
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml"); 
+            }
 
+            bool passwordSuccess = _customerManagement.updatePassword(loggedInId, newPassword);
+            if(passwordSuccess){
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+            }
+            else{
+                ViewBag.Message = "Password failed to update!";
+                CustomerDetails();
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+            }
+            
         }
 
         // INPUT CONTROLLER METHODS
 
         // HelpCenterInputController Methods
 
-        // public IActionResult submitQuery(String query)
-        // {
-            
-        // }
-
         public IActionResult viewFAQs(String query)
         {
-            List<String> faqs = _supportManagement.FetchFAQs();
+            Dictionary<string, string> faqs = _supportManagement.FetchFAQs();
             ViewBag.FAQs = faqs;
 
             return View("~/Views/Support/FAQs.cshtml");
         }
 
-        // public IActionResult trackTicket(Int32 ticketId)
-        // {
+        public IActionResult escalateIssue(Int32 orderID, String issueDescription)
+        {
+            // Retrieve customer ID from the session using the correct key
+            int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
             
-        // }
+            bool success = _supportManagement.createSupportTicket(customerID, orderID, issueDescription);
+            return RedirectToAction("viewFAQs");
+        }
 
-        // public IActionResult escalateIssue(Int32 ticketId)
-        // {
-            
-        // }
+        // ChatbotInputController Methods
 
-        // // ChatbotInputController Methods
-
-         // Method to start chat session and return current chat history
         public IActionResult startChatSession()
         {
-            var chatHistory = HttpContext.Session.GetString("ChatHistory") ?? "";
+            string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
+
+            // Check if JSON exists and is not empty
+            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson) 
+                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson) 
+                : new List<Dictionary<string, string>>();
+
             ViewBag.ChatHistory = chatHistory;
+            
             return View("~/Views/Support/Chatbot.cshtml");
         }
 
-        // Method to send a user message and get bot response
         [HttpPost]
         public IActionResult provideAutomatedResponse(String query)
         {
+            // Retrieve customer ID from the session using the correct key
+            int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
             if (string.IsNullOrEmpty(query)) return RedirectToAction("startChatSession");
 
-            string botResponse = _supportManagement.handleCustomerChatbotQuery(query);
+            string botResponse = _supportManagement.handleCustomerChatbotQuery(customerID, query);
 
-            // Store the conversation history in session
-            var chatHistory = HttpContext.Session.GetString("ChatHistory") ?? "";
-            chatHistory += $"You: {query}\nBot: {botResponse}\n";
-            HttpContext.Session.SetString("ChatHistory", chatHistory);
+            string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
+
+            // Check if JSON is null or empty before deserialization
+            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson) 
+                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson) 
+                : new List<Dictionary<string, string>>();
+
+            var userMessage = new Dictionary<string, string> { { "user", query } };
+            var botMessage = new Dictionary<string, string> { { "bot", botResponse } };
+
+            chatHistory.Add(userMessage);
+            chatHistory.Add(botMessage);
+
+            // Store updated chat history back in session
+            HttpContext.Session.SetString("ChatHistory", JsonSerializer.Serialize(chatHistory));
+
 
             return RedirectToAction("startChatSession");
         }
 
-        // public IActionResult escalateToAgent(String query)
+        // public IActionResult escalateToAgent(Int32 orderID, String query)
         // {
+        //     // Retrieve customer ID from the session using the correct key
+        //     int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+        //     if (customerID == null)
+        //     {
+        //         TempData["Error"] = "User not logged in.";
+        //         return RedirectToAction("Login", "BeforeLoginPage");
+        //     }
             
+        //     bool success = _supportManagement.escalateToHumanAgent(customerID, orderID, query);
+        //     ViewBag.escalateIssue = success;
+
+        //     return RedirectToAction("startChatSession");
         // }
 
         public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
@@ -377,7 +437,7 @@ namespace CleanBrilliantCompany.Controllers
 
             // Retrieve customer details using CustomerManagement
             var customer = _customerManagement.getCustomer(customerID.Value);
-            string customerAddress = customer?.GetSession<string>("customerAddress") ?? string.Empty;
+            string customerAddress = customer?.getSession<string>("customerAddress") ?? string.Empty;
 
             // Load the cart for the customer
             var cart = _cartManagement.viewCart(customerID.Value);
@@ -458,7 +518,7 @@ namespace CleanBrilliantCompany.Controllers
             {
                 // Optionally save the new address to the customer's profile
                 var customer = _customerManagement.getCustomer(customerID.Value);
-                customer.SetSession("customerAddress", deliveryAddress); // Save to session
+                customer.setSession("customerAddress", deliveryAddress); // Save to session
             }
             else
             {
@@ -925,7 +985,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult RequestRefund(int orderId)
+        public IActionResult RequestRefund(int orderId, string refundReason, string refundImage, string refundVideo)
         {
             int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerId == null)
@@ -934,7 +994,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            var success = _orderManagement.requestRefund(orderId, customerId.Value);
+            var success = _orderManagement.requestRefund(orderId, customerId.Value, refundReason, refundImage, refundVideo);
             if (success)
             {
                 TempData["Success"] = "Refund request submitted successfully.";
@@ -1136,7 +1196,7 @@ public IActionResult viewWishlist()
 
     // Get customer details to retrieve the name
     var customer = _customerManagement.getCustomer(customerID.Value);
-    string customerName = customer?.GetSession<string>("username") ?? "My";
+    string customerName = customer?.getSession<string>("username") ?? "My";
     // Get wishlist items from wishlist management service
     var productIds = _wishlistManagement.viewWishlist(customerID.Value);
     
