@@ -2,6 +2,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IChatbotQuery
     {
-        (string responseText, Dictionary<string, string> parameters) handleQuery(string query);
+        string handleQuery(Int32 customerID, String query);
     }
 }

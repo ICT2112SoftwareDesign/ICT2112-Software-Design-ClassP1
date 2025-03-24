@@ -17,16 +17,30 @@ namespace CleanBrilliantCompany.Models
             _orderService = orderService;
         }
 
-        public string handleCustomerChatbotQuery(Int32 customerID, String query)
+        public (string responseText, Dictionary<string, string> parameters) handleCustomerChatbotQuery(String query)
         {
-            var (response, parameters) = handleQuery(query);
+            return _chatBotService.submitQuery(query);
+        }
+
+        public string handleQuery(Int32 customerID, String query)
+        {
+            var (response, parameters) = handleCustomerChatbotQuery(query);
 
             if (parameters.ContainsKey("orderID"))
             {
                 int orderId;
+                OrderRDM? orderDetails = null;
                 if (int.TryParse(parameters["orderID"], out orderId))
                 {
-                    var orderDetails = _orderService.getOrderDetails(orderId);
+                    var orderHistory = _orderService.getOrderHistory(customerID);
+                    foreach (var order in orderHistory)
+                    {
+                        if (order.OrderID == orderId)
+                        {
+                            orderDetails = order;
+                            break;
+                        }
+                    }
                     if (orderDetails != null)
                     {
                         return $"Order ID: {orderId}\nStatus: {orderDetails.Status}\nOrder Total: ${orderDetails.OrderTotal}";
@@ -47,20 +61,20 @@ namespace CleanBrilliantCompany.Models
             return response;
         }
 
-        public (string responseText, Dictionary<string, string> parameters) handleQuery(String query)
+        public bool escalateToHumanAgent(Int32 customerID, String query)
         {
-            return _chatBotService.submitQuery(query);
-        }
-
-        public Dictionary<string, string> FetchFAQs()
-        {
-            return new Dictionary<string, string>
+            bool success = _supportTicketService.createTicket(customerID, 0, query);
+            if (success)
             {
-                { "How do I track my order?", "You can track your order by logging into your account and checking the 'Order Status' section." },
-                { "What is your return policy?", "We accept returns within 30 days of purchase. Items must be unused and in original packaging. Visit our Returns page for details." },
-                { "How do I reset my password?", "Go to the login page, click 'Forgot Password,' and follow the instructions to reset your password via email." },
-                { "How do I contact support?", "You can contact our support team via email at support@example.com or call us at +1-800-123-4567." }
-            };
+                Console.WriteLine("Successfully escalated the issue!");
+            }
+            else
+            {
+                Console.WriteLine("Failed to escalate the issue.");
+                return false;
+            }
+            
+            return success;
         }
 
         public bool createSupportTicket(Int32 customerID, Int32 orderID, String ticketDetails)
@@ -78,22 +92,17 @@ namespace CleanBrilliantCompany.Models
 
             return success;
         }
-
-        public bool escalateToHumanAgent(Int32 customerID, String query)
-        {
-            bool success = _supportTicketService.createTicket(customerID, 0, query);
-            if (success)
-            {
-                Console.WriteLine("Successfully escalated the issue!");
-            }
-            else
-            {
-                Console.WriteLine("Failed to escalate the issue.");
-                return false;
-            }
-            
-            return success;
-        }
         
+        public Dictionary<string, string> FetchFAQs()
+        {
+            return new Dictionary<string, string>
+            {
+                { "How do I track my order?", "You can track your order by logging into your account and checking the 'Order Status' section." },
+                { "What is your return policy?", "We accept returns within 30 days of purchase. Items must be unused and in original packaging. Visit our Returns page for details." },
+                { "How do I reset my password?", "Go to the login page, click 'Forgot Password,' and follow the instructions to reset your password via email." },
+                { "How do I contact support?", "You can contact our support team via email at support@example.com or call us at +1-800-123-4567." }
+            };
+        }
+
     }
 }

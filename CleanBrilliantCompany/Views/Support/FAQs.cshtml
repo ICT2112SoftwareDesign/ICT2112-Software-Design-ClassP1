@@ -151,15 +151,19 @@
                 // Send data to server using AJAX
                 $.ajax({
                     type: "POST",
-                    url: "/CustomerPage/escalateIssue",  // Update this to your controller action
+                    url: "/CustomerPage/escalateIssue", 
                     data: formData,
                     success: function(response) {
-                        // Display success message
-                        alert('Thank you for submitting your issue. We will get back to you soon.');
-                        
-                        // Close the modal
+                         // Close the modal
                         const bsModal = bootstrap.Modal.getInstance(document.getElementById('reportIssueModal'));
                         bsModal.hide();
+                        
+                        if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                             // Display success message
+                            alert('Thank you for submitting your issue. We will get back to you soon.');
+                        }
                         
                         // Reset form
                         $('#issueForm')[0].reset();
