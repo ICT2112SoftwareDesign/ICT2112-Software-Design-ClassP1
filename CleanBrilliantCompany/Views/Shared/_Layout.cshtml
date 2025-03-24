@@ -73,6 +73,23 @@
         </nav>
     </header>
     <div class="container">
+<!-- Feedback Modal (Bootstrap 5 version) You can use this for your own usage -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">Notification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="feedbackMessage">
+                <!-- Message will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -83,11 +100,48 @@
             &copy; 2025 - CleanBrilliantCompany - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+    <script>
+        $(document).ready(function() {
+            // Check if there's a success or error message in TempData
+            @if (TempData["Success"] != null)
+            {
+                <text>
+                    $('#feedbackModalLabel').text('Success');
+                    $('#feedbackMessage').html('@TempData["Success"]');
+                    $('.modal-header').addClass('bg-success text-white');
+                    $('#feedbackModal').modal('show');
+                </text>
+            }
+            else if (TempData["Info"] != null)
+            {
+                <text>
+                    $('#feedbackModalLabel').text('Information:');
+                    $('#feedbackMessage').html('@TempData["Info"]');
+                    $('.modal-header').addClass('bg-info text-white');
+                    $('#feedbackModal').modal('show');
+                </text>
+            }
+            else if (TempData["Error"] != null)
+            {
+                <text>
+                    $('#feedbackModalLabel').text('Error!');
+                    $('#feedbackMessage').html('@TempData["Error"]');
+                    $('.modal-header').addClass('bg-danger text-white');
+                    $('#feedbackModal').modal('show');
+                </text>
+            }
+            
+            // Reset modal styling when closed
+            $('#feedbackModal').on('hidden.bs.modal', function () {
+                $('.modal-header').removeClass('bg-success bg-danger text-white');
+            });
+        });
+    </script>
 
 </html>

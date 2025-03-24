@@ -3,6 +3,7 @@
     ViewData["Title"] = ViewBag.CustomerName + "'s Wishlist";
 }
 
+
 <div class="container">
     <h1 class="mb-4">@ViewBag.CustomerName's Wishlist</h1>
 
@@ -35,7 +36,7 @@
                             <p class="card-text text-primary font-weight-bold">$@product["CostPrice"]</p>
                             
                             <div class="d-flex justify-content-between mt-3">
-                                <form asp-controller="CustomerPage" asp-action="RemoveFromWishlist" method="post">
+                                <form asp-controller="CustomerPage" asp-action="removeFromWishlist" method="post">
                                     <input type="hidden" name="productId" value="@productId" />
                                     <button type="submit" class="btn btn-outline-danger">
                                         <i class="fas fa-heart-broken"></i> Remove
@@ -57,3 +58,4 @@
         </div>
     }
 </div>
+
