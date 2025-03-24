@@ -163,7 +163,7 @@ namespace CleanBrilliantCompany.Controllers
 
         // HelpCenterInputController Methods
 
-        public IActionResult viewFAQs(String query)
+        public IActionResult viewFAQs()
         {
             Dictionary<string, string> faqs = _supportManagement.FetchFAQs();
             ViewBag.FAQs = faqs;
@@ -175,10 +175,10 @@ namespace CleanBrilliantCompany.Controllers
         {
             // Retrieve customer ID from the session using the correct key
             int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-            if (customerID == null)
+            if (customerID == -1)
             {
                 TempData["Error"] = "User not logged in.";
-                return RedirectToAction("Login", "BeforeLoginPage");
+                return Json(new { redirectUrl = Url.Action("Login", "BeforeLoginPage") });
             }
             
             bool success = _supportManagement.createSupportTicket(customerID, orderID, issueDescription);
@@ -206,7 +206,7 @@ namespace CleanBrilliantCompany.Controllers
         {
             // Retrieve customer ID from the session using the correct key
             int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-            if (customerID == null)
+            if (customerID == -1)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
@@ -214,7 +214,7 @@ namespace CleanBrilliantCompany.Controllers
 
             if (string.IsNullOrEmpty(query)) return RedirectToAction("startChatSession");
 
-            string botResponse = _supportManagement.handleCustomerChatbotQuery(customerID, query);
+            string botResponse = _supportManagement.handleQuery(customerID, query);
 
             string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
 
@@ -251,6 +251,8 @@ namespace CleanBrilliantCompany.Controllers
 
         //     return RedirectToAction("startChatSession");
         // }
+
+        // Products input controller
 
         public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
         {
