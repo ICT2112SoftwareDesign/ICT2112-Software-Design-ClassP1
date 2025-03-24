@@ -1,7 +1,8 @@
 namespace CleanBrilliantCompany.Services
 {
     public interface IAIService
-    {
-        string GenerateAnalysis(string data);
-    }
+{
+    Task<string> GenerateAnalysis(string inputData);
+}
+
 }

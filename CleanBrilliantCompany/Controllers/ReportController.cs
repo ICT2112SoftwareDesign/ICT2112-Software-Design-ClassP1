@@ -15,9 +15,9 @@ namespace CleanBrilliantCompany.Controllers
 
         public IActionResult Index() => View();
 
-        public IActionResult GenerateReport()
+        public async Task<IActionResult> GenerateReport()
         {
-            var report = _reportControl.GenerateReport();
+            var report = await _reportControl.GenerateReportAsync();
             return File(report.ReportData, "application/pdf", $"{report.ReportName}.pdf");
         }
     }

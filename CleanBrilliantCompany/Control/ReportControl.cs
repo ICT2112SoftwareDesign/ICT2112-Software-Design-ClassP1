@@ -14,18 +14,31 @@ namespace CleanBrilliantCompany.Control
             _AIService = AIService;
         }
 
-        public Report GenerateReport()
+        public async Task<Report> GenerateReportAsync()
         {
-            // placeholder
             var report = new Report
             {
                 ReportID = 1,
-                ReportName = "Sales Report",
+                ReportName = "Q1 Performance Report",
                 ReportType = "Sales"
             };
 
-            var aiContent = _AIService.GenerateAnalysis("Sales data input");
-            report.ReportData = _reportGenerator.GeneratePDF(report);
+            // DUMMY INPUT
+            string dummyData = @"
+            Sales increased by 20% in Q1.
+            Inventory levels improved.
+            Manufacturer Y had a 3-day delay in delivery.
+            Costs decreased due to bulk shipping.";
+
+            // Generate AI summary
+            string aiSummary = await _AIService.GenerateAnalysis(dummyData);
+
+            // Replace this 
+            report.ReportData = _reportGenerator.GeneratePDF(new Report
+            {
+                ReportName = report.ReportName,
+                ReportType = report.ReportType
+            });
 
             return report;
         }
