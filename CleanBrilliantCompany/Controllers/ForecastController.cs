@@ -74,7 +74,7 @@ namespace CleanBrilliantCompany.Controllers
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         [HttpPost("UpdatePriceAdjustment")]
-        public IActionResult UpdatePriceAdjustment(int productId, string productName, int priceAdjustment)
+        public IActionResult UpdatePriceAdjustment(int productId, string productName, int priceAdjustment,string sortType, string sortOrder)
         {
             if (productId <= 0 || string.IsNullOrWhiteSpace(productName))
             {
@@ -86,7 +86,16 @@ namespace CleanBrilliantCompany.Controllers
             {
                 return BadRequest("Dashboard not found in cache.");
             }
-
+            if(sortType== "value")
+            {
+                ViewBag.CurrentSortType = "";
+                ViewBag.CurrentSortOrder = "ascending";
+            }
+            else
+            {
+                ViewBag.CurrentSortType = sortType;
+                ViewBag.CurrentSortOrder = sortOrder;
+            }
             // Update the dashboard using ForecastControl logic
             ForecastDashboard updatedDashboard = _forecastFacade.updateMetric(productId, dashboard, priceAdjustment);
 

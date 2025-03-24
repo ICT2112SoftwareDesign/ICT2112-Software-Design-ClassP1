@@ -1,10 +1,10 @@
 ﻿@model CleanBrilliantCompany.Models.Forecast.ForecastDashboard
 @{
     Layout = null;
-    var currentSortType = ViewBag.CurrentSortType as string ?? "id";
+    var currentSortType = ViewBag.CurrentSortType as string ?? "";
     var currentSortOrder = ViewBag.CurrentSortOrder as string ?? "ascending";
 }
-}
+
 
 <style>
 
@@ -439,18 +439,24 @@
         var productId = slider.dataset.productId;
         var productName = slider.dataset.productName;
         var value = slider.value;
+        const sortedHeader = document.querySelector(".sortable-header.sorted-asc, .sortable-header.sorted-desc");
 
-        fetch(`/Forecast/UpdatePriceAdjustment?productId=${productId}&productName=${encodeURIComponent(productName)}&priceAdjustment=${value}`, {
-            method: "POST"
-        })
-        .then(response => response.text())
-        .then(html => {
-            // Refresh the full page with the updated HTML returned from the server.
-            document.getElementById("metrics-container").innerHTML = html; // Update only the relevant section
-
-        })
-        .catch(error => console.error("Error updating price:", error));
-    }
+        let sortType, sortOrder;
+        if (sortedHeader) {
+            sortType = sortedHeader.getAttribute("data-sort-type");
+            sortOrder = sortedHeader.getAttribute("data-sort-order");
+        } else {
+            // Fall back to some default if nothing is sorted
+            sortType = "";
+            sortOrder = "ascending";
+        }
+            const url = `/Forecast/UpdatePriceAdjustment?productId=${productId}&productName=${encodeURIComponent(productName)}&priceAdjustment=${value}&sortType=${sortType}&sortOrder=${sortOrder}`;
+            fetch(url, { method: "POST" }).then(response => response.text())
+            .then(html => {
+                document.getElementById("metrics-container").innerHTML = html;
+            })
+            .catch(error => console.error("Error updating price:", error));
+        }
         function updateGlobalSliderDisplay(slider) {
             document.getElementById("slider-display").textContent = slider.value + "%";
         }
