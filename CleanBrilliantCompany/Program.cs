@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using DotNetEnv; 
+using DotNetEnv;
+using CleanBrilliantCompany.Services;
+using CleanBrilliantCompany.Control;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,10 @@ builder.Services.AddSingleton<FakeDbContext>();
 
 builder.Services.AddScoped<AgingRepo, AgingMapper>();
 
+// report generation
+builder.Services.AddScoped<IAIService, AIService>();
+builder.Services.AddScoped<ReportGenerator>();
+builder.Services.AddScoped<ReportControl>();
 
 var app = builder.Build();
 
