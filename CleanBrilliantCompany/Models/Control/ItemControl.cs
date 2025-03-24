@@ -9,7 +9,6 @@ namespace CleanBrilliantCompany.Models.Control
     public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve
     {
         private readonly ItemMapper _itemMapper;
-        private readonly TransactionControl _transactionObserver; // Added observer
 
         private readonly iProduct _iproductInterface;
 
@@ -19,7 +18,6 @@ namespace CleanBrilliantCompany.Models.Control
             _itemMapper = new ItemMapper(connectionString);
             _iproductInterface = iproductInterface;
             Console.WriteLine("Products loaded from database.");
-            _transactionObserver = new TransactionControl(connectionString);
         }
 
         // METHODS FOR IITEM
@@ -69,16 +67,25 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
-        public async Task<Warehouse> getWarehouseDetails(int warehouseId) {
+        public async Task<Warehouse> getWarehouseDetails(int warehouseId)
+        {
             return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
         }
 
-        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId) {
+        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId)
+        {
             return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, warehouseId));
         }
 
-        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId) {
+        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId)
+        {
             return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
+        }
+
+        //Testing get all warehouse details
+        public async Task<List<Warehouse>> getAllWarehouseDetails()
+        {
+            return await Task.FromResult(_itemMapper.getAllWarehouseDetails());
         }
 
 
