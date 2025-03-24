@@ -22,13 +22,6 @@ builder.Services.AddScoped<IFeedbackSubmission, FeedbackSubmission>();
 builder.Services.AddScoped<IFeedbackRetrieval, FeedbackRetrieval>();
 builder.Services.AddScoped<IFeedbackManagement, FeedbackManagement>();
 
-builder.Services.AddScoped<IProductCFCalculator, CalculateProductCFImpl>();
-builder.Services.AddScoped<IItemCFCalculator, CalculateItemCFImpl>();
-builder.Services.AddScoped<IShipmentCFCalculator, CalculateShipmentCFImpl>();
-builder.Services.AddScoped<ICarbonData, CarbonFootprintCalculatorControl>();
-
-builder.Services.AddScoped<CarbonFootprintCalculatorControl>();
-
 builder.Services.AddScoped<ProductCarbonFootprintControl>();
 builder.Services.AddScoped<ItemCarbonFootprintControl>();
 builder.Services.AddScoped<OrderCarbonFootprintControl>();
@@ -52,6 +45,14 @@ builder.Services.AddScoped<IItemCFQuery, ItemCarbonFootprintControl>();
 builder.Services.AddScoped<IOrderCF, OrderCarbonFootprintControl>();
 builder.Services.AddScoped<IOrderCFManagement, OrderCarbonFootprintControl>();
 builder.Services.AddScoped<IOrderCFQuery, OrderCarbonFootprintControl>();
+
+// Calculator CF Controls //commented out first to prevent the program from crashing at startup
+//builder.Services.AddScoped<CarbonFootprintCalculatorControl>();
+//builder.Services.AddScoped<ICarbonData, CarbonFootprintCalculatorControl>();
+//builder.Services.AddScoped<IProductCFCalculator, CalculateProductCFImpl>();
+//builder.Services.AddScoped<IItemCFCalculator, CalculateItemCFImpl>();
+//builder.Services.AddScoped<IShipmentCFCalculator, CalculateShipmentCFImpl>();
+builder.Services.AddScoped<IStorageDuration, StorageDurationStubImpl>();
 
 var app = builder.Build();
 

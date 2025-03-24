@@ -49,8 +49,8 @@ namespace CleanBrilliantCompany.Models
                 ShippingMethod = "Air",
                 Items = new List<Item>
                 {
-                    new Item { Name = "Bleach", Weight = 2.0, Quantity = 2 },
-                    new Item { Name = "Detergent", Weight = 1.0, Quantity = 4 }
+                    new Item { Name = "Bleach", Weight = 2.0, Quantity = 2, BatchCode = 1 },
+                    new Item { Name = "Detergent", Weight = 1.0, Quantity = 4, BatchCode = 2 }
                 }
             };
         }
@@ -85,12 +85,5 @@ namespace CleanBrilliantCompany.Models
         public string RecipientAddress { get; set; }
         public string ShippingMethod { get; set; }
         public List<Item> Items { get; set; }
-    }
-
-    public class Item
-    {
-        public string Name { get; set; }
-        public double Weight { get; set; }
-        public int Quantity { get; set; }
     }
 }

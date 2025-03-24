@@ -6,15 +6,33 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
     public class CalculateProductCFImpl : IProductCFCalculator
     {
         private readonly IProduct _IProduct;
+        private readonly IProductCFManagement _productCFManagement;
+
+        public CalculateProductCFImpl(IProduct iProduct, IProductCFManagement productCFManagement)
+        {
+            _IProduct = iProduct;
+            _productCFManagement = productCFManagement;
+        }
 
         public float CalculateCarbonFootprint(float vol, float tox, int productId)
         {
             ProductDBStub stub = new ProductDBStub(_IProduct);
             Product product = stub.GetProductDetails(productId);
-            // Insert product name and category e.g. into CF record DB
-            // product.ProductName, product.ProductCategory insert
 
-            return vol * tox;
+            float carbonEmission = vol * tox;
+            string ecoStatus = carbonEmission >= 250 ? "Not Eco-Friendly" : "Eco-Friendly";
+
+            // Insert product data into CF record DB
+            _productCFManagement.addProductCF(
+                productId,
+                product.ProductName,
+                product.ProductCategory,
+                carbonEmission, // carbon emission
+                ecoStatus,
+                DateTime.Now // dateCreated
+            );
+
+            return carbonEmission;
         }
     }
 }
