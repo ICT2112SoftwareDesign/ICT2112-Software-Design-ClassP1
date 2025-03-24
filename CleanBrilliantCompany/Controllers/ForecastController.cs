@@ -39,8 +39,9 @@ namespace CleanBrilliantCompany.Controllers
             // Retrieve the dashboard from cache; if not present, get it from ForecastControl
             if (!_cache.TryGetValue(DashboardCacheKey, out ForecastDashboard dashboard))
             {
-                dashboard = _forecastFacade.getLatestDashboard();
-                _cache.Set(DashboardCacheKey, dashboard, new MemoryCacheEntryOptions
+                 dashboard = _forecastFacade.generateDashboard(
+                                 DateTime.Now.AddMonths(1), 0
+                            ); _cache.Set(DashboardCacheKey, dashboard, new MemoryCacheEntryOptions
                 {
                     SlidingExpiration = TimeSpan.FromMinutes(30)
                 });

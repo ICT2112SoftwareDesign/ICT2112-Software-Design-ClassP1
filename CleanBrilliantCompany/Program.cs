@@ -42,8 +42,7 @@ builder.Services.AddScoped<IForecastRepository, ForecastMapper>();
 builder.Services.AddScoped<MetricFactory>();
 builder.Services.AddScoped<ForecastFacade>();
 builder.Services.AddScoped<IAlert, TopDemandAlert>();
-
-
+builder.Services.AddScoped<IForecastDataAdapter, ForecastDataAdapter>();
 
 
 builder.Services.AddScoped<ISales>(); //TODO to be modified with actual ISale

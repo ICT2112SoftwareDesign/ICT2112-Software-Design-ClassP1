@@ -12,28 +12,29 @@ namespace CleanBrilliantCompany.Models.Forecast
         //private readonly IStockPredictionService _stockPredictionService;
         //private readonly IScenarioPricingService _scenarioPricingService;
         //private readonly INotificationService _notificationService;
-        private readonly IProduct _iProduct;
-        private readonly ISales _isale; //simulated interface
+         //simulated interface
         private readonly MetricFactory _metricFactory;
         private readonly IForecastRepository _forecastRepository;
         private readonly IAlert _alertService;
+        private readonly IForecastDataAdapter _forecastDataAdapter;
 
         public ForecastFacade(
-        MetricFactory metricFactory,
-        IForecastRepository forecastRepository,
-        IProduct iProduct,
-        ISales iSale,
-        IAlert alertService
+            MetricFactory metricFactory,
+            IForecastRepository forecastRepository,
+            IProduct iProduct,
+            ISales iSale,
+            IAlert alertService,
+            IForecastDataAdapter forecastDataAdapter
         )
         {
             //_stockPredictionService = stockPredictionService;
             //_scenarioPricingService = scenarioPricingService;
             //_notificationService = notificationService;
-            _iProduct = iProduct;
-            _isale = iSale;
+            
             _metricFactory = metricFactory;
             _forecastRepository = forecastRepository;
             _alertService = alertService;
+            _forecastDataAdapter = forecastDataAdapter;
         }
         public ForecastDashboard getLatestDashboard()
         {
@@ -45,7 +46,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
-            getSalesAndProduct(selectedMonth, out productList, out aggregatedSales);//to be updated to accept selectedMonth to pull data for exact months
+            _forecastDataAdapter.GetForecastInputs(selectedMonth, out productList, out aggregatedSales);
             ForecastDashboard dashboard=null;
             if (adjustmentFactor == 0)
             {
@@ -95,7 +96,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         {
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
-            getSalesAndProduct(dashboard.GetStartDate(), out productList, out aggregatedSales);//to be updated to accept selectedMonth to pull data for exact months
+            _forecastDataAdapter.GetForecastInputs(dashboard.GetStartDate(), out productList, out aggregatedSales);//to be updated to accept selectedMonth to pull data for exact months
 
             ProductDTO product = productList.FirstOrDefault(p => p.ID == productId);
 
@@ -159,24 +160,24 @@ namespace CleanBrilliantCompany.Models.Forecast
 
         //}
 
-        private void getSalesAndProduct(DateTime selectedMonth, out List<ProductDTO> productList, out Dictionary<int, int> aggregatedSales)
-        {
-            productList = _iProduct.GetProductList();
-            var salesList = _isale.getSalesData(selectedMonth.Month);
-            aggregatedSales = aggregateResults(salesList);
+        //private void getSalesAndProduct(DateTime selectedMonth, out List<ProductDTO> productList, out Dictionary<int, int> aggregatedSales)
+        //{
+        //    productList = _iProduct.GetProductList();
+        //    var salesList = _isale.getSalesData(selectedMonth.Month);
+        //    aggregatedSales = aggregateResults(salesList);
 
-        }
+        //}
 
-        private Dictionary<int, int> aggregateResults(List<SalesDTO> sales)
-        {
-            // Aggregate total sales per product ID
-            return sales
-                .GroupBy(s => s.ProductID)
-                .ToDictionary(
-                    g => g.Key, // ProductID as key
-                    g => g.Sum(s => s.Quantity) // Sum up all quantities for this product
-                );
-        }
+        //private Dictionary<int, int> aggregateResults(List<SalesDTO> sales)
+        //{
+        //    // Aggregate total sales per product ID
+        //    return sales
+        //        .GroupBy(s => s.ProductID)
+        //        .ToDictionary(
+        //            g => g.Key, // ProductID as key
+        //            g => g.Sum(s => s.Quantity) // Sum up all quantities for this product
+        //        );
+        //}
 
 
 
