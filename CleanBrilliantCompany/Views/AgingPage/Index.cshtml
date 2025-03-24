@@ -345,6 +345,7 @@
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+
                     </div>
 
                     <div class="container-fluid">
@@ -382,6 +383,42 @@
                                     <div class="mb-4">
                                         <button class="btn btn-outline-primary me-2" id="showBatchView">Batch View</button>
                                         <button class="btn btn-outline-secondary" id="showProductView">Product View</button>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateModal">
+                                            Generate Dashboard
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="generateModal" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <form asp-controller="AgingPage" asp-action="GenerateDashboard" method="post">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h5 class="modal-title">Generate New Dashboard</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="ValidityDuration" class="form-label">Validity (days)</label>
+                                                    <input type="number" class="form-control" name="ValidityDuration" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="RequestedStartDate" class="form-label">Start Date</label>
+                                                    <input type="date" class="form-control" name="RequestedStartDate" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="RequestedEndDate" class="form-label">End Date</label>
+                                                    <input type="date" class="form-control" name="RequestedEndDate" required />
+                                                </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Generate</button>
+                                                </div>
+                                            </div>
+                                            </form>
+                                        </div>
+                                        </div>
                                     </div>
 
                             
@@ -436,7 +473,56 @@
                                         </div>
 
                                         <div id="productViewContainer" style="display: none;">
-                                            <!-- product-level chart canvases go here -->
+                                            <div class="card mb-4 p-3">
+                                                <h4>Remaining Days Risk Summary</h4>
+                                                <ul class="list-group">
+                                                    @foreach (var product in productToBatchMap)
+                                                    {
+                                                        var matchingValues = product.Value
+                                                            .SelectMany(batch => Model.GetBatchAnalytics(batch))
+                                                            .SelectMany(a => a.CalculateBatchSummary())
+                                                            .Where(kv => kv.Key == "RemainingDays")
+                                                            .Select(kv => Convert.ToSingle(kv.Value))
+                                                            .ToList();
+
+                                                        if (matchingValues.Any())
+                                                        {
+                                                            var expiringSoon = matchingValues.Count(v => v <= 30);
+                                                            var medium = matchingValues.Count(v => v > 30 && v <= 90);
+                                                            var safe = matchingValues.Count(v => v > 90);
+
+                                                            var maxCount = Math.Max(expiringSoon, Math.Max(medium, safe));
+                                                            var status = "Unknown";
+                                                            var badge = "secondary";
+
+                                                            if (maxCount == expiringSoon)
+                                                            {
+                                                                status = "Expiring Soon (≤30)";
+                                                                badge = "danger";
+                                                            }
+                                                            else if (maxCount == medium)
+                                                            {
+                                                                status = "Medium (30–90)";
+                                                                badge = "warning";
+                                                            }
+                                                            else if (maxCount == safe)
+                                                            {
+                                                                status = "Safe (>90)";
+                                                                badge = "success";
+                                                            }
+
+                                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                                @* Product @product.Key *@
+                                                                @productToNameMap[product.Key]
+                                                                <span class="badge bg-@badge">@status</span>
+                                                            </li>
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+
+                                            @* Your chart canvases (added via JS) will still go here *@
+
                                         </div>
 
                                         
@@ -447,45 +533,7 @@
                                     <p>No dashboard available</p>
                                     }
 
-                                @* <div class="mt-4">
-                                    <button class="btn btn-primary" id="generateDashboard">Generate Dashboard</button>
-                                </div> *@
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateModal">
-                                    Generate Dashboard
-                                </button>
 
-                                <!-- Modal -->
-                                <div class="modal fade" id="generateModal" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <form asp-controller="AgingPage" asp-action="GenerateDashboard" method="post">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                        <h5 class="modal-title">Generate New Dashboard</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-
-                                        <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="ValidityDuration" class="form-label">Validity (days)</label>
-                                            <input type="number" class="form-control" name="ValidityDuration" required />
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="RequestedStartDate" class="form-label">Start Date</label>
-                                            <input type="date" class="form-control" name="RequestedStartDate" required />
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="RequestedEndDate" class="form-label">End Date</label>
-                                            <input type="date" class="form-control" name="RequestedEndDate" required />
-                                        </div>
-                                        </div>
-
-                                        <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Generate</button>
-                                        </div>
-                                    </div>
-                                    </form>
-                                </div>
-                                </div>
 
                     </div>
 
@@ -558,6 +606,9 @@
 
     <!-- Your Custom JS Script Here -->
     <script>
+        const allMetrics = @Html.Raw(Json.Serialize(allMetrics));
+        const productToBatchMap = @Html.Raw(Json.Serialize(productToBatchMap)); 
+
 
         // filtering the product sections based on the search input
         document.addEventListener("DOMContentLoaded", function () {
@@ -578,30 +629,27 @@
         document.getElementById("showBatchView").addEventListener("click", () => {
             document.getElementById("batchViewContainer").style.display = "block";
             document.getElementById("productViewContainer").style.display = "none";
+            // show the searchbar as well
+            document.getElementById("productSearchInput").style.display = "block"; 
+
         });
         
         // Show Product View Button Click Event
         document.getElementById("showProductView").addEventListener("click", () => {
             document.getElementById("batchViewContainer").style.display = "none";
             document.getElementById("productViewContainer").style.display = "block";
-            
-            // Show all canvas elements
-            document.querySelectorAll("#productViewContainer canvas").forEach(canvas => {
-                canvas.style.display = "block";
-                });
+            // remove the searchbar as well
+            document.getElementById("productSearchInput").style.display = "none";
             });
 
 
         document.addEventListener("DOMContentLoaded", function () 
             {
-            generateBatchCharts(); 
-            generateProductCharts();
+                generateBatchCharts(); 
+                generateProductCharts();
             });
 
-    const allMetrics = @Html.Raw(Json.Serialize(allMetrics));
-
-
-
+ 
 
     function generateBatchCharts() 
     {
@@ -667,7 +715,8 @@
                             @Html.Raw(binCounts)
                         ); 
                     </text> 
-                }else 
+
+                } else 
                 {
                     <text>
                         renderChart(
@@ -898,13 +947,19 @@
 
         @foreach (var metric in allMetrics)
         {
-            var productLabels = new List<int>();
+            if (metric != "TurnOverRate" && metric != "DeadStockPercentage")
+            {
+                continue; 
+            }
+            var productLabels = new List<string>();
             var productValues = new List<float>();
             Console.WriteLine("Doing Metric: " + metric); 
             foreach (var product in productToBatchMap)
             {
                 Console.WriteLine("product" + product.Key); 
                 Console.WriteLine("=============================="); 
+                // find the name of the product 
+                var productName = productToNameMap[product.Key]; 
 
                 var batchCodes = product.Value;
                 var allAnalytics = batchCodes
@@ -922,12 +977,18 @@
                 {
                     Console.Write ("Value: " + value);
                 }
+                // so if the metric is remainingdays 
+                // we will track how many batches is expiring soon, medium and safe 
                 if (matchingValues.Any())
                 {
-                    productLabels.Add(product.Key);
+
+                    productLabels.Add(productName);
                     productValues.Add(matchingValues.Average()); // Use Sum/Max/etc if preferred
+
                 }
-                Console.WriteLine("End of product + " + product.Key); 
+
+                Console.WriteLine(" ");
+                Console.WriteLine("End of product " + product.Key); 
                 
             }
 
@@ -940,38 +1001,25 @@
                 const canvas_@safeId = document.createElement('canvas');
                 canvas_@(safeId).id = "product-chart-@safeId";
                 canvas_@(safeId).classList.add("mb-4");
-                canvas_@(safeId).style.display = "none"; // default hidden
+
 
                 document.getElementById("productViewContainer").appendChild(canvas_@safeId);
 
                 const ctx_@safeId = canvas_@(safeId).getContext("2d");
+                
+                renderChart(
+                    "product-chart-@safeId",
+                    "@metric",
+                    @Html.Raw(labelsJson),
+                    @Html.Raw(valuesJson),
+                    null, // barColors (optional)
+                    "bar", // chartType
+                    "x"    // indexAxis
+                );
 
-                new Chart(ctx_@safeId, {
-                    type: 'bar',
-                    data: {
-                        labels: @Html.Raw(labelsJson),
-                        datasets: [{
-                            label: '@metric',
-                            data: @Html.Raw(valuesJson),
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Comparison Across Products – @metric'
-                            }
-                        },
-                        scales: {
-                            y: { beginAtZero: true }
-                        }
-                    }
-                });
             </text>
+
+
 
             Console.WriteLine("End of Metric");
         }
