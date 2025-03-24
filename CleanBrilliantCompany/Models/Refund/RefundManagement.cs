@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Interfaces.Refund;
 using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class RefundManagement : IRefundQuery
+    public class RefundManagement : IRefundQuery, ISubmitRefund
     {   
         private readonly IRefundDatabase _refundDatabase;
 
@@ -31,6 +32,11 @@ namespace CleanBrilliantCompany.Models
         public void UpdateRefund(int refundId, string status)
         {
             _refundDatabase.UpdateRefundStatus(refundId, status, DateTime.Now);
+        }
+
+        public Refund_RDM SubmitRefund(int orderId, string refundReason, float refundAmount, List<string> images, List<string> videos, Dictionary<int, int> refundedProducts)
+        {
+            return _refundDatabase.InsertRefund(orderId, refundReason, refundAmount, images, videos, refundedProducts);
         }
 
     }

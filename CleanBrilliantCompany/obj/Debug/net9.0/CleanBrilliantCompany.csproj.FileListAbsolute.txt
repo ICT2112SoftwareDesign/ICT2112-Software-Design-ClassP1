@@ -1726,18 +1726,6 @@ c:\Users\imman\Github\ICT2112-Software-Design\CleanBrilliantCompany\obj\Debug\ne
 c:\Users\imman\Github\ICT2112-Software-Design\CleanBrilliantCompany\obj\Debug\net9.0\compressed\qe9dgkjvz6-3voehigyoz.gz
 c:\Users\imman\Github\ICT2112-Software-Design\CleanBrilliantCompany\obj\Debug\net9.0\compressed\459kx6rgwy-vuyk5hsu8t.gz
 c:\Users\imman\Github\ICT2112-Software-Design\CleanBrilliantCompany\obj\Debug\net9.0\compressed\yieken0rvn-w9gruc5uo1.gz
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.csproj.AssemblyReference.cache
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.AssemblyInfoInputs.cache
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.AssemblyInfo.cs
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.csproj.CoreCompileInputs.cache
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.RazorAssemblyInfo.cache
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.RazorAssemblyInfo.cs
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.sourcelink.json
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.dll
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\refint\CleanBrilliantCompany.dll
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.pdb
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\appsettings.json
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\CleanBrilliantCompany.staticwebassets.runtime.json
@@ -1784,6 +1772,15 @@ C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.AssemblyInfo.cs
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.RazorAssemblyInfo.cache
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.RazorAssemblyInfo.cs
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.sourcelink.json
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\scopedcss\bundle\CleanBrilliantCompany.styles.css
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\scopedcss\projectbundle\CleanBrilliantCompany.bundle.scp.css
@@ -3492,5 +3489,8 @@ C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\staticwebassets.pack.json
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBri.30C836DB.Up2Date
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.dll
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\refint\CleanBrilliantCompany.dll
+C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.pdb
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.genruntimeconfig.cache
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\ref\CleanBrilliantCompany.dll

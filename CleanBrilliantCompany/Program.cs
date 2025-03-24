@@ -1,5 +1,6 @@
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Interfaces.Refund;
 using CleanBrilliantCompany.Interfaces.StaffAuth;
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models;
@@ -26,6 +27,7 @@ builder.Services.AddScoped<IRefundDatabase>(provider => new RefundMapper(connect
 builder.Services.AddScoped<IRefundQuery, RefundManagement>();
 builder.Services.AddScoped<IRefundDetails, RefundDetails>();
 builder.Services.AddScoped<IOrder, MockOrderService>(); // change later when team5 is done
+builder.Services.AddScoped<ISubmitRefund, RefundManagement>();
 
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();
