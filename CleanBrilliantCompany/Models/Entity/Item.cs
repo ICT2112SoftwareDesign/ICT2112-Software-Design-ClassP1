@@ -1,3 +1,4 @@
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models.Entity
 {
@@ -6,13 +7,10 @@ namespace CleanBrilliantCompany.Models.Entity
         Available,
         Reserved,
         Sold,
-        Refunded,
-        ToReturn,
-        Returned,
-        Transferred,
+        Refunded
     }
 
-    public class Item
+    public class Item : ISubject
     {
         // Private fields
         private int ItemId;
@@ -125,6 +123,46 @@ namespace CleanBrilliantCompany.Models.Entity
         private void setOrderId(int? orderId) => OrderId = orderId;
         private void setTransferId(int? transferId) => TransferId = transferId;
         private void setReturnId(int? returnId) => ReturnId = returnId;
+
+        public void Attach(IObserver observer)
+        {
+            Console.WriteLine("Called Attach Observer method");
+            _observers.Add(observer);
+            Console.WriteLine("Observer has been added Line 130");
+
+        }
+
+        public void Detach(IObserver observer)
+        {
+            _observers.Remove(observer);
+
+        }
+
+        public void Notify()
+        {
+            foreach (var observer in _observers)
+            {
+                observer.Update(this); //  Pass the Item object instead of a string
+            }
+        }
+
+        public void UpdateStatus(ItemStatus newStatus)
+        {
+            Console.WriteLine("Entered UpdateStatus");
+            Console.WriteLine($"Current ItemStatus: {ItemStatus}");
+            Console.WriteLine($"New ItemStatus: {newStatus}");
+
+            ItemStatus = newStatus;
+
+            Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
+            Console.WriteLine($"Calling Notify() in Item.cs file");
+
+            Notify();
+        }
+
+        public void getWarehouseDetails(){
+            // return _itemMapper.getAllWarehouses();
+        }
 
         public Item() { } // dk if need anot 
     }

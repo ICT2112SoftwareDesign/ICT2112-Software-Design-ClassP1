@@ -28,21 +28,6 @@ namespace CleanBrilliantCompany.Models.Entity
         public int CarbonFootprint { get; set; }
         public string ProductState { get; set; } // Change to string 
 
-        public int TotalQuantity { get; set; }
-        public int WarehouseId { get; set; }
-        public string WarehouseName { get; set; }
-
-        public Dictionary<string, object> retrieveLowStockInfo()
-        {
-            return new Dictionary<string, object>
-            {
-                { "ProductId", ProductId },
-                { "ProductName", ProductName },
-                { "TotalQuantity", TotalQuantity },
-                { "WarehouseId", WarehouseId },
-                { "WarehouseName", WarehouseName }
-            };
-        }
 
         public Product(int productId, string productName, string productCategory, float productCost, int manufacturerId,
                        float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
@@ -58,15 +43,6 @@ namespace CleanBrilliantCompany.Models.Entity
             ToxicityPercentage = toxicityPercentage;
             CarbonFootprint = carbonFootprint;
             ProductState = productState;
-        }
-
-        public Product(int productId, string productName, string warehouseName, int warehouseId, int totalQuantity)
-        {
-            ProductId = productId;
-            ProductName = productName;
-            WarehouseName = warehouseName;
-            WarehouseId = warehouseId;
-            TotalQuantity = totalQuantity;
         }
 
         public Product() { }

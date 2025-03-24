@@ -71,12 +71,12 @@ namespace CleanBrilliantCompany.Controllers
 
         [HttpPost]
         [Route("updateItemStatusOld")]
-        public async Task<IActionResult> updateItemStatusOld(int itemStatusIdOld, ItemStatus itemStatus)
+        public async Task<IActionResult> updateItemStatusOld(int itemStatusId, ItemStatus itemStatus)
         {
-            Console.WriteLine("ItemID: " + itemStatusIdOld);
+            Console.WriteLine("ItemID: " + itemStatusId);
             Console.WriteLine("Status: " + itemStatus);
 
-            bool result = await _itemControl.updateItemStatusOld(itemStatusIdOld, itemStatus);
+            bool result = await _itemControl.updateItemStatusOld(itemStatusId, itemStatus);
             if (result)
             {
                 return RedirectToAction("Index");

@@ -1,153 +1,45 @@
-@model List<Dictionary<string, object>>
+@model CleanBrilliantCompany.Models.Entity.Transfer
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-<h2>Transfer List</h2>
-
-<a class="btn btn-primary" id="redirectToStockList" asp-controller="Transfer" asp-action="LowStockProduct">
-    View Low Stock Products
-</a>
-
-<br /><br />
-
-@if (Model == null || !Model.Any())
-{
-    <p>No Transfer Record Found.</p>
+@{
+    ViewData["Title"] = "Transfer Form";
 }
-else
-{
-    <table class="table table-bordered table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Transfer ID</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Source Warehouse</th>
-                <th>Destination Warehouse</th>
-                <th>Staff ID</th>
-                <th>Transfer Status</th>
-                <th>Action</th>
-                <th>Update</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var transferInfo in Model)
-            {
-                <tr>
-                    <td>@transferInfo["TransferId"]</td>
-                    <td>@transferInfo["ProductName"]</td>
-                    <td>@transferInfo["Quantity"]</td>
-                    <td>@transferInfo["SourceWarehouseName"]</td>
-                    <td>@transferInfo["DestinationWarehouseName"]</td>
-                    <td>@transferInfo["StaffId"]</td>
-                    <td>
-                        <span class="badge @(transferInfo["Status"].ToString() == "Completed" ? "bg-success" : "bg-warning")">
-                            @transferInfo["Status"]
-                        </span>
-                    </td>
-                    <td>
-                        <form asp-action="deleteTransfer" method="post">
-                            <input type="hidden" name="TransferId" value="@transferInfo["TransferId"]" />
-                            <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('Are you sure you want to delete this transfer?');">
-                                Delete
-                            </button>
-                        </form>
 
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary update-transfer-btn" data-bs-toggle="modal"
-                            data-bs-target="#updateTransferModal" data-transfer-id="@transferInfo["TransferId"]">
-                            Update Transfer Request
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<h2>Transfer Form</h2>
 
-    <div class="modal fade" id="updateTransferModal" tabindex="-1" aria-labelledby="updateTransferModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateTransferModalLabel">Update Transfer Request</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="updateTransferForm" asp-action="updateTransfer" method="post">
-                        <input type="hidden" id="transferIdInput" name="TransferId" value="" />
-                        <div class="mb-3">
-                            @* <div class="mb-3">
-                                <label for="destinationWarehouse" class="form-label">Destination Warehouse</label>
-                                <select class="form-select" name="destinationWarehouse" id="destinationWarehouse" required>
-                                    <option value="">Select Destination Warehouse</option>
-                                    @foreach (var transferInfo in Model.Select(p => new
-                                    {
-                                        Id = p["DestinationWarehouseId"],
-                                        Name =
-                                                                    p["DestinationWarehouseName"]
-                                    }).Distinct())
-                                    {
-                                        <option value="@transferInfo.Id">@transferInfo.Name</option>
-                                    }
-                                </select>
-                            </div> *@
-                            <div class=" mb-3">
-                                <label for=" destinationWarehouse" class="form-label">Destination Warehouse</label>
-                                <select class="form-select" name="DestinationWarehouse" id="destinationWarehouse" required>
-                                    <option value="">Select Destination Warehouse</option>
-                                    @foreach (var transferInfo in Model.Select(p => new
-                                    {
-                                        Id = p["DestinationWarehouse"],
-                                        Name = p["DestinationWarehouseName"]
-                                    }).Distinct())
-                                    {
-                                        <option value="@transferInfo.Id">@transferInfo.Name</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="transferStatus" class="form-label">Transfer Status</label>
-                                <select class="form-select" id="transferStatus" name="Status">
-                                    <option value="Pending">Pending</option>
-                                    <option value="Transit">Transit</option>
-                                    <option value="Completed">Completed</option>
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer p-0 pt-3 border-0">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+<form asp-action="SaveTransfer" method="post">
+    <div class="form-group">
+        <label for="transferId">Transfer ID</label>
+        <input type="number" id="transferId" name="TransferId" class="form-control" required />
     </div>
-}
 
-<script>
-    // Use event delegation to handle all update buttons
-    document.addEventListener('click', function (event) {
-        if (event.target.classList.contains('update-transfer-btn')) {
-            const transferId = event.target.getAttribute('data-transfer-id');
-            document.getElementById('transferIdInput').value = transferId;
-        }
-    });
+    <div class="form-group">
+        <label for="productId">Product ID</label>
+        <input type="number" id="productId" name="ProductId" class="form-control" required />
+    </div>
 
-    // No need for the following code since Bootstrap's modal system handles this automatically
-    // Delete or comment out these lines:
-    // document.querySelector(".close").addEventListener("click", function () {
-    //     document.getElementById("transferModal").style.display = "none";
-    // });
-    //
-    // window.onclick = function (event) {
-    //     if (event.target === document.getElementById("transferModal")) {
-    //         document.getElementById("transferModal").style.display = "none";
-    //     }
-    // };
-</script>
+    <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" name="Status" class="form-control">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="Quantity" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="sourceWarehouse">Source Warehouse</label>
+        <input type="number" id="sourceWarehouse" name="SourceWarehouse" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="destinationWarehouse">Destination Warehouse</label>
+        <input type="number" id="destinationWarehouse" name="DestinationWarehouse" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+</form>
