@@ -87,7 +87,7 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
-        
+
         // to test update item status & id (related to iItemUpdate)
         [HttpPost]
         [Route("updateItemStatus")]
@@ -122,7 +122,7 @@ namespace CleanBrilliantCompany.Controllers
 
             int result = await _itemControl.getProductQuantityByWarehouse(productId, warehouseId);
 
-            if (result >= 0) 
+            if (result >= 0)
             {
                 Console.WriteLine("QUANTITY: " + result);
                 return RedirectToAction("Index", new { quantity = result });
@@ -133,6 +133,40 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
+        // REFUNDED ITEMS FROM MOD 1
+        // [HttpPost]
+        // [Route("refundedItems")]
+        // public async Task<IActionResult> refundedItems(List<int> itemIds, string refundReason)
+        // {
+        //     await _itemControl.ReturnItemToInventory(itemIds, refundReason);
+        //     return RedirectToAction("Index");
+        // }
+
+        // HANDLE ORDERING OF ITEMS
+        [HttpPost]
+        [Route("adjustInventory")]
+        public async Task<IActionResult> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
+        {
+            orderId = 1;
+            orderProducts = new Dictionary<int, int> {
+                {2, 2} // product id, quantity so prod id 2, quantity:2
+            };
+
+            await _itemControl.adjustInventory(orderId, orderProducts);
+            return RedirectToAction("Index");
+        }
+
+        // HANDLING CANCELLING OF ORDERS
+        [HttpPost]
+        [Route("processCancelledOrder")]
+        public async Task<IActionResult> processCancelledOrder(int orderId)
+        {
+            Console.WriteLine("PROCESS ITEM CONTROLLER RUNNING");
+            orderId = 1;
+          
+            _itemControl.processCancelledOrder(orderId);
+            return RedirectToAction("Index");
+        }
 
     }
 }

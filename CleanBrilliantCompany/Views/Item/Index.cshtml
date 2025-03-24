@@ -1,18 +1,52 @@
 @model List<Dictionary<string, object>>
 
 <h2>Item List</h2>
-
 <div class="row mb-3">
-    @* button for search *@
-    <form method="post" asp-action="Index">
-        <label for="itemId" class="form-label"></label>
-        <input class="form-control" id="itemId" type="number" name="searchedItemId" placeholder="Search Item by Id"
-            required>
-        <button type="submit" class="btn btn-primary">
-            Search
-        </button>
-        <a asp-action="Index" class="btn btn-secondary">Clear</a>
-    </form>
+    @* Search Form *@
+    <div class="col-md-auto">
+        <form method="post" asp-action="Index" class="row g-2">
+            <div class="col">
+                <input class="form-control" id="itemId" type="number" name="searchedItemId"
+                    placeholder="Search Item by Id" required>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+            <div class="col-auto">
+                <a asp-action="Index" class="btn btn-secondary">
+                    Clear
+                </a>
+            </div>
+        </form>
+    </div>
+
+    @* Refund Button *@
+    <div class="col-md"></div> <!-- Empty column to push content -->
+    <div class="col-auto">
+        <form method="post" asp-action="refundedItems">
+            <button type="submit" class="btn btn-primary">
+                Refund Items
+            </button>
+        </form>
+    </div>
+
+    <div class="col-auto">
+        <form method="post" asp-action="adjustInventory">
+            <button type="submit" class="btn btn-primary">
+                Order Items
+            </button>
+        </form>
+    </div>
+
+    <div class="col-auto">
+        <form method="post" asp-action="processCancelledOrder">
+            <button type="submit" class="btn btn-primary">
+                Cancel Order
+            </button>
+        </form>
+    </div>
 </div>
 
 <table class="table">
@@ -224,22 +258,22 @@
                     <input type="hidden" id="updateStatusItemId" name="itemId">
                     <div class="mb-3">
                         <label for="reservationId" class="form-label">Reservation Id</label>
-                        <input type="text" class="form-control" id="reservationId" name="reservationId" >
+                        <input type="text" class="form-control" id="reservationId" name="reservationId">
                     </div>
 
                     <div class="mb-3">
                         <label for="orderId" class="form-label">Order Id</label>
-                        <input type="text" class="form-control" id="orderId" name="orderId" >
+                        <input type="text" class="form-control" id="orderId" name="orderId">
                     </div>
 
                     <div class="mb-3">
                         <label for="orderId" class="form-label">Return Id</label>
-                        <input type="text" class="form-control" id="returnId" name="returnId" >
+                        <input type="text" class="form-control" id="returnId" name="returnId">
                     </div>
 
                     <div class="mb-3">
                         <label for="orderId" class="form-label">Transfer Id</label>
-                        <input type="text" class="form-control" id="transferId" name="transferId" >
+                        <input type="text" class="form-control" id="transferId" name="transferId">
                     </div>
 
                     <div class="mb-3">
@@ -292,7 +326,7 @@
         });
     });
 
-        document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         var updateModal = document.getElementById("updateItemStatusModalOld");
 
         updateModal.addEventListener("show.bs.modal", function (event) {

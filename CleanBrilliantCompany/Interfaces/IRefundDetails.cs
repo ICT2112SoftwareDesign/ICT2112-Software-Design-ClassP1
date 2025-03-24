@@ -4,6 +4,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IRefundDetails
     {
-        void ReturnItemToInventory(List<int> itemIds, string refundReason);
+        Task ReturnItemToInventory(List<int> itemIds, string refundReason);
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace CleanBrilliantCompany.Mappers
 {
@@ -50,7 +51,8 @@ namespace CleanBrilliantCompany.Mappers
                         ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
                     FROM Item
                     INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
-                    INNER JOIN Product ON Item.productId = Product.productId";
+                    INNER JOIN Product ON Item.productId = Product.productId
+                    ORDER BY ProductBatch.expiryDate ASC";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -165,7 +167,7 @@ namespace CleanBrilliantCompany.Mappers
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@itemStatus", itemStatus);
+                    command.Parameters.AddWithValue("@itemStatus", itemStatus).ToString();
                     // Execute the query and get the results
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -204,7 +206,6 @@ namespace CleanBrilliantCompany.Mappers
 
             return items;
         }
-
 
         // create item
         public bool createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
@@ -451,5 +452,113 @@ namespace CleanBrilliantCompany.Mappers
                 return totalQuantity;
             }
         }
+
+        // // handle refunded items
+        public void returnItemToInventory(List<int> itemId, string refundReason)
+        {
+
+
+        }
+
+        // to deduct product qty & update item status to ordered
+        public List<Item> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
+        {
+            List<Item> items = new List<Item>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                foreach (var kvp in orderProducts)
+                {
+                    int productId = kvp.Key;
+                    int quantity = kvp.Value;
+
+                    // first query to return the items to be updated
+                    string selectOrderItemsQuery = @"
+                    SELECT TOP (@quantity) * 
+                    FROM Item
+                    INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
+                    INNER JOIN Product ON Item.productId = Product.productId
+                    WHERE itemStatus = 'Available' AND Item.productId = @productId
+                    ORDER BY ProductBatch.expiryDate ASC;";
+
+                    List<int> updatedItemIds = new List<int>();
+
+                    using (SqlCommand command = new SqlCommand(selectOrderItemsQuery, connection))
+                    {
+                        // command.Parameters.AddWithValue("@orderId", orderId);
+                        command.Parameters.AddWithValue("@quantity", quantity);
+                        command.Parameters.AddWithValue("@productId", productId);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+                                updatedItemIds.Add(reader.GetInt32(0)); // list of item id
+                                Item item = new Item(
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    status,
+                                    reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                    reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
+                                    reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                );
+                                // Add the item to the list
+                                items.Add(item);
+                            }
+                        }
+                        Console.WriteLine("ITEMS: " + items);
+
+                        Console.WriteLine("UPDATED ITEMS NUMBER: " + updatedItemIds.Count);
+
+                        if (updatedItemIds.Count == 2)
+                        {
+                            // update selected items returned back from the first select query
+                            string updateQuery = @"
+                            UPDATE Item SET itemStatus = 'Sold', orderId = @orderId 
+                            WHERE itemId IN (" + string.Join(",", updatedItemIds) + ");";
+
+                            using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
+                            {
+                                updateCommand.Parameters.AddWithValue("@orderId", orderId);
+                                updateCommand.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+            }
+
+            return items;
+        }
+
+        // to cancel order (would need to edit the orderId to null)
+        public void processCancelledOrder(int orderId)
+        {
+            Console.WriteLine("PROCESS ITEM MAPPER: " + orderId.GetType());
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string insertQuery = @"
+                UPDATE Item SET orderId = NULL, itemStatus = 'Available' WHERE orderId = @orderId";
+
+                using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@orderId", orderId);
+
+                    int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+                    Console.WriteLine("ROWS AFFECTED: " + rowsAffected);
+                }
+
+
+            }
+        }
+
     }
 }
