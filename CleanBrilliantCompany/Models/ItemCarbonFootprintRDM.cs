@@ -21,7 +21,7 @@
         }
 
         // Getters and Setters
-        private int getItemCFId()
+        public int getItemCFId()
         {
             return itemCFId;
         }
@@ -31,7 +31,7 @@
             this.itemCFId = itemCFId;
         }
 
-        private int getItemId()
+        public int getItemId()
         {
             return itemId;
         }
@@ -41,7 +41,7 @@
             this.itemId = itemId;
         }
 
-        private int getProductId()
+        public int getProductId()
         {
             return productId;
         }
@@ -61,7 +61,7 @@
             this.carbonEmission = carbonEmission;
         }
 
-        private string getEcoStatus()
+        public string getEcoStatus()
         {
             return ecoStatus;
         }

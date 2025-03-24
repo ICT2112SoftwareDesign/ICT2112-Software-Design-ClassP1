@@ -69,5 +69,46 @@ namespace CleanBrilliantCompany.Controllers
 
             return View(viewModel);
         }
+
+        public IActionResult EcoFriendlyReport()
+        {
+            var allItemEmission = _itemControl.getTotalCarbonFootprint();
+            var allItemCF = _itemControl.getAllItemCarbonFootprint();
+
+            var ecoFriendlyItemEmission = allItemCF
+                .Where(x => x.getEcoStatus().Equals("Eco-Friendly"))
+                .Sum(x => x.calculateSelfEmission());
+
+            ecoFriendlyItemEmission = Math.Round(ecoFriendlyItemEmission, 2);
+
+            var ecoFriendlyEmissionPercent = Math.Round((ecoFriendlyItemEmission / allItemEmission) * 100.0, 2);
+
+            var ecoFriendlyProducts = _productControl.getAllProductCarbonFootprint()
+                .Where(x => x.getEcoStatus()
+                .Equals("Eco-Friendly"));
+
+            var viewModel = new EcoFriendlyReportViewModel
+            {
+                TotalItemCF = allItemEmission,
+                TotalEcoFriendlyItemCF = (float)ecoFriendlyItemEmission,
+                EcoFriendlyCFPercentage = (float)ecoFriendlyEmissionPercent
+            };
+
+            viewModel.ItemCarbonFootprints = new List<object>();
+
+            foreach (ProductCarbonFootprintRDM prod in ecoFriendlyProducts)
+            {
+                viewModel.ItemCarbonFootprints.Add(new
+                {
+                    name = prod.getProductName(),
+                    baseEmission = prod.calculateSelfEmission(),
+                    averagePerItemEmission = Math.Round(allItemCF
+                            .Where(x => x.getProductId() == prod.getProductId())
+                            .Average(x => x.calculateSelfEmission()), 
+                        2)
+                });
+            }
+            return View("EcoFriendlyReport", viewModel);
+        }
     }
 }
