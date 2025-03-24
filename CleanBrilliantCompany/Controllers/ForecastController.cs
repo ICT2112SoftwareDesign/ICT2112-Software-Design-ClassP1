@@ -5,6 +5,7 @@ using CleanBrilliantCompany.DataSource.Interface;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.Forecast;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace CleanBrilliantCompany.Controllers
@@ -96,6 +97,32 @@ namespace CleanBrilliantCompany.Controllers
             });
 
             return PartialView("_MetricsPartial", updatedDashboard);
+        }
+
+        [HttpPost("sortMetrics")]
+        public IActionResult SortMetrics(string sortType, string sortOrder)
+        {
+            // Retrieve the dashboard from cache
+            if (!_cache.TryGetValue(DashboardCacheKey, out ForecastDashboard dashboard))
+            {
+                return BadRequest("Dashboard not found in cache.");
+            }
+
+            // Sort the metrics based on the user's requested sortType and sortOrder
+            var sortedMetrics = ForecastMetricSorter.Sort(dashboard.GetMetrics(), sortType, sortOrder);
+            dashboard.SetMetrics(sortedMetrics);
+
+            // Update the cache (optional)
+            _cache.Set(DashboardCacheKey, dashboard, new MemoryCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(30)
+            });
+
+            // IMPORTANT: Pass the ACTUAL current state to the partial via ViewBag
+            ViewBag.CurrentSortType = sortType;
+            ViewBag.CurrentSortOrder = sortOrder;
+
+            return PartialView("_MetricsPartial", dashboard);
         }
     }
 }

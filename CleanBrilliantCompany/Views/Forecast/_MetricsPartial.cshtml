@@ -1,9 +1,24 @@
 ﻿@model CleanBrilliantCompany.Models.Forecast.ForecastDashboard
 @{
     Layout = null;
+    var currentSortType = ViewBag.CurrentSortType as string ?? "id";
+    var currentSortOrder = ViewBag.CurrentSortOrder as string ?? "ascending";
+}
 }
 
 <style>
+
+    /* Additional styles for clickable headers with icons */
+    .sortable-header {
+        cursor: pointer;
+    }
+
+        .sortable-header i {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+  
     /* Dashboard container styling */
     .dashboard-container {
         margin: 20px 0;
@@ -205,7 +220,7 @@
                    onchange="generateDashboardFromSlider(this)" />
 
             <!-- Text input group with "%" appended -->
-            <div class="input-group" style="width: 100px;">
+            <div class="input-group" style="width: 120px;">
                 <input type="number"
                        class="form-control"
                        id="global-text"
@@ -246,11 +261,60 @@
     <table class="forecast-table">
         <thead>
             <tr>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th>Forecasted Demand</th>
-                <th>Price Adjustment (%)</th>
+                <!-- ID Column -->
+                <th class="sortable-header
+                @(currentSortType == "id"
+                    ? (currentSortOrder == "ascending" ? "sorted-asc" : "sorted-desc")
+                    : "")"
+                    data-sort-type="id"
+                    data-sort-order="@(currentSortType == "id" ? currentSortOrder : "ascending")">
+
+                    Product ID
+                    <i class="fas @(
+                    currentSortType == "id"
+                        ? (currentSortOrder == "ascending" ? "fa-sort-up" : "fa-sort-down")
+                        : "fa-sort"
+                )" aria-hidden="true"></i>
+                </th>
+
+                <!-- NAME Column -->
+                <th class="sortable-header
+                @(currentSortType == "name"
+                    ? (currentSortOrder == "ascending" ? "sorted-asc" : "sorted-desc")
+                    : "")"
+                    data-sort-type="name"
+                    data-sort-order="@(currentSortType == "name" ? currentSortOrder : "ascending")">
+
+                    Product Name
+                    <i class="fas @(
+                    currentSortType == "name"
+                        ? (currentSortOrder == "ascending" ? "fa-sort-up" : "fa-sort-down")
+                        : "fa-sort"
+                )" aria-hidden="true"></i>
+                </th>
+
+                <!-- VALUE Column -->
+                <th class="sortable-header
+                @(currentSortType == "value"
+                    ? (currentSortOrder == "ascending" ? "sorted-asc" : "sorted-desc")
+                    : "")"
+                    data-sort-type="value"
+                    data-sort-order="@(currentSortType == "value" ? currentSortOrder : "ascending")">
+
+                    Forecasted Demand
+                    <i class="fas @(
+                    currentSortType == "value"
+                        ? (currentSortOrder == "ascending" ? "fa-sort-up" : "fa-sort-down")
+                        : "fa-sort"
+                )" aria-hidden="true"></i>
+                </th>
+
+                <th>
+                    Price Adjustment (%)
+                </th>
             </tr>
+
+
         </thead>
         <tbody>
             @foreach (var metric in Model.GetMetrics() ?? new List<CleanBrilliantCompany.Models.Forecast.ForecastMetrics>())
@@ -281,7 +345,7 @@
                                    onchange="updateSliderValue(this)" />
 
                             <!-- Number input with a "%" addon -->
-                            <div class="input-group" style="width: 100px;">
+                            <div class="input-group" style="width: 120px;">
                                 <!-- Text input for numeric value -->
                                 <input type="number"
                                        class="form-control"
@@ -303,6 +367,52 @@
 </div>
 
 <script>
+    
+
+    @*     document.addEventListener('DOMContentLoaded', function() { *@
+    @*     const headers = document.querySelectorAll('.sortable-header'); *@
+
+    @*     headers.forEach(header => { *@
+    @*         header.addEventListener('click', function() { *@
+    @*             const sortType = header.getAttribute('data-sort-type'); *@
+    @*             let currentOrder = header.getAttribute('data-sort-order'); *@
+    @*             const newOrder = currentOrder === 'ascending' ? 'descending' : 'ascending'; *@
+    @*             header.setAttribute('data-sort-order', newOrder); *@
+
+    @*             // Update sort indicator *@
+    @*             const indicator = header.querySelector('.sort-indicator'); *@
+    @*             indicator.textContent = newOrder === 'ascending' ? '↑' : '↓'; *@
+
+    @*             // Prepare form data *@
+    @*             const formData = new URLSearchParams(); *@
+    @*             formData.append('sortType', sortType); *@
+    @*             formData.append('sortOrder', newOrder); *@
+
+    @*             // Send POST request using Fetch API *@
+    @*             fetch('/Forecast/sortMetrics', { *@
+    @*                 method: 'POST', *@
+    @*                 headers: { *@
+    @*                     'Content-Type': 'application/x-www-form-urlencoded' *@
+    @*                 }, *@
+    @*                 body: formData.toString() *@
+    @*             }) *@
+    @*             .then(response => { *@
+    @*                 if (!response.ok) { *@
+    @*                     throw new Error('Network response was not ok'); *@
+    @*                 } *@
+    @*                 return response.text(); *@
+    @*             }) *@
+    @*             .then(html => { *@
+    @*                 // Replace the metrics container content with the sorted partial view *@
+    @*                 document.getElementById('metrics-container').innerHTML = html; *@
+    @*             }) *@
+    @*             .catch(error => { *@
+    @*                 console.error('Error during sorting:', error); *@
+    @*                 alert("Error sorting metrics."); *@
+    @*             }); *@
+    @*         }); *@
+    @*     }); *@
+    @* }); *@
     function syncSliderValue(textInput) {
         const productId = textInput.dataset.productId;
         const slider = document.getElementById("slider-" + productId);
@@ -344,22 +454,22 @@
         function updateGlobalSliderDisplay(slider) {
             document.getElementById("slider-display").textContent = slider.value + "%";
         }
-        // When slider stops updating (change event), call the server and update the metrics partial view.
-        function updateSliderValue(slider) {
-            var productId = slider.dataset.productId;
-            var productName = slider.dataset.productName;
-            var value = slider.value;
+        @* // When slider stops updating (change event), call the server and update the metrics partial view. *@
+        @* function updateSliderValue(slider) { *@
+        @*     var productId = slider.dataset.productId; *@
+        @*     var productName = slider.dataset.productName; *@
+        @*     var value = slider.value; *@
 
-            fetch(`/Forecast/UpdatePriceAdjustment?productId=${productId}&productName=${encodeURIComponent(productName)}&priceAdjustment=${value}`, {
-                method: "POST"
-            })
-            .then(response => response.text())
-            .then(html => {
-                // Replace only the metrics container's HTML with the new partial view HTML.
-                document.getElementById("metrics-container").innerHTML = html;
-            })
-            .catch(error => console.error("Error updating price:", error));
-        }
+        @*     fetch(`/Forecast/UpdatePriceAdjustment?productId=${productId}&productName=${encodeURIComponent(productName)}&priceAdjustment=${value}`, { *@
+        @*         method: "POST" *@
+        @*     }) *@
+        @*     .then(response => response.text()) *@
+        @*     .then(html => { *@
+        @*         // Replace only the metrics container's HTML with the new partial view HTML. *@
+        @*         document.getElementById("metrics-container").innerHTML = html; *@
+        @*     }) *@
+        @*     .catch(error => console.error("Error updating price:", error)); *@
+        @* } *@
 
             // When the slider value changes, call the same GenerateForecast endpoint.
         function generateDashboardFromSlider(slider) {
@@ -413,5 +523,5 @@
         document.getElementById("slider-display").textContent = slider.value + "%";
         generateDashboardFromSlider(slider); // Reuse your existing function
     }
-
+        
 </script>

@@ -116,9 +116,21 @@ namespace CleanBrilliantCompany.Models.Forecast
             if (metric != null)
             {
                 MetricsList.Add(metric);
-                MetricsList.Sort((m1, m2) => m1.getProductID().CompareTo(m2.getProductId()));
             }
         }
+        public void UpdateMetric(ForecastMetrics updatedMetric)
+        {
+            for (int i = 0; i < MetricsList.Count; i++)
+            {
+                if (MetricsList[i].getProductID() == updatedMetric.getProductID())
+                {
+                    // Replace the old metric with the updated one at the same index
+                    MetricsList[i] = updatedMetric;
+                }
+            }
+        }
+
+
         public void DeleteMetric(int productId)
         {
             MetricsList.RemoveAll(metric => metric.getProductID() == productId);

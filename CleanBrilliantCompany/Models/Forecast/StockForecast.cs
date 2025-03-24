@@ -24,5 +24,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         {
             return this;
         }
+
+       
     }
 }

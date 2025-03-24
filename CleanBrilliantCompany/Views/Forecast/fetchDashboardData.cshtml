@@ -523,10 +523,12 @@
                
 
                     <!-- Metrics container wrapped in a div for partial updates -->
-                    <div id="metrics-container">
-                        @Html.Partial("_MetricsPartial", Model)
-                    </div>
-                    </div>
+                        <div id="metrics-wrapper">
+                            <div id="metrics-container">
+                                @Html.Partial("_MetricsPartial", Model)
+                            </div>
+                        </div>
+
                     <hr />
 
 
@@ -596,10 +598,10 @@
     <!-- Your Custom JS Script Here -->
     <script>
         // Toggle additional options for price forecast.
-        document.getElementById("forecastType").addEventListener("change", function() {
-            var priceOptions = document.getElementById("priceForecastOptions");
-            priceOptions.style.display = (this.value === "price") ? "block" : "none";
-        });
+        // document.getElementById("forecastType").addEventListener("change", function() {
+        //     var priceOptions = document.getElementById("priceForecastOptions");
+        //     priceOptions.style.display = (this.value === "price") ? "block" : "none";
+        // });
         
         // Update display immediately while dragging the slider.
         // function updateSliderDisplay(slider) {
@@ -608,9 +610,53 @@
         //     document.getElementById("slider-value-" + productId).textContent = value + "%";
         // }
 
-        
 
-        
+
+
+        document.addEventListener("click", function(e) {
+                const header = e.target.closest('.sortable-header');
+                if (!header) return; // Click didn't happen on a sortable header
+                if (!header.closest('.forecast-table')) return; // Extra safety check
+
+                // Read current order from the data attribute
+                const currentOrder = header.getAttribute('data-sort-order');
+                const sortType = header.getAttribute('data-sort-type');
+
+                // Toggle the sort order (flip ascending <-> descending)
+                const newOrder = (currentOrder === 'ascending') ? 'descending' : 'ascending';
+                // Locally we update the attribute so next time we read it, it's correct
+                header.setAttribute('data-sort-order', newOrder);
+
+                // Prepare data for AJAX
+                const formData = new URLSearchParams();
+                formData.append('sortType', sortType);
+                formData.append('sortOrder', newOrder);
+
+                fetch('/Forecast/sortMetrics', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData.toString()
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Replace partial view content
+                    document.getElementById('metrics-container').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error("Error sorting metrics:", error);
+                    alert("Error sorting metrics.");
+                });
+            });
+
+
+
     </script>
 </body>
 

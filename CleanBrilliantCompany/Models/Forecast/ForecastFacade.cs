@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.DataSource.Interface;
 using CleanBrilliantCompany.Interfaces.Forecast;
+using CleanBrilliantCompany.Services.Sorting;
 
 namespace CleanBrilliantCompany.Models.Forecast
 {
@@ -22,7 +23,8 @@ namespace CleanBrilliantCompany.Models.Forecast
         IForecastRepository forecastRepository,
         IProduct iProduct,
         ISales iSale,
-        IAlert alertService)
+        IAlert alertService
+        )
         {
             //_stockPredictionService = stockPredictionService;
             //_scenarioPricingService = scenarioPricingService;
@@ -32,7 +34,6 @@ namespace CleanBrilliantCompany.Models.Forecast
             _metricFactory = metricFactory;
             _forecastRepository = forecastRepository;
             _alertService = alertService;
-
         }
         public ForecastDashboard getLatestDashboard()
         {
@@ -45,7 +46,11 @@ namespace CleanBrilliantCompany.Models.Forecast
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
             getSalesAndProduct(selectedMonth, out productList, out aggregatedSales);//to be updated to accept selectedMonth to pull data for exact months
-            ForecastDashboard dashboard = _forecastRepository.getDashboard(selectedMonth.Month, selectedMonth.Year);
+            ForecastDashboard dashboard=null;
+            if (adjustmentFactor == 0)
+            {
+                dashboard = _forecastRepository.getDashboard(selectedMonth.Month, selectedMonth.Year);
+            }
             if (dashboard == null)
             {
                  dashboard = new ForecastDashboard(0, selectedMonth, selectedMonth.AddMonths(1).AddDays(-1), DateTime.Now, 0, new List<ForecastMetrics>()
@@ -71,6 +76,10 @@ namespace CleanBrilliantCompany.Models.Forecast
                     
                 }
             }
+            //sorting
+            dashboard.SetMetrics(ForecastMetricSorter.Sort(dashboard.GetMetrics(), "id", "ascending"));
+
+            //Sorting 
             List<string> alert = new List<string>();
             if (dashboard.GetMetrics().Count != 0)
             {
@@ -91,14 +100,14 @@ namespace CleanBrilliantCompany.Models.Forecast
             ProductDTO product = productList.FirstOrDefault(p => p.ID == productId);
 
             ForecastMetrics metric = _metricFactory.GenerateForecastMetric(productId, aggregatedSales, product, adjustmentFactor);
-            dashboard.DeleteMetric(productId);
-            dashboard.AddMetric(metric);
+            dashboard.UpdateMetric(metric);
             List<string> alert = new List<string>();
             if (dashboard.GetMetrics().Count != 0)
             {
                 alert = _alertService.alert(dashboard.GetMetrics());
                 dashboard.SetAlertItemList(alert);
             }
+            //dashboard.SetMetrics(ForecastMetricSorter.Sort(dashboard.GetMetrics(), sortingType, order));
 
 
             //Save to repo
@@ -108,7 +117,26 @@ namespace CleanBrilliantCompany.Models.Forecast
         }
 
 
+        //private List<ForecastMetrics> SortMetrics(List<ForecastMetrics> metrics, String sortType)
+        //{
+        //    IForecastSortingStrategy strategy;
 
+        //    switch (sortType)
+        //    {
+        //        case "name":
+        //            strategy = new SortByProductName();
+        //            break;
+        //        case "value":
+        //            strategy = new SortByForecastedStock();
+        //            break;
+        //        default:
+        //            strategy = new SortByProductID(); 
+        //            break;
+        //    }
+
+        //    var sorter = new ForecastMetricSorter(strategy);
+        //    return sorter.Sort(metrics);
+        //}
 
         //public List<ForecastMetrics> generatePriceScenario(DateTime  selectedMonth, int adjustmentFactor)
         //{
