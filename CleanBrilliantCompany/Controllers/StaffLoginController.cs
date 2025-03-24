@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Interfaces.StaffAuth;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -28,7 +28,7 @@ namespace CleanBrilliantCompany.Controllers
             if (isAuthenticated && loggedInStaffId > 0)
             {
                 HttpContext.Session.SetInt32("LoggedInStaffId", loggedInStaffId);
-                return RedirectToAction("Index", "StaffDashboard");
+                return RedirectToAction("Index", "Staff");
             }
 
             ViewBag.Message = "Invalid email or password.";

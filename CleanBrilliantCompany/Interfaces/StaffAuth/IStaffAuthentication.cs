@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace CleanBrilliantCompany.Interfaces
+namespace CleanBrilliantCompany.Interfaces.StaffAuth
 {
     public interface IStaffAuthentication
     {

@@ -1,6 +1,9 @@
+using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Interfaces.StaffAuth;
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.StaffAuth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,12 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddScoped<StaffManagement>();
 builder.Services.AddScoped<StaffAuthentication>();
 builder.Services.AddScoped<IStaffDatabase>(sp => new StaffMapper(connectionString));
+
+// Adding services for Refund
+builder.Services.AddScoped<IRefundDatabase>(provider => new RefundMapper(connectionString));
+builder.Services.AddScoped<IRefundQuery, RefundManagement>();
+builder.Services.AddScoped<IRefundDetails, RefundDetails>();
+builder.Services.AddScoped<IOrder, MockOrderService>(); // change later when team5 is done
 
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();

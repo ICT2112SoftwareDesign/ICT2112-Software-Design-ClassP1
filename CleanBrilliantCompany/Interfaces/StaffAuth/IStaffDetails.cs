@@ -1,7 +1,7 @@
-﻿using CleanBrilliantCompany.Models;
+﻿using CleanBrilliantCompany.Models.StaffAuth;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CleanBrilliantCompany.Interfaces
+namespace CleanBrilliantCompany.Interfaces.StaffAuth
 {
     public interface IStaffDetails
     {

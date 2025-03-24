@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace CleanBrilliantCompany.Models
+namespace CleanBrilliantCompany.Models.StaffAuth
 {
     public class StaffRDM
     {
@@ -80,7 +80,7 @@ namespace CleanBrilliantCompany.Models
         private string getManagementLevel() { return managementLevel; } // Only for Management Staff
 
         // Setters
-        private void setStaffId(int id) { this.staffId = id; }
+        private void setStaffId(int id) { staffId = id; }
         private void setName(string name) { this.name = name; }
         private void setUsername(string username) { this.username = username; }
         private void setEmail(string email) { this.email = email; }
@@ -88,7 +88,7 @@ namespace CleanBrilliantCompany.Models
         private void setAddress(string address) { this.address = address; }
         private void setPassword(string password) { this.password = password; }
         private void setDepartment(string department) { this.department = department; } // Only for General Staff
-        private void setManagementLevel(string level) { this.managementLevel = level; } // Only for Management Staff
+        private void setManagementLevel(string level) { managementLevel = level; } // Only for Management Staff
 
         // Session Handling
         public T GetSession<T>(string propertyName)

@@ -1,5 +1,5 @@
-﻿using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Models;
+﻿using CleanBrilliantCompany.Interfaces.StaffAuth;
+using CleanBrilliantCompany.Models.StaffAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
