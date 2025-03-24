@@ -5,7 +5,10 @@ namespace CleanBrilliantCompany.Models.Entity
         Available,
         Reserved,
         Sold,
-        Refunded
+        Refunded,
+        ToReturn,
+        Returned,
+        Transferred,
     }
 
     public class Item

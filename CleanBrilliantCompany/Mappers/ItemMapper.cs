@@ -160,6 +160,7 @@ namespace CleanBrilliantCompany.Mappers
                 // Define the SQL query to retrieve the item by its ID
                 string query = @"SELECT * FROM Item 
                 INNER JOIN ProductBatch ON ProductBatch.productId = Item.productId
+                AND ProductBatch.batchCode = Item.batchCode
                 WHERE itemStatus = @status";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -256,7 +257,7 @@ namespace CleanBrilliantCompany.Mappers
         // for iItemUpdate 
         public bool updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
         {
-
+            Console.WriteLine("STATUS TO ADD IN DB" + status);
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -272,7 +273,7 @@ namespace CleanBrilliantCompany.Mappers
                     command.Parameters.AddWithValue("@orderId", orderId ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@transferId", transferId ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@returnId", returnId ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@status", status);
+                    command.Parameters.AddWithValue("@status", status.ToString());
 
                     int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
                     return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
