@@ -53,7 +53,7 @@
                         Update
                     </button></td>
                 <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#updateItemStatusModalOld" data-updateitem-id="@itemInfo["ItemId"]">
+                        data-bs-target="#updateItemStatusModalOld" data-updateitemOld-id="@itemInfo["ItemId"]">
                         Update Status
                     </button></td>
                 <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -286,6 +286,20 @@
             var itemId = button.getAttribute("data-updateitem-id");
 
             var hiddenInput = document.getElementById("updateStatusItemId");
+            hiddenInput.value = itemId;
+
+            console.log(hiddenInput.value);
+        });
+    });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        var updateModal = document.getElementById("updateItemStatusModalOld");
+
+        updateModal.addEventListener("show.bs.modal", function (event) {
+            var button = event.relatedTarget;
+            var itemId = button.getAttribute("data-updateitemOld-id");
+
+            var hiddenInput = document.getElementById("updateStatusItemIdOld");
             hiddenInput.value = itemId;
 
             console.log(hiddenInput.value);
