@@ -8,18 +8,6 @@ public class AgingPageController : Controller
     private readonly AgingControl agingControl; 
     private readonly ILogger<AgingPageController> logger; 
 
-
-    // public AgingPageController(
-    //     ILogger<AgingPageController> logger, 
-    //     AgingRepo agingMapper, 
-    //     FakeBatchInterface fakeBatchInterface,
-    //     FakeProductInterface fakeProductInterface 
-    //     ) 
-    //     {
-    //         this.logger = logger;
-    //         agingControl = new AgingControl(agingMapper, fakeBatchInterface, fakeProductInterface);
-    //     } 
-
     // create 1 thats injected with the aging control 
     public AgingPageController(
         ILogger<AgingPageController> logger, 
@@ -41,19 +29,7 @@ public class AgingPageController : Controller
         return View(latestDashboard); 
     } 
 
-    // [HttpPost]
-    // public IActionResult GenerateDashboard()
-    // {
-    //     var newDashboard = agingControl.generateNewDashboard();
 
-    //     //might wanna post the data to the datebase 
-
-    //     // log the new dashboard 
-    //     logger.LogInformation("New dashboard generated: {0}", newDashboard.Name); 
-    //     return Json(new { success = true, message = "New dashboard generated!", data = newDashboard });
-
-
-    // }
 
     [HttpPost]
     public IActionResult GenerateDashboard(DashboardDTO dto)

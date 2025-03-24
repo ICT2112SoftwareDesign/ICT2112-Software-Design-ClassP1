@@ -1,6 +1,6 @@
 public class AgingControl 
 {
-    private List<AgingDashboardRdm> dashboards; 
+    private Dashboard agingDashboard; 
     //private AgingMapper agingMapper; 
     private AgingRepo agingMapper;
 
@@ -17,7 +17,7 @@ public class AgingControl
         ) 
         {
             this.agingMapper = agingMapper;
-            dashboards = new List<AgingDashboardRdm>();
+            // dashboards = new List<AgingDashboardRdm>();
             this.fakeBatchInterface = fakeBatchInterface; 
             this.fakeProductInterface = fakeProductInterface;
             // 🔹 Retrieve data from the database / fake DB
@@ -52,8 +52,14 @@ public class AgingControl
             );
 
         // Step 3: Create an AgingDashboardRdm and populate with analytics
-        var agingDashboard = DashboardFactory.createDashboard(dashboardDto); 
-        
+        agingDashboard = DashboardFactory.createDashboard(dashboardDto); 
+
+        if (agingDashboard == null) 
+        {
+            Console.WriteLine("⚠ Dashboard could not be created.");
+            return; 
+        } 
+
         // Loop through the productToAnalyticsMap 
         foreach (var product in productToAnalyticsMap) {
             var productID = product.Key; 
@@ -90,7 +96,7 @@ public class AgingControl
         }
 
         // Step 4: Add the dashboard to the list
-        dashboards.Add((agingDashboard as AgingDashboardRdm));
+        //dashboards.Add((agingDashboard as AgingDashboardRdm));
     }
 
     // 🔹 Method to Retrieve the Latest Dashboard
@@ -99,12 +105,7 @@ public class AgingControl
         Console.WriteLine("🔍 Retrieving the latest dashboard...");
         // print out all available dashboards 
         //Console.WriteLine("Amount of dashboards: " + dashboards.Count); 
-        foreach (var dashboard in dashboards)
-        {
-            Console.WriteLine($"Dashboard: {dashboard.GeneratedDate}");
-        } 
-
-        return dashboards.OrderByDescending(d => d.RequestedStartDate).FirstOrDefault();
+        return agingDashboard as AgingDashboardRdm; 
     }
 
     // i also need a method where User wants to generate a new dashboard
@@ -135,8 +136,7 @@ public class AgingControl
         // Use the existing populateAnalytics method
         (dashboard as AgingDashboardRdm).populateAnalytics(batches, stockHistories);
 
-        // Add to the list and save
-        //dashboards.Add(dashboard); 
+        // Add to the list and save 
         agingMapper.saveDashboardandAnalytics(dashboard as AgingDashboardRdm); 
     }
 

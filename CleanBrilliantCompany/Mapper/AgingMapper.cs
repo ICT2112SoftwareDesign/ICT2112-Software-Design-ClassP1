@@ -9,9 +9,10 @@ public class AgingMapper : AgingRepo
     }
 
     // Fetch Dashboard and Analytics
-    public DashboardDTO GetLatestAgingDashboard()
+    public DashboardDTO? GetLatestAgingDashboard()
     {
         return _realDbContext.Dashboards
+            .Where(d => d.TypeId == 1) // Assuming TypeId 1 is for Aging Dashboard 
             .OrderByDescending(d => d.GeneratedDate)
             .Select(d => new DashboardDTO
             {
