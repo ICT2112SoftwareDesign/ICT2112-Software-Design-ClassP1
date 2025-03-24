@@ -74,7 +74,7 @@ namespace CleanBrilliantCompany.Controllers.Refund
         [HttpPost("CreateRefund")]
         public IActionResult CreateRefund([FromServices] IOrder orderService, [FromServices] IRefundQuery refundManagement)
         {
-            int orderId = 1;
+            int orderId = 28;
             Order order = orderService.GetOrderDetails(orderId);
 
             if (order == null)
