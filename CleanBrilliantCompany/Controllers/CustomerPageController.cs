@@ -214,7 +214,7 @@ namespace CleanBrilliantCompany.Controllers
 
             if (string.IsNullOrEmpty(query)) return RedirectToAction("startChatSession");
 
-            string botResponse = _supportManagement.handleQuery(customerID, query);
+           string botResponse = _supportManagement.handleQuery(customerID, query);
 
             string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
 
@@ -251,8 +251,6 @@ namespace CleanBrilliantCompany.Controllers
 
         //     return RedirectToAction("startChatSession");
         // }
-
-        // Products input controller
 
         public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
         {

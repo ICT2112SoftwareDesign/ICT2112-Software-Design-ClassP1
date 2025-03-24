@@ -37,9 +37,18 @@ builder.Services.AddSingleton<IReviewDatabase>(provider =>
     return new ReviewMapper(connectionString, observer);
 });
 
+// Register the Cart Observer (e.g., CartSystemLogger)
+builder.Services.AddSingleton<ICartQueryObserver, CartSystemLogger>();
+
+// Register the CartMapper (depends on ICartQueryObserver)
+builder.Services.AddSingleton<ICartDatabase>(provider =>
+{
+    var observer = provider.GetRequiredService<ICartQueryObserver>();
+    return new CartMapper(connectionString, observer);
+});
+
 // Finally the management (which depends on the mapper)
 builder.Services.AddTransient<CustomerManagement>();
-
 builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<IChatbot, ChatbotService>();
 builder.Services.AddTransient<ISupportTicket, SupportTicketService>();
@@ -49,10 +58,9 @@ builder.Services.AddScoped<IOrder, OrderManagement>();
 builder.Services.AddTransient<OrderManagement>();
 builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString));
 builder.Services.AddTransient<CartManagement>();
-builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
+builder.Services.AddTransient<ICartManagement, CartManagement>();
 builder.Services.AddSingleton<IWishlistDatabase>(new WishlistMapper(connectionString));
 builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
-builder.Services.AddTransient<ICartManagement, CartManagement>();
 builder.Services.AddTransient<WishlistManagement>();
 builder.Services.AddTransient<ReviewManagement>();
 

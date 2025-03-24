@@ -2,91 +2,97 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models
 {
+    // Ensures that each customer has a single, unique instance of their cart.
     public class CartRDM
     {
-        // Private attributes 
+        // Static dictionary to store a Singleton instance for each customer.
+        // Key: Customer ID, Value: CartRDM instance for that customer.
+        private static readonly Dictionary<int, CartRDM> customerCarts = new Dictionary<int, CartRDM>();
+
+        // Lock object to ensure thread safety when creating or retrieving instances.
+        private static readonly object lockObj = new object();
+
+        // The ID of the customer associated with this cart.
         private int customerId;
 
-        // Private attribute (Product ID, Quantity) in productsInCart
+        // Dictionary to store the products in the cart.
+        // Key: Product ID, Value: Quantity of the product.
         private Dictionary<int, int> productsInCart;
 
-        // Constructor
-        public CartRDM()
+        // Private constructor to prevent direct instantiation
+        // Initializes the cart for the specified customer.
+        private CartRDM(int customerId)
         {
+            this.customerId = customerId;
             productsInCart = new Dictionary<int, int>();
         }
 
-        // Private getter for customerId
-        private int getCustomerId()
+        // Public static method to get the Singleton instance for a specific customer
+        // If no instance exists for the customer, a new one is created.
+        public static CartRDM GetInstance(int customerId)
         {
-            return customerId;
+            lock (lockObj)
+            {
+                if (!customerCarts.ContainsKey(customerId))
+                {
+                    customerCarts[customerId] = new CartRDM(customerId);
+                }
+                return customerCarts[customerId];
+            }
         }
 
-        // Private setter for customerId
-        private void setCustomerId(int customerId)
-        {
-            this.customerId = customerId;
-        }
-
-        // Private getter for productsInCart
-        private Dictionary<int, int> getProductsInCart()
-        {
-            return new Dictionary<int, int>(productsInCart);
-        }
-
-        // Private setter for productsInCart
-        private void setProductsInCart(Dictionary<int, int> cartProducts)
-        {
-            productsInCart = new Dictionary<int, int>(cartProducts);
-        }
-
-        // Public method to add a product to the cart [not in Class Diagram]
+        // Adds a product to the cart 
         public void addProduct(int productId, int quantity)
         {
             if (productsInCart.ContainsKey(productId))
             {
+                // If the product already exists, increase its quantity.
                 productsInCart[productId] += quantity;
             }
             else
-            {
+            {   
+                // Otherwise, add the product with the specified quantity.
                 productsInCart[productId] = quantity;
             }
         }
 
-        // Public method to update the quantity of a product in the cart [Not in Class Diagram]
+        // Updates the quantity of a product in the cart.
         public void updateProductQuantity(int productId, int quantity)
         {
             if (productsInCart.ContainsKey(productId))
-            {
-                productsInCart[productId] = quantity; // Update the quantity for the specific product
+            {   
+                // Update the quantity of the product if it exists in the cart.
+                productsInCart[productId] = quantity;
             }
         }
 
-        // Public method to remove a product from the cart [Not in Class Diagram]
+        // Removes a product from the cart.
         public void removeProduct(int productId)
         {
             if (productsInCart.ContainsKey(productId))
             {
-                
                 productsInCart.Remove(productId);
             }
         }
 
-        // Public method to check if the cart has a specific product [Not in Class Diagram]
+        // Public method to check if the cart has a specific product
         public bool hasProduct(int productId)
         {
             return productsInCart.ContainsKey(productId);
         }
 
-        // Public method to load the cart data 
+        
+        // Loads the cart data from the provided dictionary.
         public void loadCart(Dictionary<int, int> cartData)
         {
+            // Create a new dictionary copy of the cart data
             productsInCart = new Dictionary<int, int>(cartData);
         }
-        
-        // Public method to retrieve the products in the cart [
+
+        // Retrieves the products in the cart.
         public Dictionary<int, int> retrieveProductsInCart()
         {
+            // Return a copy of the cart data to prevent external modification.
             return new Dictionary<int, int>(productsInCart);
         }
     }

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Interfaces
 {
+    // Interface for cart management operations.
+    // Allow other classes to interact with the cart.
     public interface ICartManagement
     {
         // Adds a product to the cart

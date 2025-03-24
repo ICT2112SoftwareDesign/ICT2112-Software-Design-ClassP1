@@ -5,17 +5,22 @@ using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Mappers
-{
+{   
+    // Handles database operations for the shopping cart.
     public class CartMapper : ICartDatabase
     {
         private readonly string _connectionString;
 
-        public CartMapper(string connectionString)
+        // Observer to notify about cart-related events
+        private readonly ICartQueryObserver _observer;
+
+        public CartMapper(string connectionString,ICartQueryObserver observer)
         {
            _connectionString = connectionString;
+            _observer = observer;
         }
 
-        // INSIDE CLASS DIAGRAM
+        // Adds a cart for a specific customer in the database.
         public bool addCart(int customerID, Dictionary<int, int> productsInCart)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -79,6 +84,12 @@ namespace CleanBrilliantCompany.Mappers
                             insertCartCommand.Parameters.AddWithValue("@CustomerID", customerID);
                             insertCartCommand.Parameters.AddWithValue("@ProductsInCart", productsJson);
                             insertCartCommand.ExecuteNonQuery();
+
+                             // Notify the observer about the product addition
+                            foreach (var product in productsInCart)
+                            {
+                                _observer.onProductAdded(customerID, product.Key, product.Value);
+                            }
                         }
 
                         transaction.Commit();
@@ -93,6 +104,8 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
+
+        // Updates the cart for a specific customer in the database.
         public bool updateCart(int customerID, Dictionary<int, int> productsInCart)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -119,8 +132,10 @@ namespace CleanBrilliantCompany.Mappers
                         // Merge the current cart with the updated cart
                         foreach (var item in productsInCart)
                         {
-                            Console.WriteLine($"Updating ProductID: {item.Key} to Quantity: {item.Value}");
                             currentCart[item.Key] = item.Value; // Update or add the product
+
+                            // Notify the observer about the product update
+                            _observer.onProductQuantityUpdated(customerID, item.Key, item.Value);
                         }
 
                         // Serialize the updated cart back to JSON
@@ -148,7 +163,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
 
-        // NOT INSIDE CLASS DIAGRAM
+        // Check if a specific product exists in a customer's cart
         public bool hasProductInCart(int customerID, int productId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -166,6 +181,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
+        // Removes a product from the cart for a specific customer.
         public bool removeFromCart(int customerID, int productId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -189,16 +205,13 @@ namespace CleanBrilliantCompany.Mappers
                             Console.WriteLine($"ProductID: {item.Key}, Quantity: {item.Value}");
                         }
 
-                        // Remove the product from the cart
+                      // Remove the product from the cart
                         if (currentCart.ContainsKey(productId))
                         {
-                            Console.WriteLine($"Removing ProductID: {productId} from cart.");
                             currentCart.Remove(productId);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"ProductID: {productId} not found in cart. No changes made.");
-                            return false;
+
+                            // Notify the observer about the product removal
+                            _observer.onProductRemoved(customerID, productId);
                         }
 
                         // Serialize the updated cart back to JSON
@@ -225,7 +238,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
         
-         // New method to get the cart for a specific customer
+       // Retrieves the cart for a specific customer.
        public bool getCart(int customerID, out Dictionary<int, int> cartData)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -248,6 +261,8 @@ namespace CleanBrilliantCompany.Mappers
             cartData = new Dictionary<int, int>();
             return false;
                 }
+
+        // Clears the cart for a specific customer.
         public bool clearCart(int customerID)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -265,7 +280,9 @@ namespace CleanBrilliantCompany.Mappers
                         int rowsAffected = command.ExecuteNonQuery();
                         transaction.Commit();
 
-                        Console.WriteLine($"Cart deleted for CustomerID: {customerID}. Rows affected: {rowsAffected}");
+                        // Notify the observer about the cart clearance
+                        _observer.onCartCleared(customerID);
+
                         return rowsAffected > 0;
                     }
                     catch (Exception ex)
