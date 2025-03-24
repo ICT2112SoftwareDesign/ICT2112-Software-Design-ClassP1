@@ -629,8 +629,8 @@
                 var jsChartId = $"{productKey}{metric}";
                 var valuesJson = Json.Serialize(batchData.Values);
                 var labelsJson = Json.Serialize(batchData.Keys);
-                Console.WriteLine("valuesJson" + valuesJson); 
-                Console.WriteLine("labelsJson" + labelsJson); 
+                //Console.WriteLine("valuesJson" + valuesJson); 
+                //Console.WriteLine("labelsJson" + labelsJson); 
                 var axis = metric == "StorageDuration" ? "y" : "x";
 
                 // need to mod the data for deadstockpercentage as each value should be 100 percent but 2 different colors 
@@ -853,7 +853,7 @@
                         }
                     }
                 },
-                scales: chartType === "bar" ? 
+                @* scales: chartType === "bar" ? 
                 {
                     y: 
                     {
@@ -867,7 +867,28 @@
                             }
                         }
                     }
-                } : {}
+                } : {} *@
+                scales : indexAxis ==="y" ?
+                {
+                    x : 
+                    {
+                        beginAtZero: true,
+                    }
+                } : 
+                {
+                    y : 
+                    {
+                        beginAtZero: true,
+                        max: max,
+                        ticks: 
+                        {
+                            // if data is boolean , we can use 0/1 
+                            callback : function (value) {
+                                  return typeof data[0] === "boolean" ? (value === 1 ? chartLabel : "") : value;
+                            }
+                        }
+                    }
+                } 
             }
         });
     }
@@ -879,9 +900,12 @@
         {
             var productLabels = new List<int>();
             var productValues = new List<float>();
-
+            Console.WriteLine("Doing Metric: " + metric); 
             foreach (var product in productToBatchMap)
             {
+                Console.WriteLine("product" + product.Key); 
+                Console.WriteLine("=============================="); 
+
                 var batchCodes = product.Value;
                 var allAnalytics = batchCodes
                     .SelectMany(batch => Model.GetBatchAnalytics(batch))
@@ -892,17 +916,25 @@
                     .Where(kv => kv.Key == metric)
                     .Select(kv => Convert.ToSingle(kv.Value))
                     .ToList();
-
+                
+                Console.WriteLine("matchingValues Count: " + matchingValues.Count); 
+                foreach (var value in matchingValues)
+                {
+                    Console.Write ("Value: " + value);
+                }
                 if (matchingValues.Any())
                 {
                     productLabels.Add(product.Key);
                     productValues.Add(matchingValues.Average()); // Use Sum/Max/etc if preferred
                 }
+                Console.WriteLine("End of product + " + product.Key); 
+                
             }
 
             var safeId = metric.Replace(" ", "").Replace("-", "").Replace(".", "");
             var labelsJson = Json.Serialize(productLabels);
             var valuesJson = Json.Serialize(productValues);
+            Console.WriteLine("Creating the product chart for " + metric); 
 
             <text>
                 const canvas_@safeId = document.createElement('canvas');
@@ -940,6 +972,8 @@
                     }
                 });
             </text>
+
+            Console.WriteLine("End of Metric");
         }
     }
 

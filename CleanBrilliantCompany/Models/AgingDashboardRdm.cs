@@ -21,14 +21,6 @@ public class AgingDashboardRdm : Dashboard
         batchAnalyticsMap = new Dictionary<int, List<AbstractAnalyticsDetails>>();
     }
 
-    // this is for when i am creating 1? 
-    public AgingDashboardRdm(int id, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type)
-        : base(id, name, requestedStartDate, requestedEndDate, validityDuration, type)
-    {
-        //_batchAnalyticsList = new List<AbstractAnalyticsDetails>();
-        batchAnalyticsMap = new Dictionary<int, List<AbstractAnalyticsDetails>>();
-    }
-  
 
 
     public Dictionary<int, List<AbstractAnalyticsDetails>> getBatchAnalyticsMap() => batchAnalyticsMap; 

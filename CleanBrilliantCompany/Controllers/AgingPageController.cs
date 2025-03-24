@@ -9,18 +9,27 @@ public class AgingPageController : Controller
     private readonly ILogger<AgingPageController> logger; 
 
 
+    // public AgingPageController(
+    //     ILogger<AgingPageController> logger, 
+    //     AgingRepo agingMapper, 
+    //     FakeBatchInterface fakeBatchInterface,
+    //     FakeProductInterface fakeProductInterface 
+    //     ) 
+    //     {
+    //         this.logger = logger;
+    //         agingControl = new AgingControl(agingMapper, fakeBatchInterface, fakeProductInterface);
+    //     } 
+
+    // create 1 thats injected with the aging control 
     public AgingPageController(
         ILogger<AgingPageController> logger, 
-        AgingRepo agingMapper, 
-        FakeBatchInterface fakeBatchInterface,
-        FakeProductInterface fakeProductInterface 
+        AgingControl agingControl
         ) 
         {
             this.logger = logger;
-            agingControl = new AgingControl(agingMapper, fakeBatchInterface, fakeProductInterface);
-        } 
-
-
+            this.agingControl = agingControl;
+        }
+        
     public IActionResult Index()
     {
         var latestDashboard = agingControl.GetLatestDashboard(); 
@@ -47,7 +56,7 @@ public class AgingPageController : Controller
     // }
 
     [HttpPost]
-    public IActionResult GenerateDashboard(AgingDashboardInputDTO dto)
+    public IActionResult GenerateDashboard(DashboardDTO dto)
     {
         if (!ModelState.IsValid)
             return View(); // or handle the error gracefully

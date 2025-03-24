@@ -30,29 +30,38 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     } 
 
     // percentage of stock used
-    public float calculateTurnOverRate(){
-        // if quantityPerDay is empty, return 0 
-        if (!quantityPerDay.Any()) return 0; 
-
-        // get the first and last date 
-        DateOnly firstDate = quantityPerDay.Keys.Min(); 
-        DateOnly lastDate = quantityPerDay.Keys.Max(); 
+    public float calculateTurnOverRate()
+    {
+        // Early returns for edge cases
+        if (!quantityPerDay.Any() || totalQuantity == 0) return 0;
         
-        int earliestQuantity = quantityPerDay[firstDate]; 
-        int latestQuantity = quantityPerDay[lastDate]; 
-        int stockUsed = totalQuantity - latestQuantity; 
+        // Get only needed quantity (we don't use firstDate/earliestQuantity)
+        int latestQuantity = quantityPerDay[quantityPerDay.Keys.Max()];
+        
+        // Calculate and clamp in one step
+        return Math.Clamp(
+            ((float)(totalQuantity - latestQuantity) / totalQuantity) * 100, 
+            0f, 
+            100f
+        );
+    }
 
-        return totalQuantity == 0 ? 0 : ((float)stockUsed / totalQuantity) * 100; 
-    }    
-
-    public float calculateDeadStockPercentage(){
-        // if no quantityPerDay, return 100 
-        if (!quantityPerDay.Any()) return 100; 
-        DateOnly latestDate = quantityPerDay.Keys.Max(); 
-        int latestQuantity = quantityPerDay[latestDate];
-        return totalQuantity == 0 ? 0 : ((float)latestQuantity / totalQuantity) * 100; 
-
-    } 
+    public float calculateDeadStockPercentage()
+    {
+        // Early returns for edge cases
+        if (!quantityPerDay.Any()) return 100;
+        if (totalQuantity == 0) return 0f;
+        
+        // Get the latest quantity
+        int latestQuantity = quantityPerDay[quantityPerDay.Keys.Max()];
+        
+        // Calculate and clamp in one step
+        return Math.Clamp(
+            ((float)latestQuantity / totalQuantity) * 100,
+            0f,
+            100f
+        );
+    }
 
      
     public override Dictionary<string, object> CalculateBatchSummary(){
