@@ -2,6 +2,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface ISubmitRefund
     {
-        bool submitRefund (int orderId, int customerId, string status, string refundReason, string images, string videos);
+        bool submitRefund (int orderId, string refundReason, float refundAmount, Dictionary<int, int> refundedProducts);
     }
 }

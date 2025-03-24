@@ -143,18 +143,18 @@ namespace CleanBrilliantCompany.Models
             return _orderDatabase.updateOrder(order);
         }
 
-        public bool requestRefund(int orderId, int customerId, string refundReason, string refundImage, string refundVideo)
+        public bool requestRefund(int orderId, int customerId, string refundReason)
         {
             var order = _orderDatabase.getOrderById(orderId);
             if (order == null || order.CustomerID != customerId || order.Status != "Completed")
             {
                 return false; // Cannot request a refund
             }
-            Console.WriteLine($"{refundReason}, {refundImage}, {refundVideo}, {customerId}");
+            Console.WriteLine($"{orderId}, {refundReason} {order.OrderTotal}, {order.OrderProducts}, {customerId}");
             order.Status = "RefundRequested";
 
             // I cant do this without concrete implementation of submit refund yet
-            // _submitRefund.submitRefund(orderId, customerId, order.Status, refundReason, refundImage, refundVideo);
+            // _submitRefund.submitRefund(orderId, refundReason, order.OrderTotal, order.OrderProducts);
             return _orderDatabase.updateOrder(order);
         }
 

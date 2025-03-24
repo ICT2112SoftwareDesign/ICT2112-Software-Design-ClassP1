@@ -22,6 +22,10 @@
 </head>
 
 <body>
+    @if (!(ViewContext.RouteData.Values["Controller"]?.ToString() == "BeforeLoginPage" &&
+       (ViewContext.RouteData.Values["Action"]?.ToString() == "Login" || 
+        ViewContext.RouteData.Values["Action"]?.ToString() == "RegisterCustomer")))
+    {
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -67,11 +71,19 @@
                                 <i class="fa fa-user-circle" aria-hidden="true"></i> Profile
                             </a>
                         </li>
+                        <li class="nav-item">
+                        <form asp-controller="CustomerPage" asp-action="Logout" method="post" style="display:inline;">
+                            <button type="submit" class="nav-link text-dark border-0 bg-transparent">
+                                <i class="fa fa-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
+                    </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+    }
     <div class="container">
 <!-- Feedback Modal (Bootstrap 5 version) You can use this for your own usage -->
 <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">

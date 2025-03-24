@@ -154,10 +154,18 @@ namespace CleanBrilliantCompany.Controllers
             else{
                 ViewBag.Message = "Password failed to update!";
                 CustomerDetails();
-                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
+                return RedirectToAction("Login", "BeforeLoginPage");
             }
             
         }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Redirect("~/");
+        }
+
 
         // INPUT CONTROLLER METHODS
 
@@ -994,7 +1002,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            var success = _orderManagement.requestRefund(orderId, customerId.Value, refundReason, refundImage, refundVideo);
+            var success = _orderManagement.requestRefund(orderId, customerId.Value, refundReason);
             if (success)
             {
                 TempData["Success"] = "Refund request submitted successfully.";
