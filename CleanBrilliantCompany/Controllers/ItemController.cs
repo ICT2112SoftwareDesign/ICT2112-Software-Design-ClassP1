@@ -134,13 +134,15 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // REFUNDED ITEMS FROM MOD 1
-        // [HttpPost]
-        // [Route("refundedItems")]
-        // public async Task<IActionResult> refundedItems(List<int> itemIds, string refundReason)
-        // {
-        //     await _itemControl.ReturnItemToInventory(itemIds, refundReason);
-        //     return RedirectToAction("Index");
-        // }
+        [HttpPost]
+        [Route("refundedItems")]
+        public async Task<IActionResult> refundedItems(List<int> itemIds, string refundReason)
+        {
+            itemIds = [4, 5]; // list of items to be refunded (this is from order 1 so b4 running this prob ned to press the order items btn)
+            refundReason = "Defective";
+            _itemControl.returnItemToInventory(itemIds, refundReason);
+            return RedirectToAction("Index");
+        }
 
         // HANDLE ORDERING OF ITEMS
         [HttpPost]
@@ -161,7 +163,6 @@ namespace CleanBrilliantCompany.Controllers
         [Route("processCancelledOrder")]
         public async Task<IActionResult> processCancelledOrder(int orderId)
         {
-            Console.WriteLine("PROCESS ITEM CONTROLLER RUNNING");
             orderId = 1;
           
             _itemControl.processCancelledOrder(orderId);

@@ -453,11 +453,28 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        // // handle refunded items
-        public void returnItemToInventory(List<int> itemId, string refundReason)
+        // handle refunded items
+        public void returnItemToInventory(List<int> itemIds, string refundReason)
         {
+            if (refundReason == "Defect")
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
 
+                    string updateQuery = $@"
+                        UPDATE Item 
+                        SET itemStatus = 'ToReturn', orderId = NULL
+                        WHERE itemId IN ({string.Join(",", itemIds)}) 
+                        AND orderId IS NOT NULL 
+                        AND itemStatus = 'Sold';";
 
+                    using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
         }
 
         // to deduct product qty & update item status to ordered

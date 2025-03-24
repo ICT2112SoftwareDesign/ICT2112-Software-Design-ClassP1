@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails
     {
         private readonly ItemMapper _itemMapper;
 
@@ -80,11 +80,11 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // METHOD FOR HANDLING REFUNDED ITEMS 
-        // public async Task ReturnItemToInventory(List<int> itemId, string refundReason) {
-        //     itemId = [4,5,6];
-        //     refundReason = "Defect";
-        //     return await _itemMapper.returnItemToInventory(itemId, refundReason);
-        // }
+        public void returnItemToInventory(List<int> itemId, string refundReason) {
+            itemId = [4,5,6];
+            refundReason = "Defect";
+            _itemMapper.returnItemToInventory(itemId, refundReason);
+        }
 
         // METHOD FOR HANDLING ORDERED ITEMS 
         public async Task<List<Item>> adjustInventory(int orderId, Dictionary<int, int> orderProducts) {
@@ -92,7 +92,6 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         public void processCancelledOrder(int orderId) {
-            Console.WriteLine("PROCESS ITEM CONTROL: " + orderId);
             _itemMapper.processCancelledOrder(orderId);
         }
 
