@@ -5,7 +5,7 @@ using System.Linq;
 public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     // 2 diff constructors
     // these are only init if its to generate a new dashboard
-    private Dictionary<DateTime, int> quantityPerDay = new(); // remainingStockPerday 
+    private Dictionary<DateOnly, int> quantityPerDay = new(); // remainingStockPerday 
     private int totalQuantity; 
 
     // these will be retrieved from the database 
@@ -18,7 +18,7 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     public StockTurnOverAnalyticsDetails(int batchCode, int totalQuantity) : base(batchCode, "StockTurnOverAnalyticsDetails"){
         this.totalQuantity = totalQuantity; 
     } 
-    public void setQuantityPerDay(Dictionary<DateTime, int> quantityPerDay){
+    public void setQuantityPerDay(Dictionary<DateOnly, int> quantityPerDay){
         this.quantityPerDay = quantityPerDay; 
     }   
     
@@ -35,8 +35,8 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
         if (!quantityPerDay.Any()) return 0; 
 
         // get the first and last date 
-        DateTime firstDate = quantityPerDay.Keys.Min(); 
-        DateTime lastDate = quantityPerDay.Keys.Max(); 
+        DateOnly firstDate = quantityPerDay.Keys.Min(); 
+        DateOnly lastDate = quantityPerDay.Keys.Max(); 
         
         int earliestQuantity = quantityPerDay[firstDate]; 
         int latestQuantity = quantityPerDay[lastDate]; 
@@ -48,7 +48,7 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     public float calculateDeadStockPercentage(){
         // if no quantityPerDay, return 100 
         if (!quantityPerDay.Any()) return 100; 
-        DateTime latestDate = quantityPerDay.Keys.Max(); 
+        DateOnly latestDate = quantityPerDay.Keys.Max(); 
         int latestQuantity = quantityPerDay[latestDate];
         return totalQuantity == 0 ? 0 : ((float)latestQuantity / totalQuantity) * 100; 
 

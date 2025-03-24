@@ -7,10 +7,10 @@ public class RawBatchData
     public DateTime ReceiveDate { get; set; }
     public DateTime ManufactureDate { get; set; }
     public int Quantity { get; set; }
-    public float SalesPrice { get; set; }
+    public double SalesPrice { get; set; }
 
     // Constructor for easy instantiation
-    public RawBatchData(int batchCode, int productId, DateTime expiryDate, DateTime receiveDate, DateTime manufactureDate, int quantity, float salesPrice)
+    public RawBatchData(int batchCode, int productId, DateTime expiryDate, DateTime receiveDate, DateTime manufactureDate, int quantity, double salesPrice)
     {
         BatchCode = batchCode;
         ProductId = productId;

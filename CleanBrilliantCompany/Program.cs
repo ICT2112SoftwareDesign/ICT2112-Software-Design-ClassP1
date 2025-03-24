@@ -15,19 +15,32 @@ var connectionString = Env.GetString("CONNECTION_STRING");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString)); 
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 
 
 // register fake context as a singleton 
-builder.Services.AddSingleton<FakeDbContext>(); 
+// builder.Services.AddSingleton<FakeDbContext>(); 
 
 
 // register aging mapper to use fakedb context 
 //builder.Services.AddScoped<AgingMapper>(); 
 
 builder.Services.AddScoped<AgingRepo, AgingMapper>();
+
+
+
+
+// simulated version  (for product batches and stockhistory)
+builder.Services.AddDbContext<SimulatedDbContext>(options =>
+    options.UseSqlServer(connectionString)); 
+
+//register the fakebatch interface 
+builder.Services.AddScoped<FakeBatchInterface>(); 
+//register the fakeproduct interface     
+builder.Services.AddScoped<FakeProductInterface>(); 
 
 
 var app = builder.Build();

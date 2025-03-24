@@ -3,19 +3,32 @@ public class AgingControl
     private List<AgingDashboardRdm> dashboards; 
     //private AgingMapper agingMapper; 
     private AgingRepo agingMapper;
-    public AgingControl(AgingRepo agingMapper) {
-        this.agingMapper = agingMapper;
-        dashboards = new List<AgingDashboardRdm>();
 
-        // 🔹 Retrieve data from the database / fake DB
-        LoadDashboards();
-    }
+
+    //private fakebatchinterface 
+    private FakeBatchInterface fakeBatchInterface; 
+
+    // private fakeProductInterface 
+    private FakeProductInterface fakeProductInterface; 
+    public AgingControl(
+        AgingRepo agingMapper, 
+        FakeBatchInterface fakeBatchInterface,
+        FakeProductInterface fakeProductInterface 
+        ) 
+        {
+            this.agingMapper = agingMapper;
+            dashboards = new List<AgingDashboardRdm>();
+            this.fakeBatchInterface = fakeBatchInterface; 
+            this.fakeProductInterface = fakeProductInterface;
+            // 🔹 Retrieve data from the database / fake DB
+            LoadDashboards();
+        }
 
     // 🔹 Load dashboards from the database (or fake DB)
     private void LoadDashboards()
     {
         // step 0: init the fake interface 
-        var fakeInterface = new FakeProductInterface(); 
+        //var fakeInterface = new FakeProductInterface(); 
 
         // Step 1: Retrieve the latest dashboard DTO
         var dashboardDto = agingMapper.GetLatestAgingDashboard();
@@ -54,7 +67,7 @@ public class AgingControl
             var productID = product.Key; 
             var analyticsList = product.Value; 
             // get the product details 
-            RawProductData? productData = fakeInterface.getProductDetails(productID); 
+            RawProductData? productData = fakeProductInterface.getProductDetails(productID); 
             if (productData == null) {
                 Console.WriteLine("⚠ Product not found.");
                 continue; 
@@ -147,15 +160,15 @@ public class AgingControl
             type: 1
         );
 
-        var fakeInterface = new FakeBatchInterface(); 
-        var batches = fakeInterface.getAllProductBatch(); 
+        //var fakeInterface = new FakeBatchInterface(); 
+        var batches = fakeBatchInterface.getAllProductBatch(); 
         // Console.WriteLine("Amount of batches: " + batches.Count); 
         // Console.WriteLine("batch productid : " + batches[0].ProductId); 
         // Retrieve all stock histories for all batches
         var stockHistories = new List<RawStockHistoryData>(); 
         foreach (var batch in batches)
         {
-            var stockHistory = fakeInterface.getStockHistoryByBatch(batch.BatchCode);
+            var stockHistory = fakeBatchInterface.getStockHistoryByBatch(batch.BatchCode);
             stockHistories.AddRange(stockHistory);  // Efficiently add all records at once
         }
 
@@ -181,15 +194,15 @@ public class AgingControl
             type: 1
         );
 
-        var fakeInterface = new FakeBatchInterface(); 
-        var batches = fakeInterface.getAllProductBatch(); 
+        //var fakeInterface = new FakeBatchInterface(); 
+        var batches = fakeBatchInterface.getAllProductBatch(); 
         // Console.WriteLine("Amount of batches: " + batches.Count); 
         // Console.WriteLine("batch productid : " + batches[0].ProductId); 
         // Retrieve all stock histories for all batches
         var stockHistories = new List<RawStockHistoryData>(); 
         foreach (var batch in batches)
         {
-            var stockHistory = fakeInterface.getStockHistoryByBatch(batch.BatchCode);
+            var stockHistory = fakeBatchInterface.getStockHistoryByBatch(batch.BatchCode);
             stockHistories.AddRange(stockHistory);  // Efficiently add all records at once
         }
 

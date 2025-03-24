@@ -57,7 +57,7 @@ public class AgingDashboardRdm : Dashboard
         // i have 2 types of agingAnalytics
 
         // convert stockHistory to a dictionary first 
-        Dictionary<int, Dictionary<DateTime, int>> stockHistoryMap = rawStockHistoryData
+        Dictionary<int, Dictionary<DateOnly, int>> stockHistoryMap = rawStockHistoryData
         .GroupBy(x => x.BatchCode)  
         .ToDictionary(
             //batchCode as the dictionary key
