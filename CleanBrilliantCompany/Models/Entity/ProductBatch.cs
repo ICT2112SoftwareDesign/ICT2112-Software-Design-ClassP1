@@ -19,13 +19,15 @@ namespace CleanBrilliantCompany.Models.Entity
     //   ,[manufactureDate]
     //   ,[quantity]
     //   ,[batchCost] ONLY DIFF
-        public int BatchCode { get; set; }
-        public int ProductId { get; set; }
-        public DateTime ExpiryDate { get; set; }
-        public DateTime ReceiveDate { get; set; }
-        public DateTime ManufactureDate { get; set; }
-        public int Quantity { get; set; }
-        public int BatchCost { get; set; }
+
+
+        private int BatchCode;
+        private int ProductId;
+        private DateTime ExpiryDate; // Change to date
+        private DateTime ReceiveDate; // Change to date
+        private DateTime ManufactureDate; // Change to date for me
+        private int Quantity;
+        private int BatchCost; // Change name to SalesPrice
         
         public ProductBatch(int batchCode, int productId, DateTime expiryDate, DateTime receiveDate, DateTime manufactureDate, 
         int quantity, int batchCost)
@@ -38,6 +40,39 @@ namespace CleanBrilliantCompany.Models.Entity
             Quantity = quantity;
             BatchCost = batchCost;
         }
+
+        public Dictionary<string, object> retrieveProductBatchInfo()
+        {
+            return new Dictionary<string, object>
+            {
+                { "BatchCode", BatchCode },
+                { "ProductId", ProductId },
+                { "ExpiryDate", ExpiryDate },
+                { "ReceiveDate", ReceiveDate },
+                { "ManufactureDate", ManufactureDate },
+                { "Quantity", Quantity },
+                { "BatchCost", BatchCost },
+            };
+        }
+
+        // Getters
+        private int GetBatchCode() => BatchCode;
+        private int GetProductId() => ProductId;
+        private DateTime GetExpiryDate() => ExpiryDate;
+        private DateTime GetReceiveDate() => ReceiveDate;
+        private DateTime GetManufactureDate() => ManufactureDate;
+        private int GetQuantity() => Quantity;
+        private int GetBatchCost() => BatchCost;
+
+        // Setters
+        private void SetBatchCode(int value) => BatchCode = value;
+        private void SetProductId(int value) => ProductId = value;
+        private void SetExpiryDate(DateTime value) => ExpiryDate = value;
+        private void SetReceiveDate(DateTime value) => ReceiveDate = value;
+        private void SetManufactureDate(DateTime value) => ManufactureDate = value;
+        private void SetQuantity(int value) => Quantity = value;
+        private void SetBatchCost(int value) => BatchCost = value;
+
 
         public ProductBatch() { }
     }

@@ -90,77 +90,127 @@ namespace CleanBrilliantCompany.Controllers
         // Product Batch
         public async Task<IActionResult> displayProductBatch()
         {
-            var productBatches = _productControl.getAllProductBatch();
 
-            return View("~/Views/Product/ProductBatch.cshtml", productBatches);
+            List<Dictionary<string, object>> batchInfo = new List<Dictionary<string, object>>();
+            List<ProductBatch> productBatches = _productControl.getAllProductBatch();
+
+            foreach (var productBatch in productBatches)
+            {
+                batchInfo.Add(productBatch.retrieveProductBatchInfo());
+            }
+            // var productBatches = _productControl.getAllProductBatch();
+
+            return View("~/Views/Product/ProductBatch.cshtml", batchInfo);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> ProductBatch()
-        {
-            var batches = _productControl.getAllProductBatch();
-            return View("~/Views/Product/ProductBatch.cshtml", batches);
-        }
-
 
         [HttpPost]
         public async Task<IActionResult> FetchBatch(int batchCode)
         {
-            var batch = _productControl.getBatchDetails(batchCode);
+            List<Dictionary<string, object>> batchInfo = new List<Dictionary<string, object>>();
+            ProductBatch batch = _productControl.getBatchDetails(batchCode);
 
-            // Ensure we pass a List<ProductBatch> even for a single result
-            List<ProductBatch> batchList = batch != null ? new List<ProductBatch> { batch } : new List<ProductBatch>();
-            return View("~/Views/Product/ProductBatch.cshtml", batchList);
+            if (batch != null)
+            {
+                batchInfo.Add(batch.retrieveProductBatchInfo());
+            }
+            return View("~/Views/Product/ProductBatch.cshtml", batchInfo);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProductBatch(ProductBatch productBatch)
+        public async Task<IActionResult> CreateProductBatch(int productId, DateTime expiryDate, 
+            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid product data.");
-            }
-
-            _productControl.createProductBatch(productBatch.ProductId, productBatch.ExpiryDate, 
-                    productBatch.ReceiveDate, productBatch.ManufactureDate, productBatch.Quantity, productBatch.BatchCost);
+            _productControl.createProductBatch(productId, expiryDate, 
+                    receiveDate, manufactureDate, quantity, batchCost);
 
             return RedirectToAction("displayProductBatch");
         }
 
         [HttpPost]
+        // WIP
         public async Task<IActionResult> FetchBatchStockHistoryByCode(int batchCode)
         {
-            var stockHistory = _productControl.getStockHistoryByBatch(batchCode);
+            Dictionary<string, List<StockHistory>> stockHistoryDictionary = _productControl.getStockHistoryByBatch(batchCode);
 
-            return View("~/Views/Product/StockHistoryBatch.cshtml", stockHistory);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> FetchBatchStockHistoryByDate(DateOnly stockTakeDate)
-        {
-            var stockHistory = _productControl.getStockHistoryByDate(stockTakeDate);
-
-            // SHow the query for the time being
-            foreach (var kvp in stockHistory)
+            // Debug Line
+            foreach (var kvp in stockHistoryDictionary)
             {
-                int batchCode = kvp.Key;
+                string key = kvp.Key;
                 List<StockHistory> records = kvp.Value;
 
-                Console.WriteLine($"Batch Code: {batchCode}");
+                Console.WriteLine($"Group Key: {key}");
                 Console.WriteLine("-----------------------------");
 
                 foreach (var stock in records)
                 {
-                    Console.WriteLine($"Stock ID: {stock.StockId}");
-                    Console.WriteLine($"Stock Take Date: {stock.StockTakeDate}");
-                    Console.WriteLine($"Quantity: {stock.Quantity}");
-                    Console.WriteLine($"Recorded Date: {stock.RecordedDate}");
+                    var stockData = stock.retrieveStockHistory();
+
+                    Console.WriteLine($"Stock ID: {stockData["StockId"]}");
+                    Console.WriteLine($"Batch Code: {stockData["BatchCode"]}");
+                    Console.WriteLine($"Stock Take Date: {stockData["StockTakeDate"]}");
+                    Console.WriteLine($"Quantity: {stockData["Quantity"]}");
+                    Console.WriteLine($"Recorded Date: {stockData["RecordedDate"]}");
+                    Console.WriteLine();
+                }
+            }
+            return RedirectToAction("displayProductBatch");
+        }
+
+        // Stock History
+        [HttpPost]
+        public async Task<IActionResult> FetchBatchStockHistoryByDate(DateOnly stockTakeDate)
+        {
+            Dictionary<int, List<StockHistory>> stockHistoryDictionary = _productControl.getStockHistoryByDate(stockTakeDate);
+
+            // Debug Line
+            foreach (var kvp in stockHistoryDictionary)
+            {
+                int key = kvp.Key;
+                List<StockHistory> records = kvp.Value;
+
+                Console.WriteLine($"Group Key: {key}");
+                Console.WriteLine("-----------------------------");
+
+                foreach (var stock in records)
+                {
+                    var stockData = stock.retrieveStockHistory();
+
+                    Console.WriteLine($"Stock ID: {stockData["StockId"]}");
+                    Console.WriteLine($"Batch Code: {stockData["BatchCode"]}");
+                    Console.WriteLine($"Stock Take Date: {stockData["StockTakeDate"]}");
+                    Console.WriteLine($"Quantity: {stockData["Quantity"]}");
+                    Console.WriteLine($"Recorded Date: {stockData["RecordedDate"]}");
                     Console.WriteLine();
                 }
             }
 
-            //Just for now, need to fix views
             return RedirectToAction("displayProducts");
-        }        
+        }
+
+        // ProductManufecturer
+        [HttpPost]
+        public async Task<IActionResult> FetchProductManufecturer(int manufacturerId)
+        {
+            Dictionary<string, object> productManufacturerInfo = _productControl.getManufacturerDetails(manufacturerId)
+            .retrieveProductManufacturerInfo();
+
+            // Debug Line
+            if (productManufacturerInfo != null)
+            {
+                int manufacturerId1 = (int)productManufacturerInfo["ManufacturerId"];
+                string companyName = productManufacturerInfo["CompanyName"].ToString();
+                string address = productManufacturerInfo["ManufacturerAddress"].ToString();
+                string email = productManufacturerInfo["Email"].ToString();
+
+                Console.WriteLine($"ID: {manufacturerId1}");
+                Console.WriteLine($"Company: {companyName}");
+                Console.WriteLine($"Address: {address}");
+                Console.WriteLine($"Email: {email}");
+            }
+            
+            return RedirectToAction("displayProducts");
+        }
+
+        
     }
 }

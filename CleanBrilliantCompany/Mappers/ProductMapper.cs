@@ -299,16 +299,18 @@ namespace CleanBrilliantCompany.Mappers
                             {
                                 while (reader.Read())
                                 {
-                                    batches.Add(new ProductBatch
-                                    {
-                                        BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                        ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                        ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")), 
-                                        ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")), 
-                                        ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")), 
-                                        Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                        BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost")) 
-                                    });
+                                    ProductBatch batch = new ProductBatch(
+                                        reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                        reader.GetInt32(reader.GetOrdinal("productId")),
+                                        reader.GetDateTime(reader.GetOrdinal("expiryDate")), 
+                                        reader.GetDateTime(reader.GetOrdinal("receiveDate")), 
+                                        reader.GetDateTime(reader.GetOrdinal("manufactureDate")), 
+                                        reader.GetInt32(reader.GetOrdinal("quantity")),
+                                        (int)reader.GetDouble(reader.GetOrdinal("batchCost")) 
+                                    );
+
+                                    // Add the product to the list
+                                    batches.Add(batch);
                                 }
                             }
                         }
@@ -345,15 +347,15 @@ namespace CleanBrilliantCompany.Mappers
                             if (reader.Read())
                             {
                                 return new ProductBatch
-                                {
-                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                    ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")),
-                                    ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")),
-                                    ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
-                                };
+                                (
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetDateTime(reader.GetOrdinal("expiryDate")),
+                                    reader.GetDateTime(reader.GetOrdinal("receiveDate")),
+                                    reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                                );
                             }
                         }
                     }
@@ -421,14 +423,16 @@ namespace CleanBrilliantCompany.Mappers
                             {
                                 DateTime stockTakeDateTime = reader.GetDateTime(reader.GetOrdinal("stockTakeDate"));
                                 DateOnly stockTakeDate = DateOnly.FromDateTime(stockTakeDateTime);
-                                stockHistoryList.Add(new StockHistory
-                                {
-                                    StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
-                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    StockTakeDate = stockTakeDate,
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    RecordedDate = reader.GetDateTime(reader.GetOrdinal("recordedDate"))
-                                });
+                                StockHistory stockHistory = new StockHistory
+                                (
+                                    reader.GetInt32(reader.GetOrdinal("stockId")),
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    stockTakeDate,
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    reader.GetDateTime(reader.GetOrdinal("recordedDate"))
+                                );
+
+                                stockHistoryList.Add(stockHistory);
                             }
                         }
                     }
@@ -439,48 +443,86 @@ namespace CleanBrilliantCompany.Mappers
             return stockHistoryList;
         }
 
-        public List<StockHistory> findStockHistoryByBatchCode(int batchCode)
-        {
-            List<StockHistory> stockHistoryList = new List<StockHistory>();
+        // public List<StockHistory> findStockHistoryByBatchCode(int batchCode)
+        // {
+        //     List<StockHistory> stockHistoryList = new List<StockHistory>();
 
+        //     using (SqlConnection connection = new SqlConnection(_connectionString))
+        //     {
+        //         connection.Open();
+
+        //         string query = @"
+        //             SELECT stockId, batchCode, stockTakeDate, quantity, recordedDate
+        //             FROM dbo.StockHistory
+        //             WHERE batchCode = @BatchCode
+        //             ORDER BY stockTakeDate DESC";  // Orders by most recent stock check
+
+        //         using (SqlCommand command = new SqlCommand(query, connection))
+        //         {
+        //             command.Parameters.AddWithValue("@BatchCode", batchCode);
+        //             using (SqlDataReader reader = command.ExecuteReader())
+        //             {
+        //                 if (getDatabaseQueryStatus(reader))
+        //                 {
+        //                     while (reader.Read())
+        //                     {
+        //                         // Convert DateTime to Date
+        //                         DateTime stockTakeDateTime = reader.GetDateTime(reader.GetOrdinal("stockTakeDate"));
+        //                         DateOnly stockTakeDate = DateOnly.FromDateTime(stockTakeDateTime);
+        //                         stockHistoryList.Add(new StockHistory
+        //                         {
+        //                             StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
+        //                             BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
+        //                             // StockTakeDate = reader.GetDateTime(reader.GetOrdinal("stockTakeDate")),
+        //                             StockTakeDate = stockTakeDate,
+        //                             Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
+        //                             RecordedDate = reader.GetDateTime(reader.GetOrdinal("recordedDate"))
+        //                             // RecordedDate = recordedDate
+        //                         });
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     return stockHistoryList;
+        // }
+
+        // ProductManufacturer
+        public ProductManufacturer getProductManufacturerById(int manufacturerId)
+        {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
                 string query = @"
-                    SELECT stockId, batchCode, stockTakeDate, quantity, recordedDate
-                    FROM dbo.StockHistory
-                    WHERE batchCode = @BatchCode
-                    ORDER BY stockTakeDate DESC";  // Orders by most recent stock check
+                    SELECT ManufacturerId, CompanyName, ManufacturerAddress, Email
+                    FROM dbo.ProductManufacturer
+                    WHERE ManufacturerId = @ManufacturerId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@BatchCode", batchCode);
+                    command.Parameters.AddWithValue("@ManufacturerId", manufacturerId);
+
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        if (getDatabaseQueryStatus(reader))
+                        if (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                // Convert DateTime to Date
-                                DateTime stockTakeDateTime = reader.GetDateTime(reader.GetOrdinal("stockTakeDate"));
-                                DateOnly stockTakeDate = DateOnly.FromDateTime(stockTakeDateTime);
-                                stockHistoryList.Add(new StockHistory
-                                {
-                                    StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
-                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    // StockTakeDate = reader.GetDateTime(reader.GetOrdinal("stockTakeDate")),
-                                    StockTakeDate = stockTakeDate,
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    RecordedDate = reader.GetDateTime(reader.GetOrdinal("recordedDate"))
-                                    // RecordedDate = recordedDate
-                                });
-                            }
+                            ProductManufacturer manufacturer = new ProductManufacturer
+                            (
+                                reader.GetInt32(reader.GetOrdinal("ManufacturerId")),
+                                reader.GetString(reader.GetOrdinal("CompanyName")),
+                                reader.GetString(reader.GetOrdinal("ManufacturerAddress")),
+                                reader.GetString(reader.GetOrdinal("Email"))
+                            );
+
+                            return manufacturer;
                         }
                     }
                 }
             }
-            return stockHistoryList;
+            // Return null if not found
+            return null;
         }
+
     }
 }

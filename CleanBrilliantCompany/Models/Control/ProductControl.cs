@@ -63,17 +63,30 @@ namespace CleanBrilliantCompany.Models.Control
             _productMapper.insert(productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost);
         }
 
+        // public List<Dictionary<string, object>> getStockHistoryByBatch(int batchCode)
+        // {
+        //     List<StockHistory> stockHistories = _productMapper.findAllStockHistory();
+        //     List<Dictionary<string, object>> stockHistoryInfo = new List<Dictionary<string, object>>();
+
+        //     foreach (var stockHistory in stockHistories)
+        //     {
+        //         if (stockHistory.GetBatchCode() == batchCode)
+        //         {
+        //             stockHistoryInfo.Add(stockHistory.retrieveStockHistory());
+        //         }
+        //     }
+        //     return stockHistoryInfo;
+        // }
+
         public Dictionary<string, List<StockHistory>> getStockHistoryByBatch(int batchCode)
         {
-            var stockHistories = _productMapper.findAllStockHistory();
-
+            List<StockHistory> stockHistories = _productMapper.findAllStockHistory();
             var stockHistoryDictionary = new Dictionary<string, List<StockHistory>>();
-
             foreach (var stockHistory in stockHistories)
             {
-                if (stockHistory.BatchCode == batchCode)
+                if (stockHistory.GetBatchCode() == batchCode)
                 {
-                    string stockTakeDateKey = stockHistory.StockTakeDate.ToString("yyyy-MM-dd");
+                    string stockTakeDateKey = stockHistory.GetStockTakeDate().ToString("yyyy-MM-dd");
                     if (!stockHistoryDictionary.ContainsKey(stockTakeDateKey))
                     {
                         stockHistoryDictionary[stockTakeDateKey] = new List<StockHistory>();
@@ -81,19 +94,28 @@ namespace CleanBrilliantCompany.Models.Control
                     stockHistoryDictionary[stockTakeDateKey].Add(stockHistory);
                 }
             }
+            // List<Dictionary<string, object>> stockHistoryInfo = new List<Dictionary<string, object>>();
+
+            // foreach (var stockHistory in stockHistories)
+            // {
+            //     if (stockHistory.GetBatchCode() == batchCode)
+            //     {
+            //         stockHistoryInfo.Add(stockHistory.retrieveStockHistory());
+            //     }
+            // }
             return stockHistoryDictionary;
         }
 
         public Dictionary<int, List<StockHistory>> getStockHistoryByDate(DateOnly stockTakeDate) 
         {
-            var stockHistories = _productMapper.findAllStockHistory();
-
             var stockHistoryDictionary = new Dictionary<int, List<StockHistory>>();
+            List<StockHistory> stockHistories = _productMapper.findAllStockHistory();
+
             foreach (var stockHistory in stockHistories)
             {
-                if (stockHistory.StockTakeDate == stockTakeDate)
+                if (stockHistory.GetStockTakeDate() == stockTakeDate)
                 {
-                    int stockBatchCodeKey = stockHistory.BatchCode;
+                    int stockBatchCodeKey = stockHistory.GetBatchCode();
                     if (!stockHistoryDictionary.ContainsKey(stockBatchCodeKey))
                     {
                         stockHistoryDictionary[stockBatchCodeKey] = new List<StockHistory>();
@@ -102,6 +124,13 @@ namespace CleanBrilliantCompany.Models.Control
                 }
             }
             return stockHistoryDictionary;
+        }
+
+        // ProductManufacturer
+        public ProductManufacturer getManufacturerDetails(int manufacturerId)
+        {
+            ProductManufacturer productManufacturer = _productMapper.getProductManufacturerById(manufacturerId);
+            return productManufacturer;
         }
     }
 }

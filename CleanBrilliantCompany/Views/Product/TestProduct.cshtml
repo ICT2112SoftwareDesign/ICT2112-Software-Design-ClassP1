@@ -9,12 +9,20 @@
 
 <p>This page is used to test the ProductControl class.</p>
 
-<!-- Form to Enter Product ID -->
+<!-- Test Product Fectch -->
 <form method="post" asp-action="FetchProduct">
     <h3>Fetch Product</h3>
     <label>Enter Product ID:</label>
     <input type="number" name="productId" required />
     <button type="submit">Fetch Product</button>
+</form>
+
+<!-- Test ProductManufecturer Fetch -->
+<form method="post" asp-action="FetchProductManufecturer">
+    <h3>Fetch Manufacturer</h3>
+    <label>Enter Manufacturer ID:</label>
+    <input type="number" name="manufacturerId" required />
+    <button type="submit">Fetch Manufacturer</button>
 </form>
 
 <!-- Button to trigger Create Product modal -->
@@ -96,7 +104,7 @@
 </div>
 
 <!-- Go to Product Batch Listings Link -->
-<a asp-controller="Product" asp-action="ProductBatch" class="btn btn-primary">Go to Product Batch Listings</a>
+<a asp-controller="Product" asp-action="displayProductBatch" class="btn btn-primary">Go to Product Batch Listings</a>
 
 <!-- Search input for filtering the product list -->
 <h3>Search Products</h3>
@@ -127,10 +135,10 @@
         <tbody>
             @foreach (var productInfo in Model)
             {
-                <tr>
+                <tr class="product-item">
                     <td>@productInfo["ProductId"]</td>
-                    <td>@productInfo["ProductName"]</td>
-                    <td>@productInfo["ProductCategory"]</td>
+                    <td class="product-name">@productInfo["ProductName"]</td>
+                    <td class="product-category">@productInfo["ProductCategory"]</td>
                     <td>@productInfo["ProductCost"]</td>
                     <td>@productInfo["ManufacturerId"]</td>
                     <td>@productInfo["ProductWeight"]</td>
