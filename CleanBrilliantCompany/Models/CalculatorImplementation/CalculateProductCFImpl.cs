@@ -5,8 +5,8 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
 {
     public class CalculateProductCFImpl : IProductCFCalculator
     {
-        private readonly IProduct _IProduct;
-        private readonly IProductCFManagement _productCFManagement;
+        private readonly IProduct _IProduct; // for retrieving product from Mod 2's product table
+        private readonly IProductCFManagement _productCFManagement; // for inserting new product CF into our product records table
 
         public CalculateProductCFImpl(IProduct iProduct, IProductCFManagement productCFManagement)
         {
@@ -16,7 +16,7 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
 
         public float CalculateCarbonFootprint(float vol, float tox, int productId)
         {
-            ProductDBStub stub = new ProductDBStub(_IProduct);
+            ProductDBStub stub = new ProductDBStub();
             Product product = stub.GetProductDetails(productId);
 
             float carbonEmission = vol * tox;

@@ -5,13 +5,10 @@ namespace CleanBrilliantCompany.Data
 {
     public class ProductDBStub : IProduct
     {
-        private readonly IProduct _IProduct;
         private List<Product> productsDB;
 
-        public ProductDBStub(IProduct iproduct)
+        public ProductDBStub()
         {
-            _IProduct = iproduct;
-
             productsDB =
             [
                 new() { ProductId = 1, ProductName = "Disinfectant Spray", ProductCategory = "Spray", ProductCost = 5.99f, ManufacturerId = 201, ProductWeight = 0.5f, Quantity = 50, Volume = 100, ToxicityPercentage = 0.25f, CarbonFootprint = 25, ProductState = "Out of Stock" },
