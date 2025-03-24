@@ -1,14 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace CleanBrilliantCompany.Models.Forecast
 {
+    [JsonPolymorphic(TypeDiscriminatorPropertyName = "$discriminator")]
+    [JsonDerivedType(typeof(PriceScenarioForecast), "priceScenario")]
+    [JsonDerivedType(typeof(StockForecast), "stockForecast")]
     public abstract class ForecastMetrics
     {
         // Properties
+        [JsonInclude]
         private int metricId { get; set; }
+        [JsonInclude]
         private int productId { get; set; }
+        [JsonInclude]
         private int forecastedStock { get; set; }
+        [JsonInclude]
         private String productName {  get; set; }
         public int getMetricId()
         {

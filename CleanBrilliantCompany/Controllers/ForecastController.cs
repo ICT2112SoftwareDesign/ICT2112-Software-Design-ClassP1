@@ -7,6 +7,7 @@ using CleanBrilliantCompany.Models.Forecast;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -36,16 +37,16 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet("fetchDashboardData")]
         public IActionResult FetchDashboardData()
         {
-            // Retrieve the dashboard from cache; if not present, get it from ForecastControl
-            if (!_cache.TryGetValue(DashboardCacheKey, out ForecastDashboard dashboard))
-            {
-                 dashboard = _forecastFacade.generateDashboard(
-                                 DateTime.Now.AddMonths(1), 0
-                            ); _cache.Set(DashboardCacheKey, dashboard, new MemoryCacheEntryOptions
-                {
-                    SlidingExpiration = TimeSpan.FromMinutes(30)
-                });
-            }
+            // 1) Possibly retrieve from DB or from your facade
+            var dashboard = _forecastFacade.generateDashboard(DateTime.Now.AddMonths(1), 0);
+
+            // 2) Serialize
+            string serialized = JsonSerializer.Serialize(dashboard);
+
+            // 3) Store in Session
+            HttpContext.Session.SetString("ForecastDashboard", serialized);
+
+            // 4) Return view
             return View("FetchDashboardData", dashboard);
         }
 
@@ -64,11 +65,11 @@ namespace CleanBrilliantCompany.Controllers
                  forecastMonth, priceAdjustment
             );
 
-            // Store the generated dashboard in the memory cache
-            _cache.Set(DashboardCacheKey, dashboard, new MemoryCacheEntryOptions
-            {
-                SlidingExpiration = TimeSpan.FromMinutes(30)
-            });
+            // 2) Serialize
+            string serialized = JsonSerializer.Serialize(dashboard);
+
+            // 3) Store in Session
+            HttpContext.Session.SetString("ForecastDashboard", serialized);
 
             return View("FetchDashboardData", dashboard);
         }
@@ -82,12 +83,17 @@ namespace CleanBrilliantCompany.Controllers
                 return BadRequest("Invalid product ID or name.");
             }
 
-            // Retrieve the dashboard from the cache
-            if (!_cache.TryGetValue(DashboardCacheKey, out ForecastDashboard dashboard))
+            // 1) Pull from session
+            string serialized = HttpContext.Session.GetString("ForecastDashboard");
+            if (string.IsNullOrEmpty(serialized))
             {
-                return BadRequest("Dashboard not found in cache.");
+                return BadRequest("No dashboard found in session.");
             }
-            if(sortType== "value")
+
+            // 2) Deserialize
+            ForecastDashboard dashboard = JsonSerializer.Deserialize<ForecastDashboard>(serialized);
+
+            if (sortType== "value")
             {
                 ViewBag.CurrentSortType = "";
                 ViewBag.CurrentSortOrder = "ascending";
@@ -100,11 +106,9 @@ namespace CleanBrilliantCompany.Controllers
             // Update the dashboard using ForecastControl logic
             ForecastDashboard updatedDashboard = _forecastFacade.updateMetric(productId, dashboard, priceAdjustment);
 
-            // Save the updated dashboard back into the cache
-            _cache.Set(DashboardCacheKey, updatedDashboard, new MemoryCacheEntryOptions
-            {
-                SlidingExpiration = TimeSpan.FromMinutes(30)
-            });
+            // 4) Re-serialize & store updated version
+            string updatedSerialized = JsonSerializer.Serialize(updatedDashboard);
+            HttpContext.Session.SetString("ForecastDashboard", updatedSerialized);
 
             return PartialView("_MetricsPartial", updatedDashboard);
         }
@@ -112,21 +116,19 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost("sortMetrics")]
         public IActionResult SortMetrics(string sortType, string sortOrder)
         {
-            // Retrieve the dashboard from cache
-            if (!_cache.TryGetValue(DashboardCacheKey, out ForecastDashboard dashboard))
+            string serialized = HttpContext.Session.GetString("ForecastDashboard");
+            if (string.IsNullOrEmpty(serialized))
             {
-                return BadRequest("Dashboard not found in cache.");
+                return BadRequest("No dashboard found in session.");
             }
+            ForecastDashboard dashboard = JsonSerializer.Deserialize<ForecastDashboard>(serialized);
 
             // Sort the metrics based on the user's requested sortType and sortOrder
             var sortedMetrics = ForecastMetricSorter.Sort(dashboard.GetMetrics(), sortType, sortOrder);
             dashboard.SetMetrics(sortedMetrics);
 
-            // Update the cache (optional)
-            _cache.Set(DashboardCacheKey, dashboard, new MemoryCacheEntryOptions
-            {
-                SlidingExpiration = TimeSpan.FromMinutes(30)
-            });
+            string updatedSerialized = JsonSerializer.Serialize(dashboard);
+            HttpContext.Session.SetString("ForecastDashboard", updatedSerialized);
 
             // IMPORTANT: Pass the ACTUAL current state to the partial via ViewBag
             ViewBag.CurrentSortType = sortType;

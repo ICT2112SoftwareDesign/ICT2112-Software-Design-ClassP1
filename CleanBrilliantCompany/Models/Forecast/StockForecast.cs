@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace CleanBrilliantCompany.Models.Forecast
 {
@@ -13,10 +14,12 @@ namespace CleanBrilliantCompany.Models.Forecast
             this.setForecastedStock(stockRequired);
 
         }
-        public StockForecast(int productId, int stockRequired, string productName)
+        [JsonConstructor]
+
+        public StockForecast(int productId, int forecastedStock, string productName)
         {
             this.setProductId(productId);
-            this.setForecastedStock(stockRequired);
+            this.setForecastedStock(forecastedStock);
             this.setProductName (productName);
 
         }
@@ -24,6 +27,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         {
             return this;
         }
+
 
        
     }

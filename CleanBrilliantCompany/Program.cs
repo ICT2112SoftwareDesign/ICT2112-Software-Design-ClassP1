@@ -8,6 +8,7 @@ using CleanBrilliantCompany.Services.Notification;
 using DotNetEnv;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);// Load .env file
 Env.Load();
@@ -48,6 +49,8 @@ builder.Services.AddScoped<IForecastDataAdapter, ForecastDataAdapter>();
 builder.Services.AddScoped<ISales>(); //TODO to be modified with actual ISale
 builder.Services.AddScoped<IProduct>(); //TODO to be modified with actual ISale
 builder.Services.AddSession();
+
+
 builder.Services.AddMemoryCache();
 
 
