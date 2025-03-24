@@ -4,7 +4,7 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class SupportManagement : IChatbotQuery
+    public class SupportManagement
     {
         private readonly IChatbot _chatBotService;
         private readonly ISupportTicket _supportTicketService;
@@ -17,14 +17,9 @@ namespace CleanBrilliantCompany.Models
             _orderService = orderService;
         }
 
-        public (string responseText, Dictionary<string, string> parameters) handleCustomerChatbotQuery(String query)
-        {
-            return _chatBotService.submitQuery(query);
-        }
-
         public string handleQuery(Int32 customerID, String query)
         {
-            var (response, parameters) = handleCustomerChatbotQuery(query);
+            var (response, parameters) =  _chatBotService.submitQuery(query);
 
             if (parameters.ContainsKey("orderID"))
             {
