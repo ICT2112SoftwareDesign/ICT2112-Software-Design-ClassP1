@@ -47,16 +47,8 @@ namespace CleanBrilliantCompany.Mappers
                             // Merge the new products with the existing cart
                             foreach (var product in productsInCart)
                             {
-                                if (existingProductsInCart.ContainsKey(product.Key))
-                                {
-                                    existingProductsInCart[product.Key] += product.Value;
-                                }
-                                else
-                                {
-                                    existingProductsInCart[product.Key] = product.Value;
-                                }
+                                existingProductsInCart[product.Key] = product.Value; // Overwrite quantity
                             }
-
                             // Serialize the updated cart to JSON
                             string updatedProductsJson = JsonSerializer.Serialize(existingProductsInCart);
 
