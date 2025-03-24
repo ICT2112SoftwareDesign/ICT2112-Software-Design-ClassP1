@@ -98,7 +98,6 @@ namespace CleanBrilliantCompany.Controllers
             {
                 batchInfo.Add(productBatch.retrieveProductBatchInfo());
             }
-            // var productBatches = _productControl.getAllProductBatch();
 
             return View("~/Views/Product/ProductBatch.cshtml", batchInfo);
         }
