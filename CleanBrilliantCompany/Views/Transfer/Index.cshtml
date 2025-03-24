@@ -1,0 +1,26 @@
+@model List<Dictionary<string, object>>
+
+<h2>Warehouse List</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>No warehouses found.</p>
+}
+else
+{
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+        @foreach (var warehouseInfo in Model)
+        {
+            <tr>
+                <td>@warehouseInfo["WarehouseId"]</td>
+                <td>@warehouseInfo["Address"]</td>
+            </tr>
+        }
+    </table>
+}
+
+
