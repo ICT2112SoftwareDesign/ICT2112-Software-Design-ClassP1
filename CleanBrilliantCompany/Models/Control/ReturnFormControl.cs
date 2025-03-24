@@ -13,13 +13,15 @@ namespace CleanBrilliantCompany.Models.Control
 	{
 		private readonly ReturnFormMapper _mapper;
 		private readonly ItemControl _itemControl;
+        private readonly ProductControl _productControl;
         private readonly IConfiguration _configuration;
 
-        public ReturnFormControl(ReturnFormMapper mapper, IConfiguration configuration, ItemControl itemControl)
+        public ReturnFormControl(ReturnFormMapper mapper, IConfiguration configuration, ItemControl itemControl, ProductControl productControl)
 		{
             _configuration = configuration;
             _mapper = mapper;
             _itemControl = itemControl;
+			_productControl = productControl;
 
         }
 
@@ -46,44 +48,54 @@ namespace CleanBrilliantCompany.Models.Control
 
                 int productId = (int)itemDict["ProductId"];
                 Product product = _itemControl.retrieveProductDetails(productId).Result;
+                Dictionary<string, object> prodDict = product.retrieveProductInfo();
 
-                //Debug.WriteLine(product);
+                int manufId = (int)prodDict["ManufacturerId"];
+                string prodName = (string)prodDict["ProductName"];
 
-                int manufId = product.ManufacturerId;
-                string prodName = product.ProductName;
+				ProductManufacturer prodManuf = _productControl.getManufacturerDetails(manufId);
+                Dictionary<string, object> manufDict = prodManuf.retrieveProductManufacturerInfo();
+
 
                 returnForm.SetProductId(productId);
                 returnForm.SetProductName(prodName);
-                // TODO: set manuf name 
-				// TODO: set manuf email
-
+				returnForm.SetManufacturerName((string)manufDict["CompanyName"]);
+                returnForm.SetManufacturerEmail((string)manufDict["Email"]);
             }
 
             return returnForm;
         }
 
-        //public bool deleteReturnForm(int returnId)
-        //{
-        //	bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(returnId));
+		public bool deleteReturnForm(int itemId)
+		{
+			bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(itemId));
+            _itemControl?.updateItemStatus(itemId, null, null, null, null, ItemStatus.ToReturn);
 
-        //          return deleteResult;
-        //}
+            return deleteResult;
+		}
 
-        public ReturnForm generateReturnForm(int productId, int itemId) {
+		public ReturnForm generateReturnForm(int productId, int itemId) {
 
             Item item = _itemControl.getItemById(itemId).Result;
             Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
             Product product = _itemControl.retrieveProductDetails(productId).Result;
-			Debug.WriteLine(product);
-            int manufId = product.ManufacturerId;
-            string prodName = product.ProductName;
+            Dictionary<string, object> prodDict = product.retrieveProductInfo();
+
+            int manufId = (int)prodDict["ManufacturerId"];
+            string prodName = (string)prodDict["ProductName"];
+
+            ProductManufacturer prodManuf = _productControl.getManufacturerDetails(manufId);
+            Dictionary<string, object> manufDict = prodManuf.retrieveProductManufacturerInfo();
+
+            string manufName = (string)manufDict["CompanyName"];
+            string manufEmail = (string)manufDict["Email"];
 
             ReturnForm model = ReturnForm.createForm(
 				0,
 				manufId,
-				"test@test.com", // need iManufacturer
-				"test",
+                manufEmail,
+                manufName,
 				itemId,
 				productId,
                 prodName,
@@ -98,35 +110,35 @@ namespace CleanBrilliantCompany.Models.Control
 		{
 			Debug.WriteLine($"Finding item for item id: {model.GetItemId()}");
 
-			Item item = await _itemControl.getItemById(model.GetItemId());
+			Item item = await _itemControl.getItemById((int)model.GetItemId());
 			Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
-			// Check whether the Item is in Available Status.
+			// Check whether the Item is in ToReturn Status.
 			var status = (ItemStatus)itemDict["ItemStatus"];
 			Debug.WriteLine($"ItemStatus type: {status.GetType()}");
 
 
 			// ItemId must not be in Return Forms table.
-			ReturnForm? inRFTable = await _mapper.findByItemId(model.GetItemId());
+			ReturnForm? inRFTable = await _mapper.findByItemId((int)model.GetItemId());
 
 			Debug.WriteLine($"Status: {status}");
 
-			if (inRFTable == null && status == ItemStatus.Refunded)
+			if (inRFTable == null && status == ItemStatus.ToReturn)
 			{
 				// Mapper function to insert return form.
 				ReturnForm? form = _mapper.getDatabaseQueryStatus(_mapper.insert(model));
-				await _itemControl.updateItemStatus(model.GetItemId(), null, null, null, form!.GetReturnId(), ItemStatus.Returned);
+				await _itemControl.updateItemStatus((int)model.GetItemId(), null, null, null, form!.GetReturnId(), ItemStatus.Returned);
 
 
                 if (form != null)
 				{
 
-					// Get email from iManufacturer.
-					// var prodManuf = await iManufaccturer.getManufacturerDetails(model.ManufacturerId);
-					// string manufacturerEmail = prodManuf.email
-					// string manufacturerName = prodManuf.name
+                    // Get email from iManufacturer.
+                    ProductManufacturer prodManuf = _productControl.getManufacturerDetails((int)model.GetManufacturerId());
+					string manufacturerEmail = (string)prodManuf.retrieveProductManufacturerInfo()["Email"];
+					string manufacturerName = (string)prodManuf.retrieveProductManufacturerInfo()["CompanyName"];
 
-					try
+                    try
 					{
 
 						string? fromEmail = _configuration.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
@@ -142,10 +154,10 @@ namespace CleanBrilliantCompany.Models.Control
 						smtpClient.Credentials = new NetworkCredential(fromEmail, password);
 
 						// Create the email message. Replace toEmail with manufEmail
-						MailMessage mailMessage = new MailMessage(fromEmail!, fromEmail!)
+						MailMessage mailMessage = new MailMessage(fromEmail!, manufacturerEmail!)
 						{
 							Subject = "Clean Brilliant Company Return Form",
-							Body = $"Return Form sent to: [MANUFACTURER NAME] Clean Brilliant Company (CBC) is requesting a return of [MANUFACTURER NAME]'s item due to the following reason: {model.GetReturnReason()}\nItem Details:\nCBC ItemID: {model.GetItemId()}\nPrice: {itemDict["SalePrice"]}",
+							Body = $"Dear {manufacturerName},\n\nClean Brilliant Company (CBC) is requesting a return of {manufacturerName}'s item due to the following reason: {model.GetReturnReason()}\n\nItem Details:\nCBC ItemID: {model.GetItemId()}\nPrice: ${itemDict["SalePrice"]}",
 							IsBodyHtml = false
 						};
 

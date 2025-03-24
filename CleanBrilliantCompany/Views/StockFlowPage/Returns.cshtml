@@ -8,7 +8,9 @@
 
 <div class="text-center">
 	<h1 class="display-4 p-3">Manage Return Forms</h1>
-	<a asp-controller="ReturnForm" asp-action="ShowAllRefunded" class="btn btn-secondary">Items to be Returned</a>
+	<p>The following return forms are for items that have already had a return form logged with their respective manufacturers.</p>
+	<p>To return items, click on the button below:</p>
+	<a asp-controller="ReturnForm" asp-action="ShowAllToReturn" class="btn btn-secondary">Items to be Returned</a>
 </div>
 
 
@@ -40,9 +42,9 @@
 					</td>
 					<td>@item.GetStaffId()</td>
 
-					<td><a asp-controller="ReturnForm" asp-action="DisplayReturnForm" asp-route-itemId="@item.GetItemId()" class="btn btn-outline-primary">View</a></td>
+					<td><a asp-controller="ReturnForm" asp-action="DisplayReturnForm" asp-route-itemId="@item.GetItemId()" class="btn btn-primary">View</a></td>
 
-					@* <td><a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-returnId="@item.GetReturnId()" class="btn btn-outline-danger delete-btn">Delete</a></td> *@
+					<td><a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-itemId="@item.GetItemId()" class="btn btn-danger delete-btn">Delete</a></td>
 
 				</tr>
 			}
@@ -60,7 +62,7 @@
 	document.querySelectorAll('.delete-btn').forEach(function(button) {
 		button.addEventListener('click', function(event) {
 
-			   const confirmDelete = confirm("Are you sure you want to delete this return form?");
+			   const confirmDelete = confirm("Are you sure you want to delete this return form? Deleting a return form sets the item back to ToReturn status.");
 
 			if (!confirmDelete) {
 				event.preventDefault();

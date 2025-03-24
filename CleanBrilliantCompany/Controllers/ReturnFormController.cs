@@ -36,18 +36,18 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
 
-		//// Handle deleting return forms.
-		//[Route("returns/delete")]
-		//public IActionResult DeleteReturnForm(int returnId)
-		//{
-		//	bool result = _returnFormControl.deleteReturnForm(returnId);
+		// Handle deleting return forms.
+		[Route("returns/delete")]
+		public IActionResult DeleteReturnForm(int itemId)
+		{
+			bool result = _returnFormControl.deleteReturnForm(itemId);
 
-		//	if (result)
-		//	{
-		//		return RedirectToAction("Returns", "StockFlowPage");
-		//	}
-		//	return RedirectToAction("Error", "StockFlowPage", new { errorType = "DeleteError" });
-		//}
+			if (result)
+			{
+				return RedirectToAction("Returns", "StockFlowPage");
+			}
+			return RedirectToAction("Error", "StockFlowPage", new { errorType = "DeleteError" });
+		}
 
 
 		// Handle confirm sending return forms.
@@ -78,8 +78,8 @@ namespace CleanBrilliantCompany.Controllers
 			return View(model);
 		}
 
-        [Route("returns/refunded")]
-        public ActionResult ShowAllRefunded()
+        [Route("returns/toReturn")]
+        public ActionResult ShowAllToReturn()
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
 

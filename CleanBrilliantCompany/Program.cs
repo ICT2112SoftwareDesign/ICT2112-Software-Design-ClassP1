@@ -28,6 +28,7 @@ builder.Services.AddScoped<ReturnFormControl>();
 builder.Services.AddScoped<ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormController>();
 builder.Services.AddScoped<ItemControl>();
+builder.Services.AddScoped<ProductControl>();
 builder.Services.AddScoped<iProduct, ProductControl>();
 
 var app = builder.Build();
@@ -51,6 +52,6 @@ app.MapControllerRoute(
     
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
-    .WithStaticAssets();
+
 
 app.Run();

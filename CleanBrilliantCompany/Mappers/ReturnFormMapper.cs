@@ -28,7 +28,7 @@ namespace CleanBrilliantCompany.Mapper
 						// Define SQL query
 						string query = @"BEGIN TRANSACTION;
 
-							SELECT rf.returnId, rf.manufacturerId, rf.itemId, i.warehouseId, rf.returnReason, rf.staffId 
+							SELECT rf.returnId, rf.manufacturerId, rf.itemId, i.productId, i.warehouseId, rf.returnReason, rf.staffId 
 							FROM [dbo].[ReturnForm] rf 
 							INNER JOIN [dbo].[Item] i ON rf.itemId = i.itemId;
 
@@ -47,12 +47,13 @@ namespace CleanBrilliantCompany.Mapper
 								{
 									int returnId = reader.GetInt32(reader.GetOrdinal("returnId"));
 									int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
-									int itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
+									int? itemId = reader.GetInt32(reader.GetOrdinal("itemId"));
+									int productId = reader.GetInt32(reader.GetOrdinal("productId"));
 									string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
 									int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
 
 									// Map to objects.
-									ReturnForm returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, returnReason, staffId);
+									ReturnForm returnForm = ReturnForm.createForm(returnId: returnId, manufId: manufacturerId, itemId: itemId, productId: productId, returnReason: returnReason, staffId: staffId);
 
 									// Add object to list.
 									allReturnForms.Add(returnForm);
@@ -108,11 +109,12 @@ namespace CleanBrilliantCompany.Mapper
 
 								int returnId = reader.GetInt32(reader.GetOrdinal("returnId"));
 								int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
-								string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
+                                int productId = reader.GetInt32(reader.GetOrdinal("productId"));
+                                string returnReason = reader.GetString(reader.GetOrdinal("returnReason"));
 								int staffId = reader.GetInt32(reader.GetOrdinal("staffId"));
 
 								// Map to objects.
-								returnForm = ReturnForm.createForm(returnId, manufacturerId, itemId, returnReason, staffId);
+								returnForm = ReturnForm.createForm(returnId: returnId, manufId: manufacturerId, itemId: itemId, productId: productId, returnReason: returnReason, staffId: staffId);
 							}
 						}
 					}
@@ -133,7 +135,7 @@ namespace CleanBrilliantCompany.Mapper
 
 
 		// Delete Return Form from database.
-		public async Task<bool> delete(int returnId)
+		public async Task<bool> delete(int itemId)
 		{
 			bool isSuccess = false;
 
@@ -146,11 +148,7 @@ namespace CleanBrilliantCompany.Mapper
 					string query = @"BEGIN TRY 
 										BEGIN TRANSACTION;
 
-										UPDATE [dbo].[Item] 
-										SET itemStatus = 0, returnId = NULL 
-										WHERE returnId = @returnId;
-
-										DELETE FROM [dbo].[ReturnForm] WHERE returnId = @returnId;
+										DELETE FROM [dbo].[ReturnForm] WHERE itemId = @itemId;
 
 										COMMIT TRANSACTION;
 									END TRY 
@@ -163,7 +161,7 @@ namespace CleanBrilliantCompany.Mapper
 
 					SqlCommand command = new SqlCommand(query, connection);
 
-					command.Parameters.AddWithValue("@returnId", returnId);
+					command.Parameters.AddWithValue("@itemId", itemId);
 
 					int rowsAffected = await command.ExecuteNonQueryAsync();
 
