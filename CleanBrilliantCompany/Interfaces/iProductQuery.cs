@@ -20,6 +20,6 @@ namespace CleanBrilliantCompany.Interfaces
             DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost);
 
         // Stock History
-        List<StockHistory> getStockHistoryByBatch(int batchCode);
+        // List<StockHistory> getStockHistoryByBatch(int batchCode);
     }
 }

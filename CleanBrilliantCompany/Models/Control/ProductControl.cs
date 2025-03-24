@@ -41,10 +41,10 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         public void updateProduct(int productId, string productName, string category, float productCost, 
-        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
+        int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
             _productMapper.update(productId, productName, category, productCost, 
-                                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);;
+                                    manufacturerId, productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState);;
         }
 
         public List<ProductBatch> getAllProductBatch()
@@ -63,11 +63,65 @@ namespace CleanBrilliantCompany.Models.Control
             _productMapper.insert(productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost);
         }
 
-        public List<StockHistory> getStockHistoryByBatch(int batchCode)
-        {
-            return _productMapper.findStockHistoryByBatchCode(batchCode);
+        // public List<Dictionary<string, object>> getStockHistoryByBatch(int batchCode)
+        // {
+        //     List<StockHistory> stockHistories = _productMapper.findAllStockHistory();
+        //     List<Dictionary<string, object>> stockHistoryInfo = new List<Dictionary<string, object>>();
 
-            //turn into dict before sending it out. WILL FIX FEATURES FIRST
+        //     foreach (var stockHistory in stockHistories)
+        //     {
+        //         if (stockHistory.GetBatchCode() == batchCode)
+        //         {
+        //             stockHistoryInfo.Add(stockHistory.retrieveStockHistory());
+        //         }
+        //     }
+        //     return stockHistoryInfo;
+        // }
+
+        public Dictionary<string, List<StockHistory>> getStockHistoryByBatch(int batchCode)
+        {
+            List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); // Return this if only want list of batches
+            var stockHistoryDictionary = new Dictionary<string, List<StockHistory>>(); // Return this if dictionary
+            foreach (var stockHistory in stockHistories)
+            {
+                if (stockHistory.GetBatchCode() == batchCode)
+                {
+                    string stockTakeDateKey = stockHistory.GetStockTakeDate().ToString("yyyy-MM-dd");
+                    if (!stockHistoryDictionary.ContainsKey(stockTakeDateKey))
+                    {
+                        stockHistoryDictionary[stockTakeDateKey] = new List<StockHistory>();
+                    }
+                    stockHistoryDictionary[stockTakeDateKey].Add(stockHistory);
+                }
+            }
+            return stockHistoryDictionary;
+        }
+
+        public Dictionary<int, List<StockHistory>> getStockHistoryByDate(DateOnly stockTakeDate) 
+        {
+            var stockHistoryDictionary = new Dictionary<int, List<StockHistory>>();
+            List<StockHistory> stockHistories = _productMapper.findAllStockHistory();
+
+            foreach (var stockHistory in stockHistories)
+            {
+                if (stockHistory.GetStockTakeDate() == stockTakeDate)
+                {
+                    int stockBatchCodeKey = stockHistory.GetBatchCode();
+                    if (!stockHistoryDictionary.ContainsKey(stockBatchCodeKey))
+                    {
+                        stockHistoryDictionary[stockBatchCodeKey] = new List<StockHistory>();
+                    }
+                    stockHistoryDictionary[stockBatchCodeKey].Add(stockHistory);
+                }
+            }
+            return stockHistoryDictionary;
+        }
+
+        // ProductManufacturer
+        public ProductManufacturer getManufacturerDetails(int manufacturerId)
+        {
+            ProductManufacturer productManufacturer = _productMapper.getProductManufacturerById(manufacturerId);
+            return productManufacturer;
         }
     }
 }

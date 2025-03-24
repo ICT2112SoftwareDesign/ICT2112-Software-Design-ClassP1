@@ -33,31 +33,31 @@ public class AgingControl
     //     }
     // }
 
-    private readonly iProduct _productInterface;
+    // private readonly iProduct _productInterface;
 
     public AgingControl(iProduct productInterface)
     {
-        _productInterface = productInterface; 
+        // _productInterface = productInterface; 
     }
 
-    public void testProductInterfaceMethods()
-    {
-        var products = _productInterface.getAllProducts();
+    // public void testProductInterfaceMethods()
+    // {
+    //     var products = _productInterface.getAllProducts();
         
-        for (int i = 0; i < products.Count; i++)
-        {
-            var product = products[i];
-            Console.WriteLine($"Product Name: {product.ProductName}");
-            Console.WriteLine($"Product Category: {product.ProductCategory}");
-            Console.WriteLine($"Product Cost: ${product.ProductCost}");
-            Console.WriteLine($"Manufacturer ID: {product.ManufacturerId}");
-            Console.WriteLine($"Product Weight: {product.ProductWeight} kg");
-            Console.WriteLine($"Product Quantity: {product.Quantity}");
-            Console.WriteLine($"Product Volume: {product.Volume}");
-            Console.WriteLine($"Toxicity Percentage: {product.ToxicityPercentage}%");
-            Console.WriteLine($"Carbon Footprint: {product.CarbonFootprint}");
-            Console.WriteLine($"Product State: {product.ProductState}");
-            Console.WriteLine("---------------------------");  // To separate each product's details
-        }
-    }
+    //     for (int i = 0; i < products.Count; i++)
+    //     {
+    //         var product = products[i];
+    //         Console.WriteLine($"Product Name: {product.ProductName}");
+    //         Console.WriteLine($"Product Category: {product.ProductCategory}");
+    //         Console.WriteLine($"Product Cost: ${product.ProductCost}");
+    //         Console.WriteLine($"Manufacturer ID: {product.ManufacturerId}");
+    //         Console.WriteLine($"Product Weight: {product.ProductWeight} kg");
+    //         Console.WriteLine($"Product Quantity: {product.Quantity}");
+    //         Console.WriteLine($"Product Volume: {product.Volume}");
+    //         Console.WriteLine($"Toxicity Percentage: {product.ToxicityPercentage}%");
+    //         Console.WriteLine($"Carbon Footprint: {product.CarbonFootprint}");
+    //         Console.WriteLine($"Product State: {product.ProductState}");
+    //         Console.WriteLine("---------------------------");  // To separate each product's details
+    //     }
+    // }
 }

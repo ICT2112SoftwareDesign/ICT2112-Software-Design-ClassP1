@@ -1,4 +1,4 @@
-@model List<CleanBrilliantCompany.Models.Entity.Product>
+@model List<Dictionary<string, object>>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +9,7 @@
 
 <p>This page is used to test the ProductControl class.</p>
 
-<!-- Form to Enter Product ID -->
+<!-- Test Product Fectch -->
 <form method="post" asp-action="FetchProduct">
     <h3>Fetch Product</h3>
     <label>Enter Product ID:</label>
@@ -17,55 +17,94 @@
     <button type="submit">Fetch Product</button>
 </form>
 
-<form method="post" asp-action="DeleteProduct">
-    <h3>Delete Product</h3>
-    <label>Enter Product ID:</label>
-    <input type="number" name="productId" required />
-    <button type="submit">Delete Product</button>
+<!-- Test ProductManufecturer Fetch -->
+<form method="post" asp-action="FetchProductManufecturer">
+    <h3>Fetch Manufacturer</h3>
+    <label>Enter Manufacturer ID:</label>
+    <input type="number" name="manufacturerId" required />
+    <button type="submit">Fetch Manufacturer</button>
 </form>
 
-<form method="post" asp-action="FetchUpdateProduct">
-    <h3>Update Product</h3>
-    <label>Enter Product ID:</label>
-    <input type="number" name="productId" required />
-    <button type="submit">Update Product</button>
-</form>
+<!-- Button to trigger Create Product modal -->
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createProductModal">
+    + Add Product
+</button>
 
-<form method="post" asp-action="CreateProduct">
-    <h3>Create Product</h3>
+<!-- Modal for Create Product -->
+<div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-    <label>Product Name:</label>
-    <input type="text" name="ProductName" required /><br>
+            <div class="modal-header">
+                <h5 class="modal-title" id="createProductModalLabel">Create New Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-    <label>Category:</label>
-    <input type="text" name="ProductCategory" required /><br>
+            <div class="modal-body">
+                <form method="post" asp-action="CreateProduct">
+                    <div class="mb-3">
+                        <label for="createProductName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="createProductName" name="productName" required />
+                    </div>
 
-    <label>Cost Price:</label>
-    <input type="number" step="0.01" name="ProductCost" required /><br>
+                    <div class="mb-3">
+                        <label for="createProductCategory" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="createProductCategory" name="productCategory" required />
+                    </div>
 
-    <label>Manufacturer ID:</label>
-    <input type="number" name="ManufacturerId" required /><br>
+                    <div class="mb-3">
+                        <label for="createProductCost" class="form-label">Cost Price</label>
+                        <input type="number" step="0.01" class="form-control" id="createProductCost" name="productCost" required />
+                    </div>
 
-    <label>Weight:</label>
-    <input type="number" step="0.01" name="Weight" required /><br>
+                    <div class="mb-3">
+                        <label for="createManufacturerId" class="form-label">Manufacturer ID</label>
+                        <input type="number" class="form-control" id="createManufacturerId" name="manufacturerId" required />
+                    </div>
 
-    <label>Volume:</label>
-    <input type="number" name="Volume" required /><br>
+                    <div class="mb-3">
+                        <label for="createProductWeight" class="form-label">Weight (kg)</label>
+                        <input type="number" step="0.01" class="form-control" id="createProductWeight" name="weight" required />
+                    </div>
 
-    <label>Toxicity Percentage:</label>
-    <input type="number" step="0.01" name="ToxicityPercentage" required /><br>
+                    <div class="mb-3">
+                        <label for="createQuantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="createQuantity" name="quantity" required />
+                    </div>
 
-    <label>Carbon Footprint:</label>
-    <input type="number" name="CarbonFootprint" required /><br>
+                    <div class="mb-3">
+                        <label for="createVolume" class="form-label">Volume</label>
+                        <input type="number" class="form-control" id="createVolume" name="volume" required />
+                    </div>
 
-    <label>Product State:</label>
-    <input type="text" name="ProductState" required /><br>
+                    <div class="mb-3">
+                        <label for="createToxicity" class="form-label">Toxicity Percentage</label>
+                        <input type="number" class="form-control" id="createToxicity" name="toxicityPercentage" required />
+                    </div>
 
-    <button type="submit">Create Product</button>
-</form>
+                    <div class="mb-3">
+                        <label for="createCarbon" class="form-label">Carbon Footprint</label>
+                        <input type="number" class="form-control" id="createCarbon" name="carbonFootprint" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="createProductState" class="form-label">Product State</label>
+                        <input type="text" class="form-control" id="createProductState" name="productState" required />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Create Product</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <!-- Go to Product Batch Listings Link -->
-<a asp-controller="Product" asp-action="ProductBatch" class="btn btn-primary">Go to Product Batch Listings</a>
+<a asp-controller="Product" asp-action="displayProductBatch" class="btn btn-primary">Go to Product Batch Listings</a>
 
 <!-- Search input for filtering the product list -->
 <h3>Search Products</h3>
@@ -74,31 +113,171 @@
 
 <!-- Product List -->
 <h3>Product List</h3>
+
 @if (Model != null && Model.Any())
 {
-    <ul id="productList">
-        @foreach (var product in Model)
-        {
-            <li class="product-item">
-                <span class="product-name"> <strong>@product.ProductName</strong> </span>
-                <br>Product Cost: $@product.ProductCost
-                <br>ProductId: @product.ProductId
-                <span class="product-category"><br>Product Category: @product.ProductCategory</span>
-                <br>Manufacturer ID: @product.ManufacturerId
-                <br>Weight: @product.ProductWeight kg
-                <br>Volume: @product.Volume
-                <br>Toxicity: @product.ToxicityPercentage%
-                <br>Carbon Footprint: @product.CarbonFootprint
-                <br>Product State: @product.ProductState
-                <hr>
-            </li>
-        }
-    </ul>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Cost Price ($)</th>
+                <th>Manufacturer ID</th>
+                <th>Weight (kg)</th>
+                <th>Quantity</th>
+                <th>Volume</th>
+                <th>Toxicity (%)</th>
+                <th>Carbon Footprint</th>
+                <th>Product State</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var productInfo in Model)
+            {
+                <tr class="product-item">
+                    <td>@productInfo["ProductId"]</td>
+                    <td class="product-name">@productInfo["ProductName"]</td>
+                    <td class="product-category">@productInfo["ProductCategory"]</td>
+                    <td>@productInfo["ProductCost"]</td>
+                    <td>@productInfo["ManufacturerId"]</td>
+                    <td>@productInfo["ProductWeight"]</td>
+                    <td>@productInfo["Quantity"]</td>
+                    <td>@productInfo["Volume"]</td>
+                    <td>@productInfo["ToxicityPercentage"]</td>
+                    <td>@productInfo["CarbonFootprint"]</td>
+                    <td>@productInfo["ProductState"]</td>
+                    <td>
+                        <button type="button" class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateProductModal"
+                            data-product-id="@productInfo["ProductId"]"
+                            data-product-name="@productInfo["ProductName"]"
+                            data-product-category="@productInfo["ProductCategory"]"
+                            data-product-cost="@productInfo["ProductCost"]"
+                            data-manufacturer-id="@productInfo["ManufacturerId"]"
+                            data-product-weight="@productInfo["ProductWeight"]"
+                            data-quantity="@productInfo["Quantity"]"
+                            data-volume="@productInfo["Volume"]"
+                            data-toxicity="@productInfo["ToxicityPercentage"]"
+                            data-carbon="@productInfo["CarbonFootprint"]"
+                            data-state="@productInfo["ProductState"]">
+                            Update
+                        </button>
+                    </td>
+                    <td>
+                        <form method="post" asp-action="DeleteProduct" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                            <input type="hidden" name="productId" value="@productInfo["ProductId"]" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 else
 {
     <p>No products available.</p>
 }
+
+<div class="modal fade" id="updateProductModal" tabindex="-1" aria-labelledby="updateItemStatusModalLabelOld" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateProductModalLabel">Update Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" asp-action="UpdateProduct">
+
+                    <!-- Hidden field for Product ID -->
+                    <input type="hidden" id="modalProductId" name="productId" />
+
+                    <div class="mb-3">
+                        <label for="modalProductName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="modalProductName" name="productName" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalProductCategory" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="modalProductCategory" name="productCategory" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalProductCost" class="form-label">Cost Price</label>
+                        <input type="number" step="0.01" class="form-control" id="modalProductCost" name="productCost" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalManufacturerId" class="form-label">Manufacturer ID</label>
+                        <input type="number" class="form-control" id="modalManufacturerId" name="manufacturerId" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalProductWeight" class="form-label">Weight (kg)</label>
+                        <input type="number" step="0.01" class="form-control" id="modalProductWeight" name="productWeight" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalQuantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="modalQuantity" name="quantity" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalVolume" class="form-label">Volume</label>
+                        <input type="number" class="form-control" id="modalVolume" name="volume" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalToxicity" class="form-label">Toxicity Percentage</label>
+                        <input type="number" class="form-control" id="modalToxicity" name="toxicityPercentage" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalCarbon" class="form-label">Carbon Footprint</label>
+                        <input type="number" class="form-control" id="modalCarbon" name="carbonFootprint" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalProductState" class="form-label">Product State</label>
+                        <input type="text" class="form-control" id="modalProductState" name="productState" required />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Product</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript for populating fields for update -->
+<script>
+    const updateProductModal = document.getElementById('updateProductModal');
+    updateProductModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+
+        document.getElementById('modalProductId').value = button.getAttribute('data-product-id');
+        document.getElementById('modalProductName').value = button.getAttribute('data-product-name');
+        document.getElementById('modalProductCategory').value = button.getAttribute('data-product-category');
+        document.getElementById('modalProductCost').value = button.getAttribute('data-product-cost');
+        document.getElementById('modalManufacturerId').value = button.getAttribute('data-manufacturer-id');
+        document.getElementById('modalProductWeight').value = button.getAttribute('data-product-weight');
+        document.getElementById('modalQuantity').value = button.getAttribute('data-quantity');
+        document.getElementById('modalVolume').value = button.getAttribute('data-volume');
+        document.getElementById('modalToxicity').value = button.getAttribute('data-toxicity');
+        document.getElementById('modalCarbon').value = button.getAttribute('data-carbon');
+        document.getElementById('modalProductState').value = button.getAttribute('data-state');
+    });
+</script>
 
 <!-- JavaScript for filtering products -->
 <script>
@@ -108,7 +287,6 @@ else
 
         productItems.forEach(function(item) {
             var productName = item.querySelector(".product-name").textContent.toLowerCase();
-            @* var productCategory = item.querySelector("br:nth-child(3)").textContent.toLowerCase(); *@
             var productCategory = item.querySelector(".product-category").textContent.toLowerCase();
 
             if (productName.includes(searchQuery) || productCategory.includes(searchQuery)) {
@@ -122,3 +300,4 @@ else
 
 </body>
 </html>
+

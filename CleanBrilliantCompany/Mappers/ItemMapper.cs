@@ -331,16 +331,16 @@ namespace CleanBrilliantCompany.Mappers
                             // Iterate through each row in the result set
                             while (reader.Read())
                             {
-                                // Create the Item object using the constructor
-                                warehouse = new Warehouse(
-                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                    reader.GetString(reader.GetOrdinal("warehouseAddress")),
-                                    reader.GetInt32(reader.GetOrdinal("currentCapacity")),
-                                    reader.GetInt32(reader.GetOrdinal("maxCapactiy")),
-                                    reader.GetInt32(reader.GetOrdinal("productId")),
-                                    reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    reader.GetInt32(reader.GetOrdinal("itemId"))
-                                );
+                                // // Create the Item object using the constructor
+                                // warehouse = new Warehouse(
+                                //     reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                //     reader.GetString(reader.GetOrdinal("warehouseAddress")),
+                                //     reader.GetInt32(reader.GetOrdinal("currentCapacity")),
+                                //     reader.GetInt32(reader.GetOrdinal("maxCapactiy")),
+                                //     reader.GetInt32(reader.GetOrdinal("productId")),
+                                //     reader.GetInt32(reader.GetOrdinal("quantity")),
+                                //     reader.GetInt32(reader.GetOrdinal("itemId"))
+                                // );
                             }
                         }
                         else
