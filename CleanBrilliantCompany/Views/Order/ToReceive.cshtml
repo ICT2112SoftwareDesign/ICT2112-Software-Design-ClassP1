@@ -55,18 +55,18 @@
 
     @foreach (var order in Model)
     {
-        var details = (shippingDetails != null && shippingDetails.ContainsKey(order.GetOrderID())) ? shippingDetails[order.GetOrderID()] : null;
+        var details = (shippingDetails != null && shippingDetails.ContainsKey(order.RetrieveOrderID())) ? shippingDetails[order.RetrieveOrderID()] : null;
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Order ID: @order.GetOrderID()</h5>
+                <h5 class="mb-0">Order ID: @order.RetrieveOrderID()</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <!-- Order Details -->
                     <div class="col-md-6">
                         <h6 class="font-weight-bold">Order Details</h6>
-                        <p><strong>Status:</strong> @order.GetStatus()</p>
-                        <p><strong>Total Price:</strong> $@order.GetOrderTotal()</p>
+                        <p><strong>Status:</strong> @order.RetrieveStatus()</p>
+                        <p><strong>Total Price:</strong> $@order.RetrieveOrderTotal()</p>
                     </div>
 
                     <!-- Shipping Details -->
@@ -86,11 +86,11 @@
                 <div class="mt-4">
                     <h6 class="font-weight-bold">Products</h6>
                     <ul class="list-group">
-                        @foreach (var product in order.GetOrderProductsDetails())
+                        @foreach (var product in order.RetrieveOrderProductsDetails())
                         {
                             <li class="list-group-item">
                                 <strong>Product Name:</strong> @product.Value["ProductName"] <br />
-                                <strong>Quantity:</strong> @order.GetOrderProducts()[product.Key] <br />
+                                <strong>Quantity:</strong> @order.RetrieveOrderProducts()[product.Key] <br />
                                 <strong>Price:</strong> $@product.Value["CostPrice"]
                             </li>
                         }

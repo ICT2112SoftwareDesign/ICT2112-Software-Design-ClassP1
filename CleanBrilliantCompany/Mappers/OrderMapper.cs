@@ -10,7 +10,6 @@ namespace CleanBrilliantCompany.Models
     public class OrderMapper : IOrderDatabase
     {
         private readonly string _connectionString;
-
         private readonly IOrderQueryObserver _observer;
 
         public OrderMapper(string connectionString, IOrderQueryObserver observer)
@@ -18,7 +17,7 @@ namespace CleanBrilliantCompany.Models
             _connectionString = connectionString;
             _observer = observer;
         }
-        
+
         public int insertOrder(OrderRDM order)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -29,31 +28,31 @@ namespace CleanBrilliantCompany.Models
                     SELECT SCOPE_IDENTITY();";
 
                 var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@CustomerID", order.GetCustomerID());
-                command.Parameters.AddWithValue("@OrderAddress", order.GetOrderAddress());
+                command.Parameters.AddWithValue("@CustomerID", order.RetrieveCustomerID());
+                command.Parameters.AddWithValue("@OrderAddress", order.RetrieveOrderAddress());
 
                 var options = new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
-                string orderProductsJson = JsonSerializer.Serialize(order.GetOrderProducts(), options);
+                string orderProductsJson = JsonSerializer.Serialize(order.RetrieveOrderProducts(), options);
                 command.Parameters.AddWithValue("@OrderProducts", orderProductsJson);
 
-                command.Parameters.AddWithValue("@OrderShipping", order.GetOrderShipping());
+                command.Parameters.AddWithValue("@OrderShipping", order.RetrieveOrderShipping());
 
-                string orderItemsJson = JsonSerializer.Serialize(order.GetOrderItems(), options);
+                string orderItemsJson = JsonSerializer.Serialize(order.RetrieveOrderItems(), options);
                 command.Parameters.AddWithValue("@OrderItems", orderItemsJson);
 
-                command.Parameters.AddWithValue("@OrderDate", order.GetOrderDate());
-                command.Parameters.AddWithValue("@Status", order.GetStatus());
-                command.Parameters.AddWithValue("@OrderTotal", order.GetOrderTotal());
+                command.Parameters.AddWithValue("@OrderDate", order.RetrieveOrderDate());
+                command.Parameters.AddWithValue("@Status", order.RetrieveStatus());
+                command.Parameters.AddWithValue("@OrderTotal", order.RetrieveOrderTotal());
 
                 connection.Open();
                 var result = command.ExecuteScalar();
                 int orderId = result != null ? Convert.ToInt32(result) : 0;
 
                 // Notify the observer about the new order
-                _observer.onOrderCreated(orderId, order.GetCustomerID(), order.GetOrderTotal());
+                _observer.onOrderCreated(orderId, order.RetrieveCustomerID(), order.RetrieveOrderTotal());
 
                 return orderId;
             }
@@ -188,40 +187,40 @@ namespace CleanBrilliantCompany.Models
                     WHERE orderID = @OrderID";
 
                 var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@OrderID", order.GetOrderID());
-                command.Parameters.AddWithValue("@CustomerID", order.GetCustomerID());
-                command.Parameters.AddWithValue("@OrderAddress", order.GetOrderAddress());
+                command.Parameters.AddWithValue("@OrderID", order.RetrieveOrderID());
+                command.Parameters.AddWithValue("@CustomerID", order.RetrieveCustomerID());
+                command.Parameters.AddWithValue("@OrderAddress", order.RetrieveOrderAddress());
 
                 var options = new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
-                string orderProductsJson = JsonSerializer.Serialize(order.GetOrderProducts(), options);
+                string orderProductsJson = JsonSerializer.Serialize(order.RetrieveOrderProducts(), options);
                 command.Parameters.AddWithValue("@OrderProducts", orderProductsJson);
 
-                command.Parameters.AddWithValue("@OrderShipping", order.GetOrderShipping());
+                command.Parameters.AddWithValue("@OrderShipping", order.RetrieveOrderShipping());
 
-                string orderItemsJson = JsonSerializer.Serialize(order.GetOrderItems(), options);
+                string orderItemsJson = JsonSerializer.Serialize(order.RetrieveOrderItems(), options);
                 command.Parameters.AddWithValue("@OrderItems", orderItemsJson);
 
-                command.Parameters.AddWithValue("@OrderDate", order.GetOrderDate());
-                command.Parameters.AddWithValue("@Status", order.GetStatus());
-                command.Parameters.AddWithValue("@OrderTotal", order.GetOrderTotal());
+                command.Parameters.AddWithValue("@OrderDate", order.RetrieveOrderDate());
+                command.Parameters.AddWithValue("@Status", order.RetrieveStatus());
+                command.Parameters.AddWithValue("@OrderTotal", order.RetrieveOrderTotal());
 
                 connection.Open();
                 var rowsAffected = command.ExecuteNonQuery();
 
-                 if (rowsAffected > 0)
+                if (rowsAffected > 0)
                 {
                     // Notify the observer about the order update
-                    _observer.onOrderUpdated(order.GetOrderID(), order.GetCustomerID(), order.GetStatus());
+                    _observer.onOrderUpdated(order.RetrieveOrderID(), order.RetrieveCustomerID(), order.RetrieveStatus());
                 }
 
                 return rowsAffected > 0;
             }
         }
 
-         public bool cancelOrder(int orderId)
+        public bool cancelOrder(int orderId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -242,7 +241,7 @@ namespace CleanBrilliantCompany.Models
                 return rowsAffected > 0;
             }
         }
-        
+
         public List<OrderRDM> getAllOrders()
         {
             var orders = new List<OrderRDM>();
@@ -280,7 +279,6 @@ namespace CleanBrilliantCompany.Models
             }
             return orders;
         }
-
         public List<OrderRDM> getOrdersByMonth(int monthNumber)
         {
             var orders = new List<OrderRDM>();

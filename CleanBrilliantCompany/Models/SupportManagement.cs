@@ -30,7 +30,7 @@ namespace CleanBrilliantCompany.Models
                     var orderHistory = _orderService.getOrderHistory(customerID);
                     foreach (var order in orderHistory)
                     {
-                        if (order.GetOrderID() == orderId) // Use GetOrderID() instead of OrderID
+                        if (order.RetrieveOrderID() == orderId) // Use RetrieveOrderID() instead of OrderID
                         {
                             orderDetails = order;
                             break;
@@ -38,7 +38,7 @@ namespace CleanBrilliantCompany.Models
                     }
                     if (orderDetails != null)
                     {
-                        return $"Order ID: {orderId}\nStatus: {orderDetails.GetStatus()}\nOrder Total: ${orderDetails.GetOrderTotal()}"; // Use GetStatus() and GetOrderTotal()
+                        return $"Order ID: {orderId}\nStatus: {orderDetails.RetrieveStatus()}\nOrder Total: ${orderDetails.RetrieveOrderTotal()}"; // Use GetStatus() and GetOrderTotal()
                     }
                 }
                 return "You have entered an invalid order ID. Please enter a valid order ID.";

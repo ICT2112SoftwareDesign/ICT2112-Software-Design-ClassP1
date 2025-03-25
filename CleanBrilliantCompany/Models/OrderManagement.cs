@@ -16,7 +16,6 @@ namespace CleanBrilliantCompany.Models
         {
             _orderDatabase = orderDatabase;
             _cartManagement = cartManagement;
-
             _shippingAgents = shippingAgents;
         }
 
@@ -130,12 +129,12 @@ namespace CleanBrilliantCompany.Models
         public bool cancelOrder(int orderId)
         {
             var order = _orderDatabase.getOrderById(orderId);
-            if (order == null || order.GetStatus() == "Cancelled")
+            if (order == null || order.RetrieveStatus() == "Cancelled")
             {
                 return false;
             }
 
-            order.SetStatus("Cancelled");
+            order.UpdateStatus("Cancelled");
             return _orderDatabase.updateOrder(order);
         }
 
@@ -147,32 +146,32 @@ namespace CleanBrilliantCompany.Models
                 return false;
             }
 
-            order.SetStatus(status);
+            order.UpdateStatus(status);
             return _orderDatabase.updateOrder(order);
         }
 
         public bool cancelOrder(int orderId, int customerId)
         {
             var order = _orderDatabase.getOrderById(orderId);
-            if (order == null || order.GetCustomerID() != customerId || order.GetStatus() != "Pending")
+            if (order == null || order.RetrieveCustomerID() != customerId || order.RetrieveStatus() != "Pending")
             {
                 return false; // Cannot cancel the order
             }
 
-            order.SetStatus("Cancelled");
+            order.UpdateStatus("Cancelled");
             return _orderDatabase.updateOrder(order);
         }
 
         public bool requestRefund(int orderId, int customerId, string refundReason)
         {
             var order = _orderDatabase.getOrderById(orderId);
-            if (order == null || order.GetCustomerID() != customerId || order.GetStatus() != "Completed")
+            if (order == null || order.RetrieveCustomerID() != customerId || order.RetrieveStatus() != "Completed")
             {
                 return false; // Cannot request a refund
             }
 
-            Console.WriteLine($"{orderId}, {refundReason} {order.GetOrderTotal()}, {order.GetOrderProducts()}, {customerId}");
-            order.SetStatus("RefundRequested");
+            Console.WriteLine($"{orderId}, {refundReason} {order.RetrieveOrderTotal()}, {order.RetrieveOrderProducts()}, {customerId}");
+            order.UpdateStatus("RefundRequested");
 
             // I can't do this without a concrete implementation of submitRefund yet
             // _submitRefund.submitRefund(orderId, refundReason, order.GetOrderTotal(), order.GetOrderProducts());
@@ -188,9 +187,8 @@ namespace CleanBrilliantCompany.Models
             var allOrders = _orderDatabase.getAllOrders();
 
             // Filter orders by the specified month
-            return allOrders.Where(order => order.GetOrderDate().Month == monthNumber).ToList();
+           return allOrders.Where(order => order.RetrieveOrderDate().Month == monthNumber).ToList();
         }
-
 
         // Method for IOrder interface
 
@@ -210,7 +208,7 @@ namespace CleanBrilliantCompany.Models
                 throw new KeyNotFoundException($"Order with ID {orderId} not found.");
             }
 
-            return order.GetOrderItems(); // Assuming OrderRDM has a method GetOrderItems()
+            return order.RetrieveOrderItems(); // Assuming OrderRDM has a method GetOrderItems()
         }
     }
 }

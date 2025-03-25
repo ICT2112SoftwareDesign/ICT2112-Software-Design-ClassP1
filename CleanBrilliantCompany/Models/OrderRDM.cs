@@ -24,7 +24,7 @@ namespace CleanBrilliantCompany.Models
             string orderAddress,
             Dictionary<int, int> orderProducts,
             string orderShipping,
-            List<int> orderItems, // Updated to List<int>
+            List<int> orderItems,
             DateTime orderDate,
             string status,
             decimal orderTotal)
@@ -41,39 +41,57 @@ namespace CleanBrilliantCompany.Models
             _orderProductsDetails = new Dictionary<int, Dictionary<string, object>>();
         }
 
-        // Public methods to access and modify the fields
+        // Private getters and setters
+        private int GetOrderID() => _orderID;
+        private void SetOrderID(int orderID) => _orderID = orderID;
 
-        public int GetOrderID() => _orderID;
-        public void SetOrderID(int orderID) => _orderID = orderID;
+        private int GetCustomerID() => _customerID;
+        private void SetCustomerID(int customerID) => _customerID = customerID;
 
-        public int GetCustomerID() => _customerID;
-        public void SetCustomerID(int customerID) => _customerID = customerID;
+        private string GetOrderAddress() => _orderAddress;
+        private void SetOrderAddress(string orderAddress) => _orderAddress = orderAddress;
 
-        public string GetOrderAddress() => _orderAddress;
-        public void SetOrderAddress(string orderAddress) => _orderAddress = orderAddress;
+        private Dictionary<int, int> GetOrderProducts() => _orderProducts;
+        private void SetOrderProducts(Dictionary<int, int> orderProducts) => _orderProducts = orderProducts;
 
-        public Dictionary<int, int> GetOrderProducts() => _orderProducts;
-        public void SetOrderProducts(Dictionary<int, int> orderProducts) => _orderProducts = orderProducts;
+        private string GetOrderShipping() => _orderShipping;
+        private void SetOrderShipping(string orderShipping) => _orderShipping = orderShipping;
 
-        public string GetOrderShipping() => _orderShipping;
-        public void SetOrderShipping(string orderShipping) => _orderShipping = orderShipping;
+        private List<int> GetOrderItems() => _orderItems;
+        private void SetOrderItems(List<int> orderItems) => _orderItems = orderItems ?? new List<int>();
 
-        /// Gets the list of serial numbers for the products in the order.
-        public List<int> GetOrderItems() => _orderItems;
+        private DateTime GetOrderDate() => _orderDate;
+        private void SetOrderDate(DateTime orderDate) => _orderDate = orderDate;
 
-        /// Sets the list of serial numbers for the products in the order.
-        public void SetOrderItems(List<int> orderItems) => _orderItems = orderItems ?? new List<int>();
+        private string GetStatus() => _status;
+        private void SetStatus(string status) => _status = status;
 
-        public DateTime GetOrderDate() => _orderDate;
-        public void SetOrderDate(DateTime orderDate) => _orderDate = orderDate;
+        private decimal GetOrderTotal() => _orderTotal;
+        private void SetOrderTotal(decimal orderTotal) => _orderTotal = orderTotal;
 
-        public string GetStatus() => _status;
-        public void SetStatus(string status) => _status = status;
+        private Dictionary<int, Dictionary<string, object>> GetOrderProductsDetails() => _orderProductsDetails;
+        private void SetOrderProductsDetails(Dictionary<int, Dictionary<string, object>> orderProductsDetails) => _orderProductsDetails = orderProductsDetails;
 
-        public decimal GetOrderTotal() => _orderTotal;
-        public void SetOrderTotal(decimal orderTotal) => _orderTotal = orderTotal;
+        // Public methods to expose necessary functionality
 
-        public Dictionary<int, Dictionary<string, object>> GetOrderProductsDetails() => _orderProductsDetails;
-        public void SetOrderProductsDetails(Dictionary<int, Dictionary<string, object>> orderProductsDetails) => _orderProductsDetails = orderProductsDetails;
+        public int RetrieveOrderID() => GetOrderID();
+        public int RetrieveCustomerID() => GetCustomerID();
+        public string RetrieveOrderAddress() => GetOrderAddress();
+        public Dictionary<int, int> RetrieveOrderProducts() => GetOrderProducts();
+        public string RetrieveOrderShipping() => GetOrderShipping();
+        public List<int> RetrieveOrderItems() => GetOrderItems();
+        public DateTime RetrieveOrderDate() => GetOrderDate();
+        public string RetrieveStatus() => GetStatus();
+        public decimal RetrieveOrderTotal() => GetOrderTotal();
+        public Dictionary<int, Dictionary<string, object>> RetrieveOrderProductsDetails() => GetOrderProductsDetails();
+
+        public void UpdateOrderAddress(string newAddress) => SetOrderAddress(newAddress);
+        public void UpdateOrderProducts(Dictionary<int, int> newProducts) => SetOrderProducts(newProducts);
+        public void UpdateOrderShipping(string newShipping) => SetOrderShipping(newShipping);
+        public void UpdateOrderItems(List<int> newItems) => SetOrderItems(newItems);
+        public void UpdateOrderDate(DateTime newDate) => SetOrderDate(newDate);
+        public void UpdateStatus(string newStatus) => SetStatus(newStatus);
+        public void UpdateOrderTotal(decimal newTotal) => SetOrderTotal(newTotal);
+        public void UpdateOrderProductsDetails(Dictionary<int, Dictionary<string, object>> newDetails) => SetOrderProductsDetails(newDetails);
     }
 }
