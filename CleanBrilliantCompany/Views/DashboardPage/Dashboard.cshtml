@@ -127,6 +127,86 @@
         </div>
     </div>
 
+    <!-- Comparison Tool -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Carbon Footprint Comparison</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <!-- Product Comparison -->
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">Product Comparison</h6>
+                            <div class="form-group">
+                                <label>Select Products to Compare:</label>
+                                <div class="border p-3 rounded bg-light product-checkboxes" style="height: 200px; overflow-y: auto;">
+                                    @foreach (var product in Model.Products)
+                                    {
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input product-checkbox" 
+                                                id="product_@product.ProductId" 
+                                                value="@product.ProductId"
+                                                data-name="@product.ProductName"
+                                                data-emission="@product.CarbonEmission">
+                                            <label class="custom-control-label" for="product_@product.ProductId">
+                                                @product.ProductName - @product.CarbonEmission kg CO₂
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <button class="btn btn-outline-secondary mr-2" onclick="clearProductSelection()">Clear Selection</button>
+                                <button class="btn btn-primary" onclick="compareProducts()">Compare Products</button>
+                            </div>
+                        </div>
+
+                        <!-- Shipping Comparison -->
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">Shipping Method Comparison</h6>
+                            <div class="form-group">
+                                <label>Select Shipping Methods to Compare:</label>
+                                <div class="border p-3 rounded bg-light shipping-checkboxes" style="height: 200px; overflow-y: auto;">
+                                    @foreach (var method in Model.ShippingMethods)
+                                    {
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input shipping-checkbox" 
+                                                id="shipping_@method.TransportMode" 
+                                                value="@method.TransportMode"
+                                                data-name="@method.TransportMode"
+                                                data-emission="@method.AverageCarbonEmission">
+                                            <label class="custom-control-label" for="shipping_@method.TransportMode">
+                                                @method.TransportMode - @method.AverageCarbonEmission kg CO₂
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <button class="btn btn-outline-secondary mr-2" onclick="clearShippingSelection()">Clear Selection</button>
+                                <button class="btn btn-primary" onclick="compareShippingMethods()">Compare Shipping</button>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- Comparison Charts Row -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <canvas id="productComparisonChart" class="shared-chart-size"></canvas>
+                            <div id="productInsights" class="mt-3"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="shippingComparisonChart" class="shared-chart-size"></canvas>
+                            <div id="shippingInsights" class="mt-3"></div>
+                        </div>
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+
     <script>
         const ecoProductData = {
             labels: ["Eco-Friendly", "Not Eco-Friendly"],
@@ -272,6 +352,137 @@
                 document.getElementById(id).classList.remove("active");
             });
             document.getElementById(activeId).classList.add("active");
+        }
+
+        let productComparisonChart;
+        let shippingComparisonChart;
+
+        function compareProducts() {
+            const selectedProducts = Array.from(document.querySelectorAll('.product-checkbox:checked'))
+                .map(checkbox => ({
+                    name: checkbox.dataset.name,
+                    value: parseFloat(checkbox.dataset.emission)
+                }));
+
+            if (selectedProducts.length === 0) {
+                alert('Please select at least one product to compare');
+                return;
+            }
+
+            const ctx = document.getElementById('productComparisonChart').getContext('2d');
+
+            if (productComparisonChart) {
+                productComparisonChart.destroy();
+            }
+
+            productComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: selectedProducts.map(p => p.name),
+                    datasets: [{
+                        label: 'Carbon Emission (kg CO₂)',
+                        data: selectedProducts.map(p => p.value),
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Carbon Emission (kg CO₂)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Product Carbon Footprint Comparison'
+                        }
+                    }
+                }
+            });
+        }
+
+        function compareShippingMethods() {
+            const selectedMethods = Array.from(document.querySelectorAll('.shipping-checkbox:checked'))
+                .map(checkbox => ({
+                    name: checkbox.dataset.name,
+                    value: parseFloat(checkbox.dataset.emission)
+                }));
+
+            if (selectedMethods.length === 0) {
+                alert('Please select at least one shipping method to compare');
+                return;
+            }
+
+            const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
+
+            if (shippingComparisonChart) {
+                shippingComparisonChart.destroy();
+            }
+
+            shippingComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: selectedMethods.map(m => m.name),
+                    datasets: [{
+                        label: 'Carbon Emission (kg CO₂)',
+                        data: selectedMethods.map(m => m.value),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Carbon Emission (kg CO₂)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Shipping Method Carbon Footprint Comparison'
+                        }
+                    }
+                }
+            });
+        }
+
+        function clearProductSelection() {
+            document.querySelectorAll('.product-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Clear chart
+            if (productComparisonChart) {
+                productComparisonChart.destroy();
+            }
+            const ctx = document.getElementById('productComparisonChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+
+        function clearShippingSelection() {
+            document.querySelectorAll('.shipping-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Clear chart
+            if (shippingComparisonChart) {
+                shippingComparisonChart.destroy();
+            }
+            const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         }
     </script>
 </body>

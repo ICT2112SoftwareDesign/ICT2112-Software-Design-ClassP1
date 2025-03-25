@@ -17,5 +17,22 @@
         public Dictionary<string, int> ProductEcoBreakdown { get; set; }
         public Dictionary<string, int> OrderTransportBreakdown { get; set; }
         public Dictionary<string, float> EmissionTrendOverTime { get; set; }
+
+        // New properties for comparison tool
+        public List<ProductComparisonData> Products { get; set; } = new();
+        public List<ShippingMethodComparisonData> ShippingMethods { get; set; } = new();
+    }
+
+    public class ProductComparisonData
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public double CarbonEmission { get; set; }
+    }
+
+    public class ShippingMethodComparisonData
+    {
+        public string TransportMode { get; set; }
+        public double AverageCarbonEmission { get; set; }
     }
 }
