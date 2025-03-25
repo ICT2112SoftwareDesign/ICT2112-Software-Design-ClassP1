@@ -1,7 +1,6 @@
 using Microsoft.Data.SqlClient;
 using System.Text.Json;
 
-
 namespace CleanBrilliantCompany.Models
 {
     public class OrderMapper : IOrderDatabase
@@ -23,20 +22,24 @@ namespace CleanBrilliantCompany.Models
                     SELECT SCOPE_IDENTITY();";
 
                 var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@CustomerID", order.CustomerID);
-                command.Parameters.AddWithValue("@OrderAddress", order.OrderAddress);
-                // Serialize the dictionary to JSON with camel case
-                var options = new System.Text.Json.JsonSerializerOptions
+                command.Parameters.AddWithValue("@CustomerID", order.GetCustomerID());
+                command.Parameters.AddWithValue("@OrderAddress", order.GetOrderAddress());
+
+                var options = new JsonSerializerOptions
                 {
-                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
-                string orderProductsJson = System.Text.Json.JsonSerializer.Serialize(order.OrderProducts, options);
+                string orderProductsJson = JsonSerializer.Serialize(order.GetOrderProducts(), options);
                 command.Parameters.AddWithValue("@OrderProducts", orderProductsJson);
-                command.Parameters.AddWithValue("@OrderShipping", order.OrderShipping);
-                command.Parameters.AddWithValue("@OrderItems", order.OrderItems);
-                command.Parameters.AddWithValue("@OrderDate", order.OrderDate);
-                command.Parameters.AddWithValue("@Status", order.Status);
-                command.Parameters.AddWithValue("@OrderTotal", order.OrderTotal);
+
+                command.Parameters.AddWithValue("@OrderShipping", order.GetOrderShipping());
+
+                string orderItemsJson = JsonSerializer.Serialize(order.GetOrderItems(), options);
+                command.Parameters.AddWithValue("@OrderItems", orderItemsJson);
+
+                command.Parameters.AddWithValue("@OrderDate", order.GetOrderDate());
+                command.Parameters.AddWithValue("@Status", order.GetStatus());
+                command.Parameters.AddWithValue("@OrderTotal", order.GetOrderTotal());
 
                 connection.Open();
                 var result = command.ExecuteScalar();
@@ -44,41 +47,6 @@ namespace CleanBrilliantCompany.Models
             }
         }
 
-
-        public OrderRDM getOrderById(int orderId)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                var query = "SELECT * FROM CustOrder WHERE orderID = @OrderID";
-                var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@OrderID", orderId);
-
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return new OrderRDM
-                        {
-                            OrderID = Convert.ToInt32(reader["orderID"]),
-                            CustomerID = Convert.ToInt32(reader["customerID"]),
-                            OrderAddress = reader["orderAddress"].ToString(),
-                            OrderProducts = reader["orderProducts"] != DBNull.Value 
-                                ? System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString()) 
-                                : new Dictionary<int, int>(),
-                            OrderShipping = reader["orderShipping"].ToString(),
-                            OrderItems = Convert.ToInt32(reader["orderItems"]),
-                            OrderDate = Convert.ToDateTime(reader["orderDate"]),
-                            Status = reader["Status"].ToString(),
-                            OrderTotal = Convert.ToDecimal(reader["orderTotal"])
-                        };
-                    }
-                }
-            }
-            return null;
-        }
-
-        // Get all orders for a specific customer
         public List<OrderRDM> getOrdersByCustomerId(int customerId)
         {
             var orders = new List<OrderRDM>();
@@ -93,27 +61,104 @@ namespace CleanBrilliantCompany.Models
                 {
                     while (reader.Read())
                     {
-                        orders.Add(new OrderRDM
+                        var orderProducts = reader["orderProducts"] != DBNull.Value
+                            ? JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString())
+                            : new Dictionary<int, int>();
+
+                        var orderItems = new List<int>();
+                        try
                         {
-                            OrderID = Convert.ToInt32(reader["orderID"]),
-                            CustomerID = Convert.ToInt32(reader["customerID"]),
-                            OrderAddress = reader["orderAddress"].ToString(),
-                            OrderProducts = reader["orderProducts"] != DBNull.Value
-                                ? System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString())
-                                : new Dictionary<int, int>(),
-                            OrderShipping = reader["orderShipping"].ToString(),
-                            OrderItems = Convert.ToInt32(reader["orderItems"]),
-                            OrderDate = Convert.ToDateTime(reader["orderDate"]),
-                            Status = reader["Status"].ToString(),
-                            OrderTotal = Convert.ToDecimal(reader["orderTotal"])
-                        });
+                            if (reader["orderItems"] != DBNull.Value && !string.IsNullOrEmpty(reader["orderItems"].ToString()))
+                            {
+                                var items = reader["orderItems"].ToString();
+                                if (items.StartsWith("[") && items.EndsWith("]"))
+                                {
+                                    orderItems = JsonSerializer.Deserialize<List<int>>(items);
+                                }
+                                else
+                                {
+                                    orderItems = items.Split(',').Select(int.Parse).ToList();
+                                }
+                            }
+                        }
+                        catch (JsonException ex)
+                        {
+                            Console.WriteLine($"Error deserializing OrderItems for OrderID {reader["orderID"]}: {ex.Message}");
+                        }
+
+                        orders.Add(new OrderRDM(
+                            orderID: Convert.ToInt32(reader["orderID"]),
+                            customerID: Convert.ToInt32(reader["customerID"]),
+                            orderAddress: reader["orderAddress"].ToString(),
+                            orderProducts: orderProducts,
+                            orderShipping: reader["orderShipping"].ToString(),
+                            orderItems: orderItems,
+                            orderDate: Convert.ToDateTime(reader["orderDate"]),
+                            status: reader["Status"].ToString(),
+                            orderTotal: Convert.ToDecimal(reader["orderTotal"])
+                        ));
                     }
                 }
             }
             return orders;
         }
 
-        // Update an existing order in the database
+        public OrderRDM getOrderById(int orderId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "SELECT * FROM CustOrder WHERE orderID = @OrderID";
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@OrderID", orderId);
+
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var orderProducts = reader["orderProducts"] != DBNull.Value
+                            ? JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString())
+                            : new Dictionary<int, int>();
+
+                        var orderItems = new List<int>();
+                        try
+                        {
+                            if (reader["orderItems"] != DBNull.Value && !string.IsNullOrEmpty(reader["orderItems"].ToString()))
+                            {
+                                var items = reader["orderItems"].ToString();
+                                if (items.StartsWith("[") && items.EndsWith("]"))
+                                {
+                                    orderItems = JsonSerializer.Deserialize<List<int>>(items);
+                                }
+                                else
+                                {
+                                    orderItems = items.Split(',').Select(int.Parse).ToList();
+                                }
+                            }
+                        }
+                        catch (JsonException ex)
+                        {
+                            Console.WriteLine($"Error deserializing OrderItems for OrderID {orderId}: {ex.Message}");
+                        }
+
+                        return new OrderRDM(
+                            orderID: Convert.ToInt32(reader["orderID"]),
+                            customerID: Convert.ToInt32(reader["customerID"]),
+                            orderAddress: reader["orderAddress"].ToString(),
+                            orderProducts: orderProducts,
+                            orderShipping: reader["orderShipping"].ToString(),
+                            orderItems: orderItems,
+                            orderDate: Convert.ToDateTime(reader["orderDate"]),
+                            status: reader["Status"].ToString(),
+                            orderTotal: Convert.ToDecimal(reader["orderTotal"])
+                        );
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public bool updateOrder(OrderRDM order)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -131,27 +176,29 @@ namespace CleanBrilliantCompany.Models
                     WHERE orderID = @OrderID";
 
                 var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@OrderID", order.OrderID);
-                command.Parameters.AddWithValue("@CustomerID", order.CustomerID);
-                command.Parameters.AddWithValue("@OrderAddress", order.OrderAddress);
+                command.Parameters.AddWithValue("@OrderID", order.GetOrderID());
+                command.Parameters.AddWithValue("@CustomerID", order.GetCustomerID());
+                command.Parameters.AddWithValue("@OrderAddress", order.GetOrderAddress());
 
-                // Serialize the dictionary to JSON with camel case
                 var options = new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
-                string orderProductsJson = JsonSerializer.Serialize(order.OrderProducts, options);
+                string orderProductsJson = JsonSerializer.Serialize(order.GetOrderProducts(), options);
                 command.Parameters.AddWithValue("@OrderProducts", orderProductsJson);
 
-                command.Parameters.AddWithValue("@OrderShipping", order.OrderShipping);
-                command.Parameters.AddWithValue("@OrderItems", order.OrderItems);
-                command.Parameters.AddWithValue("@OrderDate", order.OrderDate);
-                command.Parameters.AddWithValue("@Status", order.Status);
-                command.Parameters.AddWithValue("@OrderTotal", order.OrderTotal);
+                command.Parameters.AddWithValue("@OrderShipping", order.GetOrderShipping());
+
+                string orderItemsJson = JsonSerializer.Serialize(order.GetOrderItems(), options);
+                command.Parameters.AddWithValue("@OrderItems", orderItemsJson);
+
+                command.Parameters.AddWithValue("@OrderDate", order.GetOrderDate());
+                command.Parameters.AddWithValue("@Status", order.GetStatus());
+                command.Parameters.AddWithValue("@OrderTotal", order.GetOrderTotal());
 
                 connection.Open();
                 var rowsAffected = command.ExecuteNonQuery();
-                return rowsAffected > 0; // Return true if the update was successful
+                return rowsAffected > 0;
             }
         }
     }

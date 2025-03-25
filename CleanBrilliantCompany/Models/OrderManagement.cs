@@ -7,17 +7,13 @@ namespace CleanBrilliantCompany.Models
 {
     public class OrderManagement : IOrder
     {
-    
         private readonly IOrderDatabase _orderDatabase;
         private readonly ICartManagement _cartManagement;
-        // private readonly ISubmitRefund _submitRefund;
 
-        // Place ISubmitRefund submitRefund in params
         public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement)
         {
             _orderDatabase = orderDatabase;
             _cartManagement = cartManagement;
-            // _submitRefund = submitRefund;
         }
 
         public int createOrder(
@@ -49,22 +45,22 @@ namespace CleanBrilliantCompany.Models
                     ShippingAgent = shippingAgent,
                     ShippingMethod = shippingType,
                     ServiceType = serviceType,
-                    ShippingFee = shippingFee.ToString("F2") // Include the shipping fee here
+                    ShippingFee = shippingFee.ToString("F2")
                 };
                 string orderShippingJson = System.Text.Json.JsonSerializer.Serialize(shippingDetails);
 
                 // Create the order object
-                var order = new OrderRDM
-                {
-                    CustomerID = customerId,
-                    OrderAddress = deliveryAddress,
-                    OrderProducts = cart, // Store the cart dictionary directly
-                    OrderShipping = orderShippingJson,
-                    OrderItems = cart.Count,
-                    OrderDate = DateTime.Now,
-                    Status = "Pending",
-                    OrderTotal = cartTotal + shippingFee
-                };
+                var order = new OrderRDM(
+                    orderID: 0, // Will be set by the database
+                    customerID: customerId,
+                    orderAddress: deliveryAddress,
+                    orderProducts: cart,
+                    orderShipping: orderShippingJson,
+                    orderItems: cart.Keys.ToList(), // Use product IDs as serial numbers
+                    orderDate: DateTime.Now,
+                    status: "Pending",
+                    orderTotal: cartTotal + shippingFee
+                );
 
                 // Save the order to the database
                 return _orderDatabase.insertOrder(order);
@@ -93,32 +89,28 @@ namespace CleanBrilliantCompany.Models
             return serviceCosts[serviceType];
         }
 
-        // Implementation of getOrderDetails
         public OrderRDM getOrderDetails(int orderId)
         {
             return _orderDatabase.getOrderById(orderId);
         }
 
-        // Implementation of getOrderHistory
         public List<OrderRDM> getOrderHistory(int customerId)
         {
             return _orderDatabase.getOrdersByCustomerId(customerId);
         }
 
-        // Implementation of cancelOrder
         public bool cancelOrder(int orderId)
         {
             var order = _orderDatabase.getOrderById(orderId);
-            if (order == null || order.Status == "Cancelled")
+            if (order == null || order.GetStatus() == "Cancelled")
             {
                 return false;
             }
 
-            order.Status = "Cancelled";
+            order.SetStatus("Cancelled");
             return _orderDatabase.updateOrder(order);
         }
 
-        // Implementation of updateOrderStatus
         public bool updateOrderStatus(int orderId, string status)
         {
             var order = _orderDatabase.getOrderById(orderId);
@@ -127,41 +119,36 @@ namespace CleanBrilliantCompany.Models
                 return false;
             }
 
-            order.Status = status;
+            order.SetStatus(status);
             return _orderDatabase.updateOrder(order);
         }
 
         public bool cancelOrder(int orderId, int customerId)
         {
             var order = _orderDatabase.getOrderById(orderId);
-            if (order == null || order.CustomerID != customerId || order.Status != "Pending")
+            if (order == null || order.GetCustomerID() != customerId || order.GetStatus() != "Pending")
             {
                 return false; // Cannot cancel the order
             }
 
-            order.Status = "Cancelled";
+            order.SetStatus("Cancelled");
             return _orderDatabase.updateOrder(order);
         }
 
         public bool requestRefund(int orderId, int customerId, string refundReason)
         {
             var order = _orderDatabase.getOrderById(orderId);
-            if (order == null || order.CustomerID != customerId || order.Status != "Completed")
+            if (order == null || order.GetCustomerID() != customerId || order.GetStatus() != "Completed")
             {
                 return false; // Cannot request a refund
             }
-            Console.WriteLine($"{orderId}, {refundReason} {order.OrderTotal}, {order.OrderProducts}, {customerId}");
-            order.Status = "RefundRequested";
 
-            // I cant do this without concrete implementation of submit refund yet
-            // _submitRefund.submitRefund(orderId, refundReason, order.OrderTotal, order.OrderProducts);
+            Console.WriteLine($"{orderId}, {refundReason} {order.GetOrderTotal()}, {order.GetOrderProducts()}, {customerId}");
+            order.SetStatus("RefundRequested");
+
+            // I can't do this without a concrete implementation of submitRefund yet
+            // _submitRefund.submitRefund(orderId, refundReason, order.GetOrderTotal(), order.GetOrderProducts());
             return _orderDatabase.updateOrder(order);
         }
-
-
-
-
-
-
     }
 }

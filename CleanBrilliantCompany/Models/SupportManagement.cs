@@ -19,7 +19,7 @@ namespace CleanBrilliantCompany.Models
 
         public string handleQuery(Int32 customerID, String query)
         {
-            var (response, parameters) =  _chatBotService.submitQuery(query);
+            var (response, parameters) = _chatBotService.submitQuery(query);
 
             if (parameters.ContainsKey("orderID"))
             {
@@ -30,7 +30,7 @@ namespace CleanBrilliantCompany.Models
                     var orderHistory = _orderService.getOrderHistory(customerID);
                     foreach (var order in orderHistory)
                     {
-                        if (order.OrderID == orderId)
+                        if (order.GetOrderID() == orderId) // Use GetOrderID() instead of OrderID
                         {
                             orderDetails = order;
                             break;
@@ -38,15 +38,15 @@ namespace CleanBrilliantCompany.Models
                     }
                     if (orderDetails != null)
                     {
-                        return $"Order ID: {orderId}\nStatus: {orderDetails.Status}\nOrder Total: ${orderDetails.OrderTotal}";
+                        return $"Order ID: {orderId}\nStatus: {orderDetails.GetStatus()}\nOrder Total: ${orderDetails.GetOrderTotal()}"; // Use GetStatus() and GetOrderTotal()
                     }
                 }
-                return "You have entered an invalid  order ID. Please enter a valid order ID.";
+                return "You have entered an invalid order ID. Please enter a valid order ID.";
             }
             else if (parameters.ContainsKey("issueDescription"))
             {
                 string issueDescription = parameters["issueDescription"];
-                Console.WriteLine($"this is the issue description: {issueDescription}");
+                Console.WriteLine($"This is the issue description: {issueDescription}");
                 if (escalateToHumanAgent(customerID, issueDescription))
                 {
                     return "Your issue has been escalated. Please wait for the agent to contact you!";
@@ -68,7 +68,7 @@ namespace CleanBrilliantCompany.Models
                 Console.WriteLine("Failed to escalate the issue.");
                 return false;
             }
-            
+
             return success;
         }
 
@@ -87,7 +87,7 @@ namespace CleanBrilliantCompany.Models
 
             return success;
         }
-        
+
         public Dictionary<string, string> FetchFAQs()
         {
             return new Dictionary<string, string>
@@ -98,6 +98,5 @@ namespace CleanBrilliantCompany.Models
                 { "How do I contact support?", "You can contact our support team via email at support@example.com or call us at +1-800-123-4567." }
             };
         }
-
     }
 }
