@@ -1,0 +1,35 @@
+@model List<CleanBrilliantCompany.Models.SupportTicket.SupportTicketSDM>
+
+@{
+    ViewData["Title"] = "Support Ticket List";
+}
+
+<h2>Support Tickets</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Customer ID</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var ticket in Model)
+    {
+        <tr>
+            <td>@ticket.TicketId</td>
+            <td>@ticket.CustomerId</td>
+            <td>@ticket.Status</td>
+            <td>@ticket.CreatedAt</td>
+            <td>
+                <a asp-controller="SupportTicket" asp-action="displayTicketDetails" asp-route-ticketId="@ticket.TicketId">
+                    View
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,47 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
+using CleanBrilliantCompany.Models.SupportTicket;
 
 namespace CleanBrilliantCompany.Controllers.SupportTicket
 {
-    [Route("staff/supportticket")]
+    [Route("supportticket")]
     public class SupportTicketController : Controller
     {
-        private static List<SupportTicketDTO> tickets = new List<SupportTicketDTO>
-        {
-            new SupportTicketDTO { TicketId = 1, CustomerId = 101, OrderId = 1001, Status = "Open", CreatedAt = DateTime.Now, TicketDetails = "Issue with order", ResolutionDetails = "" },
-            new SupportTicketDTO { TicketId = 2, CustomerId = 102, OrderId = 1002, Status = "Closed", CreatedAt = DateTime.Now.AddHours(-1), TicketDetails = "Payment failed", ResolutionDetails = "Refund processed" },
-        };
+        private readonly SupportTicketManagement _manager = new SupportTicketManagement();
 
-        // Fetch all tickets
+        // Admin: View all tickets
         [Route("")]
         public IActionResult Index()
         {
-            return View("~/Views/Staff/SupportTicket/supportticket-index.cshtml", tickets); // Correct path
+            var tickets = _manager.viewAllTickets();
+            return View("~/Views/SupportTicket/supportticket-index.cshtml", tickets);
         }
 
-        // Fetch details of a specific ticket
+        // Admin: View details of a specific ticket
         [Route("Details/{ticketId}")]
-        public IActionResult Details(int ticketId)
+        public IActionResult displayTicketDetails(int ticketId)
         {
-            var ticket = tickets.FirstOrDefault(t => t.TicketId == ticketId);
-            if (ticket == null)
+            try
+            {
+                var ticket = _manager.viewTicketDetails(ticketId);
+                return View("~/Views/SupportTicket/supportticket-details.cshtml", ticket);
+            }
+            catch
             {
                 return NotFound();
             }
-            return View("~/Views/Staff/SupportTicket/supportticket-details.cshtml", ticket); // Correct path
         }
 
-        // Update ticket status and add resolution details
+        // Admin: Update support ticket
         [HttpPost]
         [Route("UpdateSupportTicket/{ticketId}")]
-        public IActionResult UpdateSupportTicket(int ticketId, string resolutionDetails)
+        public IActionResult updateSupportTicket(int ticketId, string resolutionDetails)
         {
-            var ticket = tickets.FirstOrDefault(t => t.TicketId == ticketId);
-            if (ticket != null)
-            {
-                // Add resolution details and update the status to Closed
-                ticket.SetResolutionDetails(resolutionDetails);
-                ticket.SetStatus("Closed");
-            }
+            _manager.updateSupportTicket(ticketId, resolutionDetails);
             return RedirectToAction("Index");
         }
     }
