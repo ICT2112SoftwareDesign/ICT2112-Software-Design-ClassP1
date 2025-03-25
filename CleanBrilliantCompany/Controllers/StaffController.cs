@@ -91,6 +91,24 @@ namespace CleanBrilliantCompany.Controllers.Staff
             return View("edit-shippingagent", shippingAgent);
         }
 
+        // Delete ShippingAgent method
+        [HttpPost("DeleteShippingAgent/{id}")]
+        public async Task<IActionResult> DeleteShippingAgent(int id)
+        {
+            var result = await _shippingAgentService.DeleteShippingAgentAsync(id);
+
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Shipping agent deleted successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to delete shipping agent.";
+            }
+
+            return RedirectToAction("ShippingAgent");
+        }
+
         [HttpGet("orderfufilment")]
         public IActionResult OrderFufilment()
         {

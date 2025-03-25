@@ -25,11 +25,13 @@ namespace CleanBrilliantCompany.Services
         {
             return await _context.ShippingAgents.ToListAsync(); // Fetch from DB
         }
+        
         public async Task<ShippingAgent> GetShippingAgentByIdAsync(int id)
         {
             return await _context.ShippingAgents.FindAsync(id) ?? new ShippingAgent();
         }
-         public async Task<bool> UpdateShippingAgentAsync(ShippingAgent shippingAgent)
+        
+        public async Task<bool> UpdateShippingAgentAsync(ShippingAgent shippingAgent)
         {
             try
             {
@@ -43,6 +45,26 @@ namespace CleanBrilliantCompany.Services
                 return false;
             }
         }
+        
+        public async Task<bool> DeleteShippingAgentAsync(int id)
+        {
+            try
+            {
+                var shippingAgent = await _context.ShippingAgents.FindAsync(id);
+                if (shippingAgent == null)
+                {
+                    return false;
+                }
+                
+                _context.ShippingAgents.Remove(shippingAgent);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR deleting shipping agent: {ex.Message}\n{ex.StackTrace}");
+                return false;
+            }
+        }
     }
 }
-
