@@ -50,6 +50,25 @@ namespace CleanBrilliantCompany.Controllers
                 EmissionTrendOverTime = new Dictionary<string, float>()
             };
 
+            // Populate comparison data
+            viewModel.Products = products.Select(p => new ProductComparisonData
+            {
+                ProductId = p.getProductId(),
+                ProductName = p.getProductName(),
+                CarbonEmission = p.calculateSelfEmission()
+            }).ToList();
+
+            var shippingMethodEmissions = orders
+                .GroupBy(o => o.retrieveTransportMode().ToUpper())
+                .Select(g => new ShippingMethodComparisonData
+                {
+                    TransportMode = g.Key,
+                    AverageCarbonEmission = g.Average(o => o.calculateSelfEmission())
+                })
+                .ToList();
+
+            viewModel.ShippingMethods = shippingMethodEmissions;
+
             viewModel.EmissionTrendDaily = orders
                 .GroupBy(o => o.retrieveDateCreated().ToString("yyyy-MM-dd"))
                 .OrderBy(g => DateTime.Parse(g.Key))
