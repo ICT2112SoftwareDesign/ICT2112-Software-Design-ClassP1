@@ -1,9 +1,11 @@
+using CleanBrilliantCompany.Models.Control;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 var configuration = builder.Configuration;
 builder.Services.AddSingleton<IConfiguration>(configuration);
-
+builder.Services.AddTransient<ReorderRequestManagement>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
