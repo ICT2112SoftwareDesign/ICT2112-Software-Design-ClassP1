@@ -19,7 +19,6 @@ namespace CleanBrilliantCompany.Models.Control
         public ItemControl(IConfiguration configuration, iProduct iproductInterface)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-            Console.WriteLine(connectionString);
             _itemMapper = new ItemMapper(connectionString);
             _iproductInterface = iproductInterface;
             Console.WriteLine("Products loaded from database.");

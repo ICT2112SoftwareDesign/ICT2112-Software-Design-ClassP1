@@ -145,12 +145,14 @@ namespace CleanBrilliantCompany.Controllers
         public async Task<IActionResult> retrieveProductDetails(int testProductId)
         {
             testProductId = 2;
-            Product? item = await _itemControl.retrieveProductDetails(testProductId);
-            // Console.WriteLine("RETURN PRODUCT: " + item.ProductId);
-            // Console.WriteLine("RETURN PRODUCT: " + item.ProductCategory);
-            // Console.WriteLine("RETURN PRODUCT: " + item.ProductName);
-            // Console.WriteLine("RETURN PRODUCT: " + item.ProductState);
-            // Console.WriteLine("RETURN PRODUCT: " + item.ProductWeight);
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+            Product? product = await _itemControl.retrieveProductDetails(testProductId);
+            productInfo.Add(product.retrieveProductInfo());
+            Console.WriteLine($"Product ID: {productInfo[0]["ProductId"]}");
+            Console.WriteLine($"Product Name: {productInfo[0]["ProductName"]}");
+            Console.WriteLine($"Product Category: {productInfo[0]["ProductCategory"]}");
+            Console.WriteLine($"Manufacturer ID: {productInfo[0]["ManufacturerId"]}");
+            Console.WriteLine($"Quantity: {productInfo[0]["Quantity"]}");
 
             return RedirectToAction("Index");
         }
