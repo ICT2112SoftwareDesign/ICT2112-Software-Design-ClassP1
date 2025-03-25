@@ -7,30 +7,36 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class GoalManagementController
+    public class GoalsManagement
     {
         private readonly IGoalsDB _goalDb;
+        private readonly IGoalsQuery _goalsQuery;
 
-        public GoalManagementController(IGoalsDB goalDb)
+        public GoalsManagement(IGoalsDB goalsDb, IGoalsQuery goalsQuery)
         {
-            _goalDb = goalDb;
+            _goalDb = goalsDb;
+            _goalsQuery = goalsQuery;
         }
 
-        public async Task CreateGoal(int id, float target, int year, int month)
+        public async Task AddGoal(int goalId, float targetEmission, int goalYear, int goalMonth)
         {
-            GoalsSDM newGoal = new GoalsSDM(id, target, year, month);
-            await _goalDb.InsertGoal(newGoal);
+            var goal = new GoalsSDM(goalId, targetEmission, goalYear, goalMonth);
+            await _goalDb.InsertGoal(goal);
         }
 
-        public async Task UpdateGoal(int id, float newTarget, int year, int month)
+        public async Task UpdateGoal(int goalId, float targetEmission)
         {
-            await _goalDb.UpdateGoal(id, newTarget, year, month);
+            var existingGoal = await _goalDb.FindGoal(goalId);
+            if (existingGoal != null)
+            {
+                existingGoal.UpdateTargetEmission(targetEmission);
+                await _goalDb.UpdateGoal(existingGoal);
+            }
         }
 
-        public async Task DeleteGoal(int id)
+        public async Task<GoalsSDM> GetGoal(int goalId)
         {
-            await _goalDb.DeleteGoal(id);
+            return await _goalDb.FindGoal(goalId);
         }
     }
-
 }

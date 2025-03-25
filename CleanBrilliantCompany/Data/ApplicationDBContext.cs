@@ -8,10 +8,12 @@ namespace CleanBrilliantCompany.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<IngredientSDM> Ingredients { get; set; }
+        public DbSet<GoalsSDM> Goals { get; set; }
         
         // We need this just for mapping - this doesn't create a new entity since other team handles it
         // This is just for the ORM to access the existing Product table
         public DbSet<ProductMapping> Products { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

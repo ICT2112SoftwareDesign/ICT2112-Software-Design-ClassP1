@@ -21,6 +21,9 @@ builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
 builder.Services.AddScoped<ICarbonNotification, CarbonNotification>();
 
+builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
+builder.Services.AddScoped<IGoalsQuery, GoalsGateway>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

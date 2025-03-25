@@ -3,51 +3,10 @@ namespace CleanBrilliantCompany.Models.Entity
 {
     public class GoalsSDM
     {
-        private int goalId;
-        private float targetEmission;
-        private int goalYear;
-        private int goalMonth;
-
-        // Getters and Setters
-        public int GetGoalId()
-        {
-            return goalId;
-        }
-
-        public void SetGoalId(int id)
-        {
-            goalId = id;
-        }
-
-        public float GetTargetEmission()
-        {
-            return targetEmission;
-        }
-
-        public void SetTargetEmission(float emission)
-        {
-            targetEmission = emission;
-        }
-
-        public int GetGoalYear()
-        {
-            return goalYear;
-        }
-
-        public void SetGoalYear(int year)
-        {
-            goalYear = year;
-        }
-
-        public int GetGoalMonth()
-        {
-            return goalMonth;
-        }
-
-        public void SetGoalMonth(int month)
-        {
-            goalMonth = month;
-        }
+        private int goalId { get; set; }
+        private float targetEmission { get; set; }
+        private int goalYear { get; set; }
+        private int goalMonth { get; set; }
 
         // Constructor
         public GoalsSDM(int goalId, float targetEmission, int goalYear, int goalMonth)
@@ -58,15 +17,18 @@ namespace CleanBrilliantCompany.Models.Entity
             this.goalMonth = goalMonth;
         }
 
-        // Public methods to access private fields
+        // Getters
+        public int GetGoalId() => goalId;
+        public float GetTargetEmission() => targetEmission;
+        public int GetGoalYear() => goalYear;
+        public int GetGoalMonth() => goalMonth;
 
-        
+        // Public methods to access private fields
         public void UpdateTargetEmission(float newEmission)
         {
             targetEmission = newEmission;
         }
 
-        
         public void UpdateGoalDate(int year, int month)
         {
             goalYear = year;

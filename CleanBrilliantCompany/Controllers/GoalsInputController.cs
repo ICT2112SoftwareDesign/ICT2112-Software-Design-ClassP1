@@ -10,7 +10,13 @@ namespace CleanBrilliantCompany.Controllers
 {
     public class GoalsInputController : Controller
     {
-        private readonly IGoalsDB _goalDb = new GoalsGateway();
+        private readonly IGoalsDB _goalDb;
+
+        // Constructor Injection of IGoalsDB
+        public GoalsInputController(IGoalsDB goalDb)
+        {
+            _goalDb = goalDb;
+        }
 
         public ActionResult Create()
         {

@@ -6,10 +6,10 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IGoalsDB
     {
-        Task<List<GoalsSDM>> GetAllGoals();
         Task InsertGoal(GoalsSDM goal);
-        Task UpdateGoal(int goalId, float targetEmission, int goalYear, int goalMonth);
+        Task UpdateGoal(GoalsSDM goal);
         Task DeleteGoal(int goalId);
-        Task<GoalsSDM> FindGoals(int goalId);       
+        Task<GoalsSDM> FindGoal(int goalId);
+        Task<List<GoalsSDM>> GetAllGoals();
     }
 }

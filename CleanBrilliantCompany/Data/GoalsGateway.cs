@@ -12,42 +12,57 @@ using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Data
 {
-    public class GoalsGateway : IGoalsDB
+    public class GoalsGateway : IGoalsDB, IGoalsQuery
     {
-        private static List<GoalsSDM> goals = new List<GoalsSDM>(); // Store GoalsSDM objects
+        private readonly ApplicationDbContext _context;
 
-        public async Task<List<GoalsSDM>> GetAllGoals()
+        public GoalsGateway(ApplicationDbContext context)
         {
-            return await Task.FromResult(goals);
+            _context = context;
         }
 
+        // Insert Goal
         public async Task InsertGoal(GoalsSDM goal)
         {
-            goals.Add(goal);
-            await Task.CompletedTask;
+            _context.Goals.Add(goal);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateGoal(int goalId, float targetEmission, int goalYear, int goalMonth)
+        // Update Goal
+        public async Task UpdateGoal(GoalsSDM goal)
         {
-            var goal = goals.FirstOrDefault(g => g.GetGoalId() == goalId);
-            if (goal != null)
-            {
-                goal.UpdateTargetEmission(targetEmission);
-                goal.UpdateGoalDate(goalYear, goalMonth);
-            }
-            await Task.CompletedTask;
+            _context.Goals.Update(goal);
+            await _context.SaveChangesAsync();
         }
 
+        // Delete Goal
         public async Task DeleteGoal(int goalId)
         {
-            goals.RemoveAll(g => g.GetGoalId() == goalId);
-            await Task.CompletedTask;
+            var goal = await _context.Goals.FindAsync(goalId);
+            if (goal != null)
+            {
+                _context.Goals.Remove(goal);
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public async Task<GoalsSDM> FindGoals(int goalId)
+        // Find Goal by ID
+        public async Task<GoalsSDM> FindGoal(int goalId)
         {
-            var goal = goals.FirstOrDefault(g => g.GetGoalId() == goalId);
-            return await Task.FromResult(goal);
+            return await _context.Goals.FindAsync(goalId);
+        }
+
+        // Get All Goals
+        public async Task<List<GoalsSDM>> GetAllGoals()
+        {
+            return await _context.Goals.ToListAsync();
+        }
+
+        // Check if Goal Exists for Year & Month
+        public async Task<bool> CheckGoalsQuery(int goalYear, int goalMonth)
+        {
+            return await _context.Goals.AnyAsync(g => g.GetGoalYear() == goalYear && g.GetGoalMonth() == goalMonth);
         }
     }
 }
+
