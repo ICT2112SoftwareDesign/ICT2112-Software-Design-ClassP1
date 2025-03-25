@@ -605,15 +605,10 @@ namespace CleanBrilliantCompany.Mappers
 
                         if (updatedItemIds.Count == 2)
                         {
-                            // update selected items returned back from the first select query
-                            string updateQuery = @"
-                            UPDATE Item SET itemStatus = 'Sold', orderId = @orderId 
-                            WHERE itemId IN (" + string.Join(",", updatedItemIds) + ");";
-
-                            using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
+                            // Update the selected items using updateItemStatus method
+                            foreach (int itemId in updatedItemIds)
                             {
-                                updateCommand.Parameters.AddWithValue("@orderId", orderId);
-                                updateCommand.ExecuteNonQuery();
+                                updateItemStatus(itemId, null, orderId, null, null, ItemStatus.Sold);
                             }
                         }
                     }

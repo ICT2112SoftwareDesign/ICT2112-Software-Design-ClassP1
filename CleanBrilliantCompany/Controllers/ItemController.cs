@@ -181,7 +181,7 @@ namespace CleanBrilliantCompany.Controllers
                 {2, 2} // product id, quantity so prod id 2, quantity:2
             };
 
-            await _itemControl.adjustInventory(orderId, orderProducts);
+            _itemControl.adjustInventory(orderId, orderProducts);
             return RedirectToAction("Index");
         }
 

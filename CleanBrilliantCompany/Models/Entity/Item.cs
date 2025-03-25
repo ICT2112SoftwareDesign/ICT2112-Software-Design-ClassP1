@@ -135,7 +135,7 @@ namespace CleanBrilliantCompany.Models.Entity
             _observers.Add(observer);
         }
 
-        public void Detatch(IObserver observer)
+        public void Detach(IObserver observer)
         {
             _observers.Remove(observer);
         }

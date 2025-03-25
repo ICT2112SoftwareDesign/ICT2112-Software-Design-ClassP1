@@ -57,18 +57,30 @@ namespace CleanBrilliantCompany.Models.Control
             Console.WriteLine("Called registerObservers method and attached observer to item");
         }
 
+        public void RegisterObserversList(List<Item> item)
+        {
+            foreach (var i in item)
+            {
+                i.Attach(_transactionObserver);
+                Console.WriteLine("Called registerObservers method and attached observer to item");
+            }
+
+        }
+
+
         // METHOD FOR IITEMUPDATE 
         public async Task<bool> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
         {
             //return await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
-            bool dbUpdated = await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, returnId, transferId, status));
+            bool dbUpdated = await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
 
-            if(dbUpdated)
+            if (dbUpdated)
             {
                 Item item = await getItemById(itemId);
 
                 if (item != null)
                 {
+                    Console.WriteLine("CALLING UPDATE ITEM STATUS IN CONTROL");
                     RegisterObservers(item); //attach observers before updating
                     item.UpdateStatus(status); //update and notify observers
                 }
@@ -121,9 +133,16 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // METHOD FOR HANDLING ORDERED ITEMS 
-        public async Task<List<Item>> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
+        public List<Item> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
         {
-            return await Task.FromResult(_itemMapper.adjustInventory(orderId, orderProducts));
+            List<Item> items =  _itemMapper.adjustInventory(orderId, orderProducts);
+
+            RegisterObserversList(items); //attach observers before updating
+            foreach (var i in items) {
+                i.UpdateStatus(ItemStatus.Sold);
+            }
+
+            return items;
         }
 
         public void processCancelledOrder(int orderId)
