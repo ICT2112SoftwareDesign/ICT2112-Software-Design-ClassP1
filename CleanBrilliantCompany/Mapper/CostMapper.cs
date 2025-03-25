@@ -9,29 +9,6 @@ public class CostMapper
         this.costSimulation = costSimulation ?? throw new ArgumentNullException(nameof(costSimulation));
     }
 
-    // 🔹 Fetch Dashboard DTO
-    public DashboardDTO GetLatestCostDashboard()
-    {
-        if (costSimulation == null || costSimulation.Dashboards == null || !costSimulation.Dashboards.Any())
-        {
-            Console.WriteLine("⚠ No existing dashboards found. Creating a default dashboard.");
-            return new DashboardDTO
-            {
-                DashboardId = 999, 
-                Name = "Default Dashboard",
-                RequestedStartDate = DateTime.Now.AddMonths(-1),
-                RequestedEndDate = DateTime.Now,
-                GeneratedDate = DateTime.Now,
-                ValidityDuration = 30,
-                Type = 0
-            };
-        }
-
-        var latest = costSimulation.Dashboards.OrderByDescending(d => d.GeneratedDate).FirstOrDefault();
-        Console.WriteLine($"✅ Found existing dashboard: {latest.Name} (ID: {latest.DashboardId})");
-        return latest;
-    }
-
     // 🔹 Fetch Product Manufacturers DTOs
     public List<ProductManufacturerDTO> GetAllManufacturers()
     {
@@ -87,6 +64,4 @@ public class CostMapper
 
         return items;
     }
-        
-
 }

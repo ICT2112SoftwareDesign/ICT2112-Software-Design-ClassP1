@@ -13,12 +13,12 @@ public class CostPageController : Controller
 
 
     // Constructor
-    public CostPageController(ILogger<CostPageController> logger, CostMapper costMapper,ILogger<CostDashboardRdm> dashboardLogger, IVisualizationService visualizationService, IAlertService alertService) 
+    public CostPageController(ILogger<CostPageController> logger, CostMapper costMapper,ILogger<CostDashboardRdm> dashboardLogger, IVisualizationService visualizationService, IAlertService alertService,ApplicationDbContext dbContext) 
     {
         this.logger = logger;
         
         // ✅ Initialize CostControl
-        costControl = new CostControl(costMapper,dashboardLogger,visualizationService,alertService);
+        costControl = new CostControl(costMapper,dashboardLogger,visualizationService,alertService,dbContext);
     }
 
     [HttpGet("")]
@@ -31,6 +31,17 @@ public class CostPageController : Controller
             return View();
         }
         return View(latestDashboard);
+    }
+    
+    [HttpPost("GenerateDashboard")]
+    public IActionResult GenerateDashboard()
+    {
+        bool created = costControl.GenerateNewDashboardIfOutdated();
+
+        if (created)
+            return Ok(new { message = "✅ New dashboard created." });
+        else
+            return Ok(new { message = "ℹ️ Dashboard is already up-to-date." });
     }
 
     [HttpGet("GetCostVisualization")]

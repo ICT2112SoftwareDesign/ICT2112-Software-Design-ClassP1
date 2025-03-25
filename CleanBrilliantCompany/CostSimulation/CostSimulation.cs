@@ -20,7 +20,7 @@ public class CostSimulation
                 RequestedEndDate = DateTime.Now,
                 GeneratedDate = DateTime.Now.AddDays(-1),
                 ValidityDuration = 5,
-                Type = 1
+                TypeId = 1
             }
         };
         

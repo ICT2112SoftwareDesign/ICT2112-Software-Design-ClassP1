@@ -58,7 +58,7 @@ public class CostDashboardRdm : Dashboard
         StartDate = dto.RequestedStartDate;
         EndDate = dto.RequestedEndDate;
         ValidityDuration = dto.ValidityDuration;
-        Type = dto.Type;
+        Type = dto.TypeId;
 
 
 
