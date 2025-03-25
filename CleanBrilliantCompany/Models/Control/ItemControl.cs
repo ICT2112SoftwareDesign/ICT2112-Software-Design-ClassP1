@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse
     {
         private readonly ItemMapper _itemMapper;
 
@@ -31,9 +31,9 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getItemById(itemId));
         }
 
-        public async Task<bool> createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        public async Task<bool> createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
         {
-            return await Task.FromResult(_itemMapper.createItem(itemId, productId, salePrice, batchCode, warehouseId, status));
+            return await Task.FromResult(_itemMapper.createItem(productId, salePrice, batchCode, warehouseId, status));
         }
 
         public async Task<bool> updateItem(int itemId, float salePrice)

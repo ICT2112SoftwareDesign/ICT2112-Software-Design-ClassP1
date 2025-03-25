@@ -208,7 +208,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // create item
-        public bool createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        public bool createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -220,7 +220,6 @@ namespace CleanBrilliantCompany.Mappers
 
                 using (SqlCommand command = new SqlCommand(insertQuery, connection))
                 {
-                    command.Parameters.AddWithValue("@itemId", itemId);
                     command.Parameters.AddWithValue("@productId", productId);
                     command.Parameters.AddWithValue("@salePrice", salePrice);
                     command.Parameters.AddWithValue("@batchCode", batchCode);
