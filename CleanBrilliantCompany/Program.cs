@@ -5,64 +5,66 @@ using CleanBrilliantCompany.Control;
 using CleanBrilliantCompany.Models;
 using QuestPDF.Infrastructure;
 
-// quest pdf community license
+// -------------------------------
+// Load Environment Variables
+// -------------------------------
+Env.Load();
+var connectionString = Env.GetString("CONNECTION_STRING");
+var apiKey = Env.GetString("OPENAI_API_KEY");
+
+// -------------------------------
+// Set QuestPDF Community License
+// -------------------------------
 QuestPDF.Settings.License = LicenseType.Community;
 
+// -------------------------------
+// .NET Runtime Configuration
+// -------------------------------
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+// Optional: Force TLS 1.2+ to ensure compatibility with OpenAI
+System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12 | System.Net.SecurityProtocolType.Tls13;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-// load environment variables from .env file 
-Env.Load();
-
-// get the connection string from the environment variables 
-var connectionString = Env.GetString("CONNECTION_STRING");
-
-// Configure services and add DbContext
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// -------------------------------
+// Database Configuration
+// -------------------------------
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Add services to the container.
+// -------------------------------
+// MVC Setup
+// -------------------------------
 builder.Services.AddControllersWithViews();
 
-
-
-// register fake context as a singleton 
+// -------------------------------
+// Dev + Fake Data
+// -------------------------------
 builder.Services.AddSingleton<FakeDbContext>();
-
-
-// register aging mapper to use fakedb context 
-//builder.Services.AddScoped<AgingMapper>(); 
-
 builder.Services.AddScoped<AgingRepo, AgingMapper>();
 
-
-// connect to openai unsecured
-AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
-// report generation
+// -------------------------------
+// OpenAI + Report Generation
+// -------------------------------
 builder.Services.AddHttpClient<IAIService, AIService>();
 builder.Services.AddScoped<ReportGenerator>();
 builder.Services.AddScoped<ReportControl>();
+Console.WriteLine($"[Debug] OpenAI Key Length: {apiKey?.Length}");
 
 
-
-
+// -------------------------------
+// Build & Run the App
+// -------------------------------
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -71,6 +73,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
