@@ -44,18 +44,5 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
             }
             return RedirectToAction("Index");
         }
-
-        // Update ticket status (e.g., when status is changed, not resolved)
-        [HttpPost]
-        [Route("UpdateStatus/{ticketId}")]
-        public IActionResult UpdateStatus(int ticketId, string status)
-        {
-            var ticket = tickets.FirstOrDefault(t => t.TicketId == ticketId);
-            if (ticket != null)
-            {
-                ticket.SetStatus(status);
-            }
-            return RedirectToAction("Index");
-        }
     }
 }
