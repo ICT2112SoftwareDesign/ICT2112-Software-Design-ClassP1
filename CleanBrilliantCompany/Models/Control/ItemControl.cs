@@ -3,12 +3,15 @@ using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Mappers;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Models.Control
 {
     public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse
     {
         private readonly ItemMapper _itemMapper;
+
+        private readonly TransactionControl _transactionObserver; //Added observer
 
         private readonly iProduct _iproductInterface;
 
@@ -18,6 +21,7 @@ namespace CleanBrilliantCompany.Models.Control
             _itemMapper = new ItemMapper(connectionString);
             _iproductInterface = iproductInterface;
             Console.WriteLine("Products loaded from database.");
+            _transactionObserver = new TransactionControl(connectionString);
         }
 
         // METHODS FOR IITEM
@@ -47,10 +51,30 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
         }
 
+        public void RegisterObservers(Item item)
+        {
+            item.Attach(_transactionObserver);
+            Console.WriteLine("Called registerObservers method and attached observer to item");
+        }
+
         // METHOD FOR IITEMUPDATE 
         public async Task<bool> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
         {
-            return await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
+            //return await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
+            bool dbUpdated = await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, returnId, transferId, status));
+
+            if(dbUpdated)
+            {
+                Item item = await getItemById(itemId);
+
+                if (item != null)
+                {
+                    RegisterObservers(item); //attach observers before updating
+                    item.UpdateStatus(status); //update and notify observers
+                }
+            }
+
+            return dbUpdated;
         }
 
         // for transaction feature, might remove in future
