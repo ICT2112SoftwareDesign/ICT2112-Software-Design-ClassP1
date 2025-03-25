@@ -159,7 +159,7 @@ namespace CleanBrilliantCompany.Models.Control
                 }
             }
 
-            // RegisterObserversList(items); //attach observers before updating
+            RegisterObserversList(items); //attach observers before updating
             foreach (var i in items)
             {
                 i.UpdateStatus(ItemStatus.Sold);
