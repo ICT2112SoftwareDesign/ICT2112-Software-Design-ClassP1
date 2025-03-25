@@ -7,7 +7,5 @@ namespace CleanBrilliantCompany.Interfaces
         bool addProductCF(int productId, string productName, string productCategory, double carbonEmission, string ecoStatus, DateTime dateCreated);
 
         public double getProductCarbonFootprint(int productCFId);
-
-        public List<ProductCarbonFootprintRDM> getAllProductCarbonFootprint();
     }
 }
