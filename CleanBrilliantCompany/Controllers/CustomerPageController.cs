@@ -524,7 +524,6 @@ namespace CleanBrilliantCompany.Controllers
             // Save the address if provided
             if (!string.IsNullOrWhiteSpace(deliveryAddress))
             {
-                // Optionally save the new address to the customer's profile
                 var customer = _customerManagement.getCustomer(customerID.Value);
                 customer.setSession("customerAddress", deliveryAddress); // Save to session
             }
@@ -551,18 +550,19 @@ namespace CleanBrilliantCompany.Controllers
 
             // Calculate the cart total
             decimal cartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
-            
-            // Fetch available shipping options
-            var selectedServiceEnum = Enum.TryParse<Service>(serviceType, out var serviceEnum) ? serviceEnum : Service.OneDay;
-            var shippingAgents = _shippingAgents.getShippingAgentList(selectedServiceEnum);
+
+            // Fetch available shipping options using OrderManagement
+            var shippingAgents = _orderManagement.getAvailableShippingAgents(serviceType);
+            var serviceTypes = _orderManagement.getServiceTypes();
+            var shippingMethods = _orderManagement.getShippingMethods();
 
             // Pass updated values back to the view
             ViewBag.Products = products;
             ViewBag.Cart = cart;
             ViewBag.CartTotal = cartTotal;
-            ViewBag.CustomerAddress = deliveryAddress; // Pass the updated address back to the view
-            ViewBag.ServiceTypes = _shippingAgents.getServiceTypes();
-            ViewBag.ShippingMethods = _shippingAgents.getShippingMethods();
+            ViewBag.CustomerAddress = deliveryAddress;
+            ViewBag.ServiceTypes = serviceTypes;
+            ViewBag.ShippingMethods = shippingMethods;
             ViewBag.ShippingAgents = shippingAgents;
             ViewBag.SelectedServiceType = serviceType;
             ViewBag.SelectedShippingType = shippingType;

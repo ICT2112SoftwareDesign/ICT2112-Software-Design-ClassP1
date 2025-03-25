@@ -9,7 +9,8 @@ namespace CleanBrilliantCompany.Interfaces
         List<OrderRDM> getOrderHistory(int customerId);
         bool cancelOrder(int orderId);
         bool updateOrderStatus(int orderId, string status);
+        List<OrderRDM> getAllOrders();
+        List<int> getOrderItemIds(int orderId);
         
-       // List<Item> retrieveOrderItems(int orderId);
     }
 }

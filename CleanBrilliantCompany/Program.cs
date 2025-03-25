@@ -47,6 +47,16 @@ builder.Services.AddSingleton<ICartDatabase>(provider =>
     return new CartMapper(connectionString, observer);
 });
 
+// Register the Order Observer (OrderSystemLogger)
+builder.Services.AddSingleton<IOrderQueryObserver, OrderSystemLogger>();
+
+// Register the OrderMapper (depends on IOrderQueryObserver)
+builder.Services.AddSingleton<IOrderDatabase>(provider =>
+{
+    var observer = provider.GetRequiredService<IOrderQueryObserver>();
+    return new OrderMapper(connectionString, observer);
+});
+
 // Finally the management (which depends on the mapper)
 builder.Services.AddTransient<CustomerManagement>();
 builder.Services.AddTransient<SupportManagement>();
@@ -56,7 +66,6 @@ builder.Services.AddScoped<IProduct, ProductManagement>();
 builder.Services.AddScoped<IWishlistManagement, WishlistManagement>();
 builder.Services.AddScoped<IOrder, OrderManagement>();
 builder.Services.AddTransient<OrderManagement>();
-builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString));
 builder.Services.AddTransient<CartManagement>();
 builder.Services.AddTransient<ICartManagement, CartManagement>();
 builder.Services.AddSingleton<IWishlistDatabase>(new WishlistMapper(connectionString));

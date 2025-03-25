@@ -1,5 +1,9 @@
 using Microsoft.Data.SqlClient;
 using System.Text.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -7,11 +11,14 @@ namespace CleanBrilliantCompany.Models
     {
         private readonly string _connectionString;
 
-        public OrderMapper(string connectionString)
+        private readonly IOrderQueryObserver _observer;
+
+        public OrderMapper(string connectionString, IOrderQueryObserver observer)
         {
             _connectionString = connectionString;
+            _observer = observer;
         }
-
+        
         public int insertOrder(OrderRDM order)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -43,7 +50,12 @@ namespace CleanBrilliantCompany.Models
 
                 connection.Open();
                 var result = command.ExecuteScalar();
-                return result != null ? Convert.ToInt32(result) : 0;
+                int orderId = result != null ? Convert.ToInt32(result) : 0;
+
+                // Notify the observer about the new order
+                _observer.onOrderCreated(orderId, order.GetCustomerID(), order.GetOrderTotal());
+
+                return orderId;
             }
         }
 
@@ -198,8 +210,118 @@ namespace CleanBrilliantCompany.Models
 
                 connection.Open();
                 var rowsAffected = command.ExecuteNonQuery();
+
+                 if (rowsAffected > 0)
+                {
+                    // Notify the observer about the order update
+                    _observer.onOrderUpdated(order.GetOrderID(), order.GetCustomerID(), order.GetStatus());
+                }
+
                 return rowsAffected > 0;
             }
+        }
+
+         public bool cancelOrder(int orderId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "UPDATE CustOrder SET Status = 'Cancelled' WHERE orderID = @OrderID";
+
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@OrderID", orderId);
+
+                connection.Open();
+                var rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    // Notify the observer about the order cancellation
+                    _observer.onOrderCancelled(orderId, 0); // Pass 0 for customerId if it's not available
+                }
+
+                return rowsAffected > 0;
+            }
+        }
+        
+        public List<OrderRDM> getAllOrders()
+        {
+            var orders = new List<OrderRDM>();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "SELECT * FROM CustOrder ORDER BY orderDate DESC";
+                var command = new SqlCommand(query, connection);
+
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var orderProducts = reader["orderProducts"] != DBNull.Value
+                            ? JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString())
+                            : new Dictionary<int, int>();
+
+                        var orderItems = reader["orderItems"] != DBNull.Value
+                            ? JsonSerializer.Deserialize<List<int>>(reader["orderItems"].ToString())
+                            : new List<int>();
+
+                        orders.Add(new OrderRDM(
+                            orderID: Convert.ToInt32(reader["orderID"]),
+                            customerID: Convert.ToInt32(reader["customerID"]),
+                            orderAddress: reader["orderAddress"].ToString(),
+                            orderProducts: orderProducts,
+                            orderShipping: reader["orderShipping"].ToString(),
+                            orderItems: orderItems,
+                            orderDate: Convert.ToDateTime(reader["orderDate"]),
+                            status: reader["Status"].ToString(),
+                            orderTotal: Convert.ToDecimal(reader["orderTotal"])
+                        ));
+                    }
+                }
+            }
+            return orders;
+        }
+
+        public List<OrderRDM> getOrdersByMonth(int monthNumber)
+        {
+            var orders = new List<OrderRDM>();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = @"
+                    SELECT * FROM CustOrder
+                    WHERE MONTH(orderDate) = @MonthNumber
+                    ORDER BY orderDate DESC";
+
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@MonthNumber", monthNumber);
+
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var orderProducts = reader["orderProducts"] != DBNull.Value
+                            ? JsonSerializer.Deserialize<Dictionary<int, int>>(reader["orderProducts"].ToString())
+                            : new Dictionary<int, int>();
+
+                        var orderItems = reader["orderItems"] != DBNull.Value
+                            ? JsonSerializer.Deserialize<List<int>>(reader["orderItems"].ToString())
+                            : new List<int>();
+
+                        orders.Add(new OrderRDM(
+                            orderID: Convert.ToInt32(reader["orderID"]),
+                            customerID: Convert.ToInt32(reader["customerID"]),
+                            orderAddress: reader["orderAddress"].ToString(),
+                            orderProducts: orderProducts,
+                            orderShipping: reader["orderShipping"].ToString(),
+                            orderItems: orderItems,
+                            orderDate: Convert.ToDateTime(reader["orderDate"]),
+                            status: reader["Status"].ToString(),
+                            orderTotal: Convert.ToDecimal(reader["orderTotal"])
+                        ));
+                    }
+                }
+            }
+            return orders;
         }
     }
 }
