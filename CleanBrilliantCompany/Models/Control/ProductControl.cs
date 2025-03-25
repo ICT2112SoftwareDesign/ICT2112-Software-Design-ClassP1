@@ -56,9 +56,14 @@ namespace CleanBrilliantCompany.Models.Control
                                     manufacturerId, productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState);;
         }
 
-        public void updateQuantity(int productId, int quantity)
+        public void updateQuantity(int productId, int quantity, string arithmeticOperations)
         {
-            _productMapper.update(productId, quantity);
+            Product product = getProductDetails(productId);
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+            productInfo.Add(product.retrieveProductInfo());
+            int oldQty = Convert.ToInt32(productInfo[0]["Quantity"]);
+            Console.WriteLine("OLD QUANTITY IN PRODUCT MAPPER: " + oldQty);
+            _productMapper.update(productId, oldQty, quantity, arithmeticOperations);
         }
 
 
@@ -190,7 +195,7 @@ namespace CleanBrilliantCompany.Models.Control
                 {
                     int productQuantity = (int)productInfo["Quantity"];
                     int finalQuantity = productQuantity + request.Quantity;
-                    updateQuantity(request.ProductId, finalQuantity);
+                    // updateQuantity(request.ProductId, finalQuantity);
                 }
 
                 // Add the amount of items into the db.
@@ -200,7 +205,6 @@ namespace CleanBrilliantCompany.Models.Control
                     // Get method from interface for creation
                     // createItem(itemID?, request.ProductId, salePrice?, batchCode, warehouseId?, status = available)
                 }
-
             }
                 
         }
