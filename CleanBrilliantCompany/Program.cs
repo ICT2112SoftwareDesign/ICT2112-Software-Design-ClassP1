@@ -5,6 +5,9 @@ using CleanBrilliantCompany.Interfaces.StaffAuth;
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.StaffAuth;
+using CleanBrilliantCompany.Data.SupportTicket;
+using CleanBrilliantCompany.Models.SupportTicket;
+using CleanBrilliantCompany.Interfaces.SupportTicket;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,14 @@ builder.Services.AddScoped<IRefundQuery, RefundManagement>();
 builder.Services.AddScoped<IRefundDetails, RefundDetails>();
 builder.Services.AddScoped<IOrder, MockOrderService>(); // change later when team5 is done
 builder.Services.AddScoped<ISubmitRefund, RefundManagement>();
+
+// Adding services for Support Ticket
+builder.Services.AddScoped<ISupportTicket, SupportTicketManagement>();
+builder.Services.AddScoped<iSupportTicketQuery, SupportTicketManagement>();
+builder.Services.AddScoped<SupportTicketManagement>();
+builder.Services.AddScoped<SupportTicketTableDataGateway>(provider =>
+    new SupportTicketTableDataGateway(connectionString!));
+
 
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();

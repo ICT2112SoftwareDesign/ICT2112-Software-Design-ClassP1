@@ -1,0 +1,79 @@
+@model List<CleanBrilliantCompany.Models.SupportTicket.SupportTicketSDM>
+@{
+    ViewData["Title"] = "Support Ticket Management";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Manage Support Tickets</title>
+
+    <!-- Custom styles -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet"> 
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        @await Html.PartialAsync("~/Views/StaffRefund/staff-sidebar.cshtml")
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+
+                <!-- Topbar -->
+                @await Html.PartialAsync("~/Views/StaffRefund/staff-topbar.cshtml")
+
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Support Ticket Management</h1>
+
+                    <!-- TEST ONLY: Create Ticket Button -->
+                    <form asp-action="createSupportTicket" method="post">
+                        <input type="hidden" name="customerId" value="7" />
+                        <button type="submit" class="btn btn-success btn-sm mb-3">+ Create New Ticket</button>
+                    </form>
+
+                    <!-- Ticket Table -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Ticket ID</th>
+                                            <th>Customer ID</th>
+                                            <th>Status</th>
+                                            <th>Created At</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var ticket in Model)
+                                        {
+                                            <tr>
+                                                <td>@ticket.TicketId</td>
+                                                <td>@ticket.CustomerId</td>
+                                                <td>@ticket.Status</td>
+                                                <td>@ticket.CreatedAt.ToString("g")</td>
+                                                <td>
+                                                    <a asp-action="displayTicketDetails" asp-route-ticketId="@ticket.TicketId"
+                                                    class="btn btn-sm btn-primary">View</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- /.container-fluid -->
+
+            </div> <!-- /#content -->
+        </div> <!-- /#content-wrapper -->
+    </div>
+</body>
+</html>
