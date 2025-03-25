@@ -146,11 +146,11 @@ namespace CleanBrilliantCompany.Controllers
         {
             testProductId = 2;
             Product? item = await _itemControl.retrieveProductDetails(testProductId);
-            Console.WriteLine("RETURN PRODUCT: " + item.ProductId);
-            Console.WriteLine("RETURN PRODUCT: " + item.ProductCategory);
-            Console.WriteLine("RETURN PRODUCT: " + item.ProductName);
-            Console.WriteLine("RETURN PRODUCT: " + item.ProductState);
-            Console.WriteLine("RETURN PRODUCT: " + item.ProductWeight);
+            // Console.WriteLine("RETURN PRODUCT: " + item.ProductId);
+            // Console.WriteLine("RETURN PRODUCT: " + item.ProductCategory);
+            // Console.WriteLine("RETURN PRODUCT: " + item.ProductName);
+            // Console.WriteLine("RETURN PRODUCT: " + item.ProductState);
+            // Console.WriteLine("RETURN PRODUCT: " + item.ProductWeight);
 
             return RedirectToAction("Index");
         }

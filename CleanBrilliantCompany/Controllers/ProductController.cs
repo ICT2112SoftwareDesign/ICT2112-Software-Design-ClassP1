@@ -12,21 +12,9 @@ namespace CleanBrilliantCompany.Controllers
         private readonly ProductControl _productControl;
         private readonly AgingControl _agingControl; // Testing
 
-        // public ProductController(IConfiguration configuration, ReorderRequestManagement reorderRequestManagement)
-        // {
-        //     string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        //     // ReorderRequestManagement reorderRequestManager = new ReorderRequestManagement();
-        //     _productControl = new ProductControl(connectionString, reorderRequestManagement);
-        //     // _productControl = new ProductControl(connectionString, reorderRequestManager);
-        //     _agingControl = new AgingControl(_productControl); // Testing
-        // }
-
-        public ProductController(IConfiguration configuration, ReorderRequestManagement reorderRequestManagement)
+        public ProductController(IConfiguration configuration, iReorderRequest reorderRequest)
         {
-            // string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            // _productControl = new ProductControl(connectionString);
-            // _productControl = new ProductControl(configuration, reorderRequestManagement);
-            _productControl = new ProductControl(configuration, reorderRequestManagement);
+            _productControl = new ProductControl(configuration, reorderRequest);
 
             _agingControl = new AgingControl(_productControl); // Testing
         }
