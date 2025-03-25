@@ -9,8 +9,16 @@ namespace CleanBrilliantCompany.Models.Control
     {
         private readonly ProductMapper _productMapper;
         private readonly iReorderRequest _ireorderRequest;
-        public ProductControl(string connectionString, iReorderRequest ireorderRequest)
+        // public ProductControl(string connectionString, iReorderRequest ireorderRequest)
+        // {
+        //     _productMapper = new ProductMapper(connectionString);
+        //     _ireorderRequest = ireorderRequest;
+
+        //     Console.WriteLine("Products loaded from database.");
+        // }
+        public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest)
         {
+            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _productMapper = new ProductMapper(connectionString);
             _ireorderRequest = ireorderRequest;
 

@@ -4,8 +4,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface iProductQuantity
     {
-        // Product
-        Product getProductDetails(int productId);
-        List<Product> getAllProducts();
+        public void updateQuantity(int productId, int quantity);
     }
 }
