@@ -52,11 +52,40 @@ namespace CleanBrilliantCompany.Data
 
         public bool updateAllItemCF()
         {
+            // stub to simulate the age of the items as 3 days old
+            int STORAGE_DAYS_CONSTANT = 3;
+
             try
             {
-                // TODO: replace with actual update logic for all item CFs (recalculate based on new storage duration)
-                _querySuccess = true;
-                return true;
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                        UPDATE icf
+                        SET icf.carbonEmission = CAST(POWER(1.02, @constant) * p.carbonEmission AS INT)
+                        FROM ItemCarbonFootprint icf
+                        INNER JOIN Item i ON icf.productId = i.productId
+                        INNER JOIN Product p ON i.productId = p.productId;";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@constant", STORAGE_DAYS_CONSTANT);
+
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            _querySuccess = true;
+                        }
+                        else
+                        {
+                            _querySuccess = false;
+                        }
+                    }
+                }
+
+                return _querySuccess;
             }
             catch
             {

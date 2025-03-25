@@ -1,4 +1,6 @@
-﻿namespace CleanBrilliantCompany.Interfaces
+﻿using CleanBrilliantCompany.Models;
+
+namespace CleanBrilliantCompany.Interfaces
 {
     public interface IOrderCFManagement
     {
