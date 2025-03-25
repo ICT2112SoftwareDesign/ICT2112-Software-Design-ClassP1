@@ -133,6 +133,45 @@ namespace CleanBrilliantCompany.Data
             }
         }
 
+        public double retrieveItemCarbonFootprintByItemId(int itemId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                    SELECT carbonEmission 
+                    FROM ItemCarbonFootprint 
+                    WHERE itemId = @itemId";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@itemId", itemId);
+
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            _querySuccess = true;
+                            return Convert.ToDouble(result);
+                        }
+                        else
+                        {
+                            _querySuccess = false;
+                            return 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _querySuccess = false;
+                return 0;
+            }
+        }
+
         public List<ItemCarbonFootprintRDM> retrieveAllItemCarbonFootprint()
         {
             List<ItemCarbonFootprintRDM> results = new List<ItemCarbonFootprintRDM>();

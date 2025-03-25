@@ -56,6 +56,21 @@ namespace CleanBrilliantCompany.DomainControl
             }
         }
 
+        public double getItemCarbonFootprintByItemId(int itemId)
+        {
+            try
+            {
+                double value = _mapper.retrieveItemCarbonFootprintByItemId(itemId);
+                _lastQuerySuccess = _mapper.getQueryStatus();
+                return value;
+            }
+            catch
+            {
+                _lastQuerySuccess = false;
+                return 0;
+            }
+        }
+
         public List<ItemCarbonFootprintRDM> getAllItemCarbonFootprint()
         {
             try
