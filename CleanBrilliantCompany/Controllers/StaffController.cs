@@ -46,6 +46,48 @@ namespace CleanBrilliantCompany.Controllers.Staff
             return View(viewModel);
         }
 
+        // Display Add Shipping Agent form
+        [HttpGet("shippingagent/add")]
+        public IActionResult AddShippingAgent()
+        {
+            return View("add-shippingagent", new ShippingAgent());
+        }
+
+        // Process Add Shipping Agent form submission
+        [HttpPost("shippingagent/add")]
+        public async Task<IActionResult> AddShippingAgent(ShippingAgent shippingAgent)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Call service to add shipping agent
+                    var result = await _shippingAgentService.AddShippingAgentAsync(shippingAgent);
+
+                    if (result)
+                    {
+                        // Redirect to shipping agent list with success message
+                        TempData["SuccessMessage"] = "Shipping agent added successfully.";
+                        return RedirectToAction(nameof(ShippingAgent));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Failed to add shipping agent.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log the error
+                    System.Console.WriteLine($"Error adding shipping agent: {ex.Message}");
+                    ModelState.AddModelError("", "An error occurred while adding the shipping agent.");
+                }
+            }
+
+            // If we got this far, something failed; redisplay form
+            return View("add-shippingagent", shippingAgent);
+        }
+
+
         // Get ShippingAgent by ID method
         [HttpGet("shippingagent/edit/{id}")]
         public async Task<IActionResult> EditShippingAgent(int id)

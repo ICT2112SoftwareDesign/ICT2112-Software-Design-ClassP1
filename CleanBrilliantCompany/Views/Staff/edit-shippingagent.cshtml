@@ -262,10 +262,8 @@
                                 <input type="hidden" asp-for="ShippingAgentId" />
                                 <div class="form-group">
                                     <label asp-for="ShippingAgentCompany">Company Name</label>
-                                    <select asp-for="ShippingAgentCompany" class="form-control">
-                                        <option value="DHL">DHL</option>
-                                        <option value="Parcel Force">Parcel Force</option>
-                                    </select>
+                                    <input asp-for="ShippingAgentCompany" class="form-control"
+                                        placeholder="Enter company name" />
                                     <span asp-validation-for="ShippingAgentCompany" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
@@ -311,12 +309,12 @@
         </div>
         <!-- End of Main Content -->
 
-        
+
     </div>
     <!-- End of Content Wrapper -->
 
     <!-- Include the footer -->
-        @await Html.PartialAsync("staff-footer")
+    @await Html.PartialAsync("staff-footer")
 
     </div>
     <!-- End of Page Wrapper -->
