@@ -15,7 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Register async dependencies
 builder.Services.AddScoped<IIngredientDB, IngredientGateway>();
-builder.Services.AddScoped<IToxicityClassificationStrategy, StandardToxicityClassificationStrategy>();
+builder.Services.AddScoped<IToxicityClassificationStrategy, ToxicityClassificationStrategy>();
 builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 
 builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
@@ -43,6 +43,11 @@ app.MapControllerRoute(
     name: "toxicity",
     pattern: "toxicity",
     defaults: new { Controller = "Toxicity", action = "Index" });
+
+app.MapControllerRoute(
+    name: "toxicityByProductName",
+    pattern: "toxicity/product/{productName}",
+    defaults: new { Controller = "Toxicity", action = "ViewByProductName" });
 
 app.MapControllerRoute(
     name: "goalsManagement",

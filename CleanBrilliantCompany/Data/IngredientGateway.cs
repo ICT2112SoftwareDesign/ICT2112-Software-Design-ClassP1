@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +15,9 @@ namespace CleanBrilliantCompany.Data
         private readonly ApplicationDbContext _context;
         private readonly ILogger<IngredientGateway> _logger;
 
-        public IngredientGateway(ApplicationDbContext context, ILogger<IngredientGateway> logger)
+        public IngredientGateway(
+            ApplicationDbContext context, 
+            ILogger<IngredientGateway> logger)
         {
             _context = context;
             _logger = logger;
@@ -34,6 +37,36 @@ namespace CleanBrilliantCompany.Data
         {
             return await _context.Ingredients.AsNoTracking().Where(i => i.ProductId == productId).ToListAsync();
         }
+        
+        // Modified method to find ingredients by product name using the context
+        public async Task<List<IngredientSDM>> FindIngredientsByProductName(string productName)
+        {
+            try
+            {
+                // Look up the product by name in the Products table
+                var product = await _context.Products
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.ProductName == productName);
+                    
+                if (product == null)
+                {
+                    _logger.LogWarning($"Product not found with name: {productName}");
+                    return new List<IngredientSDM>();
+                }
+                
+                // Now find ingredients by the product ID
+                _logger.LogInformation($"Found product ID {product.ProductId} for product name: {productName}");
+                return await _context.Ingredients
+                    .AsNoTracking()
+                    .Where(i => i.ProductId == product.ProductId)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error finding ingredients by product name: {ex.Message}");
+                return new List<IngredientSDM>();
+            }
+        }
 
         public async Task InsertIngredient(IngredientSDM ingredient)
         {
@@ -48,6 +81,7 @@ namespace CleanBrilliantCompany.Data
             catch (Exception ex)
             {
                 _logger.LogError($"Error inserting ingredient: {ex.Message}");
+                throw; // Rethrow to handle in the controller
             }
         }
 
@@ -63,6 +97,7 @@ namespace CleanBrilliantCompany.Data
             catch (Exception ex)
             {
                 _logger.LogError($"Error updating ingredient: {ex.Message}");
+                throw; // Rethrow to handle in the controller
             }
         }
 
@@ -81,6 +116,7 @@ namespace CleanBrilliantCompany.Data
             catch (Exception ex)
             {
                 _logger.LogError($"Error deleting ingredient: {ex.Message}");
+                throw; // Rethrow to handle in the controller
             }
         }
     }

@@ -1,4 +1,4 @@
-@model CleanBrilliantCompany.Models.ToxicityReport
+@model CleanBrilliantCompany.DTO.ToxicityReport
 
 @{
     ViewData["Title"] = "Ingredient Toxicity Analysis";
@@ -14,15 +14,17 @@
                     <h5 class="mb-0">Select Product</h5>
                 </div>
                 <div class="card-body">
-                    <form method="get" action="@Url.Action("ViewByProduct", "Toxicity")">
+                    <form method="get" action="@Url.Action("ViewByProductName", "Toxicity")">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="productId">Select Product:</label>
-                                    <select id="productId" name="productId" class="form-control">
-                                        <option value="2">Eco-Friendly Shampoo</option>
-                                        <option value="14">Product sp9</option>
-                                        <option value="18">Product sp1</option>
+                                    <label for="productName">Select Product:</label>
+                                    <select id="productName" name="productName" class="form-control">
+                                        <option value="Eco-Friendly Shampoo">Eco-Friendly Shampoo</option>
+                                        <option value="sp1o0">sp1o0</option>
+                                        <option value="Bleach">Bleach</option>
+                                        <option value="Organic Surface Spray">Organic Surface Spray</option>
+                                        <option value="All-Purpose Cleaner">All-Purpose Cleaner</option>
                                     </select>
                                 </div>
                             </div>
@@ -117,6 +119,122 @@
             </div>
         </div>
 
+        <!-- Enhanced Analysis Section -->
+        @if (Model.ProductSafetyAnalysis != null && Model.ProductSafetyAnalysis.Any())
+        {
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Safety Analysis</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var analysis in Model.ProductSafetyAnalysis)
+                            {
+                                <div class="alert alert-secondary">
+                                    <h6>@analysis.Key</h6>
+                                    <p>@analysis.Value</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        
+        <!-- New Toxicity Trends Section -->
+        @if (Model.ToxicityTrends != null && Model.ToxicityTrends.Any())
+        {
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Toxicity Distribution Analysis</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var trend in Model.ToxicityTrends)
+                            {
+                                <div class="alert alert-info">
+                                    <h6>@trend.Key</h6>
+                                    <p>@trend.Value</p>
+                                </div>
+                            }
+                            
+                            <!-- Visual representation of toxicity distribution -->
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <h6>Visual Toxicity Distribution</h6>
+                                    <div class="progress" style="height: 30px;">
+                                        @{ 
+                                            var lowCount = Model.GetLowToxicityCount();
+                                            var modCount = Model.GetModerateToxicityCount();
+                                            var highCount = Model.GetHighToxicityCount();
+                                            var total = lowCount + modCount + highCount;
+                                            
+                                            var lowPercent = total > 0 ? (float)lowCount / total * 100 : 0;
+                                            var modPercent = total > 0 ? (float)modCount / total * 100 : 0;
+                                            var highPercent = total > 0 ? (float)highCount / total * 100 : 0;
+                                        }
+                                        
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: @lowPercent%" 
+                                             aria-valuenow="@lowPercent" aria-valuemin="0" aria-valuemax="100">
+                                            @if (lowPercent > 10) { <span>Low (@lowCount)</span> }
+                                        </div>
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: @modPercent%" 
+                                             aria-valuenow="@modPercent" aria-valuemin="0" aria-valuemax="100">
+                                            @if (modPercent > 10) { <span>Moderate (@modCount)</span> }
+                                        </div>
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: @highPercent%" 
+                                             aria-valuenow="@highPercent" aria-valuemin="0" aria-valuemax="100">
+                                            @if (highPercent > 10) { <span>High (@highCount)</span> }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        
+        <!-- New Correlation Analysis Section -->
+        @if (Model.CorrelationAnalysis != null && Model.CorrelationAnalysis.Any())
+        {
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">Ingredient Interaction Analysis</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var correlation in Model.CorrelationAnalysis)
+                            {
+                                <div class="alert @(correlation.Key.Contains("Positive") ? "alert-success" : "alert-warning")">
+                                    <h6>@correlation.Key</h6>
+                                    <p>@correlation.Value</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Carbon Footprint Info Placeholder -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Carbon Footprint Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Carbon footprint data from Module 1 will be integrated here when available.</p>
+                        <p><em>This section will display the carbon footprint impact of the product's ingredients when data becomes available.</em></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -134,6 +252,7 @@
                                     <th>Threshold Quantity</th>
                                     <th>Measurement Unit</th>
                                     <th>Reorder Status</th>
+                                    <th>Alternatives</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -176,13 +295,60 @@
                                                 <span class="badge bg-success">In Stock</span>
                                             }
                                         </td>
+                                        <td>
+                                            @if (ingredient.IngredientToxicity >= 0.7 && Model.IngredientAlternatives.ContainsKey(ingredient.IngredientId))
+                                            {
+                                                <button class="btn btn-sm btn-info" type="button" data-bs-toggle="collapse" 
+                                                        data-bs-target="#alternatives-@ingredient.IngredientId" aria-expanded="false">
+                                                    View Alternatives
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Not Required</span>
+                                            }
+                                        </td>
                                     </tr>
+                                    @if (ingredient.IngredientToxicity >= 0.7 && Model.IngredientAlternatives.ContainsKey(ingredient.IngredientId))
+                                    {
+                                        <tr>
+                                            <td colspan="8" class="p-0">
+                                                <div class="collapse" id="alternatives-@ingredient.IngredientId">
+                                                    <div class="card card-body">
+                                                        <h6>Safer Alternatives for @ingredient.IngredientName:</h6>
+                                                        <ul>
+                                                            @foreach (var alternative in Model.IngredientAlternatives[ingredient.IngredientId])
+                                                            {
+                                                                <li>@alternative</li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Generate Report Button -->
+        <div class="row mt-4 mb-5">
+            <div class="col-md-12 text-center">
+                <a href="@Url.Action("GenerateReport", "Toxicity", new { productName = Model.ProductName })" 
+                   class="btn btn-lg btn-success" target="_blank">
+                    <i class="bi bi-file-earmark-pdf me-2"></i> Generate Toxicity Report
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <p>No ingredients found for the selected product. Please choose a different product or add ingredients.</p>
         </div>
     }
 </div>
