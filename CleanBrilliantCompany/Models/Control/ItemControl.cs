@@ -15,12 +15,15 @@ namespace CleanBrilliantCompany.Models.Control
 
         private readonly iProduct _iproductInterface;
 
+        private readonly iProductQuantity _iproductquantityInterface;
+
         // Constructor that takes the connection string
-        public ItemControl(IConfiguration configuration, iProduct iproductInterface)
+        public ItemControl(IConfiguration configuration, iProduct iproductInterface, iProductQuantity iproductquantityInterface)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _itemMapper = new ItemMapper(connectionString);
             _iproductInterface = iproductInterface;
+            _iproductquantityInterface = iproductquantityInterface;
             Console.WriteLine("Products loaded from database.");
             _transactionObserver = new TransactionControl(connectionString);
         }
@@ -109,6 +112,12 @@ namespace CleanBrilliantCompany.Models.Control
             return Task.FromResult(product);
         }
 
+        // method to update product quantity (IITEMUPDATE)
+        public void updateProductQuantity(int productId, int quantity, string arithmeticOperations)
+        {
+            _iproductquantityInterface.updateQuantity(productId, quantity, arithmeticOperations);
+        }
+
         // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
         public async Task<Warehouse> getWarehouseDetails(int warehouseId)
         {
@@ -138,7 +147,19 @@ namespace CleanBrilliantCompany.Models.Control
         {
             List<Item> items = _itemMapper.adjustInventory(orderId, orderProducts);
 
-            RegisterObserversList(items); //attach observers before updating
+            if (items != null)
+            {
+                foreach (var entry in orderProducts)
+                {
+                    int productId = entry.Key;
+                    int quantity = entry.Value;
+                    string arithmeticOperations = "decrease";
+
+                    updateProductQuantity(productId, quantity, arithmeticOperations); 
+                }
+            }
+
+            // RegisterObserversList(items); //attach observers before updating
             foreach (var i in items)
             {
                 i.UpdateStatus(ItemStatus.Sold);
@@ -149,6 +170,7 @@ namespace CleanBrilliantCompany.Models.Control
 
         public void processCancelledOrder(int orderId)
         {
+            updateProductQuantity(2, 2, "increase"); 
             _itemMapper.processCancelledOrder(orderId);
         }
 

@@ -609,6 +609,7 @@ namespace CleanBrilliantCompany.Mappers
                             foreach (int itemId in updatedItemIds)
                             {
                                 updateItemStatus(itemId, null, orderId, null, null, ItemStatus.Sold);
+                                
                             }
                         }
                     }

@@ -10,10 +10,10 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ItemControl _itemControl;
 
-        public ItemController(IConfiguration configuration, iProduct iProduct)
+        public ItemController(IConfiguration configuration, iProduct iProduct, iProductQuantity iProductQuantity)
         {
             // string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-            _itemControl = new ItemControl(configuration, iProduct);
+            _itemControl = new ItemControl(configuration, iProduct, iProductQuantity);
         }
 
 
@@ -149,10 +149,10 @@ namespace CleanBrilliantCompany.Controllers
             Product? product = await _itemControl.retrieveProductDetails(testProductId);
             productInfo.Add(product.retrieveProductInfo());
             Console.WriteLine($"Product ID: {productInfo[0]["ProductId"]}");
-            Console.WriteLine($"Product Name: {productInfo[0]["ProductName"]}");
-            Console.WriteLine($"Product Category: {productInfo[0]["ProductCategory"]}");
-            Console.WriteLine($"Manufacturer ID: {productInfo[0]["ManufacturerId"]}");
-            Console.WriteLine($"Quantity: {productInfo[0]["Quantity"]}");
+            // Console.WriteLine($"Product Name: {productInfo[0]["ProductName"]}");
+            // Console.WriteLine($"Product Category: {productInfo[0]["ProductCategory"]}");
+            // Console.WriteLine($"Manufacturer ID: {productInfo[0]["ManufacturerId"]}");
+            // Console.WriteLine($"Quantity: {productInfo[0]["Quantity"]}");
 
             return RedirectToAction("Index");
         }

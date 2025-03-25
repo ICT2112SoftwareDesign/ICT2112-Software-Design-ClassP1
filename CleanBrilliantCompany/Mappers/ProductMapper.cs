@@ -82,8 +82,8 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-        public string insert(string productName, string category, float productCost, 
-        int manufacturerId, float productWeight, int quantity, int volume, 
+        public string insert(string productName, string category, float productCost,
+        int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
             try
@@ -129,7 +129,7 @@ namespace CleanBrilliantCompany.Mappers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error inserting product: {ex.Message}");
-                return $"Error inserting product: {ex.Message}"; 
+                return $"Error inserting product: {ex.Message}";
             }
         }
 
@@ -170,8 +170,8 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public void update(int productId, string productName, string productCategory, 
-        float productCost, int manufacturerId, float productWeight, int quantity, int volume, 
+        public void update(int productId, string productName, string productCategory,
+        float productCost, int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
             try
@@ -211,7 +211,7 @@ namespace CleanBrilliantCompany.Mappers
                         // Execute the insert operation synchronously
                         int rowsAffected = command.ExecuteNonQuery();
 
-                         // Check if the insert was successful using getDatabaseQueryStatus
+                        // Check if the insert was successful using getDatabaseQueryStatus
                         if (getDatabaseQueryStatus(null, rowsAffected))
                         {
                             Console.WriteLine($"Product: '{productId}' updated successfully.");
@@ -370,12 +370,12 @@ namespace CleanBrilliantCompany.Mappers
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open(); 
+                    connection.Open();
 
                     string query = @"
                         SELECT batchCode, productId, expiryDate, receiveDate, manufactureDate, 
                             quantity, batchCost
-                        FROM dbo.ProductBatch"; 
+                        FROM dbo.ProductBatch";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -388,11 +388,11 @@ namespace CleanBrilliantCompany.Mappers
                                     ProductBatch batch = new ProductBatch(
                                         reader.GetInt32(reader.GetOrdinal("batchCode")),
                                         reader.GetInt32(reader.GetOrdinal("productId")),
-                                        reader.GetDateTime(reader.GetOrdinal("expiryDate")), 
-                                        reader.GetDateTime(reader.GetOrdinal("receiveDate")), 
-                                        reader.GetDateTime(reader.GetOrdinal("manufactureDate")), 
+                                        reader.GetDateTime(reader.GetOrdinal("expiryDate")),
+                                        reader.GetDateTime(reader.GetOrdinal("receiveDate")),
+                                        reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
                                         reader.GetInt32(reader.GetOrdinal("quantity")),
-                                        (int)reader.GetDouble(reader.GetOrdinal("batchCost")) 
+                                        (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
                                     );
 
                                     // Add the product to the list
@@ -447,10 +447,10 @@ namespace CleanBrilliantCompany.Mappers
                     }
                 }
             }
-            return null; 
+            return null;
         }
 
-        public int insert(int productId, DateTime expiryDate, 
+        public int insert(int productId, DateTime expiryDate,
     DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
