@@ -13,8 +13,9 @@ namespace CleanBrilliantCompany.Controllers
 
         public ProductController(IConfiguration configuration)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            _productControl = new ProductControl(connectionString);
+            // string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            // _productControl = new ProductControl(connectionString);
+            _productControl = new ProductControl(configuration);
             _agingControl = new AgingControl(_productControl); // Testing
         }
 

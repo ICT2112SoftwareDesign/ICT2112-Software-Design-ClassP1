@@ -7,7 +7,7 @@
         <form method="post" asp-action="searchById" class="row g-2">
             <div class="col">
                 <input class="form-control" id="itemId" type="number" name="searchedItemId"
-                    placeholder="Search Item by Id" required>
+                       placeholder="Search Item by Id" required>
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary">
@@ -27,7 +27,7 @@
         <form method="post" asp-action="searchByName" class="row g-2">
             <div class="col">
                 <input class="form-control" id="productName" type="text" name="searchedProductName"
-                    placeholder="Search Product by Name" required>
+                       placeholder="Search Product by Name" required>
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary">
@@ -68,6 +68,15 @@
             </button>
         </form>
     </div>
+
+    @* iProduct Test Button *@
+    <div class="col-auto">
+        <form method="post" asp-action="retrieveProductDetails">
+            <button type="submit" class="btn btn-primary">
+                Show Products
+            </button>
+        </form>
+    </div>
 </div>
 
 <table class="table">
@@ -103,18 +112,24 @@
                 <td>@(itemInfo.ContainsKey("OrderId") ? itemInfo["OrderId"] ?? "NULL" : "NULL")</td>
                 <td>@(itemInfo.ContainsKey("TransferId") ? itemInfo["TransferId"] ?? "NULL" : "NULL")</td>
                 <td>@(itemInfo.ContainsKey("ReturnId") ? itemInfo["ReturnId"] ?? "NULL" : "NULL")</td>
-                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateItemModal"
-                        data-item-id="@itemInfo["ItemId"]">
+                <td>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateItemModal"
+                            data-item-id="@itemInfo["ItemId"]">
                         Update
-                    </button></td>
-                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#updateItemStatusModalOld" data-updateitemOld-id="@itemInfo["ItemId"]">
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateItemStatusModalOld" data-updateitemOld-id="@itemInfo["ItemId"]">
                         Update Status
-                    </button></td>
-                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#updateItemStatusModal" data-updateitem-id="@itemInfo["ItemId"]">
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateItemStatusModal" data-updateitem-id="@itemInfo["ItemId"]">
                         Update ID & Status
-                    </button></td>
+                    </button>
+                </td>
             </tr>
 
         }
@@ -235,7 +250,7 @@
 
 @* update item status modal (for ryan) *@
 <div class="modal fade" id="updateItemStatusModalOld" tabindex="-1" aria-labelledby="updateItemStatusModalLabelOld"
-    aria-hidden="true">
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -265,9 +280,52 @@
     </div>
 </div>
 
+@* modal to test iProduct method *@
+@* <div class="modal fade" id="retrieveProductDetailsModal" tabindex="-1"
+    aria-labelledby="retrieveProductDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="retrieveProductDetailsModalLabel">Display Single Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="retrieveProductDetails">
+                    <input type="hidden" id="productId" name="productId">
+                        <div class="mb-3">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var itemInfo in Model)
+                                    {
+                                        <tr>
+                                            <td>@itemInfo["ProductId"]</td>
+                                            <td>@itemInfo["ProductName"]</td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> *@
+
 @* update item id & status model (to test for iItemUpdate) *@
 <div class="modal fade" id="updateItemStatusModal" tabindex="-1" aria-labelledby="updateItemStatusModalLabel"
-    aria-hidden="true">
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

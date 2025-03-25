@@ -1,24 +1,10 @@
-﻿using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface IReserve
     {
-        List<Item> GetItemsByStatus(Status status, IConfiguration configuration);
-
-        Prodluct RetrieveProductDetails(int productId, IConfiguration configuration);
-
-    }
-
-    public interface IItem
-    {
-        Item GetItemById(int itemId, IConfiguration configuration);
-    }
-
-    public interface IIItemUpdate
-    {
-        bool UpdateItemById(int itemId, int productId, DateOnly expiryDate, DateOnly receiveDate, DateOnly manufactureDate,
-                    float salePrice, int batchCode, int warehouseId, Status status, int reservationId, int orderId,
-                    int transferId, int returnId, IConfiguration configuration);
+        Task<List<Item>> getItemsByStatus(ItemStatus status); 
+        Task<Product> retrieveProductDetails(int productId);
     }
 }

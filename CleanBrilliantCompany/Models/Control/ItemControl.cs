@@ -16,8 +16,10 @@ namespace CleanBrilliantCompany.Models.Control
         private readonly IProduct _iProductInterface;
 
         // Constructor that takes the connection string
-        public ItemControl(string connectionString, IProduct iProductInterface)
+        public ItemControl(IConfiguration configuration, IProduct iProductInterface)
         {
+            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+            Console.WriteLine(connectionString);
             _itemMapper = new ItemMapper(connectionString);
             _iProductInterface = iProductInterface;
             Console.WriteLine("Products loaded from database.");
@@ -104,7 +106,7 @@ namespace CleanBrilliantCompany.Models.Control
 
         public Task<Product> retrieveProductDetails(int productId)
         {
-            Product product = _iproductInterface.getProductDetails(productId);
+            Product product = _iProductInterface.getProductDetails(productId);
             return Task.FromResult(product);
         }
 
@@ -135,10 +137,11 @@ namespace CleanBrilliantCompany.Models.Control
         // METHOD FOR HANDLING ORDERED ITEMS 
         public List<Item> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
         {
-            List<Item> items =  _itemMapper.adjustInventory(orderId, orderProducts);
+            List<Item> items = _itemMapper.adjustInventory(orderId, orderProducts);
 
             RegisterObserversList(items); //attach observers before updating
-            foreach (var i in items) {
+            foreach (var i in items)
+            {
                 i.UpdateStatus(ItemStatus.Sold);
             }
 

@@ -10,10 +10,11 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ItemControl _itemControl;
 
-        public ItemController(IConfiguration configuration)
+        public ItemController(IConfiguration configuration, IProduct product)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-            _itemControl = new ItemControl(connectionString, null);
+            //string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+            //_itemControl = new ItemControl(connectionString, null);
+            _itemControl = new ItemControl(configuration, product);
         }
 
 
@@ -136,6 +137,22 @@ namespace CleanBrilliantCompany.Controllers
             {
                 return BadRequest(new { error = "Failed to add item." });
             }
+        }
+
+        // TESTING FOR IPRODUCT METHOD
+        [HttpPost]
+        [Route("retrieveProductDetails")]
+        public async Task<IActionResult> retrieveProductDetails(int testProductId)
+        {
+            testProductId = 2;
+            Product? item = await _itemControl.retrieveProductDetails(testProductId);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductId);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductCategory);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductName);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductState);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductWeight);
+
+            return RedirectToAction("Index");
         }
 
 

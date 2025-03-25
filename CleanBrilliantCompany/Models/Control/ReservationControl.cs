@@ -29,7 +29,7 @@ namespace CleanBrilliantCompany.Models.Control
             List<Item> reservedItems = new List<Item>();
             string connectionString = configuration.GetConnectionString("CleanBrillantCompany:ConnectionString");
             ReservationMapper reservationMapper = new ReservationMapper(connectionString);
-            Status getStatus = Status.Available;
+            ItemStatus getStatus = ItemStatus.Available;
             int itemCount = reservedQuantity;
             int reservationId = await reservationMapper.getNextId();
             reservation.ReservationId = reservationId;
