@@ -28,22 +28,67 @@ namespace CleanBrilliantCompany.Controllers.Staff
         {
             // Get shipping agents from the service
             var agents = await _shippingAgentService.GetShippingAgentsAsync();
-            
+
             // Debug information to console
             System.Console.WriteLine($"StaffController retrieved {agents.Count} agents");
             foreach (var agent in agents)
             {
                 System.Console.WriteLine($"Agent: {agent.ShippingAgentId} - {agent.ShippingAgentCompany}");
             }
-            
+
             // Create and populate the view model
             var viewModel = new ShippingAgentViewModel
             {
                 ShippingAgents = agents
             };
-            
+
             // Pass the view model to the view
-            return View(viewModel); // Renders Views/Staff/ShippingAgent.cshtml with model
+            return View(viewModel);
+        }
+
+        // Get ShippingAgent by ID method
+        [HttpGet("shippingagent/edit/{id}")]
+        public async Task<IActionResult> EditShippingAgent(int id)
+        {
+            var agent = await _shippingAgentService.GetShippingAgentByIdAsync(id);
+
+            if (agent == null)
+            {
+                return NotFound();
+            }
+
+            return View("edit-shippingagent", agent);
+        }
+        // Update ShippingAgent method
+        [HttpPost("shippingagent/update/{id}")]
+        public async Task<IActionResult> UpdateShippingAgent(int id, ShippingAgent shippingAgent)
+        {
+            if (id != shippingAgent.ShippingAgentId)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Call service to update shipping agent
+                    await _shippingAgentService.UpdateShippingAgentAsync(shippingAgent);
+
+                    // Redirect to shipping agent list with success message
+                    TempData["SuccessMessage"] = "Shipping agent updated successfully.";
+                    return RedirectToAction(nameof(ShippingAgent));
+                }
+                catch (Exception ex)
+                {
+                    // Log the error
+                    System.Console.WriteLine($"Error updating shipping agent: {ex.Message}");
+                    ModelState.AddModelError("", "An error occurred while updating the shipping agent.");
+                }
+            }
+
+            // If we got this far, something failed; redisplay form
+            return View("edit-shippingagent", shippingAgent);
         }
 
         [HttpGet("orderfufilment")]

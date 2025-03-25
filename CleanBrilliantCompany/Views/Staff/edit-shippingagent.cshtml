@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@* @model ShippingAgentViewModel *@
-@model CleanBrilliantCompany.Models.ShippingAgentViewModel
+@model CleanBrilliantCompany.Models.ShippingAgent
 
 @{
-    ViewData["Title"] = "Shipping Agents";
+    ViewData["Title"] = "Edit Shipping Agent";
 }
-
-
 
 <head>
 
@@ -252,72 +249,73 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Shipping Agents Management</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Edit Shipping Agent</h1>
                     </div>
-
-                    <!-- DataTables Example -->
+                    <!-- Edit Form -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Shipping Agent Details</h6>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Company</th>
-                                            <th>Shipping Method</th>
-                                            <th>Service Type</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (Model?.ShippingAgents != null && Model.ShippingAgents.Any())
-                                        {
-                                            @foreach (var agent in Model.ShippingAgents)
-                                            {
-                                                <tr>
-                                                    <td>@agent.ShippingAgentId</td>
-                                                    <td>@agent.ShippingAgentCompany</td>
-                                                    <td>@agent.ShippingMethod</td>
-                                                    <td>@agent.ServiceType</td>
-                                                    <td>
-                                                        <a href="/staff/shippingagent/edit/@agent.ShippingAgentId"
-                                                            class="btn btn-sm btn-primary">Edit</a>
-                                                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <tr>
-                                                <td colspan="5" class="text-center">No shipping agents found</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                            <form asp-action="UpdateShippingAgent" asp-controller="Staff"
+                                asp-route-id="@Model.ShippingAgentId" method="post">
+                                <input type="hidden" asp-for="ShippingAgentId" />
+                                <div class="form-group">
+                                    <label asp-for="ShippingAgentCompany">Company Name</label>
+                                    <select asp-for="ShippingAgentCompany" class="form-control">
+                                        <option value="DHL">DHL</option>
+                                        <option value="Parcel Force">Parcel Force</option>
+                                    </select>
+                                    <span asp-validation-for="ShippingAgentCompany" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ShippingMethod">Shipping Method</label>
+                                    <select asp-for="ShippingMethod" class="form-control">
+                                        <option value="Air">Air</option>
+                                        <option value="Truck">Truck</option>
+                                    </select>
+                                    <span asp-validation-for="ShippingMethod" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ServiceType">Service Type</label>
+                                    <select asp-for="ServiceType" class="form-control">
+                                        <option value="1 Day">1 Day</option>
+                                        <option value="3 Days">3 Days</option>
+                                        <option value="7 Days">7 Days</option>
+                                    </select>
+                                    <span asp-validation-for="ServiceType" class="text-danger"></span>
+                                </div>
+                                <div class="form-group mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save mr-1"></i> Save Changes
+                                    </button>
+                                    <a asp-action="ShippingAgent" asp-controller="Staff" class="btn btn-secondary ml-2">
+                                        <i class="fas fa-times mr-1"></i> Cancel
+                                    </a>
+                                </div>
+                            </form>
                         </div>
+
                     </div>
-
                 </div>
-                <!-- /.container-fluid -->
 
-                <!-- Initialize tooltips -->
-                <script>
-                    $(document).ready(function () {
-                        $('#shippingAgentsTable').DataTable();
-                    });
-                </script>
             </div>
-            <!-- End of Main Content -->
+            <!-- /.container-fluid -->
 
-            <!-- Include the footer -->
-            @await Html.PartialAsync("staff-footer")
-
+            <!-- Initialize tooltips -->
+            <script>
+                $(document).ready(function () {
+                    $('#shippingAgentsTable').DataTable();
+                });
+            </script>
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- End of Main Content -->
+
+        <!-- Include the footer -->
+        @await Html.PartialAsync("staff-footer")
+
+    </div>
+    <!-- End of Content Wrapper -->
 
     </div>
     <!-- End of Page Wrapper -->

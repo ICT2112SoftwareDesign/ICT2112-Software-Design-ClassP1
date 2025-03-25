@@ -25,6 +25,24 @@ namespace CleanBrilliantCompany.Services
         {
             return await _context.ShippingAgents.ToListAsync(); // Fetch from DB
         }
+        public async Task<ShippingAgent> GetShippingAgentByIdAsync(int id)
+        {
+            return await _context.ShippingAgents.FindAsync(id) ?? new ShippingAgent();
+        }
+         public async Task<bool> UpdateShippingAgentAsync(ShippingAgent shippingAgent)
+        {
+            try
+            {
+                _context.ShippingAgents.Update(shippingAgent);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR updating shipping agent: {ex.Message}\n{ex.StackTrace}");
+                return false;
+            }
+        }
     }
 }
 
