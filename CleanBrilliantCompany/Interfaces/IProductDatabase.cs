@@ -2,11 +2,11 @@ using CleanBrilliantCompany.Models.Entity;
 using Microsoft.Data.SqlClient;
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface iProductDatabase
+    public interface IIProductDatabase
     {
         // Product
-        Task<Prodluct> getDatabaseQueryStatus(Task<Prodluct> task);
-        Task<(string status, List<Prodluct> products)> getDatabaseQueryStatus(Task<List<Prodluct>> task);
+        Task<Product> getDatabaseQueryStatus(Task<Product> task);
+        Task<(string status, List<Product> products)> getDatabaseQueryStatus(Task<List<Product>> task);
         Task<string> getDatabaseQueryStatus(Task<string> task);
         // ProductBatch
         Task<(string status, List<ProductBatch> batch)> getDatabaseQueryStatus(Task<List<ProductBatch>> batch);

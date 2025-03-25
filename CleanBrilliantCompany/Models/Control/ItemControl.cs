@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : IItemQuery, IIItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse
     {
         private readonly ItemMapper _itemMapper;
 
@@ -102,9 +102,9 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getItemByStatus(itemStatus));
         }
 
-        public Task<Prodluct> retrieveProductDetails(int productId)
+        public Task<Product> retrieveProductDetails(int productId)
         {
-            Prodluct product = _iproductInterface.getProductDetails(productId);
+            Product product = _iproductInterface.getProductDetails(productId);
             return Task.FromResult(product);
         }
 

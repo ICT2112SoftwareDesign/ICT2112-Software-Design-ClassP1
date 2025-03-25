@@ -8,7 +8,7 @@ using Microsoft.Data.SqlClient;
 
 namespace CleanBrilliantCompany.Mappers
 {
-    public class ProductMapper : iProductDatabase
+    public class ProductMapper : IIProductDatabase
     {
         private readonly string _connectionString;
 
@@ -38,7 +38,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // Product
-        public Prodluct findByProductId(int productId)
+        public Product findByProductId(int productId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -60,7 +60,7 @@ namespace CleanBrilliantCompany.Mappers
                         {
                             if (reader.Read())
                             {
-                                return new Prodluct
+                                return new Product
                                 {
                                     ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
                                     ProductName = reader.GetString(reader.GetOrdinal("productName")),
@@ -231,9 +231,9 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public List<Prodluct> findAllProducts()
+        public List<Product> findAllProducts()
         {
-            List<Prodluct> products = new List<Prodluct>();
+            List<Product> products = new List<Product>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -253,7 +253,7 @@ namespace CleanBrilliantCompany.Mappers
                         {
                             while (reader.Read())
                             {
-                                products.Add(new Prodluct
+                                products.Add(new Product
                                 {
                                     ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
                                     ProductName = reader.GetString(reader.GetOrdinal("productName")),
@@ -487,7 +487,7 @@ namespace CleanBrilliantCompany.Mappers
 
 
         // Interface Methods
-        public async Task<Prodluct> getDatabaseQueryStatus(Task<Prodluct> task)
+        public async Task<Product> getDatabaseQueryStatus(Task<Product> task)
         {
             try
             {
@@ -513,11 +513,11 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public async Task<(string status, List<Prodluct> products)> getDatabaseQueryStatus(Task<List<Prodluct>> task)
+        public async Task<(string status, List<Product> products)> getDatabaseQueryStatus(Task<List<Product>> task)
         {
             try
             {
-                List<Prodluct> products = await task;
+                List<Product> products = await task;
 
                 if (products.Count > 0)
                 {
@@ -531,7 +531,7 @@ namespace CleanBrilliantCompany.Mappers
             catch (Exception ex)
             {
                 Console.WriteLine($"Database query failed: {ex.Message}");
-                return ($"Database query failed: {ex.Message}", new List<Prodluct>());
+                return ($"Database query failed: {ex.Message}", new List<Product>());
             }
         }
 

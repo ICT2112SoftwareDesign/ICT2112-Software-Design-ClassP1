@@ -5,7 +5,7 @@ using CleanBrilliantCompany.Mappers;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ProductControl : IIProductQuery, iProduct
+    public class ProductControl : IProductQuery, IProduct
     {
         private readonly ProductMapper _productMapper;
 
@@ -17,13 +17,13 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // Interface methods
-        public Prodluct getProductDetails(int productId)
+        public Product getProductDetails(int productId)
         {
             return  _productMapper.findByProductId(productId);
         }
 
 
-        public List<Prodluct> getAllProducts()
+        public List<Product> getAllProducts()
         {
             return  _productMapper.findAllProducts();
         }

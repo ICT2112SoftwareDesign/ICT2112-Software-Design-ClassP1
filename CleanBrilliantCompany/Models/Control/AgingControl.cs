@@ -33,9 +33,9 @@ public class AgingControl
     //     }
     // }
 
-    private readonly iProduct _productInterface;
+    private readonly IProduct _productInterface;
 
-    public AgingControl(iProduct productInterface)
+    public AgingControl(IProduct productInterface)
     {
         _productInterface = productInterface; 
     }

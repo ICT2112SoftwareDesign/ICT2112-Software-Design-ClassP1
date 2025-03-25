@@ -66,3 +66,4 @@ dlldata.c
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
+*.bak
