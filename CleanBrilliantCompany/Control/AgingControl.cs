@@ -1,4 +1,4 @@
-public class AgingControl 
+public class AgingControl : IStorageDuration
 {
     private Dashboard agingDashboard; 
     //private AgingMapper agingMapper; 
@@ -22,6 +22,7 @@ public class AgingControl
             this.fakeProductInterface = fakeProductInterface;
             // 🔹 Retrieve data from the database / fake DB
             LoadDashboards();
+            getStorageDuration(1); 
         }
 
     // 🔹 Load dashboards from the database (or fake DB)
@@ -123,21 +124,41 @@ public class AgingControl
         var dashboard = DashboardFactory.createDashboard(dto); 
         //var fakeInterface = new FakeBatchInterface(); 
         var batches = fakeBatchInterface.getAllProductBatch(); 
-        // Console.WriteLine("Amount of batches: " + batches.Count); 
-        // Console.WriteLine("batch productid : " + batches[0].ProductId); 
+        // using the dashboard's requestedStartDate and requestedEndDate
+        // i will filter out the batches that are within the date range using the batch's receive date 
+
+        var filteredBatches = batches.Where(b => b.ReceiveDate >= dashboard.RequestedStartDate && b.ReceiveDate <= dashboard.RequestedEndDate).ToList(); 
+
         // Retrieve all stock histories for all batches
         var stockHistories = new List<RawStockHistoryData>(); 
-        foreach (var batch in batches)
+        foreach (var batch in filteredBatches)
         {
             var stockHistory = fakeBatchInterface.getStockHistoryByBatch(batch.BatchCode);
             stockHistories.AddRange(stockHistory);  // Efficiently add all records at once
         }
 
         // Use the existing populateAnalytics method
-        (dashboard as AgingDashboardRdm).populateAnalytics(batches, stockHistories);
+        (dashboard as AgingDashboardRdm).populateAnalytics(filteredBatches, stockHistories);
 
         // Add to the list and save 
         agingMapper.saveDashboardandAnalytics(dashboard as AgingDashboardRdm); 
     }
 
+ 
+    public int getStorageDuration(int batchCode) 
+    {
+        // i need the batch's receive data then use current time to minus the receive date 
+
+        RawBatchData batch = fakeBatchInterface.getBatchDetails(batchCode); 
+        if (batch == null) 
+        {
+            Console.WriteLine("⚠ Batch not found.");
+            return -1; 
+        } 
+        DateTime currentDate = DateTime.Now; 
+        TimeSpan storageDuration = currentDate - batch.ReceiveDate;
+        Console.WriteLine("Storage duration for batch {0} is {1} days", batchCode, storageDuration.Days);
+        return storageDuration.Days; 
+         
+    }
 }

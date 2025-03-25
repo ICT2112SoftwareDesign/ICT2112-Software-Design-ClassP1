@@ -378,7 +378,7 @@
 
                                     <h3>Analytics</h3>
                                     <div class="mb-3">
-                                        <input id="productSearchInput" type="text" class="form-control" placeholder="Search by Product ID...">
+                                        <input id="productSearchInput" type="text" class="form-control" placeholder="Search by Product Name...">
                                     </div>
                                     <div class="mb-4">
                                         <button class="btn btn-outline-primary me-2" id="showBatchView">Batch View</button>
@@ -404,16 +404,22 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="RequestedStartDate" class="form-label">Start Date</label>
-                                                    <input type="date" class="form-control" name="RequestedStartDate" required />
+                                                    <input type="date" class="form-control" id = "RequestedStartDate" name="RequestedStartDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                                    <div class ="invalid-feedback" id = "startDateError">
+                                                        Start Date must be before End Date and not be future dates
+                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="RequestedEndDate" class="form-label">End Date</label>
-                                                    <input type="date" class="form-control" name="RequestedEndDate" required />
+                                                    <input type="date" class="form-control" id = "RequestedEndDate" name="RequestedEndDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                                    <div class ="invalid-feedback" id= "endDateError">
+                                                        End Date must be after Start Date and not be future dates
+                                                    </div>
                                                 </div>
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary">Generate</button>
+                                                <button type="submit" id = "generateDashboardBtn" class="btn btn-primary">Generate</button>
                                                 </div>
                                             </div>
                                             </form>
@@ -432,9 +438,9 @@
                                                 @* ✅ Loop through each product *@
                                                 @foreach (var product in productToBatchMap)
                                                 {
-                                                    <div class="product-section col-12" data-product-id="@product.Key">
-                                                        <h4 class="text-primary">Product ID: @product.Key</h4>
-                                                        <h4 class="text-primary">Product Name: @productToNameMap[product.Key]</h4>
+                                                    <div class="product-section col-12" data-product-id="@product.Key" data-product-name= "@productToNameMap[product.Key]">
+                                                        @* <h4 class="text-primary">Product ID: @product.Key</h4> *@
+                                                        <h4 class="text-primary">@productToNameMap[product.Key]</h4>
                                                         @* ✅ Get all unique metrics from all batches in this product *@
                                                         @{
                                                             var productMetrics = product.Value
@@ -619,9 +625,73 @@
                 const productSections = document.querySelectorAll(".product-section");
 
                 productSections.forEach(section => {
-                    const productId = section.getAttribute("data-product-id").toLowerCase();
-                    section.style.display = productId.includes(query) ? "block" : "none";
+                    @* const productId = section.getAttribute("data-product-id").toLowerCase();
+                    section.style.display = productId.includes(query) ? "block" : "none"; *@
+
+                    // trying out product name instead 
+                    const productName = section.getAttribute("data-product-name").toLowerCase(); 
+                    section.style.display = productName.includes(query) ? "block" : "none"; 
                 });
+            });
+        });
+
+        // date validator 
+        document.addEventListener("DOMContentLoaded", function () 
+        {
+            const endDateInput = document.getElementById("RequestedEndDate");
+            const startDateInput = document.getElementById("RequestedStartDate");
+            const generateBtn = document.getElementById("generateDashboardBtn");
+            const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+            
+            endDateInput.addEventListener("change", function () 
+            {
+                const selectedEndDate = endDateInput.value;
+                if (selectedEndDate) 
+                {
+                    console.log("setting max")
+                    startDateInput.max = selectedEndDate;
+
+                    if (startDateInput.value > selectedEndDate) 
+                    {
+                        startDateInput.value = selectedEndDate;
+                    }
+                } else 
+                {
+                    console.log("removing max")
+                    startDateInput.removeAttribute("max");
+                }
+            });
+
+            //2. Validate on submit 
+            generateBtn.addEventListener("click", function (e) 
+            {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                let isValid = true; 
+
+                [startDateInput,endDateInput].forEach( input => input.classList.remove("is-invalid") )
+
+                // check if the dates are in future
+                if (startDate > today || endDate > today) 
+                {
+                    isValid = false;
+                    document.getElementById("startDateError").textContent = "Start date cannot be in the future.";
+                    document.getElementById("endDateError").textContent = "End date cannot be in the future.";
+                }
+                //check end date earlier than start date 
+                if (startDate > endDate) 
+                {
+                    isValid = false;
+                    document.getElementById("startDateError").textContent = "Start date cannot be after end date.";
+                    document.getElementById("endDateError").textContent = "End date must be after start date.";
+                } 
+                if (!isValid)
+                {
+                    e.preventDefault();
+                    [startDateInput,endDateInput].forEach( input => input.classList.add("is-invalid") )  
+                }
+
+                
             });
         });
 
