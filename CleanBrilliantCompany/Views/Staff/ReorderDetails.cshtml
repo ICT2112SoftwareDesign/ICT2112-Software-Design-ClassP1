@@ -1,0 +1,61 @@
+@model CleanBrilliantCompany.Models.ReorderRequest_RDM
+
+@{
+    var canEditMainFields = Model.Status == "Pending";
+    var canEditDefectOnly = Model.Status == "Delivered";
+}
+
+<h2>Reorder Request Details</h2>
+
+<!-- Update form -->
+<form asp-action="UpdateReorderDetails" method="post" class="mb-2">
+    <input type="hidden" asp-for="ReorderId" />
+
+    <div class="form-group">
+        <label>Product ID</label>
+        <input asp-for="ProductId" class="form-control" readonly="@(canEditMainFields ? null : "readonly")" />
+    </div>
+
+    <div class="form-group">
+        <label>Quantity</label>
+        <input asp-for="Quantity" class="form-control" readonly="@(canEditMainFields ? null : "readonly")" />
+    </div>
+
+    <div class="form-group">
+        <label>Manufacturer ID</label>
+        <input asp-for="ManufacturerId" class="form-control" readonly="@(canEditMainFields ? null : "readonly")" />
+    </div>
+
+    <div class="form-group">
+        <label>Expected Delivery Date</label>
+        <input asp-for="ExpectedDeliveryDate" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <input asp-for="Status" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label>Defect Quantity</label>
+        <input asp-for="DefectQuantity" class="form-control" readonly="@(canEditDefectOnly ? null : "readonly")" />
+    </div>
+
+    @if (canEditMainFields || canEditDefectOnly)
+    {
+        <button type="submit" class="btn btn-primary">Update</button>
+    }
+</form>
+
+<!-- Cancel form -->
+@if (canEditMainFields)
+{
+    <form asp-action="CancelReorder" method="post" class="d-inline">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="reorderId" value="@Model.ReorderId" />
+        <button type="submit" class="btn btn-danger">Cancel Order</button>
+    </form>
+}
+
+<!-- Back button -->
+<a href="/staff/reorder-requests" class="btn btn-secondary">Back</a>

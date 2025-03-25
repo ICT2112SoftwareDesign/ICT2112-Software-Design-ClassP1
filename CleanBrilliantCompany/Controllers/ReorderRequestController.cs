@@ -1,52 +1,106 @@
 using Microsoft.AspNetCore.Mvc;
-using CleanBrilliantCompany.Data; // Ensure this matches your actual namespace
 using CleanBrilliantCompany.Models;
-using System.Linq;
+using CleanBrilliantCompany.Interfaces;
 
-namespace CleanBrilliantCompany.Controllers
+namespace CleanBrilliantCompany.Controllers.Reorder
 {
+    [Route("staff/reorder-requests")]
     public class ReorderRequestController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IReorderQuery _reorderManagement;
 
-        public ReorderRequestController(AppDbContext context)
+        public ReorderRequestController(IReorderQuery reorderManagement)
         {
-            _context = context;
+            _reorderManagement = reorderManagement;
         }
 
-        // GET: /ReorderRequest/ListOfReorders
-        public IActionResult ListOfReorders()
+        [HttpGet("")]
+        public IActionResult Reorder()
         {
-            var reorderRequests = _context.ReorderRequests.ToList();
-            return View(reorderRequests);
+            var reorders = _reorderManagement.displayListOfReorders();
+            return View("~/Views/Staff/ListOfReorders.cshtml", reorders);
         }
 
-        // GET: /ReorderRequest/ReorderDetails/{id}
+        [HttpGet("details/{id}")]
         public IActionResult ReorderDetails(int id)
         {
-            var order = _context.ReorderRequests.Find(id);
-            if (order == null) return NotFound();
-            return View(order);
-        }
+            var reorder = _reorderManagement.getReorderRequestDetails(id);
 
-        // GET: /ReorderRequest/ReorderForm
-        public IActionResult ReorderForm()
-        {
-            return View();
-        }
-
-        // POST: /ReorderRequest/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(ReorderRequest model)
-        {
-            if (ModelState.IsValid)
+            if (reorder == null || reorder.Status == "Not Found")
             {
-                _context.ReorderRequests.Add(model);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(ListOfReorders));
+                return NotFound("Reorder Request record not found.");
             }
-            return View("ReorderForm");
+
+            return View("~/Views/Staff/ReorderDetails.cshtml", reorder);
         }
+
+        [HttpGet("new")]
+        public IActionResult CreateReorderForm()
+        {
+            return View("~/Views/Staff/ReorderForm.cshtml");
+        }
+
+        [HttpPost("new")]
+        public IActionResult SubmitReorderForm(ReorderRequest_RDM reorder)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/Staff/ReorderForm.cshtml", reorder);
+            }
+
+            reorder.ExpectedDeliveryDate = null;
+            reorder.DefectQuantity = null;
+            reorder.Status = "Pending";
+
+            _reorderManagement.createReorderRequest(reorder);
+
+            TempData["SuccessMessage"] = "Reorder request created successfully.";
+            return RedirectToAction("Reorder");
+        }
+
+
+        [HttpPost("update_details")]
+        public IActionResult UpdateReorderDetails(ReorderRequest_RDM updated)
+        {
+            var existing = _reorderManagement.getReorderRequestDetails(updated.ReorderId);
+            if (existing == null) return NotFound();
+
+            // apply logic
+            if (existing.Status == "Pending")
+            {
+                existing.ProductId = updated.ProductId;
+                existing.Quantity = updated.Quantity;
+                existing.ManufacturerId = updated.ManufacturerId;
+            }
+
+            if (existing.Status == "Delivered")
+            {
+                existing.DefectQuantity = updated.DefectQuantity;
+            }
+
+            _reorderManagement.updateReorderRequest(existing); // overload this to accept full model
+
+            TempData["SuccessMessage"] = "Reorder details updated.";
+            return RedirectToAction("Reorder");
+        }
+
+        [HttpPost("cancel")]
+        [ValidateAntiForgeryToken]
+        public IActionResult CancelReorder(int reorderId)
+        {
+            var reorder = _reorderManagement.getReorderRequestDetails(reorderId);
+            if (reorder == null || reorder.Status != "Pending")
+            {
+                TempData["ErrorMessage"] = "Only pending orders can be cancelled.";
+                return RedirectToAction("Reorder");
+            }
+
+            _reorderManagement.cancelReorderRequest(reorderId);
+            TempData["SuccessMessage"] = "Reorder request has been cancelled.";
+            return RedirectToAction("Reorder");
+        }
+
+
+
     }
 }

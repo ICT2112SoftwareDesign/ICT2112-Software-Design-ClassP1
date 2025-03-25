@@ -1,14 +1,15 @@
-using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Data;
+using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddControllersWithViews();
-builder.Services.AddAuthorization();
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddScoped<IReorderRequestDB>(provider => new ReorderRequestMapper(connectionString));
+builder.Services.AddScoped<IReorderQuery, ReorderRequestManagement>();
+
 
 var app = builder.Build();
 
@@ -29,7 +30,8 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=ReorderRequest}/{action=ListOfReorders}/{id?}")
+    pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
 
 app.Run();

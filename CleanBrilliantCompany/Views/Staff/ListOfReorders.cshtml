@@ -1,0 +1,42 @@
+@model List<CleanBrilliantCompany.Models.ReorderRequest_RDM>
+
+<h2>List of Reorder Requests</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Reorder ID</th>
+            <th>Product ID</th>
+            <th>Quantity</th>
+            <th>Manufacturer ID</th>
+            <th>Status</th>
+            <th>Expected Delivery</th>
+            <th>Defect Quantity</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reorder in Model)
+        {
+            <tr>
+                <td>@reorder.ReorderId</td>
+                <td>@reorder.ProductId</td>
+                <td>@reorder.Quantity</td>
+                <td>@reorder.ManufacturerId</td>
+                <td>@reorder.Status</td>
+                <td>@reorder.ExpectedDeliveryDate?.ToString("yyyy-MM-dd")</td>
+                <td>@reorder.DefectQuantity</td>
+                <td>
+                    <a asp-action="ReorderDetails" asp-route-id="@reorder.ReorderId" class="btn btn-info btn-sm">View</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="/staff/reorder-requests/new" class="btn btn-primary">+ New Reorder Request</a>

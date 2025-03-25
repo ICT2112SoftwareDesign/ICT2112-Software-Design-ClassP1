@@ -1,0 +1,34 @@
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Interfaces;
+
+namespace CleanBrilliantCompany.Controllers.Staff
+{
+    [Route("staff")]
+    public class StaffController : Controller
+    {
+        [HttpGet("")]
+        public IActionResult Index()
+        {
+            return View(); // Renders Views/Staff/Index.cshtml
+        }
+
+        [HttpGet("shipping")]
+        public IActionResult Shipping()
+        {
+            return View(); // Renders Views/Staff/Shipping.cshtml
+        }
+
+        [HttpGet("reorder")]
+        public IActionResult Reorder()
+        {
+            return View(); // Renders Views/Staff/ListOfReorders.cshtml
+        }
+        [HttpGet("ticket")]
+        public IActionResult Ticket()
+        {
+            return View(); // Renders Views/Staff/Ticket.cshtml
+        }
+    }
+}
