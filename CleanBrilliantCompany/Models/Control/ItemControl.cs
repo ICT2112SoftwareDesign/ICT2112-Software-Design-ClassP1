@@ -16,8 +16,10 @@ namespace CleanBrilliantCompany.Models.Control
         private readonly iProduct _iproductInterface;
 
         // Constructor that takes the connection string
-        public ItemControl(string connectionString, iProduct iproductInterface)
+        public ItemControl(IConfiguration configuration, iProduct iproductInterface)
         {
+            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+            Console.WriteLine(connectionString);
             _itemMapper = new ItemMapper(connectionString);
             _iproductInterface = iproductInterface;
             Console.WriteLine("Products loaded from database.");
@@ -135,10 +137,11 @@ namespace CleanBrilliantCompany.Models.Control
         // METHOD FOR HANDLING ORDERED ITEMS 
         public List<Item> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
         {
-            List<Item> items =  _itemMapper.adjustInventory(orderId, orderProducts);
+            List<Item> items = _itemMapper.adjustInventory(orderId, orderProducts);
 
             RegisterObserversList(items); //attach observers before updating
-            foreach (var i in items) {
+            foreach (var i in items)
+            {
                 i.UpdateStatus(ItemStatus.Sold);
             }
 

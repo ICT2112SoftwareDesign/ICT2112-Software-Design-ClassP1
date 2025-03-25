@@ -10,10 +10,10 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ItemControl _itemControl;
 
-        public ItemController(IConfiguration configuration)
+        public ItemController(IConfiguration configuration, iProduct iProduct)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-            _itemControl = new ItemControl(connectionString, null);
+            // string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+            _itemControl = new ItemControl(configuration, iProduct);
         }
 
 
@@ -61,6 +61,7 @@ namespace CleanBrilliantCompany.Controllers
 
             return View("Index", itemsInfo);  // Reuse Index view
         }
+
 
 
         [HttpPost]
@@ -138,6 +139,21 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
+        // TESTING FOR IPRODUCT METHOD
+        [HttpPost]
+        [Route("retrieveProductDetails")]
+        public async Task<IActionResult> retrieveProductDetails(int testProductId)
+        {
+            testProductId = 2;
+            Product? item = await _itemControl.retrieveProductDetails(testProductId);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductId);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductCategory);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductName);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductState);
+            Console.WriteLine("RETURN PRODUCT: " + item.ProductWeight);
+
+            return RedirectToAction("Index");
+        }
 
         // TESTING FOR IWAREHOUSE METHOD
         [HttpPost]

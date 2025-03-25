@@ -9,8 +9,9 @@ namespace CleanBrilliantCompany.Models.Control
     {
         private readonly ProductMapper _productMapper;
 
-         public ProductControl(string connectionString)
+         public ProductControl(IConfiguration configuration)
         {
+            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _productMapper = new ProductMapper(connectionString);
 
             Console.WriteLine("Products loaded from database.");
