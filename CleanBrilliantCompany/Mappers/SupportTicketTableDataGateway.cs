@@ -1,63 +1,142 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
+using Microsoft.Data.SqlClient;
 using CleanBrilliantCompany.Models.SupportTicket;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Data.SupportTicket
 {
     public class SupportTicketTableDataGateway
     {
-        private static List<SupportTicketSDM> db = new List<SupportTicketSDM>
-        {
-            new SupportTicketSDM { TicketId = 1, CustomerId = 101, Status = "Open", CreatedAt = DateTime.Now, TicketDetails = "Issue with order", ResolutionDetails = "" },
-            new SupportTicketSDM { TicketId = 2, CustomerId = 102, Status = "Closed", CreatedAt = DateTime.Now.AddHours(-1), TicketDetails = "Payment failed", ResolutionDetails = "Refund processed" }
-        };
+        private readonly string _connectionString;
 
-        private static int nextTicketId = 3;
-
-        public SupportTicketSDM? fetchSupportTicket(int ticketId)
+        public SupportTicketTableDataGateway(string connectionString)
         {
-            return db.FirstOrDefault(t => t.TicketId == ticketId);
+            _connectionString = connectionString;
         }
 
-        public List<SupportTicketSDM> fetchAllSupportTickets()
+        public SupportTicketSDM? FetchSupportTicket(int ticketId)
         {
-            return db;
-        }
+            SupportTicketSDM? ticket = null;
 
-        public bool createSupportTicket(int customerId)
-        {
-            var ticket = new SupportTicketSDM
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                TicketId = nextTicketId++,
-                CustomerId = customerId,
-                Status = "Open",
-                CreatedAt = DateTime.Now,
-                TicketDetails = "Pending customer input",
-                ResolutionDetails = ""
-            };
+                conn.Open();
+                string query = @"
+                    SELECT ticketId, customerId, ticketStatus, ticketCreatedAt, ticketDetails, resolutionDetails
+                    FROM dbo.SupportTicket
+                    WHERE ticketId = @TicketId;
+                ";
 
-            db.Add(ticket);
-            return true;
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TicketId", ticketId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            ticket = new SupportTicketSDM
+                            {
+                                TicketId = reader.GetInt32(0),
+                                CustomerId = reader.GetInt32(1),
+                                Status = reader.IsDBNull(2) ? "Open" : reader.GetString(2),
+                                CreatedAt = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3),
+                                TicketDetails = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                                ResolutionDetails = reader.IsDBNull(5) ? "" : reader.GetString(5)
+                            };
+                        }
+                    }
+                }
+            }
+
+            return ticket;
         }
 
-        public void deleteTicket(int ticketId)
+        public List<SupportTicketSDM> FetchAllSupportTickets()
         {
-            var ticket = db.FirstOrDefault(t => t.TicketId == ticketId);
-            if (ticket != null)
+            List<SupportTicketSDM> tickets = new List<SupportTicketSDM>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                db.Remove(ticket);
+                conn.Open();
+                string query = @"
+                    SELECT ticketId, customerId, ticketStatus, ticketCreatedAt, ticketDetails, resolutionDetails
+                    FROM dbo.SupportTicket;
+                ";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        tickets.Add(new SupportTicketSDM
+                        {
+                            TicketId = reader.GetInt32(0),
+                            CustomerId = reader.GetInt32(1),
+                            Status = reader.IsDBNull(2) ? "Open" : reader.GetString(2),
+                            CreatedAt = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3),
+                            TicketDetails = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                            ResolutionDetails = reader.IsDBNull(5) ? "" : reader.GetString(5)
+                        });
+                    }
+                }
+            }
+
+            return tickets;
+        }
+
+        public bool CreateSupportTicket(int customerId)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string insertQuery = @"
+                    INSERT INTO dbo.SupportTicket (customerId, ticketStatus, ticketCreatedAt, ticketDetails, resolutionDetails)
+                    VALUES (@CustomerId, 'Submitted', GETDATE(), 'Pending customer input', '');
+                ";
+
+                using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@CustomerId", customerId);
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
             }
         }
 
-        public void updateSupportTicket(int ticketId, string resolutionDetails)
+        public void DeleteTicket(int ticketId)
         {
-            var ticket = db.FirstOrDefault(t => t.TicketId == ticketId);
-            if (ticket != null)
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                ticket.SetResolutionDetails(resolutionDetails);
-                ticket.SetStatus("Closed");
+                conn.Open();
+                string deleteQuery = "DELETE FROM dbo.SupportTicket WHERE ticketId = @TicketId";
+
+                using (SqlCommand cmd = new SqlCommand(deleteQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TicketId", ticketId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateSupportTicket(int ticketId, string resolutionDetails)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string updateQuery = @"
+                    UPDATE dbo.SupportTicket
+                    SET resolutionDetails = @ResolutionDetails, ticketStatus = 'Closed'
+                    WHERE ticketId = @TicketId;
+                ";
+
+                using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TicketId", ticketId);
+                    cmd.Parameters.AddWithValue("@ResolutionDetails", resolutionDetails);
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
     }

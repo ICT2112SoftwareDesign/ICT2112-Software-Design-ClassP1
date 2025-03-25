@@ -6,9 +6,13 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
     [Route("supportticket")]
     public class SupportTicketController : Controller
     {
-        private readonly SupportTicketManagement _manager = new SupportTicketManagement();
+        private readonly SupportTicketManagement _manager;
 
-        // Admin: View all tickets
+        public SupportTicketController(SupportTicketManagement manager)
+        {
+            _manager = manager;
+        }
+
         [Route("")]
         public IActionResult Index()
         {
@@ -16,7 +20,6 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
             return View("~/Views/SupportTicket/supportticket-index.cshtml", tickets);
         }
 
-        // Admin: View details of a specific ticket
         [Route("Details/{ticketId}")]
         public IActionResult displayTicketDetails(int ticketId)
         {
@@ -31,7 +34,6 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
             }
         }
 
-        // Admin: Update support ticket
         [HttpPost]
         [Route("UpdateSupportTicket/{ticketId}")]
         public IActionResult updateSupportTicket(int ticketId, string resolutionDetails)
@@ -39,5 +41,14 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
             _manager.updateSupportTicket(ticketId, resolutionDetails);
             return RedirectToAction("Index");
         }
+
+        // for testing ISupportTicket interface 
+        // [HttpPost]
+        // [Route("CreateSupportTicket")]
+        // public IActionResult createSupportTicket(int customerId)
+        // {
+        //     _manager.createSupportTicket(customerId);
+        //     return RedirectToAction("Index");
+        // }
     }
 }

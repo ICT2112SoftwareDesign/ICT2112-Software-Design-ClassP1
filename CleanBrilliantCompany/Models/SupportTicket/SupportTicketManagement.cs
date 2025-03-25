@@ -1,52 +1,50 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Data.SupportTicket;
+using CleanBrilliantCompany.Models.SupportTicket;
+using CleanBrilliantCompany.Interfaces.SupportTicket;
 
 namespace CleanBrilliantCompany.Models.SupportTicket
 {
-    public class SupportTicketManagement
+    public class SupportTicketManagement : ISupportTicket, iSupportTicketQuery
     {
-        private readonly SupportTicketTableDataGateway tableModule = new SupportTicketTableDataGateway();
+        private readonly SupportTicketTableDataGateway _gateway;
 
-        // Create a new support ticket
+        public SupportTicketManagement(SupportTicketTableDataGateway gateway)
+        {
+            _gateway = gateway;
+        }
+
         public bool createSupportTicket(int customerId)
         {
-            return tableModule.createSupportTicket(customerId);
+            return _gateway.CreateSupportTicket(customerId);
         }
 
-        // Delete a ticket by ID
         public void deleteTicket(int ticketId)
         {
-            tableModule.deleteTicket(ticketId);
+            _gateway.DeleteTicket(ticketId);
         }
 
-        // Update resolution details and mark ticket as closed
         public void updateSupportTicket(int ticketId, string resolutionDetails)
         {
-            tableModule.updateSupportTicket(ticketId, resolutionDetails);
+            _gateway.UpdateSupportTicket(ticketId, resolutionDetails);
         }
 
-        // View all tickets
         public List<SupportTicketSDM> viewAllTickets()
         {
-            return tableModule.fetchAllSupportTickets();
+            return _gateway.FetchAllSupportTickets();
         }
 
-        // View tickets filtered by status
         public List<SupportTicketSDM> viewTicketsByStatus(string status)
         {
-            return tableModule
-                .fetchAllSupportTickets()
-                .Where(t => t.GetStatus().Equals(status, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            return _gateway
+                .FetchAllSupportTickets()
+                .FindAll(t => t.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
         }
 
-        // View details of a specific ticket
         public SupportTicketSDM viewTicketDetails(int ticketId)
         {
-            var ticket = tableModule.fetchSupportTicket(ticketId);
+            var ticket = _gateway.FetchSupportTicket(ticketId);
             if (ticket == null)
             {
                 throw new Exception("Ticket not found");
@@ -54,10 +52,9 @@ namespace CleanBrilliantCompany.Models.SupportTicket
             return ticket;
         }
 
-        // checks if there are any Support Ticket stored in db
         public bool checkSupportTicketQuery()
         {
-            return tableModule.fetchAllSupportTickets().Count > 0;
+            return _gateway.FetchAllSupportTickets().Count > 0;
         }
     }
 }
