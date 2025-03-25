@@ -8,6 +8,10 @@ namespace CleanBrilliantCompany.Models.Entity
         private int CurrentCapacity;
         private int MaxCapacity;
 
+        private int ProductId;
+        private int Quantity;
+        private int ItemId;
+
         // Constructor to initialize the private fields
         public Warehouse(int warehouseId, string address, int currentCapacity, int maxCapacity)
         {
@@ -15,6 +19,17 @@ namespace CleanBrilliantCompany.Models.Entity
             Address = address;
             CurrentCapacity = currentCapacity;
             MaxCapacity = maxCapacity;
+        }
+
+        public Warehouse(int warehouseId, string address, int currentCapacity, int maxCapacity, int itemId, int productId, int quantity)
+        {
+            WarehouseId = warehouseId;
+            Address = address;
+            CurrentCapacity = currentCapacity;
+            MaxCapacity = maxCapacity;
+            ProductId = productId;
+            ItemId = itemId;
+            Quantity = quantity;
         }
 
         public Dictionary<string, object> retrieveWarehouseInfo()

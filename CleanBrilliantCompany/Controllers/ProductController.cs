@@ -3,6 +3,7 @@ using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Models.ViewModel;
 using Microsoft.Extensions.Configuration;
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -24,7 +25,9 @@ namespace CleanBrilliantCompany.Controllers
         {
             // string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             // _productControl = new ProductControl(connectionString);
+            // _productControl = new ProductControl(configuration, reorderRequestManagement);
             _productControl = new ProductControl(configuration, reorderRequestManagement);
+
             _agingControl = new AgingControl(_productControl); // Testing
         }
 
