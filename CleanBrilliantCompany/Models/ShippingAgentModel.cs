@@ -20,7 +20,7 @@ namespace CleanBrilliantCompany.Models
 
         [Required]
         [StringLength(255)]
-        [Column("shippingAgentMethod")]
+        [Column("shippingMethod")] // Fixed column name to match database
         public string ShippingMethod { get; set; } = string.Empty;
 
         [Required]

@@ -1,21 +1,49 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Services;
+using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Controllers.Staff
 {
     [Route("staff")]
     public class StaffController : Controller
     {
+        private readonly IShippingAgentService _shippingAgentService;
+
+        // Add constructor with dependency injection
+        public StaffController(IShippingAgentService shippingAgentService)
+        {
+            _shippingAgentService = shippingAgentService;
+        }
+
         [HttpGet("")]
         public IActionResult Index()
         {
             return View(); // Renders Views/Staff/Index.cshtml
         }
+
         [HttpGet("shippingagent")]
-        public IActionResult ShippingAgent()
+        public async Task<IActionResult> ShippingAgent()
         {
-            return View(); // Renders Views/Staff/ShippingAgent.cshtml
+            // Get shipping agents from the service
+            var agents = await _shippingAgentService.GetShippingAgentsAsync();
+            
+            // Debug information to console
+            System.Console.WriteLine($"StaffController retrieved {agents.Count} agents");
+            foreach (var agent in agents)
+            {
+                System.Console.WriteLine($"Agent: {agent.ShippingAgentId} - {agent.ShippingAgentCompany}");
+            }
+            
+            // Create and populate the view model
+            var viewModel = new ShippingAgentViewModel
+            {
+                ShippingAgents = agents
+            };
+            
+            // Pass the view model to the view
+            return View(viewModel); // Renders Views/Staff/ShippingAgent.cshtml with model
         }
 
         [HttpGet("orderfufilment")]
@@ -23,6 +51,7 @@ namespace CleanBrilliantCompany.Controllers.Staff
         {
             return View(); // Renders Views/Staff/OrderFufilment.cshtml
         }
+
         [HttpGet("refund")]
         public IActionResult Refund()
         {
@@ -34,11 +63,18 @@ namespace CleanBrilliantCompany.Controllers.Staff
         {
             return View(); // Renders Views/Staff/Reorder.cshtml
         }
+
         [HttpGet("ticket")]
         public IActionResult Ticket()
         {
             return View(); // Renders Views/Staff/Ticket.cshtml
         }
+
+        // Add this method for debugging - access it via /staff/debug
+        [HttpGet("debug")]
+        public IActionResult Debug()
+        {
+            return Content("StaffController is working!");
+        }
     }
 }
-

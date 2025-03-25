@@ -8,24 +8,25 @@ using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var services = builder.Services; // Ensure services is properly assigned
 var config = builder.Configuration;
-
-
-// Shipping Agent DB
-var shippingAgentDB = new ShippingAgentMapper(config);
-shippingAgentDB.FetchShippingAgents();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// In Program.cs or Startup.cs
-services.AddScoped<ShippingAgentMapper>();
-services.AddScoped<IShippingAgentService, ShippingAgentService>();
+// Register services properly
+builder.Services.AddScoped<ShippingAgentMapper>();
+builder.Services.AddScoped<IShippingAgentService, ShippingAgentService>();
 
 // Register DatabaseService
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Create ShippingAgentMapper instance after services are registered to demonstrate data fetching
+// Note: This is for debugging only and should be removed in production
+var serviceProvider = builder.Services.BuildServiceProvider();
+var shippingAgentDB = serviceProvider.GetRequiredService<ShippingAgentMapper>();
+var agents = shippingAgentDB.FetchShippingAgents();
+Console.WriteLine($"Debug: Found {agents.Count} shipping agents");
 
 var app = builder.Build();
 
