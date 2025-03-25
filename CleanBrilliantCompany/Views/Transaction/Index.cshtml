@@ -1,0 +1,78 @@
+@model List<CleanBrilliantCompany.Models.Entity.Transaction>
+
+@{
+    ViewData["Title"] = "Transaction List";
+}
+
+<h2>All Transactions</h2>
+
+<!-- Table for All Transactions -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Transaction Date Time</th>
+            <th>Adjustment Type</th>
+            <th>Product ID</th>
+            <th>Item ID</th>
+            <th>Staff ID</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var TransactionInfo in ViewData["AllTransactions"] as List<Dictionary<string, object>>)
+    {
+        <tr>
+            <td>@TransactionInfo["TransactionId"]</td>
+            <td>@Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@TransactionInfo["AdjustmentType"]</td>
+            <td>@TransactionInfo["ProductId"]</td>
+            <td>@TransactionInfo["ItemId"]</td>
+            <td>@TransactionInfo["StaffId"]</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Form to Filter by Date -->
+<h3>Search Transactions by Date</h3>
+<form method="get">
+    <label for="searchDate">Select Date:</label>
+    <input type="date" name="searchDate" id="searchDate" />
+    <button type="submit">Search</button>
+</form>
+
+@if (ViewData["TransactionsByDate"] != null)
+{
+    <h2>Transactions for @ViewData["SearchDate"]</h2>
+
+    <!-- Table for Transactions on a Specific Date -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Transaction Date Time</th>
+                <th>Adjustment Type</th>
+                <th>Product ID</th>
+                <th>Item ID</th>
+                <th>Staff ID</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var TransactionInfo in ViewData["TransactionsByDate"] as List<Dictionary<string, object>>)
+        {
+            <tr>
+                <td>@TransactionInfo["TransactionId"]</td>
+                <td>@Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@TransactionInfo["AdjustmentType"]</td>
+                <td>@TransactionInfo["ProductId"]</td>
+                <td>@TransactionInfo["ItemId"]</td>
+                <td>@TransactionInfo["StaffId"]</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No transactions found for the selected date.</p>
+}

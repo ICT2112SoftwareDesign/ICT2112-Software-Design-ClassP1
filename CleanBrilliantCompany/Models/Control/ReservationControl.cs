@@ -10,12 +10,12 @@ namespace CleanBrilliantCompany.Models.Control
     public class ReservationControl
     {
         private readonly IItem _item;
-        private readonly IItemUpdate _itemUpdate;
+        private readonly IIItemUpdate _itemUpdate;
         private readonly IReserve _reserve;
         private readonly IStaffDetails _staffDetails;
         private readonly ReservationMapper _reservationMapper;
 
-        public ReservationControl(IItem item, IItemUpdate itemUpdate, IReserve reserve, ReservationMapper reservationMapper)
+        public ReservationControl(IItem item, IIItemUpdate itemUpdate, IReserve reserve, ReservationMapper reservationMapper)
         {
             _item = item;
             _itemUpdate = itemUpdate;

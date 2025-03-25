@@ -6,7 +6,7 @@ namespace CleanBrilliantCompany.Interfaces
     {
         List<Item> GetItemsByStatus(Status status, IConfiguration configuration);
 
-        Product RetrieveProductDetails(int productId, IConfiguration configuration);
+        Prodluct RetrieveProductDetails(int productId, IConfiguration configuration);
 
     }
 
@@ -15,7 +15,7 @@ namespace CleanBrilliantCompany.Interfaces
         Item GetItemById(int itemId, IConfiguration configuration);
     }
 
-    public interface IItemUpdate
+    public interface IIItemUpdate
     {
         bool UpdateItemById(int itemId, int productId, DateOnly expiryDate, DateOnly receiveDate, DateOnly manufactureDate,
                     float salePrice, int batchCode, int warehouseId, Status status, int reservationId, int orderId,

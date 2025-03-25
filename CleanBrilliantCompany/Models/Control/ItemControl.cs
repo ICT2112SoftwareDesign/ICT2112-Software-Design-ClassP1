@@ -1,82 +1,154 @@
-﻿using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models.Entity;
-using Microsoft.Extensions.Configuration;
+using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Mappers;
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-
-    public class ItemControl : IItem, IItemUpdate, IReserve
+    public class ItemControl : IItemQuery, IIItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse
     {
-
-        private readonly IProduct _product;
         private readonly ItemMapper _itemMapper;
 
-        public ItemControl(IProduct product)
+        private readonly TransactionControl _transactionObserver; //Added observer
+
+        private readonly IProduct _iProductInterface;
+
+        // Constructor that takes the connection string
+        public ItemControl(string connectionString, IProduct iProductInterface)
         {
-            _product = product;
+            _itemMapper = new ItemMapper(connectionString);
+            _iProductInterface = iProductInterface;
+            Console.WriteLine("Products loaded from database.");
+            _transactionObserver = new TransactionControl(connectionString);
         }
 
-        public async Task<Item> GetItemById(int itemId, IConfiguration configuration)
+        // METHODS FOR IITEM
+        public async Task<List<Item>> getAllItems()
         {
-            string connectionString = configuration.GetConnectionString("CleanBrillantCompany:ConnectionString");
-            ItemMapper itemMapper = new ItemMapper(connectionString);
-            try
+            return await Task.FromResult(_itemMapper.getAllItems()); // mapper uses iItemQuery to interact with control 
+        }
+
+        public async Task<Item> getItemById(int itemId)
+        {
+            return await Task.FromResult(_itemMapper.getItemById(itemId));
+        }
+
+        // search by product name
+        public async Task<List<Item>> getItemByProductName(string productName)
+        {
+            return await Task.FromResult(_itemMapper.getItemByProductName(productName));
+        }
+
+        public async Task<bool> createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        {
+            return await Task.FromResult(_itemMapper.createItem(productId, salePrice, batchCode, warehouseId, status));
+        }
+
+        public async Task<bool> updateItem(int itemId, float salePrice)
+        {
+            return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
+        }
+
+        public void RegisterObservers(Item item)
+        {
+            item.Attach(_transactionObserver);
+            Console.WriteLine("Called registerObservers method and attached observer to item");
+        }
+
+        public void RegisterObserversList(List<Item> item)
+        {
+            foreach (var i in item)
             {
-                Item result = await itemMapper.findByItemId(itemId);
-                return result;
+                i.Attach(_transactionObserver);
+                Console.WriteLine("Called registerObservers method and attached observer to item");
             }
-            catch (Exception ex)
+
+        }
+
+
+        // METHOD FOR IITEMUPDATE 
+        public async Task<bool> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
+        {
+            //return await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
+            bool dbUpdated = await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
+
+            if (dbUpdated)
             {
-                Console.WriteLine($"Error updating item: {ex.Message}");
-                return null;
+                Item item = await getItemById(itemId);
+
+                if (item != null)
+                {
+                    Console.WriteLine("CALLING UPDATE ITEM STATUS IN CONTROL");
+                    RegisterObservers(item); //attach observers before updating
+                    item.UpdateStatus(status); //update and notify observers
+                }
             }
+
+            return dbUpdated;
         }
 
-        public List<Item> GetItemsByStatus(Status status, IConfiguration configuration)
+        // for transaction feature, might remove in future
+        public async Task<bool> updateItemStatusOld(int itemId, ItemStatus status)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(_itemMapper.updateItemStatusOld(itemId, status));
         }
 
-        public Product RetrieveProductDetails(int productId, IConfiguration configuration)
+
+        // METHODS FOR RESERVE FEATURE (IRESERVE)
+        public async Task<List<Item>> getItemsByStatus(ItemStatus itemStatus)
         {
-            Product product = _product.GetProductDetails(productId);
-            return product;
+            return await Task.FromResult(_itemMapper.getItemByStatus(itemStatus));
         }
 
-        public async Task<bool> UpdateItemById(int itemId, int productId, DateOnly expiryDate, DateOnly receiveDate, DateOnly manufactureDate,
-                    float salePrice, int batchCode, int warehouseId, Status status, int reservationId, int orderId,
-                    int transferId, int returnId, IConfiguration configuration)
+        public Task<Prodluct> retrieveProductDetails(int productId)
         {
-            Item item = new Item();
-            item.ItemId = itemId;
-            item.ProductId = productId;
-            item.ExpiryDate = expiryDate;
-            item.ReceiveDate = receiveDate;
-            item.ManufactureDate = manufactureDate;
-            item.SalePrice = salePrice;
-            item.BatchCode = batchCode;
-            item.WarehouseId = warehouseId;
-            item.Status = status;
-            item.ReservationId = reservationId;
-            item.OrderId = orderId;
-            item.TransferId = transferId;
-            item.ReturnId = returnId;
-            string connectionString = configuration.GetConnectionString("CleanBrillantCompany:ConnectionString");
-            ItemMapper itemMapper = new ItemMapper(connectionString);
-            try
-            {
-                string result = await itemMapper.update(item.ItemId, item.ProductId, item.ExpiryDate, item.ReceiveDate,
-                                                    item.ManufactureDate, item.SalePrice, item.BatchCode,
-                                                    item.WarehouseId, item.Status, item.ReservationId, item.OrderId,
-                                                    item.TransferId, item.ReturnId);
-                Console.WriteLine(result);
-                return true;
-            } catch (Exception ex) {
-                Console.WriteLine($"Error updating item: {ex.Message}");
-                return false;
+            Prodluct product = _iproductInterface.getProductDetails(productId);
+            return Task.FromResult(product);
+        }
+
+        // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
+        public async Task<Warehouse> getWarehouseDetails(int warehouseId)
+        {
+            return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
+        }
+
+        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId)
+        {
+            return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, warehouseId));
+        }
+
+        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId)
+        {
+            return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
+        }
+
+        // METHOD FOR HANDLING REFUNDED ITEMS 
+        public void returnItemToInventory(List<int> itemId, string refundReason)
+        {
+            itemId = [4, 5, 6];
+            refundReason = "Defect";
+            _itemMapper.returnItemToInventory(itemId, refundReason);
+        }
+
+        // METHOD FOR HANDLING ORDERED ITEMS 
+        public List<Item> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
+        {
+            List<Item> items =  _itemMapper.adjustInventory(orderId, orderProducts);
+
+            RegisterObserversList(items); //attach observers before updating
+            foreach (var i in items) {
+                i.UpdateStatus(ItemStatus.Sold);
             }
+
+            return items;
         }
+
+        public void processCancelledOrder(int orderId)
+        {
+            _itemMapper.processCancelledOrder(orderId);
+        }
+
     }
-
 }
