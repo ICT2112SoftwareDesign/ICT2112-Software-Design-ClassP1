@@ -10,10 +10,9 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ItemControl _itemControl;
 
-        public ItemController(IConfiguration configuration)
+        public ItemController(IConfiguration configuration, iProduct iProduct)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-            _itemControl = new ItemControl(connectionString, null);
+            _itemControl = new ItemControl(configuration, iProduct);
         }
         public async Task<IActionResult> Index(int? searchedItemId)
         {

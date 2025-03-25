@@ -5,47 +5,110 @@ namespace CleanBrilliantCompany.Models.Entity
     public enum TransferStatus
     {
         Pending,
+        Transit,
         Completed,
         Cancelled
     }
 
     public class Transfer
     {
-        private int transferId;
-        private int productId;
-        private TransferStatus status;
-        private int quantity;
-        private int sourceWarehouse;
-        private int destinationWarehouse;
+        private int TransferId;
+        private int ProductId;
+        private TransferStatus Status;
+        private int Quantity;
+        private int SourceWarehouse;
+        private int DestinationWarehouse;
+        private int StaffId;
+
+        private string ProductName;
+        private string SourceWarehouseName;
+        private string DestinationWarehouseName;
+
+        public Transfer(int transferId, int productId, TransferStatus status, int quantity, int sourceWarehouse, int destinationWarehouse, int staffId)
+        {
+            TransferId = transferId;
+            ProductId = productId;
+            Status = status;
+            Quantity = quantity;
+            SourceWarehouse = sourceWarehouse;
+            DestinationWarehouse = destinationWarehouse;
+            StaffId = staffId;
+        }
+
+        public Transfer(int transferId, int productId, TransferStatus status, int quantity, int sourceWarehouse, int destinationWarehouse, int staffId, string productName, string sourceWarehouseName, string destinationWarehouseName)
+        {
+            TransferId = transferId;
+            ProductId = productId;
+            Status = status;
+            Quantity = quantity;
+            SourceWarehouse = sourceWarehouse;
+            DestinationWarehouse = destinationWarehouse;
+            StaffId = staffId;
+            ProductName = productName;
+            SourceWarehouseName = sourceWarehouseName;
+            DestinationWarehouseName = destinationWarehouseName;
+        }
+        
+        public Dictionary<string, object> retrieveTransferInfo()
+        {
+            return new Dictionary<string, object>
+            {
+                { "TransferId", TransferId },
+                { "ProductId", ProductId },
+                { "Quantity", Quantity },
+                { "SourceWarehouse", SourceWarehouse },
+                { "DestinationWarehouse", DestinationWarehouse },
+                { "StaffId", StaffId },
+                { "Status", Status },
+                { "ProductName", ProductName },
+                { "SourceWarehouseName", SourceWarehouseName },
+                { "DestinationWarehouseName", DestinationWarehouseName }            
+            };
+        }
 
         //Getter Method
-        private int getTransferId() => transferId;
-        private int getProductId() => productId;
-        private TransferStatus getStatus() => status;
-        private int getQuantity() => quantity;
-        private int getSourceWarehouse() => sourceWarehouse;
-        private int getDestinationWarehouse() => destinationWarehouse;
+        private int getTransferId() => TransferId;
+        private int getProductId() => ProductId;
+        private TransferStatus getStatus() => Status;
+        private int getQuantity() => Quantity;
+        private int getSourceWarehouse() => SourceWarehouse;
+        private int getDestinationWarehouse() => DestinationWarehouse;
+        private int getStaffId() => StaffId;
 
 
         //Setter Method
-        private void setTransferId(int transferId) => this.transferId = transferId;
-        private void setProductId(int productId) => this.productId = productId;
-        private void setStatus(TransferStatus status) => this.status = status;
-        private void setQuantity(int quantity) => this.quantity = quantity;
-        private void setSourceWarehouse(int sourceWarehouse) => this.sourceWarehouse = sourceWarehouse;
-        private void setDestinationWarehouse(int destinationWarehouse) => this.destinationWarehouse = destinationWarehouse;
-        
+        private void setTransferId(int transferId) => this.TransferId = transferId;
+        private void setProductId(int productId) => this.ProductId = productId;
+        private void setStatus(TransferStatus status) => this.Status = status;
+        private void setQuantity(int quantity) => this.Quantity = quantity;
+        private void setSourceWarehouse(int sourceWarehouse) => this.SourceWarehouse = sourceWarehouse;
+        private void setDestinationWarehouse(int destinationWarehouse) => this.DestinationWarehouse = destinationWarehouse;
+        private void setStaffId(int staffId) => this.StaffId = staffId;
 
 
-        public void createTransfer(int productId, TransferStatus status, int quantity, int sourceWarehouse, int destinationWarehouse)
+        public static Transfer createTransfer(int transferId, int productId, TransferStatus status, int quantity, int sourceWarehouse, int destinationWarehouse, int staffId)
         {
-            setProductId(productId);
-            setStatus(status);
-            setQuantity(quantity);
-            setSourceWarehouse(sourceWarehouse);
-            setDestinationWarehouse(destinationWarehouse);
-
+            return new Transfer(transferId, productId, status, quantity, sourceWarehouse, destinationWarehouse, staffId);
         }
+
+        // public void updateTransferStatus(TransferStatus status)
+        // {
+        //     this.Status = status;
+        // }
+
+        // Public method to update item details
+        public void UpdateTransfer(int transferId, int productId, TransferStatus status, int quantity, int sourceWarehouse, int destinationWarehouse, int staffId)
+        {
+            TransferId = transferId;
+            ProductId = productId;
+            Status = status;
+            Quantity = quantity;
+            SourceWarehouse = sourceWarehouse;
+            DestinationWarehouse = destinationWarehouse;
+            StaffId = staffId;
+        }
+    
+    
     }
 
 }

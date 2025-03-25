@@ -1,3 +1,4 @@
+
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Interfaces;
 using System;
@@ -160,6 +161,7 @@ namespace CleanBrilliantCompany.Mappers
                 // Define the SQL query to retrieve the item by its ID
                 string query = @"SELECT * FROM Item 
                 INNER JOIN ProductBatch ON ProductBatch.productId = Item.productId
+                AND ProductBatch.batchCode = Item.batchCode
                 WHERE itemStatus = @status";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -256,7 +258,7 @@ namespace CleanBrilliantCompany.Mappers
         // for iItemUpdate 
         public bool updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
         {
-
+            Console.WriteLine("STATUS TO ADD IN DB" + status);
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -272,7 +274,7 @@ namespace CleanBrilliantCompany.Mappers
                     command.Parameters.AddWithValue("@orderId", orderId ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@transferId", transferId ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@returnId", returnId ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@status", status);
+                    command.Parameters.AddWithValue("@status", status.ToString());
 
                     int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
                     return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
@@ -313,11 +315,11 @@ namespace CleanBrilliantCompany.Mappers
 
                 // Define the SQL query to retrieve warehouse details
                 string query = @"
-                    SELECT Warehouse.warehouseId, warehouseAddress, currentCapacity, maxCapacity, Product.productId, Product.quantity, Item.ItemId
+                    SELECT Warehouse.warehouseId, Warehouse.warehouseAddress, Warehouse.currentCapacity, Warehouse.maxCapacity, Product.productId, Product.quantity, Item.ItemId
                     FROM Warehouse 
                     INNER JOIN Item ON Warehouse.warehouseId = Item.warehouseId
                     INNER JOIN Product ON Item.productId = Product.productId
-                    WHERE warehouseId = @warehouseId";
+                    WHERE Warehouse.warehouseId = @warehouseId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -336,7 +338,7 @@ namespace CleanBrilliantCompany.Mappers
                                     reader.GetInt32(reader.GetOrdinal("warehouseId")),
                                     reader.GetString(reader.GetOrdinal("warehouseAddress")),
                                     reader.GetInt32(reader.GetOrdinal("currentCapacity")),
-                                    reader.GetInt32(reader.GetOrdinal("maxCapactiy")),
+                                    reader.GetInt32(reader.GetOrdinal("maxCapacity")),
                                     reader.GetInt32(reader.GetOrdinal("productId")),
                                     reader.GetInt32(reader.GetOrdinal("quantity")),
                                     reader.GetInt32(reader.GetOrdinal("itemId"))
@@ -419,10 +421,12 @@ namespace CleanBrilliantCompany.Mappers
 
                 // Define the SQL query to retrieve the item by its ID
                 string query = @"
-                SELECT SUM(quantity) AS 'Total quantity' FROM Item 
-                INNER JOIN Product ON Product.productId = Item.productId
-                INNER JOIN Warehouse ON Warehouse.warehouseId = Item.warehouseId
-                WHERE Product.productId = @productId AND Item.warehouseId = @warehouseId";
+                SELECT COUNT(Item.productId) AS 'Total quantity'
+                FROM Item
+                    INNER JOIN Product ON Product.productId = Item.productId
+                    INNER JOIN Warehouse ON Warehouse.warehouseId = Item.warehouseId
+                WHERE Product.productId = @productId AND Item.warehouseId = @warehouseId AND Item.itemStatus = 'Available';
+";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -450,7 +454,9 @@ namespace CleanBrilliantCompany.Mappers
                 return totalQuantity;
             }
         }
-        public List<Warehouse> getWarehouseDetails()
+
+
+        public List<Warehouse> getAllWarehouseDetails()
         {
             List<Warehouse> warehouses = new List<Warehouse>();
 
@@ -476,7 +482,7 @@ namespace CleanBrilliantCompany.Mappers
                                 // Create the Item object using the constructor
                                 Warehouse warehouse = new Warehouse(
                                     reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                    reader.GetString(reader.GetOrdinal("address")),
+                                    reader.GetString(reader.GetOrdinal("warehouseAddress")),
                                     reader.GetInt32(reader.GetOrdinal("currentCapacity")),
                                     reader.GetInt32(reader.GetOrdinal("maxCapacity"))
                                 );

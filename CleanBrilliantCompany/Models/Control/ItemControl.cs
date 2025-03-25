@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IWarehouse
     {
         private readonly ItemMapper _itemMapper;
         private readonly TransactionControl _transactionObserver; // Added observer
@@ -14,8 +14,9 @@ namespace CleanBrilliantCompany.Models.Control
         private readonly iProduct _iproductInterface;
 
         // Constructor that takes the connection string
-        public ItemControl(string connectionString, iProduct iproductInterface)
+        public ItemControl(IConfiguration configuration, iProduct iproductInterface)
         {
+             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _itemMapper = new ItemMapper(connectionString);
             _iproductInterface = iproductInterface;
             Console.WriteLine("Products loaded from database.");
@@ -69,16 +70,24 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
-        public async Task<Warehouse> getWarehouseDetails(int warehouseId) {
+        public async Task<Warehouse> getWarehouseDetails(int warehouseId)
+        {
             return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
         }
 
-        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId) {
+        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId)
+        {
             return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, warehouseId));
         }
 
-        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId) {
+        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId)
+        {
             return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
+        }
+        //Testing get all warehouse details
+        public async Task<List<Warehouse>> getAllWarehouseDetails()
+        {
+            return await Task.FromResult(_itemMapper.getAllWarehouseDetails());
         }
 
 

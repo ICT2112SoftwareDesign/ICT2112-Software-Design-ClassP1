@@ -134,3 +134,27 @@ else
         }
     };
 </script> *@
+
+<script>
+    document.getElementById("transferForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        let quantity = document.getElementById("quantity").value;
+        let sourceWarehouse = document.getElementById("sourceWarehouse").value;
+        let destinationWarehouse = document.getElementById("destinationWarehouse").value;
+
+        if (quantity <= 0) {
+            alert("Please enter a valid quantity.");
+            return;
+        }
+
+        if (sourceWarehouse === destinationWarehouse) {
+            alert("Source and Destination warehouse cannot be the same.");
+            return;
+        }
+
+        // Proceed with form submission if no errors
+        this.submit();
+    });
+</script>
+
