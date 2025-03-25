@@ -8,6 +8,7 @@ builder.Services.AddScoped<CostMapper>();
 
 // ✅ Register CostControl (also requires logger)
 builder.Services.AddScoped<CostControl>();
+
 builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>();  // ✅ Added Logger
 // ✅ Register Visualization Service
 builder.Services.AddScoped<IVisualizationService, VisualizationService>();

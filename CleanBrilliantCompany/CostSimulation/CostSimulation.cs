@@ -5,6 +5,7 @@ public class CostSimulation
     public List<DashboardDTO> Dashboards { get; set; }
     public List<ProductManufacturerDTO> Manufacturers { get; set; }
     public List<ProductBatchDTO> ProductBatches { get; set; }
+    public List<ItemDTO> Items { get; set; }
 
     public CostSimulation()
     {
@@ -62,16 +63,30 @@ public class CostSimulation
             new ProductBatchDTO { BatchCode = 211, ProductId = 611, BatchPrice = 700m, BatchQuantity = 850, ExpiryDate = new DateTime(2028, 03, 15), ReceiveDate = new DateTime(2025, 12, 05), ManufactureDate = new DateTime(2025, 08, 01), ManufacturerId = 6 }, // Clorox Bleach
             new ProductBatchDTO { BatchCode = 212, ProductId = 612, BatchPrice = 800m, BatchQuantity = 900, ExpiryDate = new DateTime(2028, 06, 10), ReceiveDate = new DateTime(2026, 01, 10), ManufactureDate = new DateTime(2025, 09, 10), ManufacturerId = 6 },  // Clorox Disinfecting Wipes Lemon
             new ProductBatchDTO { BatchCode = 213, ProductId = 613, BatchPrice = 850m, BatchQuantity = 850, ExpiryDate = new DateTime(2028, 03, 15), ReceiveDate = new DateTime(2025, 12, 05), ManufactureDate = new DateTime(2025, 08, 01), ManufacturerId = 6 }, // Clorox Bleach 
-            new ProductBatchDTO { BatchCode = 211, ProductId = 611, BatchPrice = 720m, BatchQuantity = 870, ExpiryDate = new DateTime(2028, 04, 12), ReceiveDate = new DateTime(2025, 11, 20), ManufactureDate = new DateTime(2025, 07, 18), ManufacturerId = 6 },
-            new ProductBatchDTO { BatchCode = 212, ProductId = 612, BatchPrice = 830m, BatchQuantity = 920, ExpiryDate = new DateTime(2028, 07, 08), ReceiveDate = new DateTime(2026, 02, 05), ManufactureDate = new DateTime(2025, 10, 14), ManufacturerId = 6 },
-            new ProductBatchDTO { BatchCode = 213, ProductId = 613, BatchPrice = 860m, BatchQuantity = 880, ExpiryDate = new DateTime(2028, 02, 28), ReceiveDate = new DateTime(2025, 12, 22), ManufactureDate = new DateTime(2025, 08, 11), ManufacturerId = 6 },
-            new ProductBatchDTO { BatchCode = 214, ProductId = 614, BatchPrice = 610m, BatchQuantity = 910, ExpiryDate = new DateTime(2028, 05, 20), ReceiveDate = new DateTime(2026, 01, 18), ManufactureDate = new DateTime(2025, 09, 05), ManufacturerId = 6 },
-            new ProductBatchDTO { BatchCode = 215, ProductId = 614, BatchPrice = 560m, BatchQuantity = 1030, ExpiryDate = new DateTime(2028, 08, 30), ReceiveDate = new DateTime(2026, 03, 15), ManufactureDate = new DateTime(2025, 10, 22), ManufacturerId = 6 },
-            new ProductBatchDTO { BatchCode = 216, ProductId = 614, BatchPrice = 790m, BatchQuantity = 1180, ExpiryDate = new DateTime(2028, 07, 25), ReceiveDate = new DateTime(2026, 02, 10), ManufactureDate = new DateTime(2025, 09, 01), ManufacturerId = 6 },
-            new ProductBatchDTO { BatchCode = 217, ProductId = 614, BatchPrice = 620m, BatchQuantity = 940, ExpiryDate = new DateTime(2028, 06, 18), ReceiveDate = new DateTime(2026, 04, 12), ManufactureDate = new DateTime(2025, 10, 09), ManufacturerId = 6 },
-            new ProductBatchDTO { BatchCode = 218, ProductId = 614, BatchPrice = 640m, BatchQuantity = 980, ExpiryDate = new DateTime(2028, 09, 15), ReceiveDate = new DateTime(2026, 05, 17), ManufactureDate = new DateTime(2025, 11, 03), ManufacturerId = 6 },
-            new ProductBatchDTO { BatchCode = 219, ProductId = 614, BatchPrice = 700m, BatchQuantity = 1200, ExpiryDate = new DateTime(2028, 06, 10), ReceiveDate = new DateTime(2026, 06, 10), ManufactureDate = new DateTime(2025, 09, 10), ManufacturerId = 6 }  
+            new ProductBatchDTO { BatchCode = 214, ProductId = 611, BatchPrice = 720m, BatchQuantity = 870, ExpiryDate = new DateTime(2028, 04, 12), ReceiveDate = new DateTime(2025, 11, 20), ManufactureDate = new DateTime(2025, 07, 18), ManufacturerId = 6 },
+            new ProductBatchDTO { BatchCode = 215, ProductId = 612, BatchPrice = 830m, BatchQuantity = 920, ExpiryDate = new DateTime(2028, 07, 08), ReceiveDate = new DateTime(2026, 02, 05), ManufactureDate = new DateTime(2025, 10, 14), ManufacturerId = 6 },
+            new ProductBatchDTO { BatchCode = 216, ProductId = 613, BatchPrice = 860m, BatchQuantity = 880, ExpiryDate = new DateTime(2028, 02, 28), ReceiveDate = new DateTime(2025, 12, 22), ManufactureDate = new DateTime(2025, 08, 11), ManufacturerId = 6 },
+            new ProductBatchDTO { BatchCode = 217, ProductId = 614, BatchPrice = 610m, BatchQuantity = 910, ExpiryDate = new DateTime(2028, 05, 20), ReceiveDate = new DateTime(2026, 01, 18), ManufactureDate = new DateTime(2025, 09, 05), ManufacturerId = 6 },
+            new ProductBatchDTO { BatchCode = 218, ProductId = 614, BatchPrice = 560m, BatchQuantity = 1030, ExpiryDate = new DateTime(2028, 08, 30), ReceiveDate = new DateTime(2026, 03, 15), ManufactureDate = new DateTime(2025, 10, 22), ManufacturerId = 6 },
+            new ProductBatchDTO { BatchCode = 219, ProductId = 614, BatchPrice = 790m, BatchQuantity = 1180, ExpiryDate = new DateTime(2028, 07, 25), ReceiveDate = new DateTime(2026, 02, 10), ManufactureDate = new DateTime(2025, 09, 01), ManufacturerId = 6 },
+            new ProductBatchDTO { BatchCode = 220, ProductId = 614, BatchPrice = 620m, BatchQuantity = 940, ExpiryDate = new DateTime(2028, 06, 18), ReceiveDate = new DateTime(2026, 04, 12), ManufactureDate = new DateTime(2025, 10, 09), ManufacturerId = 6 },
+            new ProductBatchDTO { BatchCode = 221, ProductId = 614, BatchPrice = 640m, BatchQuantity = 980, ExpiryDate = new DateTime(2028, 09, 15), ReceiveDate = new DateTime(2026, 05, 17), ManufactureDate = new DateTime(2025, 11, 03), ManufacturerId = 6 },
+            new ProductBatchDTO { BatchCode = 222, ProductId = 614, BatchPrice = 700m, BatchQuantity = 6, ExpiryDate = new DateTime(2028, 06, 10), ReceiveDate = new DateTime(2026, 06, 10), ManufactureDate = new DateTime(2025, 09, 10), ManufacturerId = 6 }  
         };
+
+                // Sample entries for ProductBatchItemDTO
+        Items = new List<ItemDTO>
+        {
+            // Entries with BatchCode 219 and Sold status
+            new ItemDTO { ItemId = 5001, ProductId = 614, BatchCode = 222, SalePrice = 100m, WarehouseId = 3, ItemStatus = "Sold", OrderId = 1001 },
+            new ItemDTO { ItemId = 5002, ProductId = 614, BatchCode = 222, SalePrice = 100m, WarehouseId = 3, ItemStatus = "Sold", OrderId = 1002 },
+            new ItemDTO { ItemId = 5003, ProductId = 614, BatchCode = 222, SalePrice = 100m, WarehouseId = 4, ItemStatus = "Sold", OrderId = 1003 },
+            new ItemDTO { ItemId = 5004, ProductId = 614, BatchCode = 222, SalePrice = 100m, WarehouseId = 1, ItemStatus = "Sold", OrderId = 1004 },
+            new ItemDTO { ItemId = 5005, ProductId = 614, BatchCode = 222, SalePrice = 100m, WarehouseId = 2, ItemStatus = "Sold", OrderId = 1005 },
+            new ItemDTO { ItemId = 5006, ProductId = 614, BatchCode = 222, SalePrice = 60m, WarehouseId = 2, ItemStatus = "Sold", OrderId = 1006 },
+            new ItemDTO { ItemId = 5007, ProductId = 611, BatchCode = 211, SalePrice = 50m, WarehouseId = 2, ItemStatus = "Sold", OrderId = 1007 },
+        };
+
 
     }
 }

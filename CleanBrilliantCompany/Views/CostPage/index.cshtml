@@ -494,9 +494,9 @@
                         <!-- Alerts & Notifications Card -->
                         <div class="row mt-4">
                             <div class="col-md-12">
+                                <h2 class="h3 mt-3 mb-4 text-gray-800">🔔 Alerts & Notifications</h2>
                                 <div class="card">
                                     <div class="card-body">
-                                        <h2 class="mb-0 text-gray-800">Alerts & Notifications</h2>
                                         <div id="alertsContainer" class="mt-2"></div>
                                     </div>
                                 </div>
@@ -628,7 +628,40 @@
     fetchProductBatches(productId);
     fetchRecentProductBatches(productId);
     fetchCheapestExpensiveProduct(productId);
+    console.log("[DEBUG] Calling fetchProductAlerts for Product ID:", productId);
+    fetchProductAlerts(productId);
   }
+
+    function fetchProductAlerts(productId) {
+        if (!productId) {
+            console.log("[DEBUG] No product selected for alerts.");
+            document.getElementById("alertsContainer").innerHTML = "";  // ✅ Clear alerts
+            return;
+        }
+
+        console.log(`[DEBUG] Fetching product alerts for Product ID: ${productId}`);
+
+        fetch(`/CostPage/GetProductAlerts?productId=${productId}`)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log("[DEBUG] Raw Response Data:", data);
+            
+            // ✅ Ensure data is structured correctly
+            const alerts = data?.alerts || [];
+            console.log("[DEBUG] Extracted Alerts:", alerts);
+
+            @* displayProductAlerts(alerts); *@
+        })
+    .catch(error => console.error("Error fetching product alerts:", error));
+  }
+  
+
+ 
 
   function fetchProductBatches(productId) {
     fetch(`/CostPage/GetBatchesByProduct?productId=${productId}`)
@@ -644,41 +677,105 @@
       .catch(error => console.error("Error fetching product batches:", error));
   }
 
-  function renderProductDetails(batches) {
+  @* function renderProductDetails(batches) {
     const container = document.getElementById("productDetails");
     container.innerHTML = `
       <div class="card">
         <div class="card-body">
           <h5>Product ID: ${batches[0].productId}</h5>
           <p><strong>Manufacturer ID:</strong> ${batches[0].manufacturerId}</p>
-        <p><strong>No. of Batches:</strong> ${batches.length}</p>        
+          <p><strong>No. of Batches:</strong> ${batches.length}</p>        
         </div>
       </div>
       <div class="mt-3">
         <h5>Batch Details</h5>
         <div class="accordion" id="batchAccordion">
-          ${batches.map((batch, index) => `
+          ${batches.map((batch, index) => {
+            const costPerUnit = batch.batchQuantity > 0 ? (batch.batchPrice / batch.batchQuantity).toFixed(2) : "N/A"; // Avoid division by zero
+
+            return `
             <div class="accordion-item">
               <h2 class="accordion-header" id="batchHeading-${index}">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#batchCollapse-${index}" aria-expanded="false">
-                  Batch Code: ${batch.batchCode}, Price: $${batch.batchPrice}
+                  Batch Code: ${batch.batchCode}, Price: $${batch.batchPrice}, Quantity: ${batch.batchQuantity}, Cost per Unit: $${costPerUnit}
                 </button>
               </h2>
               <div id="batchCollapse-${index}" class="accordion-collapse collapse" aria-labelledby="batchHeading-${index}">
                 <div class="accordion-body">
-                  <strong>Batch Price:</strong> ${batch.batchPrice} <br />
+                  <strong>Batch Price:</strong> $${batch.batchPrice} <br />
                   <strong>Batch Quantity:</strong> ${batch.batchQuantity} <br />
+                  <strong>Per Unit Price:</strong> $${costPerUnit} <br />
                   <strong>Expiry Date:</strong> ${new Date(batch.expiryDate).toLocaleDateString()} <br />
                   <strong>Receive Date:</strong> ${new Date(batch.receiveDate).toLocaleDateString()} <br />
                   <strong>Manufacture Date:</strong> ${new Date(batch.manufactureDate).toLocaleDateString()} <br />
                 </div>
               </div>
             </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       </div>
     `;
-  }
+} *@
+
+function renderProductDetails(batches) {
+    fetch(`/CostPage/GetProductAlerts?productId=${batches[0].productId}`)
+        .then(res => res.json())
+        .then(data => {
+            const alerts = data.alerts.reduce((acc, alert) => {
+                const batchCodeMatch = alert.message.match(/Batch (\d+)/);
+                if (batchCodeMatch) {
+                    acc[batchCodeMatch[1]] = alert.message;
+                }
+                return acc;
+            }, {});
+
+            const container = document.getElementById("productDetails");
+            container.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Product ID: ${batches[0].productId}</h5>
+                        <p><strong>Manufacturer ID:</strong> ${batches[0].manufacturerId}</p>
+                        <p><strong>No. of Batches:</strong> ${batches.length}</p>        
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h5>Batch Details</h5>
+                    <div class="accordion" id="batchAccordion">
+                        ${batches.map((batch, index) => {
+                            const costPerUnit = batch.batchQuantity > 0 ? (batch.batchPrice / batch.batchQuantity).toFixed(2) : "N/A";
+                            let alertType = alerts[batch.batchCode]?.includes("Loss") ? "alert-danger" : "alert-warning";
+                            let alertMessage = alerts[batch.batchCode] 
+                                ? `<div class="alert ${alertType} mb-0" role="alert">${alerts[batch.batchCode]}</div>` 
+                                : "";
+
+                            return `
+                                ${alertMessage} <!-- ✅ Injecting here -->
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="batchHeading-${index}">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#batchCollapse-${index}" aria-expanded="false">
+                                            Batch Code: ${batch.batchCode}, Price: $${batch.batchPrice}, Quantity: ${batch.batchQuantity}, Cost per Unit: $${costPerUnit}
+                                        </button>
+                                    </h2>
+                                    <div id="batchCollapse-${index}" class="accordion-collapse collapse" aria-labelledby="batchHeading-${index}">
+                                        <div class="accordion-body">
+                                            <strong>Batch Price:</strong> $${batch.batchPrice} <br />
+                                            <strong>Batch Quantity:</strong> ${batch.batchQuantity} <br />
+                                            <strong>Per Unit Price:</strong> $${costPerUnit} <br />
+                                            <strong>Expiry Date:</strong> ${new Date(batch.expiryDate).toLocaleDateString()} <br />
+                                            <strong>Receive Date:</strong> ${new Date(batch.receiveDate).toLocaleDateString()} <br />
+                                            <strong>Manufacture Date:</strong> ${new Date(batch.manufactureDate).toLocaleDateString()} <br />
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => console.error("Error fetching product alerts:", error));
+}
 
 
   function fetchRecentProductBatches(productId) {
@@ -742,43 +839,65 @@
       .catch(error => console.error("Error fetching cheapest & most expensive batch:", error));
   }
 
-  function renderCheapestExpensiveProductChart(data) {
-    const ctx = document.getElementById("cheapestExpensiveProductChart").getContext("2d");
+  let cheapestExpensiveProductChartInstance = null; // ✅ Global reference
+
+function renderCheapestExpensiveProductChart(data) {
+    console.log("[DEBUG] Rendering cheapest & most expensive product chart...");
+
+    const canvas = document.getElementById("cheapestExpensiveProductChart");
+    if (!canvas) {
+        console.log("[DEBUG] Canvas element not found!");
+        return;
+    }
+
+    const ctx = canvas.getContext("2d");
+
+    // ✅ Ensure the previous chart instance is destroyed before creating a new one
+    if (cheapestExpensiveProductChartInstance !== null) {
+        console.log("[DEBUG] Destroying previous chart instance...");
+        cheapestExpensiveProductChartInstance.destroy();
+        cheapestExpensiveProductChartInstance = null; // ✅ Reset instance reference
+    }
+
     const labels = [
-      `📉 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
-      `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
+        `📉 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
+        `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
     ];
     const values = [
-      data.cheapestBatch?.batchPrice || 0,
-      data.mostExpensiveBatch?.batchPrice || 0
+        data.cheapestBatch?.batchPrice || 0,
+        data.mostExpensiveBatch?.batchPrice || 0
     ];
     const backgroundColors = [
-      "rgba(54, 162, 235, 0.6)",
-      "rgba(255, 99, 132, 0.6)"
+        "rgba(54, 162, 235, 0.6)",
+        "rgba(255, 99, 132, 0.6)"
     ];
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Batch Price ($)",
-          data: values,
-          backgroundColor: backgroundColors,
-          borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
-          borderWidth: 1
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
-        }
-      }
-    });
-  }
 
+    // ✅ Create the new chart instance
+    cheapestExpensiveProductChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Batch Price ($)",
+                data: values,
+                backgroundColor: backgroundColors,
+                borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
+            }
+        }
+    });
+
+    console.log("[DEBUG] New chart instance created.");
+}
+  
   /* -------------------- Manufacturer Functions -------------------- */
 
   function initManufacturerDropdown() {
@@ -880,41 +999,63 @@
       .catch(error => console.error("Error fetching cheapest & most expensive batch:", error));
   }
 
+  let cheapestExpensiveChartInstance = null;
+
   function renderCheapestExpensiveChart(data) {
-    const ctx = document.getElementById("cheapestExpensiveChart").getContext("2d");
+    console.log("[DEBUG] Rendering cheapest & most expensive product chart...");
+
+    const canvas = document.getElementById("cheapestExpensiveChart");
+    if (!canvas) {
+        console.log("[DEBUG] Canvas element not found!");
+        return;
+    }
+
+    const ctx = canvas.getContext("2d");
+
+    // ✅ Ensure the previous chart instance is destroyed before creating a new one
+    if (cheapestExpensiveChartInstance !== null) {
+        console.log("[DEBUG] Destroying previous chart instance...");
+        cheapestExpensiveChartInstance.destroy();
+        cheapestExpensiveChartInstance = null; // ✅ Reset instance reference
+    }
+
     const labels = [
-      `📉 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
-      `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
+        `📉 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
+        `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
     ];
     const values = [
-      data.cheapestBatch?.batchPrice || 0,
-      data.mostExpensiveBatch?.batchPrice || 0
+        data.cheapestBatch?.batchPrice || 0,
+        data.mostExpensiveBatch?.batchPrice || 0
     ];
     const backgroundColors = [
-      "rgba(54, 162, 235, 0.6)",
-      "rgba(255, 99, 132, 0.6)"
+        "rgba(54, 162, 235, 0.6)",
+        "rgba(255, 99, 132, 0.6)"
     ];
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Batch Price ($)",
-          data: values,
-          backgroundColor: backgroundColors,
-          borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
-          borderWidth: 1
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
+
+    // ✅ Create a new chart instance
+    cheapestExpensiveChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Batch Price ($)",
+                data: values,
+                backgroundColor: backgroundColors,
+                borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
+            }
         }
-      }
     });
+
+    console.log("[DEBUG] New chart instance created.");
   }
 
   function fetchRecentBatchesManufacturer(manufacturerId) {

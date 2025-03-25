@@ -63,10 +63,29 @@ public class CostMapper
 
         foreach (var batch in batches)
         {
-            Console.WriteLine($"[DEBUG] CostMapper: BatchCode {batch.BatchCode}, ProductId {batch.ProductId}, ManufacturerId {batch.ManufacturerId}");
+            Console.WriteLine($"[DEBUG] CostMapper: PASSING BATCHES BatchCode {batch.BatchCode}, ProductId {batch.ProductId}, ManufacturerId {batch.ManufacturerId}");
         }
 
         return batches;
+    }
+
+    public List<ItemDTO> GetAllItems()
+    {
+        if (costSimulation == null || costSimulation.Items == null)
+        {
+            Console.WriteLine("[DEBUG] No items found.");
+            return new List<ItemDTO>();
+        }
+
+        var items = costSimulation.Items.ToList();
+        Console.WriteLine($"[DEBUG] CostMapper: Retrieved {items.Count} items.");
+
+        foreach (var item in items)
+        {
+            Console.WriteLine($"[DEBUG] CostMapper: PASSING ITEMS ItemId {item.ItemId}, ProductId {item.ProductId}, BatchCode {item.BatchCode}, SalePrice {item.SalePrice}, ItemStatus {item.ItemStatus}");
+        }
+
+        return items;
     }
         
 

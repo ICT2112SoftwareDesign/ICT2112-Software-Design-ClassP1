@@ -38,6 +38,7 @@ public class CostControl
 
         var manufacturers = costMapper.GetAllManufacturers();
         var productBatches = costMapper.GetAllProductBatches();
+        var item = costMapper.GetAllItems();
 
         // var newDashboardDto = new DashboardDTO
         // {
@@ -54,9 +55,11 @@ public class CostControl
 
 
         // Passing Retrieved Data to CostDashboardRdm
-        Console.WriteLine($"[DEBUG] CostControl: Passing {productBatches.Count} batches to CostDashboardRdm");
+        Console.WriteLine($"[DEBUG] CostControl: Passing Batches {productBatches.Count} batches to CostDashboardRdm");
+        Console.WriteLine($"[DEBUG] CostControl: Passing Item(s) {item.Count} batches to CostDashboardRdm");
         costDashboard.ProcessManufacturers(manufacturers);
         costDashboard.ProcessProductBatches(productBatches);
+        costDashboard.ProcessItems(item);
 
 
         // This loads the dashboard from the database

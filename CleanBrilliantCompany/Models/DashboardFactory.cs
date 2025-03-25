@@ -27,7 +27,7 @@ public class DashboardFactory
         {
             // "Aging" => new AgingDashboardRdm(newDashboardDto, new List<ProductAgeDTO>(), new List<ProductBatchDTO>(), logger, visualizationService),
             // "Inventory" => new InventoryDashboardRdm(newDashboardDto, new List<InventoryDTO>(), logger),
-            "Cost" => new CostDashboardRdm(newDashboardDto, new List<ProductManufacturerDTO>(), new List<ProductBatchDTO>(), logger, visualizationService, alertService),
+            "Cost" => new CostDashboardRdm(newDashboardDto, new List<ProductManufacturerDTO>(), new List<ProductBatchDTO>(), new List<ItemDTO>(), logger, visualizationService, alertService),
             _ => throw new ArgumentException("Invalid dashboard type")
         };
 

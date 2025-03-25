@@ -20,6 +20,7 @@ public class CostDashboardRdm : Dashboard
 
     private List<ProductBatchDTO> batchDetails = new();
     private List<ProductManufacturerDTO> manufacturerDetails = new();
+    private List<ItemDTO> itemDetails = new();
 
 
     // (Note: You need the cast because CreateNewDashboard() returns Dashboard, not CostDashboardRdm.)
@@ -35,6 +36,7 @@ public class CostDashboardRdm : Dashboard
             },
             new List<ProductManufacturerDTO>(),
             new List<ProductBatchDTO>(),
+            new List<ItemDTO>(),
             logger,
             visualizationService,
             alertService
@@ -44,6 +46,7 @@ public class CostDashboardRdm : Dashboard
     public CostDashboardRdm(DashboardDTO dto, 
                         List<ProductManufacturerDTO> manufacturers,
                         List<ProductBatchDTO> productBatches,
+                        List<ItemDTO> items,
                         ILogger<CostDashboardRdm> logger,
                         IVisualizationService visualizationService,
                         IAlertService alertService) 
@@ -61,9 +64,10 @@ public class CostDashboardRdm : Dashboard
 
         ProcessManufacturers(manufacturers);
         ProcessProductBatches(productBatches);
+        ProcessItems(items);
 
         Console.WriteLine($"[DEBUG] Creating ConcreteCostDetails with {batchDetails.Count} batches");
-        costDetails = new ConcreteCostDetails(alertService, batchDetails);
+        costDetails = new ConcreteCostDetails(alertService, batchDetails,itemDetails);
         GetBatchBudgetSummary(); 
     }
    
@@ -77,6 +81,12 @@ public class CostDashboardRdm : Dashboard
     public void ProcessProductBatches(List<ProductBatchDTO> productBatches)
     {
         batchDetails.AddRange(productBatches);
+    
+    }
+
+    public void ProcessItems(List<ItemDTO> items)
+    {
+        itemDetails.AddRange(items);
     
     }
 
@@ -96,6 +106,12 @@ public class CostDashboardRdm : Dashboard
     {
         return batchDetails.ToList(); // ✅ Works with List<T>
     }
+
+    public List<ItemDTO> GetAllItemBatches()
+    {
+        return itemDetails.ToList(); // ✅ Works with List<T>
+    }
+
 
     // 🔹 Get Manufacturer Info for a Batch
 
@@ -181,11 +197,20 @@ public class CostDashboardRdm : Dashboard
     {
         return costDetails.GetBatchBudgetSummary();  // ✅ Forward the call
     }
-   
+
+    public object CheckProductPerformance(int productId)
+    {
+        Console.WriteLine($"[DEBUG] Checking performance for Product ID: {productId}");
+
+        return costDetails.CheckProductPerformance(productId);  // ✅ Forward call to costDetails
+    }
+    
     public List<Alert> GetAlerts()
     {
         return costDetails.GetAlerts();  // ✅ Fetch alerts from costDetails
     }
+
+    
     
 
     

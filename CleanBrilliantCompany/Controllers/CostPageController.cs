@@ -69,6 +69,19 @@ public class CostPageController : Controller
         return Json(summary);  // ✅ Returns total cost & exceeded amount
     }
 
+    [HttpGet("GetProductAlerts")]
+    public IActionResult GetProductAlerts(int productId)
+    {
+        var dashboard = costControl.GetLatestDashboard();
+        if (dashboard == null)
+        {
+            return NotFound(new { message = "No dashboard data available." });
+        }
+
+        var productAlerts = dashboard.CheckProductPerformance(productId); // ✅ Fetch alerts for specific ProductID
+        return Json(productAlerts);  
+    }
+
     [HttpGet("GetBatchesByManufacturer")]
     public IActionResult GetBatchesByManufacturer(int manufacturerId)
     {
@@ -333,8 +346,10 @@ public class CostPageController : Controller
         return Json(recentBatches);
     }
 
+
+    
+
         
 
     
 }
-
