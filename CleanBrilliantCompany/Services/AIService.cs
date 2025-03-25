@@ -41,12 +41,14 @@ namespace CleanBrilliantCompany.Services
                 }
             };
 
-            var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
+            var requestContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", requestContent);
             response.EnsureSuccessStatusCode();
 
             var responseString = await response.Content.ReadAsStringAsync();
             dynamic result = JsonConvert.DeserializeObject(responseString);
+            string aiContent = result.choices[0].message.content;
+            Console.WriteLine("🔍 AI content:\n" + aiContent);
 
             return result.choices[0].message.content;
         }

@@ -4,6 +4,8 @@ using CleanBrilliantCompany.Services;
 using CleanBrilliantCompany.Control;
 using CleanBrilliantCompany.Models;
 using QuestPDF.Infrastructure;
+using CleanBrilliantCompany.Interface;
+using CleanBrilliantCompany.Mapper;
 
 // -------------------------------
 // Load Environment Variables
@@ -49,6 +51,7 @@ builder.Services.AddScoped<AgingRepo, AgingMapper>();
 builder.Services.AddHttpClient<IAIService, AIService>();
 builder.Services.AddScoped<ReportGenerator>();
 builder.Services.AddScoped<ReportControl>();
+builder.Services.AddScoped<ReportRepo, ReportMapper>();
 Console.WriteLine($"[Debug] OpenAI Key Length: {apiKey?.Length}");
 
 

@@ -1,3 +1,4 @@
+using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Services;
 
@@ -7,18 +8,20 @@ namespace CleanBrilliantCompany.Control
     {
         private readonly ReportGenerator _reportGenerator;
         private readonly IAIService _AIService;
+        private readonly ReportRepo _repo;
 
-        public ReportControl(ReportGenerator reportGenerator, IAIService AIService)
+        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, ReportRepo repo)
         {
             _reportGenerator = reportGenerator;
-            _AIService = AIService;
+            _AIService = aiService;
+            _repo = repo;
         }
 
         public async Task<Report> GenerateReportAsync()
         {
+            // Create new report
             var report = new Report
             {
-                ReportID = 1,
                 ReportName = "Q1 Performance Report",
                 ReportType = "Sales"
             };
@@ -32,18 +35,35 @@ namespace CleanBrilliantCompany.Control
 
             // Generate AI summary
             string aiSummary = await _AIService.GenerateAnalysis(dummyData);
+            report.ReportDataText = aiSummary;
 
-            // Replace this 
-            report.ReportData = _reportGenerator.GeneratePDF(new Report
+            // Generate PDF from report
+            report.ReportData = _reportGenerator.GeneratePDF(report);
+
+            // Insert into DB
+            _repo.InsertReport(report);
+
+            var log = new ReportLog
             {
-                ReportName = report.ReportName,
-                ReportType = report.ReportType
-            });
+                Report = report,
+                GeneratedDate = DateTime.Now,
+                Status = "Generated"
+            };
+            _repo.InsertReportLog(log);
+
+            await _repo.SaveChangesAsync();
 
             return report;
         }
 
-        public List<ReportLog> GetReportLogs(int reportID) => new(); // Placeholder
-        public Report GetReport(int reportID) => new(); // Placeholder
+        public async Task<List<ReportLog>> GetReportLogsAsync(int reportID)
+        {
+            return await _repo.QueryStatusAsync(reportID);
+        }
+
+        public async Task<Report?> GetReportAsync(int reportID)
+        {
+            return await _repo.FindByIdAsync(reportID);
+        }
     }
 }
