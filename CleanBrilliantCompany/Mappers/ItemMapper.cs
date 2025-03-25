@@ -97,7 +97,7 @@ namespace CleanBrilliantCompany.Mappers
             return items;
         }
 
-        // get 1 item 
+        // get 1 item by id
         public Item getItemById(int itemId)
         {
             Item item = null;
@@ -107,8 +107,14 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 // Define the SQL query to retrieve the item by its ID
-                string query = @"SELECT itemId, productId, salePrice, batchCode, warehouseId, itemStatus, reservationId, orderId, transferId, returnId 
-                         FROM Item WHERE itemId = @itemId";
+                string query =
+                         @"SELECT itemId, Item.productId, Product.productName, salePrice, Item.batchCode, itemStatus, 
+                        ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
+                        FROM Item
+                        INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
+                        INNER JOIN Product ON Item.productId = Product.productId
+                        WHERE itemId = @itemId
+                        ORDER BY ProductBatch.expiryDate ASC";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -135,7 +141,9 @@ namespace CleanBrilliantCompany.Mappers
                                     reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
                                     reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
                                     reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
-                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetDateTime(reader.GetOrdinal("expiryDate"))
                                 );
                             }
                         }
@@ -148,6 +156,68 @@ namespace CleanBrilliantCompany.Mappers
             }
 
             return item;
+        }
+
+        // get item by product name
+        public List<Item> getItemByProductName(string productName)
+        {
+            List<Item> items = new List<Item>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve the item by its ID
+                string query =
+                        @"SELECT itemId, Item.productId, Product.productName, salePrice, Item.batchCode, itemStatus, 
+                        ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
+                        FROM Item
+                        INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
+                        INNER JOIN Product ON Item.productId = Product.productId
+                        WHERE Product.productName = @productName
+                        ORDER BY ProductBatch.expiryDate ASC";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@productName", productName);
+                    // Execute the query and get the results
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Check if the query executed successfully and returned any rows
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            // Iterate through each row in the result set
+                            while (reader.Read())
+                            {
+                                ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+
+                                // Create the Item object using the constructor
+                                Item item = new Item(
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    status,
+                                    reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                    reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
+                                    reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetDateTime(reader.GetOrdinal("expiryDate"))
+                                );
+                                items.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"No item found with searched product name.");
+                        }
+                    }
+                }
+            }
+
+            return items;
         }
 
         // get item by status (for reserve feature)

@@ -31,6 +31,12 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getItemById(itemId));
         }
 
+        // search by product name
+        public async Task<List<Item>> getItemByProductName(string productName)
+        {
+            return await Task.FromResult(_itemMapper.getItemByProductName(productName));
+        }
+
         public async Task<bool> createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
         {
             return await Task.FromResult(_itemMapper.createItem(productId, salePrice, batchCode, warehouseId, status));
@@ -67,31 +73,37 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
-        public async Task<Warehouse> getWarehouseDetails(int warehouseId) {
+        public async Task<Warehouse> getWarehouseDetails(int warehouseId)
+        {
             return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
         }
 
-        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId) {
+        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId)
+        {
             return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, warehouseId));
         }
 
-        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId) {
+        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId)
+        {
             return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
         }
 
         // METHOD FOR HANDLING REFUNDED ITEMS 
-        public void returnItemToInventory(List<int> itemId, string refundReason) {
-            itemId = [4,5,6];
+        public void returnItemToInventory(List<int> itemId, string refundReason)
+        {
+            itemId = [4, 5, 6];
             refundReason = "Defect";
             _itemMapper.returnItemToInventory(itemId, refundReason);
         }
 
         // METHOD FOR HANDLING ORDERED ITEMS 
-        public async Task<List<Item>> adjustInventory(int orderId, Dictionary<int, int> orderProducts) {
+        public async Task<List<Item>> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
+        {
             return await Task.FromResult(_itemMapper.adjustInventory(orderId, orderProducts));
         }
 
-        public void processCancelledOrder(int orderId) {
+        public void processCancelledOrder(int orderId)
+        {
             _itemMapper.processCancelledOrder(orderId);
         }
 

@@ -2,9 +2,9 @@
 
 <h2>Item List</h2>
 <div class="row mb-3">
-    @* Search Form *@
+    @* Search ITEM ID *@
     <div class="col-md-auto">
-        <form method="post" asp-action="Index" class="row g-2">
+        <form method="post" asp-action="searchById" class="row g-2">
             <div class="col">
                 <input class="form-control" id="itemId" type="number" name="searchedItemId"
                     placeholder="Search Item by Id" required>
@@ -22,8 +22,29 @@
         </form>
     </div>
 
+    @* SEARCH PRODUCT NAME *@
+    <div class="col-md-auto">
+        <form method="post" asp-action="searchByName" class="row g-2">
+            <div class="col">
+                <input class="form-control" id="productName" type="text" name="searchedProductName"
+                    placeholder="Search Product by Name" required>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+            <div class="col-auto">
+                <a asp-action="Index" class="btn btn-secondary">
+                    Clear
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-3">
     @* Refund Button *@
-    <div class="col-md"></div> <!-- Empty column to push content -->
     <div class="col-auto">
         <form method="post" asp-action="refundedItems">
             <button type="submit" class="btn btn-primary">

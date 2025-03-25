@@ -15,26 +15,53 @@ namespace CleanBrilliantCompany.Controllers
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _itemControl = new ItemControl(connectionString, null);
         }
-        public async Task<IActionResult> Index(int? searchedItemId)
+
+
+        // default get all items
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-            if (searchedItemId != null)
-            {
-                Item item = await _itemControl.getItemById(searchedItemId.Value);
-                itemsInfo.Add(item.retrieveItemInfo());
-            }
-            else
-            {
-                List<Item> items = await _itemControl.getAllItems();
+            List<Item> items = await _itemControl.getAllItems();
 
-                foreach (var item in items)
-                {
-                    itemsInfo.Add(item.retrieveItemInfo());
-                }
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
             }
 
             return View(itemsInfo);
         }
+
+        [HttpPost]
+        [Route("searchById")]
+        public async Task<IActionResult> searchById(int searchedItemId)
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            Item? item = await _itemControl.getItemById(searchedItemId);
+
+            if (item != null)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            return View("Index", itemsInfo);  // Reuse Index view
+        }
+
+        [HttpPost]
+        [Route("searchByName")]
+        public async Task<IActionResult> searchByName(string searchedProductName)
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            List<Item> items = await _itemControl.getItemByProductName(searchedProductName);
+
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            return View("Index", itemsInfo);  // Reuse Index view
+        }
+
 
         [HttpPost]
         [Route("addItem")]
@@ -164,7 +191,7 @@ namespace CleanBrilliantCompany.Controllers
         public async Task<IActionResult> processCancelledOrder(int orderId)
         {
             orderId = 1;
-          
+
             _itemControl.processCancelledOrder(orderId);
             return RedirectToAction("Index");
         }
