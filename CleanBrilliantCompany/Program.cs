@@ -38,6 +38,21 @@ builder.Services.AddSingleton<IReviewDatabase>(provider =>
     return new ReviewMapper(connectionString, observer);
 });
 
+// Register the Order Observer (OrderSystemLogger)
+builder.Services.AddSingleton<IOrderQueryObserver, OrderSystemLogger>();
+
+// Register the OrderMapper (depends on IOrderQueryObserver)
+builder.Services.AddSingleton<IOrderDatabase>(provider =>
+{
+    var observer = provider.GetRequiredService<IOrderQueryObserver>();
+    return new OrderMapper(connectionString, observer);
+});
+
+builder.Services.AddTransient<IOrder, OrderFulfilmentManagement>();
+
+// Make sure OrderManagement is also registered (though it might not be needed for this flow)
+builder.Services.AddTransient<OrderManagement>();
+
 // Finally the management (which depends on the mapper)
 builder.Services.AddTransient<CustomerManagement>();
 
@@ -45,8 +60,12 @@ builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<ChatbotService>();
 builder.Services.AddScoped<IProduct, ProductManagement>(); 
 builder.Services.AddScoped<IWishlistManagement, WishlistManagement>();
+builder.Services.AddSingleton<IOrderQueryObserver, OrderSystemLogger>();
+builder.Services.AddSingleton<IOrderDatabase>(provider => 
+    new OrderMapper(connectionString, provider.GetRequiredService<IOrderQueryObserver>()));
+builder.Services.AddTransient<IOrder, OrderFulfilmentManagement>(); // This is the key line
+builder.Services.AddTransient<OrderFulfilmentManagement>();
 builder.Services.AddTransient<OrderManagement>();
-builder.Services.AddSingleton<IOrderDatabase>(new OrderMapper(connectionString));
 builder.Services.AddTransient<CartManagement>();
 builder.Services.AddSingleton<ICartDatabase>(new CartMapper(connectionString));
 builder.Services.AddSingleton<IWishlistDatabase>(new WishlistMapper(connectionString));

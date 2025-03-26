@@ -270,26 +270,33 @@
                                     <tbody>
                                         @foreach (var order in orders)
                                         {
-                                            <tr>
-                                                <td>@order.OrderID</td>
-                                                <td>@order.CustomerID</td>
-                                                <td>@order.OrderDate.ToShortDateString()</td>
+                                            <tr data-order-id="@order.GetOrderID()">
+                                                <td>@order.GetOrderID()</td>
+                                                <td>@order.GetCustomerID()</td>
+                                                <td>@order.GetOrderDate().ToShortDateString()</td>
                                                 <td>
                                                     <select class="form-control status-select"
-                                                        data-order-id="@order.OrderID">
-                                                        <option value="Processing"
-                                                            selected="@(order.Status == "Processing")">Processing</option>
-                                                        <option value="Packed" selected="@(order.Status == "Packed")">Packed
+                                                        data-order-id="@order.GetOrderID()">
+                                                        <option value="Pending"
+                                                            selected="@(order.GetStatus() == "Pending")">Pending</option>
+                                                        <option value="Shipped"
+                                                            selected="@(order.GetStatus() == "Shipped")">Shipped</option>
+                                                        <option value="Completed"
+                                                            selected="@(order.GetStatus() == "Completed")">Completed
                                                         </option>
-                                                        <option value="Shipped" selected="@(order.Status == "Shipped")">
-                                                            Shipped</option>
-                                                        <option value="Delivered" selected="@(order.Status == "Delivered")">
-                                                            Delivered</option>
+                                                        <option value="RefundRequested"
+                                                            selected="@(order.GetStatus() == "RefundRequested")">Refund
+                                                            Requested</option>
+                                                        <option value="Cancelled"
+                                                            selected="@(order.GetStatus() == "Cancelled")">Cancelled
+                                                        </option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-success btn-sm mark-fulfilled"
-                                                        data-order-id="@order.OrderID">Mark as Fulfilled</button>
+                                                    <button id ="update-status-btn" class="btn btn-primary btn-sm update-status-btn"
+                                                        data-order-id="@order.GetOrderID()">
+                                                        Update Status
+                                                    </button>
                                                 </td>
                                             </tr>
                                         }
@@ -354,46 +361,86 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Handle status updates
-            $('.status-select').change(function () {
-                var orderId = $(this).data('order-id');
-                var newStatus = $(this).val();
-                updateOrderStatus(orderId, newStatus);
+            // Update button click handler
+            $('[id^=update-status-btn]').click(function () {
+                const button = $(this);
+                const orderId = button.data('order-id');
+                const statusSelect = $(`select.status-select[data-order-id="${orderId}"]`);
+                const newStatus = statusSelect.val();
+
+                console.log('Attempting to update order:', orderId, 'to status:', newStatus);
+
+                button.prop('disabled', true);
+                button.html('<i class="fas fa-spinner fa-spin"></i> Updating...');
+
+                $.ajax({
+                    url: '/OrderFulfilment/UpdateStatus',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        orderId: orderId,
+                        status: newStatus
+                    }),
+                    success: function (response) {
+                        console.log('Update response:', response);
+                        if (response.success) {
+                            // Update successful
+                            showToast(`Order #${orderId} updated to ${newStatus}`, 'success');
+
+                            // Update the select to show the new status is selected
+                            statusSelect.find('option').removeAttr('selected');
+                            statusSelect.find(`option[value="${newStatus}"]`).attr('selected', true);
+
+                            // Update button appearance based on new status
+                            updateButtonAppearance(button, newStatus);
+                        } else {
+                            showToast(response.message || 'Update failed', 'danger');
+                        }
+                        resetButton(button);
+                    },
+                    error: function (xhr) {
+                        console.error('Update error:', xhr);
+                        showToast(xhr.responseJSON?.error || 'Server error', 'danger');
+                        resetButton(button);
+                    }
+                });
             });
 
-            // Handle "Mark as Fulfilled" button clicks
-            $('.mark-fulfilled').click(function () {
-                var button = $(this);
-                var orderId = button.data('order-id');
+            // Helper functions
+            function updateButtonAppearance(button, status) {
+                button.removeClass('btn-primary btn-success btn-warning btn-danger btn-info');
+                switch (status) {
+                    case 'Pending': button.addClass('btn-primary'); break;
+                    case 'Shipped': button.addClass('btn-warning'); break;
+                    case 'Completed': button.addClass('btn-success'); break;
+                    case 'RefundRequested': button.addClass('btn-info'); break;
+                    case 'Cancelled': button.addClass('btn-danger'); break;
+                }
+            }
 
-                // Disable the button and update its text
-                button.prop('disabled', true).text('Fulfilled').addClass('disabled-button');
+            function resetButton(button) {
+                setTimeout(function () {
+                    button.html('Update Status').prop('disabled', false);
+                }, 1500);
+            }
 
-                // Mark the order as fulfilled
-                markOrderAsFulfilled(orderId);
+            function showToast(message, type) {
+                // Implement your toast notification here
+                alert(type + ': ' + message); // Temporary - replace with proper toast
+            }
+
+            // Initialize button colors based on current status
+            $('.update-status-btn').each(function () {
+                const orderId = $(this).data('order-id');
+                const status = $(`select.status-select[data-order-id="${orderId}"]`).val();
+                updateButtonAppearance($(this), status);
             });
-
-            // Function to update order status
-            function updateOrderStatus(orderId, status) {
-                $.post('/OrderFulfilment/UpdateOrderStatus', { orderId: orderId, status: status }, function () {
-                    console.log(`Order ID: ${orderId} status updated to ${status}`);
-                }).fail(function () {
-                    console.error('Failed to update order status');
-                });
-            }
-
-            // Function to mark an order as fulfilled
-            function markOrderAsFulfilled(orderId) {
-                $.post('/OrderFulfilment/MarkAsFulfilled', { orderId: orderId }, function () {
-                    console.log(`Order ID: ${orderId} marked as Fulfilled`);
-                }).fail(function () {
-                    console.error('Failed to mark order as fulfilled');
-                });
-            }
         });
     </script>
+
 </body>
 
 </html>

@@ -1,10 +1,11 @@
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Management;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    public class OrderFulfilmentController
+    public class OrderFulfilmentController : Controller
     {
         private readonly IOrder _orderFulfilmentManagement;
 
@@ -13,16 +14,99 @@ namespace CleanBrilliantCompany.Controllers
             _orderFulfilmentManagement = orderFulfilmentManagement;
         }
 
-        public OrderRDM fetchOrderDetails(int orderId)
+        // GET: /OrderFulfilment/Details/5
+        public IActionResult Details(int orderId)
         {
-            return _orderFulfilmentManagement.getOrderDetails(orderId);
+            try
+            {
+                var order = _orderFulfilmentManagement.getOrderDetails(orderId);
+                if (order == null)
+                {
+                    return NotFound();
+                }
+                return View(order);
+            }
+            catch (Exception ex)
+            {
+                // Log error here if needed
+                return StatusCode(500, "Error retrieving order details");
+            }
         }
 
-        public bool updateOrderStatus(int orderId, string status)
+        [HttpPost]
+        public IActionResult UpdateStatus([FromBody] StatusUpdateRequest request)
         {
-            return _orderFulfilmentManagement.updateOrderStatus(orderId, status);
+            try
+            {
+                Console.WriteLine($"DEBUG: UpdateStatus called with OrderID: {request.orderId}, Status: {request.status}");
+
+                if (request.orderId <= 0)
+                {
+                    Console.WriteLine("ERROR: Invalid Order ID");
+                    return Json(new { success = false, message = "Invalid Order ID" });
+                }
+
+                if (string.IsNullOrEmpty(request.status))
+                {
+                    Console.WriteLine("ERROR: Status is null or empty");
+                    return Json(new { success = false, message = "Status cannot be empty" });
+                }
+
+                bool success = _orderFulfilmentManagement.updateOrderStatus(request.orderId, request.status);
+
+                Console.WriteLine($"DEBUG: Update result: {success}");
+
+                return Json(new
+                {
+                    success,
+                    message = success ? "Status updated successfully" : "Failed to update status"
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR in UpdateStatus: {ex}");
+                return Json(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
+            }
         }
 
-        // Additional methods can be added here as needed
+        public class StatusUpdateRequest
+        {
+            public int orderId { get; set; }
+            public string status { get; set; }
+        }
+        // GET: /OrderFulfilment/History/5
+        public IActionResult History(int customerId)
+        {
+            try
+            {
+                var orders = _orderFulfilmentManagement.getOrderHistory(customerId);
+                return View(orders);
+            }
+            catch (Exception ex)
+            {
+                // Log error here if needed
+                return StatusCode(500, "Error retrieving order history");
+            }
+        }
+
+        // POST: /OrderFulfilment/Cancel/5
+        [HttpPost]
+        public IActionResult Cancel(int orderId)
+        {
+            try
+            {
+                bool success = _orderFulfilmentManagement.cancelOrder(orderId);
+                return Json(new { success });
+            }
+            catch (Exception ex)
+            {
+                // Log error here if needed
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
     }
 }

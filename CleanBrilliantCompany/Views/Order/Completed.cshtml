@@ -1,8 +1,9 @@
 @model List<CleanBrilliantCompany.Models.OrderRDM>
+
 @{
     var shippingDetails = ViewBag.ShippingDetails as Dictionary<int, Dictionary<string, string>>;
+    var reviewedProducts = ViewBag.ReviewedProductIds as HashSet<int>;
 }
-
 <div class="container mt-5">
     <h3 class="font-weight-bold mb-4">Order Status</h3>
 
@@ -36,6 +37,17 @@
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-truck" style="margin-right: 5px;"></i>To Receive</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+         <!-- Completed -->
+        <div class="col-sm-3 mb-3">
+            <a asp-controller="CustomerPage" asp-action="Completed" class="text-decoration-none">
+                <div class="card text-center" style="cursor: pointer;">
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-check" style="margin-right: 5px;"></i>Completed</p>
                     </div>
                 </div>
             </a>
@@ -80,22 +92,22 @@
 
     <!-- Completed Orders Section -->
     <h3 class="font-weight-bold mb-4">Completed Orders</h3>
-    @foreach (var order in Model)
+   @foreach (var order in Model)
     {
-        var details = (shippingDetails != null && shippingDetails.ContainsKey(order.OrderID)) ? shippingDetails[order.OrderID] : null;
+        var details = (shippingDetails != null && shippingDetails.ContainsKey(order.GetOrderID())) ? shippingDetails[order.GetOrderID()] : null;
         // Dynamically set the header color based on the order status
-        var headerClass = order.Status == "Cancelled" ? "bg-danger text-white" : "bg-success text-white";
+        var headerClass = order.GetStatus() == "Cancelled" ? "bg-danger text-white" : "bg-success text-white";
         <div class="card mb-4 shadow-sm">
             <div class="card-header @headerClass">
-                <h5 class="mb-0">Order ID: @order.OrderID</h5>
+                <h5 class="mb-0">Order ID: @order.GetOrderID()</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <!-- Order Details -->
                     <div class="col-md-6">
                         <h6 class="font-weight-bold">Order Details</h6>
-                        <p><strong>Status:</strong> @order.Status</p>
-                        <p><strong>Total Price:</strong> $@order.OrderTotal</p>
+                        <p><strong>Status:</strong> @order.GetStatus()</p>
+                        <p><strong>Total Price:</strong> $@order.GetOrderTotal()</p>
                     </div>
 
                     <!-- Shipping Details -->
@@ -115,12 +127,32 @@
                 <div class="mt-4">
                     <h6 class="font-weight-bold">Products</h6>
                     <ul class="list-group">
-                        @foreach (var product in order.OrderProductsDetails)
+                        @foreach (var product in order.GetOrderProductsDetails())
                         {
-                            <li class="list-group-item">
-                                <strong>Product Name:</strong> @product.Value["ProductName"] <br />
-                                <strong>Quantity:</strong> @order.OrderProducts[product.Key] <br />
-                                <strong>Price:</strong> $@product.Value["CostPrice"]
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Product Name:</strong> @product.Value["ProductName"] <br />
+                                    <strong>Quantity:</strong> @order.GetOrderProducts()[product.Key] <br />
+                                    <strong>Price:</strong> $@product.Value["CostPrice"]
+                                </div>
+                                @{
+                                    bool isReviewed = reviewedProducts != null && reviewedProducts.Contains(product.Key);
+                                }
+                                @if (!isReviewed)
+                                {
+                                    <form method="get" asp-action="RateProduct" asp-controller="CustomerPage">
+                                        <input type="hidden" name="productId" value="@product.Key" />
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">Rate</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-success">✔️ Already Reviewed</span>
+                                    <form method="get" asp-action="EditReview" asp-controller="CustomerPage">
+                                        <input type="hidden" name="productId" value="@product.Key" />
+                                        <button type="submit" class="btn btn-outline-warning btn-sm">Edit Review</button>
+                                    </form>
+                                }
                             </li>
                         }
                     </ul>
@@ -128,13 +160,40 @@
 
                 <!-- Request Refund Button -->
                 <div class="mt-3">
-                    <form asp-action="RequestRefund" method="post">
-                        <input type="hidden" name="orderId" value="@order.OrderID" />
-                        <button type="submit" class="btn btn-warning">Request Refund</button>
-                    </form>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#refundModal-@order.GetOrderID()">Request Refund</button>
+                </div>
+
+                <!-- Refund Modal -->
+                <div class="modal fade" id="refundModal-@order.GetOrderID()" tabindex="-1" aria-labelledby="refundModalLabel-@order.GetOrderID()" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form asp-action="RequestRefund" method="post" enctype="multipart/form-data">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="refundModalLabel-@order.GetOrderID()">Request Refund for Order ID: @order.GetOrderID()</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <input type="hidden" name="orderId" value="@order.GetOrderID()" />
+
+                                    <!-- Refund Reason -->
+                                    <div class="mb-3">
+                                        <label for="refundReason-@order.GetOrderID()" class="form-label">Reason for Refund:</label>
+                                        <textarea class="form-control" id="refundReason-@order.GetOrderID()" name="refundReason" rows="3" required></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-warning">Submit Refund Request</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     }
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquer

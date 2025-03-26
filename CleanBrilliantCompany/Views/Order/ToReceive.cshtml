@@ -3,12 +3,10 @@
     var shippingDetails = ViewBag.ShippingDetails as Dictionary<int, Dictionary<string, string>>;
 }
 
-
-
 <div class="container mt-5">
     <h3 class="font-weight-bold mb-4">To Receive Orders</h3>
 
-     <!-- Four smaller cards in a row -->
+    <!-- Four smaller cards in a row -->
     <div class="row mb-4">
         <!-- To Pay -->
         <div class="col-sm-3 mb-3">
@@ -54,21 +52,21 @@
             </a>
         </div>
     </div>
-    
+
     @foreach (var order in Model)
     {
-        var details = (shippingDetails != null && shippingDetails.ContainsKey(order.OrderID)) ? shippingDetails[order.OrderID] : null;
+        var details = (shippingDetails != null && shippingDetails.ContainsKey(order.GetOrderID())) ? shippingDetails[order.GetOrderID()] : null;
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Order ID: @order.OrderID</h5>
+                <h5 class="mb-0">Order ID: @order.GetOrderID()</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <!-- Order Details -->
                     <div class="col-md-6">
                         <h6 class="font-weight-bold">Order Details</h6>
-                        <p><strong>Status:</strong> @order.Status</p>
-                        <p><strong>Total Price:</strong> $@order.OrderTotal</p>
+                        <p><strong>Status:</strong> @order.GetStatus()</p>
+                        <p><strong>Total Price:</strong> $@order.GetOrderTotal()</p>
                     </div>
 
                     <!-- Shipping Details -->
@@ -88,11 +86,11 @@
                 <div class="mt-4">
                     <h6 class="font-weight-bold">Products</h6>
                     <ul class="list-group">
-                        @foreach (var product in order.OrderProductsDetails)
+                        @foreach (var product in order.GetOrderProductsDetails())
                         {
                             <li class="list-group-item">
                                 <strong>Product Name:</strong> @product.Value["ProductName"] <br />
-                                <strong>Quantity:</strong> @order.OrderProducts[product.Key] <br />
+                                <strong>Quantity:</strong> @order.GetOrderProducts()[product.Key] <br />
                                 <strong>Price:</strong> $@product.Value["CostPrice"]
                             </li>
                         }
