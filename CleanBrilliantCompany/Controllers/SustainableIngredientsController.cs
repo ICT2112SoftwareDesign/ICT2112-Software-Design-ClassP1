@@ -26,13 +26,6 @@ namespace CleanBrilliantCompany.Controllers
         /// <returns>List of sustainable ingredients.</returns>
         private List<IngredientSDM> GetMockSustainableIngredients()
         {
-            // return
-            // [
-            //     new {Name = "Recycled Paper", Quantity=50, Status = "Available", StatusClass ="text-success"},
-            //     new {Name = "Bamboo Fibres", Quantity=20, Status = "Low", StatusClass ="text-warning"},
-            //     new {Name = "Organic Cotton", Quantity=0, Status = "Out of Stock", StatusClass ="text-danger"},
-            // ];
-
             return new List<IngredientSDM> {
                 new IngredientSDM {
                     IngredientId = 1,
