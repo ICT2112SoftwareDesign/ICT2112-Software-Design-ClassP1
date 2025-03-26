@@ -263,12 +263,15 @@
                                 <div class="form-group">
                                     <label asp-for="ShippingAgentCompany">Company Name</label>
                                     <input asp-for="ShippingAgentCompany" class="form-control"
-                                        placeholder="Enter company name" />
+                                        placeholder="Enter company name" maxlength="124" required
+                                        oninput="showCharLimit(this, 124)" id="companyNameInput" />
                                     <span asp-validation-for="ShippingAgentCompany" class="text-danger"></span>
+                                    <small id="charLimitMessage" class="form-text text-muted"
+                                        style="display: none;">Maximum 124 characters</small>
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="ShippingMethod">Shipping Method</label>
-                                    <select asp-for="ShippingMethod" class="form-control">
+                                    <select required asp-for="ShippingMethod" class="form-control">
                                         <option value="Air">Air</option>
                                         <option value="Truck">Truck</option>
                                     </select>
@@ -276,7 +279,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="ServiceType">Service Type</label>
-                                    <select asp-for="ServiceType" class="form-control">
+                                    <select required asp-for="ServiceType" class="form-control">
                                         <option value="1 Day">1 Day</option>
                                         <option value="3 Days">3 Days</option>
                                         <option value="7 Days">7 Days</option>
@@ -301,10 +304,39 @@
             <!-- /.container-fluid -->
 
             <!-- Initialize tooltips -->
+
             <script>
-                $(document).ready(function () {
-                    $('#shippingAgentsTable').DataTable();
+
+                function showCharLimit(input, maxLength) {
+                    const messageElement = document.getElementById('charLimitMessage');
+                    const remainingChars = maxLength - input.value.length;
+
+                    if (remainingChars <= 10) {
+                        messageElement.style.display = 'block';
+
+                        // Optional: Change the message to show characters remaining
+                         if (remainingChars === 0) {
+                                messageElement.innerHTML = 'Maximum character limit reached';
+                                messageElement.classList.add('text-danger');
+                                messageElement.classList.remove('text-muted');
+                            } else {
+                                messageElement.innerHTML = `${remainingChars} characters remaining`;
+                                messageElement.classList.add('text-muted');
+                                messageElement.classList.remove('text-danger');
+                            }
+                    } else {
+                        messageElement.style.display = 'none';
+                    }
+                }
+
+                // Initialize on page load
+                document.addEventListener('DOMContentLoaded', function () {
+                    const companyInput = document.getElementById('companyNameInput');
+                    if (companyInput) {
+                        showCharLimit(companyInput, 124);
+                    }
                 });
+
             </script>
         </div>
         <!-- End of Main Content -->
