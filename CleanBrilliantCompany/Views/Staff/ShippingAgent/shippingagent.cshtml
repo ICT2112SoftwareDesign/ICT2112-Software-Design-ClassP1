@@ -444,8 +444,8 @@
             document.querySelector('#deleteModal .modal-body').textContent =
                 'Are you sure you want to delete shipping agent "' + company + '"? This action cannot be undone.';
 
-            // Set the form action
-            document.getElementById('deleteForm').action = '/staff/DeleteShippingAgent/' + id;
+            // Set the form action - FIXED URL PATH
+            document.getElementById('deleteForm').action = '/staff/shippingagent/delete/' + id;
 
             // Show the modal
             $('#deleteModal').modal('show');

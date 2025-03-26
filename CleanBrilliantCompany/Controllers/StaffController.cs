@@ -43,14 +43,14 @@ namespace CleanBrilliantCompany.Controllers.Staff
             };
 
             // Pass the view model to the view
-            return View(viewModel);
+            return View("ShippingAgent/shippingagent", viewModel);
         }
 
         // Display Add Shipping Agent form
         [HttpGet("shippingagent/add")]
         public IActionResult AddShippingAgent()
         {
-            return View("add-shippingagent", new ShippingAgent());
+            return View("ShippingAgent/add-shippingagent", new ShippingAgent());
         }
 
         // Process Add Shipping Agent form submission
@@ -84,9 +84,8 @@ namespace CleanBrilliantCompany.Controllers.Staff
             }
 
             // If we got this far, something failed; redisplay form
-            return View("add-shippingagent", shippingAgent);
+            return View("ShippingAgent/add-shippingagent", shippingAgent);
         }
-
 
         // Get ShippingAgent by ID method
         [HttpGet("shippingagent/edit/{id}")]
@@ -99,8 +98,9 @@ namespace CleanBrilliantCompany.Controllers.Staff
                 return NotFound();
             }
 
-            return View("edit-shippingagent", agent);
+            return View("ShippingAgent/edit-shippingagent", agent);
         }
+
         // Update ShippingAgent method
         [HttpPost("shippingagent/update/{id}")]
         public async Task<IActionResult> UpdateShippingAgent(int id, ShippingAgent shippingAgent)
@@ -130,11 +130,12 @@ namespace CleanBrilliantCompany.Controllers.Staff
             }
 
             // If we got this far, something failed; redisplay form
-            return View("edit-shippingagent", shippingAgent);
+            return View("ShippingAgent/edit-shippingagent", shippingAgent);
         }
 
+
         // Delete ShippingAgent method
-        [HttpPost("DeleteShippingAgent/{id}")]
+        [HttpPost("shippingagent/delete/{id}")]
         public async Task<IActionResult> DeleteShippingAgent(int id)
         {
             var result = await _shippingAgentService.DeleteShippingAgentAsync(id);
@@ -148,7 +149,8 @@ namespace CleanBrilliantCompany.Controllers.Staff
                 TempData["ErrorMessage"] = "Failed to delete shipping agent.";
             }
 
-            return RedirectToAction("ShippingAgent");
+            // Redirect to shipping agent list - corrected
+            return RedirectToAction(nameof(ShippingAgent));
         }
 
         [HttpGet("orderfufilment")]
