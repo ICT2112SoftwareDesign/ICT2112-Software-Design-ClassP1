@@ -1,8 +1,16 @@
 @* 
 -----------------------------------------------------------------
-<filename> SustainableIngredientsController.cs </filename>
+<filename> Index.cshtml </filename>
 <author> Yuen Wee Kin, Edwin </author> 
+<created> 2025-03-23 </created>
+<updated> 2025-03-25 </updated>
+<description>
+    View displaying sustainable ingredient inventory with alerts for low stock.
+</description>
+<version> 1.1 </version>
 *@
+
+@model List<CleanBrilliantCompany.Models.Entity.IngredientSDM>
 
 @{
     ViewData["Title"] = "Sustainable Resource Inventory";
@@ -18,16 +26,42 @@
         <tr>
             <th>Resource Name</th>
             <th>Quantity</th>
+            <th>Measurement Unit</th>
             <th>Status</th>
         </tr>
     </thead>
     @* Content *@
     <tbody>
+        @foreach (var ingredient in Model)
+        {
+            var status = ingredient.ReorderStatus ? "Low" : "Available";
+            var statusClass = ingredient.ReorderStatus ? "text-warning" : "text-success";
+
+            if (ingredient.ThresholdQuantity == 0)
+            {
+                status = "Out of Stock";
+                statusClass = "text-danger";
+            }
+
         <tr>
+            <td>@ingredient.IngredientName</td>
+            <td>@ingredient.ThresholdQuantity</td>
+            <td>@ingredient.MeasurementUnit</td>
+            <td class="@statusClass">
+                <strong>
+                    @(status == "Available" ? "✅ Available" :
+                                        status == "Low" ? "⚠️ Low" : "❌ Out of Stock")
+                </strong>
+            </td>
+        </tr>
+                }
+
+        @* <tr>
             <td>Recycled Paper</td>
             <td>50</td>
             <td class="text-success"><strong>✅ Available</strong></td>
         </tr>
+
 
         <tr>
             <td>Bamboo Fibres</td>
@@ -39,6 +73,26 @@
             <td>Organic Cotton</td>
             <td>0</td>
             <td class="text-danger"><strong>❌ Out of Stock</strong></td>
-        </tr>
+        </tr> *@
     </tbody>
 </table>
+
+@* Alert Section *@
+<div class="alert alert-warning mt-4" role="alert">
+    <h4 class="alert-heading">⚠️ Inventory Alert!</h4>
+    <p>The following items are running low or are out of stock: </p>
+    <ul>
+        <li><strong>Resource Name:</strong> Bamboo Fibres</li>
+        <li><strong>Currently Available Quantity:</strong> 20</li>
+        <li><strong>Threshold Value:</strong> 10</li>
+        <li><strong>Suggested Actions:</strong> Consider reordering stock or finding alternatives.</li>
+    </ul>
+    <hr>
+    <ul>
+        <li><strong>Resource Name:</strong> Organic Cotton</li>
+        <li><strong>Currently Available Quantity:</strong> 0</li>
+        <li><strong>Threshold Value:</strong> 10</li>
+        <li><strong>Suggested Actions:</strong> Immediate restocking required.</li>
+    </ul>
+
+</div>
