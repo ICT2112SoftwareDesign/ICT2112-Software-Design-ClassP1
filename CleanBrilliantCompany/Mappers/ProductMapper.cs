@@ -277,42 +277,6 @@ namespace CleanBrilliantCompany.Mappers
             {
                 Console.WriteLine($"Error updating product: {ex.Message}");
             }
-        
-            // try
-            // {
-            //     using (SqlConnection connection = new SqlConnection(_connectionString))
-            //     {
-            //         connection.Open();
-
-            //         string query = @"
-            //             UPDATE dbo.Product
-            //             SET quantity = @Quantity
-            //             WHERE productId = @ProductId";
-
-            //         using (SqlCommand command = new SqlCommand(query, connection))
-            //         {
-            //             command.Parameters.AddWithValue("@ProductId", productId);
-            //             command.Parameters.AddWithValue("@Quantity", quantity);
-
-            //             // Execute the insert operation synchronously
-            //             int rowsAffected = command.ExecuteNonQuery();
-
-            //              // Check if the insert was successful using getDatabaseQueryStatus
-            //             if (getDatabaseQueryStatus(null, rowsAffected))
-            //             {
-            //                 Console.WriteLine($"Product: '{productId}' updated successfully.");
-            //             }
-            //             else
-            //             {
-            //                 Console.WriteLine("Error updating product.");
-            //             }
-            //         }
-            //     }
-            // }
-            // catch (Exception ex)
-            // {
-            //     Console.WriteLine($"Error updating product: {ex.Message}");
-            // }
         }
 
         public List<Product> findAllProducts()

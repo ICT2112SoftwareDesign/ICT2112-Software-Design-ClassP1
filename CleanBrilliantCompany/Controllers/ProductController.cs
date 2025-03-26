@@ -10,13 +10,12 @@ namespace CleanBrilliantCompany.Controllers
     public class ProductController : Controller
     {
         private readonly ProductControl _productControl;
-        private readonly AgingControl _agingControl; // Testing
 
+        // public ProductController(IConfiguration configuration, iReorderRequest reorderRequest, IItemCreation iItemCreation)
         public ProductController(IConfiguration configuration, iReorderRequest reorderRequest)
         {
+            // _productControl = new ProductControl(configuration, reorderRequest, iItemCreation);
             _productControl = new ProductControl(configuration, reorderRequest);
-
-            _agingControl = new AgingControl(_productControl); // Testing
         }
 
         // To change idk where yall put the stuffs
@@ -38,7 +37,6 @@ namespace CleanBrilliantCompany.Controllers
             {
                 productInfo.Add(product.retrieveProductInfo());
             }
-            //_agingControl.testProductInterfaceMethods(); // Just to see the iProduct working
 
             return View("~/Views/Product/TestProduct.cshtml", productInfo);
         }
@@ -130,29 +128,29 @@ namespace CleanBrilliantCompany.Controllers
         // WIP
         public async Task<IActionResult> FetchBatchStockHistoryByCode(int batchCode)
         {
-            Dictionary<string, List<StockHistory>> stockHistoryDictionary = _productControl.getStockHistoryByBatch(batchCode);
+            // Dictionary<string, List<StockHistory>> stockHistoryDictionary = _productControl.getStockHistoryByBatch(batchCode);
 
-            // Debug Line
-            foreach (var kvp in stockHistoryDictionary)
-            {
-                string key = kvp.Key;
-                List<StockHistory> records = kvp.Value;
+            // // Debug Line
+            // foreach (var kvp in stockHistoryDictionary)
+            // {
+            //     string key = kvp.Key;
+            //     List<StockHistory> records = kvp.Value;
 
-                Console.WriteLine($"Group Key: {key}");
-                Console.WriteLine("-----------------------------");
+            //     Console.WriteLine($"Group Key: {key}");
+            //     Console.WriteLine("-----------------------------");
 
-                foreach (var stock in records)
-                {
-                    var stockData = stock.retrieveStockHistory();
+            //     foreach (var stock in records)
+            //     {
+            //         var stockData = stock.retrieveStockHistory();
 
-                    Console.WriteLine($"Stock ID: {stockData["StockId"]}");
-                    Console.WriteLine($"Batch Code: {stockData["BatchCode"]}");
-                    Console.WriteLine($"Stock Take Date: {stockData["StockTakeDate"]}");
-                    Console.WriteLine($"Quantity: {stockData["Quantity"]}");
-                    Console.WriteLine($"Recorded Date: {stockData["RecordedDate"]}");
-                    Console.WriteLine();
-                }
-            }
+            //         Console.WriteLine($"Stock ID: {stockData["StockId"]}");
+            //         Console.WriteLine($"Batch Code: {stockData["BatchCode"]}");
+            //         Console.WriteLine($"Stock Take Date: {stockData["StockTakeDate"]}");
+            //         Console.WriteLine($"Quantity: {stockData["Quantity"]}");
+            //         Console.WriteLine($"Recorded Date: {stockData["RecordedDate"]}");
+            //         Console.WriteLine();
+            //     }
+            // }
             return RedirectToAction("displayProductBatch");
         }
 
@@ -160,29 +158,29 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public async Task<IActionResult> FetchBatchStockHistoryByDate(DateOnly stockTakeDate)
         {
-            Dictionary<int, List<StockHistory>> stockHistoryDictionary = _productControl.getStockHistoryByDate(stockTakeDate);
+            // Dictionary<int, List<StockHistory>> stockHistoryDictionary = _productControl.getStockHistoryByDate(stockTakeDate);
 
-            // Debug Line
-            foreach (var kvp in stockHistoryDictionary)
-            {
-                int key = kvp.Key;
-                List<StockHistory> records = kvp.Value;
+            // // Debug Line
+            // foreach (var kvp in stockHistoryDictionary)
+            // {
+            //     int key = kvp.Key;
+            //     List<StockHistory> records = kvp.Value;
 
-                Console.WriteLine($"Group Key: {key}");
-                Console.WriteLine("-----------------------------");
+            //     Console.WriteLine($"Group Key: {key}");
+            //     Console.WriteLine("-----------------------------");
 
-                foreach (var stock in records)
-                {
-                    var stockData = stock.retrieveStockHistory();
+            //     foreach (var stock in records)
+            //     {
+            //         var stockData = stock.retrieveStockHistory();
 
-                    Console.WriteLine($"Stock ID: {stockData["StockId"]}");
-                    Console.WriteLine($"Batch Code: {stockData["BatchCode"]}");
-                    Console.WriteLine($"Stock Take Date: {stockData["StockTakeDate"]}");
-                    Console.WriteLine($"Quantity: {stockData["Quantity"]}");
-                    Console.WriteLine($"Recorded Date: {stockData["RecordedDate"]}");
-                    Console.WriteLine();
-                }
-            }
+            //         Console.WriteLine($"Stock ID: {stockData["StockId"]}");
+            //         Console.WriteLine($"Batch Code: {stockData["BatchCode"]}");
+            //         Console.WriteLine($"Stock Take Date: {stockData["StockTakeDate"]}");
+            //         Console.WriteLine($"Quantity: {stockData["Quantity"]}");
+            //         Console.WriteLine($"Recorded Date: {stockData["RecordedDate"]}");
+            //         Console.WriteLine();
+            //     }
+            // }
 
             return RedirectToAction("displayProductBatch");
         }
