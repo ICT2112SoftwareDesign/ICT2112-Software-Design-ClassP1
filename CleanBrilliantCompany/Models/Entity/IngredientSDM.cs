@@ -12,6 +12,7 @@ namespace CleanBrilliantCompany.Models.Entity
         private string _ingredientName = string.Empty; // Initialize with empty string
         private double _ingredientToxicity;
         private int _thresholdQuantity;
+        private int _quantity;
         private string _measurementUnit = "ml"; // Initialize with default value
         private bool _reorderStatus;
         private DateTime _createdAt = DateTime.Now; // Initialize with current time
@@ -24,58 +25,64 @@ namespace CleanBrilliantCompany.Models.Entity
         }
 
         // Public properties with getters and setters
-        public int IngredientId 
-        { 
-            get { return _ingredientId; } 
-            set { _ingredientId = value; } 
+        public int IngredientId
+        {
+            get { return _ingredientId; }
+            set { _ingredientId = value; }
         }
-        
-        public int ProductId 
-        { 
-            get { return _productId; } 
-            set { _productId = value; } 
+
+        public int ProductId
+        {
+            get { return _productId; }
+            set { _productId = value; }
         }
-        
-        public string IngredientName 
-        { 
-            get { return _ingredientName; } 
-            set { _ingredientName = value; } 
+
+        public string IngredientName
+        {
+            get { return _ingredientName; }
+            set { _ingredientName = value; }
         }
-        
-        public double IngredientToxicity 
-        { 
-            get { return _ingredientToxicity; } 
-            set { _ingredientToxicity = value; } 
+
+        public double IngredientToxicity
+        {
+            get { return _ingredientToxicity; }
+            set { _ingredientToxicity = value; }
         }
-        
-        public int ThresholdQuantity 
-        { 
-            get { return _thresholdQuantity; } 
-            set { _thresholdQuantity = value; } 
+
+        public int ThresholdQuantity
+        {
+            get { return _thresholdQuantity; }
+            set { _thresholdQuantity = value; }
         }
-        
-        public string MeasurementUnit 
-        { 
-            get { return _measurementUnit; } 
-            set { _measurementUnit = value; } 
+
+        public int Quantity
+        {
+            get { return _quantity; }
+            set { _quantity = value; }
         }
-        
-        public bool ReorderStatus 
-        { 
-            get { return _reorderStatus; } 
-            set { _reorderStatus = value; } 
+
+        public string MeasurementUnit
+        {
+            get { return _measurementUnit; }
+            set { _measurementUnit = value; }
         }
-        
-        public DateTime CreatedAt 
-        { 
-            get { return _createdAt; } 
-            set { _createdAt = value; } 
+
+        public bool ReorderStatus
+        {
+            get { return _reorderStatus; }
+            set { _reorderStatus = value; }
         }
-        
-        public DateTime UpdatedAt 
-        { 
-            get { return _updatedAt; } 
-            set { _updatedAt = value; } 
+
+        public DateTime CreatedAt
+        {
+            get { return _createdAt; }
+            set { _createdAt = value; }
+        }
+
+        public DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
+            set { _updatedAt = value; }
         }
     }
 }

@@ -58,22 +58,69 @@
     </tbody>
 </table>
 
-@* Alert Section *@
-<div class="alert alert-warning mt-4" role="alert">
-    <h4 class="alert-heading">⚠️ Inventory Alert!</h4>
-    <p>The following items are running low or are out of stock: </p>
-    <ul>
-        <li><strong>Resource Name:</strong> Bamboo Fibres</li>
-        <li><strong>Currently Available Quantity:</strong> 20</li>
-        <li><strong>Threshold Value:</strong> 10</li>
-        <li><strong>Suggested Actions:</strong> Consider reordering stock or finding alternatives.</li>
-    </ul>
-    <hr>
-    <ul>
-        <li><strong>Resource Name:</strong> Organic Cotton</li>
-        <li><strong>Currently Available Quantity:</strong> 0</li>
-        <li><strong>Threshold Value:</strong> 10</li>
-        <li><strong>Suggested Actions:</strong> Immediate restocking required.</li>
-    </ul>
+@* Insert New Sustainable Resource Form *@
+<h3 class="mt-4">Add New sustainable Resource</h3>
 
-</div>
+<form asp-action="Create" asp-controller="SustainableIngredients" method="post" class="border p-3 bg-light rounded">
+    <div class="mb-3">
+        <label for="IngredientName" class="form-label">Resource Name: </label>
+        <input type="text" id="IngredientName" name="IngredientName" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="ThresholdQuantity" class="form-label">Quantity:</label>
+        <input type="number" id="ThresholdQuantity" name="ThresholdQuantity" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="MeasurementUnit" class="form-label">Measurement Unit:</label>
+        <select id="MeasurementUnit" name="MeasurementUnit" class="form-select" required>
+            <option value="">-- Select Unit --</option>
+            <option value="kg">Kilograms (kg)</option>
+            <option value="g">Grams (g)</option>
+            <option value="l">Litres (l)</option>
+            <option value="ml">Millilitres (ml)</option>
+            <option value="pcs">Pieces (pcs)</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="ProductId" class="form-label">Associated Product</label>
+        <select id="ProductId" name="ProductId" class="form-select" required>
+            <option value="">-- Select Product --</option>
+            @foreach (var product in ViewBag.Products)
+            {
+                <option value="@product.Id">@product.ProductName</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Resource</button>
+</form>
+
+@* Alert Section *@
+@{
+    var lowStockItems = Model.Where(i => i.ReorderStatus || i.ThresholdQuantity == 0).ToList();
+}
+
+@if (lowStockItems.Any())
+{
+    <div class="alert alert-warning mt-4" role="alert">
+        <h4 class="alert-heading">⚠️ Inventory Alert!</h4>
+        <p>The following items are running low or are out of stock: </p>
+        <ul>
+            @foreach (var ingredient in lowStockItems)
+            {
+                <li><strong>Resource Name: </strong>@ingredient.IngredientName</li>
+                <li><strong>Currently Available Quantity: </strong>@ingredient.Quantity</li>
+                <li><strong>Threshold Value: </strong>@ingredient.ThresholdQuantity</li>
+                <li><strong>Suggested Actions: </strong>
+                    @(ingredient.Quantity < ingredient.ThresholdQuantity
+                                ? "Consider reordering stock or finding alternatives."
+                                : "Stock is sufficient.")
+            </li>
+            <hr />
+                }
+        </ul>
+    </div>
+}
