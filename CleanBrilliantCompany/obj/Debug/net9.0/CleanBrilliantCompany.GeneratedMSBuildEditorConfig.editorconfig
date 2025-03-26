@@ -88,6 +88,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/staff-footer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL3N0YWZmLWZvb3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/staff-sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL3N0YWZmLXNpZGViYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -118,14 +126,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Staff/ShippingAgent/shippingagent.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmYvU2hpcHBpbmdBZ2VudC9zaGlwcGluZ2FnZW50LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Staff/staff-footer.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmYvc3RhZmYtZm9vdGVyLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Staff/staff-sidebar.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmYvc3RhZmYtc2lkZWJhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Staff/ticket.cshtml]

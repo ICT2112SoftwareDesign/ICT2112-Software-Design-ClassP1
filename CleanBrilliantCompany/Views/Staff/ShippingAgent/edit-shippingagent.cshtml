@@ -257,8 +257,8 @@
                             <h6 class="m-0 font-weight-bold text-primary">Shipping Agent Details</h6>
                         </div>
                         <div class="card-body">
-                            <form asp-action="UpdateShippingAgent" asp-controller="Staff"
-                                asp-route-id="@Model.ShippingAgentId" method="post">
+                            <form action="/staff/shippingagent/UpdateShippingAgent/@Model.ShippingAgentId"
+                                method="post">
                                 <input type="hidden" asp-for="ShippingAgentId" />
                                 <div class="form-group">
                                     <label asp-for="ShippingAgentCompany">Company Name</label>
@@ -287,7 +287,7 @@
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save mr-1"></i> Save Changes
                                     </button>
-                                    <a asp-action="ShippingAgent" asp-controller="Staff" class="btn btn-secondary ml-2">
+                                    <a href="/staff/shippingagent" class="btn btn-secondary ml-2">
                                         <i class="fas fa-times mr-1"></i> Cancel
                                     </a>
                                 </div>
