@@ -1,5 +1,3 @@
-@model List<CleanBrilliantCompany.Models.SupportTicket.SupportTicketSDM>
-
 @{
     ViewData["Title"] = "View All Support Tickets";
 }
@@ -10,10 +8,10 @@
     <thead>
         <tr>
             <th>Ticket ID</th>
-            <th>Customer ID</th>
             <th>Status</th>
             <th>Created At</th>
-            <th>Details</th>
+            <th>Ticket Details</th>
+            <th>Resolution Details</th>
         </tr>
     </thead>
     <tbody>
@@ -24,7 +22,6 @@
         {
             <tr>
                 <td>@ticket.TicketId</td>
-                <td>@ticket.CustomerId</td>
                 <td>@ticket.Status</td>
                 <td>@ticket.CreatedAt</td>
                 <td>@ticket.TicketDetails</td>

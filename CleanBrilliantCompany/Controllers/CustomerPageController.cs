@@ -204,11 +204,18 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("viewFAQs");
         }
 
-        public IActionResult viewSupportTickets(Int32 customerID)
+        public IActionResult viewSupportTickets()
         {
+            // Retrieve customer ID from the session using the correct key
+            int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
+            if (customerID == -1)
+            {
+                TempData["Error"] = "User not logged in.";
+                return Json(new { redirectUrl = Url.Action("Login", "BeforeLoginPage") });
+            }
+
             var allCustomerSupportTicket = _supportManagement.viewTicketByCustomer(customerID);
-            ViewBag.AllSupportTickets = allCustomerSupportTicket;
-            Console.WriteLine($"In view support ticket: {allCustomerSupportTicket.Count}");
+            ViewBag.AllSupportTickets = allCustomerSupportTicket;        
             return View("~/Views/Support/ViewSupportTickets.cshtml");
         }
 

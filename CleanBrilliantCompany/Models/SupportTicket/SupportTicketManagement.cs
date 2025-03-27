@@ -56,17 +56,11 @@ namespace CleanBrilliantCompany.Models.SupportTicket
         {
             // Call the data gateway method to fetch tickets for the customer
             var tickets = _gateway.ViewTicketByCustomer(customerId);
-            
-            // Optionally, map or transform data before returning
-            return tickets.Select(ticket => new SupportTicketSDM
+            if (tickets == null)
             {
-                TicketId = ticket.TicketId,
-                CustomerId = ticket.CustomerId,
-                Status = ticket.Status,
-                CreatedAt = ticket.CreatedAt,
-                TicketDetails = ticket.TicketDetails,
-                ResolutionDetails = ticket.ResolutionDetails
-            }).ToList();
+                throw new Exception("Ticket not found");
+            }
+            return tickets;
         }
 
         public bool checkSupportTicketQuery()
