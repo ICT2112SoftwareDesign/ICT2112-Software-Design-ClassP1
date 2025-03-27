@@ -28,12 +28,12 @@ namespace CleanBrilliantCompany.DomainControl
             return _lastQuerySuccess;
         }
 
-        public double getProductCarbonFootprint(int productCFId)
+        public double getProductCarbonFootprint(int productId)
         {
             try
             {
                 double productCF = 0;
-                productCF = _mapper.retrieveProductCarbonFootprint(productCFId);
+                productCF = _mapper.retrieveProductCarbonFootprint(productId);
                 _lastQuerySuccess = _mapper.getQueryStatus();
                 return productCF;
             }

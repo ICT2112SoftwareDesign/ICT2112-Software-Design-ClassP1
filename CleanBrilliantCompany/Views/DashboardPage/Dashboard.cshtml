@@ -38,7 +38,7 @@
             <a href="/manager" class="btn btn-sm btn-info shadow-sm mr-2">
                 <i class="fas fa-eye fa-sm text-white-50"></i> Manager View Feedback
             </a>
-            <a href="#" class="btn btn-sm btn-success shadow-sm">
+            <a href="/dashboardpage/ecofriendlyreport" class="btn btn-sm btn-success shadow-sm">
                 <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
             </a>
         </div>
@@ -157,9 +157,14 @@
                                     }
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <button class="btn btn-outline-secondary mr-2" onclick="clearProductSelection()">Clear Selection</button>
-                                <button class="btn btn-primary" onclick="compareProducts()">Compare Products</button>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button class="btn btn-outline-secondary" onclick="selectAllProducts()">Select All</button>
+                                </div>
+                                <div>
+                                    <button class="btn btn-outline-secondary mr-2" onclick="clearProductSelection()">Clear Selection</button>
+                                    <button class="btn btn-primary" onclick="compareProducts()">Compare Products</button>
+                                </div>
                             </div>
                         </div>
 
@@ -178,15 +183,20 @@
                                                 data-name="@method.TransportMode"
                                                 data-emission="@method.AverageCarbonEmission">
                                             <label class="custom-control-label" for="shipping_@method.TransportMode">
-                                                @method.TransportMode - @method.AverageCarbonEmission kg CO₂
+                                                @method.TransportMode - @method.AverageCarbonEmission.ToString("F2") kg CO₂
                                             </label>
                                         </div>
                                     }
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <button class="btn btn-outline-secondary mr-2" onclick="clearShippingSelection()">Clear Selection</button>
-                                <button class="btn btn-primary" onclick="compareShippingMethods()">Compare Shipping</button>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button class="btn btn-outline-secondary" onclick="selectAllShipping()">Select All</button>
+                                </div>
+                                <div>
+                                    <button class="btn btn-outline-secondary mr-2" onclick="clearShippingSelection()">Clear Selection</button>
+                                    <button class="btn btn-primary" onclick="compareShippingMethods()">Compare Shipping</button>
+                                </div>
                             </div>
                         </div>
                     </div> 
@@ -483,6 +493,20 @@
             }
             const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+
+        function selectAllProducts() {
+            const checkboxes = document.querySelectorAll('.product-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+        }
+
+        function selectAllShipping() {
+            const checkboxes = document.querySelectorAll('.shipping-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
         }
     </script>
 </body>

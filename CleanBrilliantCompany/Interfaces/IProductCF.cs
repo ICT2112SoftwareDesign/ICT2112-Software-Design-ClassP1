@@ -4,7 +4,7 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IProductCF
     {
-        double getProductCarbonFootprint(int productCFId);
+        double getProductCarbonFootprint(int productId);
         List<ProductCarbonFootprintRDM> getAllProductCarbonFootprint();
         float getTotalCarbonFootprint();
     }

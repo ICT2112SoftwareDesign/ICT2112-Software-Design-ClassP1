@@ -50,7 +50,7 @@ namespace CleanBrilliantCompany.Data
             }
         }
 
-        public double retrieveProductCarbonFootprint(int productCFId)
+        public double retrieveProductCarbonFootprint(int productId)
         {
             try
             {
@@ -61,11 +61,11 @@ namespace CleanBrilliantCompany.Data
                     string query = @"
                     SELECT carbonEmission 
                     FROM ProductCarbonFootprint 
-                    WHERE productCFId = @productCFId";
+                    WHERE productId = @productId";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@productCFId", productCFId);
+                        command.Parameters.AddWithValue("@productId", productId);
 
                         object result = command.ExecuteScalar();
 
