@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
-using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -13,19 +12,16 @@ var config = builder.Configuration;
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Register services properly
+// Register services properly - using the new approach
 builder.Services.AddScoped<ShippingAgentMapper>();
-builder.Services.AddScoped<_IShippingAgentDB, ShippingAgentDB>();
+builder.Services.AddScoped<_IShippingAgentDB, ShippingAgentMapper>();
 
-// Register DatabaseService
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+// Remove DbContext registration and use direct SQL connection
 // Create ShippingAgentMapper instance after services are registered to demonstrate data fetching
 // Note: This is for debugging only and should be removed in production
 var serviceProvider = builder.Services.BuildServiceProvider();
-var shippingAgentDB = serviceProvider.GetRequiredService<ShippingAgentMapper>();
-var agents = shippingAgentDB.FetchShippingAgents();
+var shippingAgentMapper = serviceProvider.GetRequiredService<ShippingAgentMapper>();
+var agents = shippingAgentMapper.FetchShippingAgents();
 Console.WriteLine($"Debug: Found {agents.Count} shipping agents");
 
 var app = builder.Build();

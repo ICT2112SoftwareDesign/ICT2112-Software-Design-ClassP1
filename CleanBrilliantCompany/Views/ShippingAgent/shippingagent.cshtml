@@ -298,6 +298,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Find the table section and replace with this -->
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -311,7 +312,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (Model?.ShippingAgents != null && Model.ShippingAgents.Any())
+                                        @if (Model != null && Model.ShippingAgents != null)
                                         {
                                             @foreach (var agent in Model.ShippingAgents)
                                             {
@@ -322,11 +323,13 @@
                                                     <td>@agent.ServiceType</td>
                                                     <td>
                                                         <a href="/shippingagent/update/@agent.ShippingAgentId"
-                                                            class="btn btn-sm btn-primary">Edit</a>
-                                                        <!-- Replace the delete button in the table with this version -->
-                                                        <button type="button" class="btn btn-sm btn-danger"
-                                                            onclick="confirmDelete(@agent.ShippingAgentId, '@agent.ShippingAgentCompany')">
-                                                            Delete
+                                                            class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-edit"></i> Edit
+                                                        </a>
+                                                        <button
+                                                            onclick="confirmDelete(@agent.ShippingAgentId, '@agent.ShippingAgentCompany')"
+                                                            class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-trash"></i> Delete
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -340,6 +343,11 @@
                                         }
                                     </tbody>
                                 </table>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/shippingagent/add" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Add New Shipping Agent
+                                </a>
                             </div>
                         </div>
                     </div>

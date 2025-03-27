@@ -30,15 +30,3 @@ namespace CleanBrilliantCompany.Models
     }
 }
 
-namespace CleanBrilliantCompany.Models
-{
-    public class ShippingAgentManagement
-    {
-        public List<ShippingAgent> ShippingAgents { get; set; }
-
-        public ShippingAgentManagement()
-        {
-            ShippingAgents = new List<ShippingAgent>();
-        }
-    }
-}
