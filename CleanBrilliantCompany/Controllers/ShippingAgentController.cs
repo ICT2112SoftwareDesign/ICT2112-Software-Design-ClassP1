@@ -171,8 +171,9 @@ namespace CleanBrilliantCompany.Controllers
             {
                 ShippingAgentId = agent.ShippingAgentId,
                 ShippingAgentCompany = agent.ShippingAgentCompany,
+                ShippingMethod = agent.ShippingMethod,
+                ServiceType = agent.ServiceType
               
-                // Add other properties as needed
             };
         }
 
@@ -183,8 +184,9 @@ namespace CleanBrilliantCompany.Controllers
             {
                 ShippingAgentId = agentRDM.ShippingAgentId,
                 ShippingAgentCompany = agentRDM.ShippingAgentCompany,
+                ShippingMethod = agentRDM.ShippingMethod,
+                ServiceType = agentRDM.ServiceType
                
-                // Add other properties as needed
             };
         }
     }
