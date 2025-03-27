@@ -45,10 +45,20 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
         // for testing ISupportTicket interface 
         [HttpPost]
         [Route("CreateSupportTicket")]
-        public IActionResult createSupportTicket(int customerId)
+        public IActionResult CreateSupportTicket(int customerId, string ticketDetails)
         {
-            _manager.createSupportTicket(customerId);
-            return RedirectToAction("SupportTicket");
+            bool success = _manager.createSupportTicket(customerId, ticketDetails);
+
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Your ticket has been successfully created!";
+                return RedirectToAction("SupportTicket");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to create support ticket. Please try again.";
+                return RedirectToAction("SupportTicket");
+            }
         }
     }
 }

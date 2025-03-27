@@ -39,7 +39,6 @@ builder.Services.AddScoped<SupportTicketManagement>();
 builder.Services.AddScoped<SupportTicketTableDataGateway>(provider =>
     new SupportTicketTableDataGateway(connectionString!));
 
-
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();
 

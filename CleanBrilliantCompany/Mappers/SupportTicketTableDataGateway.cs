@@ -86,23 +86,63 @@ namespace CleanBrilliantCompany.Data.SupportTicket
             return tickets;
         }
 
-        public bool CreateSupportTicket(int customerId)
+        public bool CreateSupportTicket(int customerId, string ticketDetails)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
                 string insertQuery = @"
                     INSERT INTO dbo.SupportTicket (customerId, ticketStatus, ticketCreatedAt, ticketDetails, resolutionDetails)
-                    VALUES (@CustomerId, 'Submitted', GETDATE(), 'Pending customer input', '');
+                    VALUES (@CustomerId, 'Submitted', GETDATE(), @TicketDetails, '');
                 ";
 
                 using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("@CustomerId", customerId);
+                    cmd.Parameters.AddWithValue("@TicketDetails", ticketDetails); // Use the actual customer input for ticketDetails
                     int rowsAffected = cmd.ExecuteNonQuery();
                     return rowsAffected > 0;
                 }
             }
+        }
+
+        // New method to view all tickets by customerId
+        public List<SupportTicketSDM> ViewTicketByCustomer(int customerId)
+        {
+            List<SupportTicketSDM> tickets = new List<SupportTicketSDM>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string query = @"
+                    SELECT ticketId, customerId, ticketStatus, ticketCreatedAt, ticketDetails, resolutionDetails
+                    FROM dbo.SupportTicket
+                    WHERE customerId = @CustomerId;
+                ";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@CustomerId", customerId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            tickets.Add(new SupportTicketSDM
+                            {
+                                TicketId = reader.GetInt32(0),
+                                CustomerId = reader.GetInt32(1),
+                                Status = reader.IsDBNull(2) ? "Open" : reader.GetString(2),
+                                CreatedAt = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3),
+                                TicketDetails = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                                ResolutionDetails = reader.IsDBNull(5) ? "" : reader.GetString(5)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return tickets;
         }
 
         public void DeleteTicket(int ticketId)

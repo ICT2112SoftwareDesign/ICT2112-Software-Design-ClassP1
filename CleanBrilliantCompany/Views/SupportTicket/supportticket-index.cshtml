@@ -31,8 +31,18 @@
                     <h1 class="h3 mb-4 text-gray-800">Support Ticket Management</h1>
 
                     <!-- TEST ONLY: Create Ticket Button -->
-                    <form asp-action="createSupportTicket" method="post">
+                    <!-- Create Ticket Button with ticketDetails input field -->
+                    <form asp-action="CreateSupportTicket" method="post">
+                        <!-- Hidden field for customerId -->
                         <input type="hidden" name="customerId" value="7" />
+
+                        <!-- Textarea for the customer to input the ticket details -->
+                        <div class="form-group">
+                            <label for="ticketDetails">Ticket Details</label>
+                            <textarea id="ticketDetails" name="ticketDetails" class="form-control" rows="4" required></textarea>
+                        </div>
+
+                        <!-- Submit button to create the ticket -->
                         <button type="submit" class="btn btn-success btn-sm mb-3">+ Create New Ticket</button>
                     </form>
 
