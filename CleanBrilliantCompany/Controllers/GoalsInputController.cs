@@ -6,7 +6,7 @@ using CleanBrilliantCompany.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Globalization;
-/*
+
 namespace CleanBrilliantCompany.Controllers
 {
     public class GoalsInputController : Controller
@@ -27,18 +27,34 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(GoalsSDM goal)
+        public async Task<ActionResult> Create(GoalsSDM goal, string goalDate)
         {
             if (ModelState.IsValid)
             {
+                // Parse the goalDate to extract Year and Month
+                if (DateTime.TryParseExact(goalDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+                {
+                    goal.UpdateGoalDate(parsedDate.Year, parsedDate.Month);  // Use the UpdateGoalDate method to set the year and month
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid date format.");
+                    return View(goal);  // Return the view with an error message
+                }
+
+                // Insert goal into the database
                 await _goalDb.InsertGoal(goal);
-                return RedirectToAction("Index", "GoalsPage");
+
+                // Redirect to the Goals management page after successful insertion
+                return RedirectToAction("GoalsManagement", "GoalsPage");
             }
+
+            // If the model state is not valid, return the view with the error
             return View(goal);
         }
 
         [HttpPost]
-        public async Task<ActionResult> ModifyGoal(string goalDate, float targetEmission)
+        public async Task<ActionResult> ModifyGoal(string goalDate, double targetEmission)
         {
             _logger.LogInformation("ModifyGoal action started."); // Log method execution start
 
@@ -63,7 +79,7 @@ namespace CleanBrilliantCompany.Controllers
                 existingGoal.UpdateTargetEmission(targetEmission);
                 await _goalDb.UpdateGoal(existingGoal);
 
-                return RedirectToAction("Index", "GoalsPage");
+                return RedirectToAction("GoalsManagement", "GoalsPage");
             }
 
             _logger.LogError("Invalid date format received.");
@@ -72,4 +88,3 @@ namespace CleanBrilliantCompany.Controllers
         }
     }
 }
-*/

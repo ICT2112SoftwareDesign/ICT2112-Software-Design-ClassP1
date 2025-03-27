@@ -9,7 +9,7 @@ using CleanBrilliantCompany.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-/*
+
 namespace CleanBrilliantCompany.Data
 {
     public class GoalsGateway : IGoalsDB
@@ -24,10 +24,10 @@ namespace CleanBrilliantCompany.Data
         // Insert Goal
         public async Task InsertGoal(GoalsSDM goal)
         {
-            _context.Goals.Add(goal);
+            // Add the goal to the database
+            await _context.Goals.AddAsync(goal);
             await _context.SaveChangesAsync();
         }
-
         // Update Goal
         public async Task UpdateGoal(GoalsSDM goal)
         {
@@ -72,5 +72,5 @@ namespace CleanBrilliantCompany.Data
         }
     }
 }
-*/
+
 

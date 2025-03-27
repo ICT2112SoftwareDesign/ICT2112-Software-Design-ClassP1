@@ -5,7 +5,7 @@ using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Interfaces;
 using System.Threading.Tasks;
-/*
+
 namespace CleanBrilliantCompany.Controllers
 {
     public class GoalsPageController : Controller
@@ -25,6 +25,6 @@ namespace CleanBrilliantCompany.Controllers
             return View();
         }
 
+
     }
 }
-*/

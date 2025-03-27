@@ -1,18 +1,20 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CleanBrilliantCompany.Models.Entity
 {
+    [Table("CarbonGoals")]
     public class GoalsSDM
     {
         [Key]
         private int goalId { get; set; }
-        private float targetEmission { get; set; }
+        private double targetEmission { get; set; }
         private int goalYear { get; set; }
         private int goalMonth { get; set; }
 
         public GoalsSDM() { } // EF requires parameterless constructor
 
-        public GoalsSDM(int goalId, float targetEmission, int goalYear, int goalMonth)
+        public GoalsSDM(int goalId, double targetEmission, int goalYear, int goalMonth)
         {
             this.goalId = goalId;
             this.targetEmission = targetEmission;
@@ -21,11 +23,11 @@ namespace CleanBrilliantCompany.Models.Entity
         }
 
         public int GetGoalId() => goalId;
-        public float GetTargetEmission() => targetEmission;
+        public double GetTargetEmission() => targetEmission;
         public int GetGoalYear() => goalYear;
         public int GetGoalMonth() => goalMonth;
 
-        public void UpdateTargetEmission(float newEmission) => targetEmission = newEmission;
+        public void UpdateTargetEmission(double newEmission) => targetEmission = newEmission;
         public void UpdateGoalDate(int year, int month)
         {
             goalYear = year;

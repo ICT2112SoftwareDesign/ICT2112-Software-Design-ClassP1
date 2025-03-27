@@ -4,7 +4,7 @@ using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Interfaces;
 
-/*
+
 namespace CleanBrilliantCompany.Models.Control
 {
     public class GoalsManagement
@@ -16,13 +16,13 @@ namespace CleanBrilliantCompany.Models.Control
             _goalDb = goalsDb;
         }
 
-        public async Task AddGoal(int goalId, float targetEmission, int goalYear, int goalMonth)
+        public async Task AddGoal(int goalId, double targetEmission, int goalYear, int goalMonth)
         {
             var goal = new GoalsSDM(goalId, targetEmission, goalYear, goalMonth);
             await _goalDb.InsertGoal(goal);
         }
 
-        public async Task UpdateGoal(int goalId, float targetEmission)
+        public async Task UpdateGoal(int goalId, double targetEmission)
         {
             var existingGoal = await _goalDb.FindGoal(goalId);
             if (existingGoal != null)
@@ -38,4 +38,3 @@ namespace CleanBrilliantCompany.Models.Control
         }
     }
 }
-*/

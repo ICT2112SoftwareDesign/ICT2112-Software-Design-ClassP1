@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Models.Entity;
-/*
+
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface IGoalsQuery
@@ -8,4 +8,3 @@ namespace CleanBrilliantCompany.Interfaces
         Task<bool> CheckGoalsQuery(int goalYear, int goalMonth);
     }   
 }
-*/

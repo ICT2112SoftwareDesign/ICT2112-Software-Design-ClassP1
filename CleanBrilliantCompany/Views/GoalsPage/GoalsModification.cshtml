@@ -7,7 +7,7 @@
 
 <h1>Modify Goal</h1>
 
-<form method="post" asp-action="ModifyGoal">
+<form asp-controller="GoalsInput" asp-action="ModifyGoal" method="post">
     <div>
         <label for="goalDate">Goal Date:</label>
         <input type="month" id="goalDate" name="goalDate" required />
@@ -15,7 +15,7 @@
 
     <div>
         <label for="targetEmission">Target Emission:</label>
-        <input type="number" step="0.01" id="targetEmission" name="targetEmission" required />
+        <input type="number" id="targetEmission" name="targetEmission" required />
     </div>
 
     <button type="submit">Update Goal</button>
