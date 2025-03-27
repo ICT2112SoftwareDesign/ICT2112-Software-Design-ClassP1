@@ -10,7 +10,8 @@ namespace CleanBrilliantCompany.Models
         bool cancelOrder(int orderId); // Cancels an order
         List<OrderRDM> getAllOrders(); // Retrieves all orders
         List<OrderRDM> getOrdersByMonth(int monthNumber); // Retrieves all orders for a specific month
-        
+        public decimal GetTotalOrderValue();
+        public int GetTotalOrderCount();
 
         
 

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DbVEW1Q38yU=",
+  "dgSpecHash": "fFJl9ylMARs=",
   "success": true,
-  "projectFilePath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+  "projectFilePath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jarre\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\jarre\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

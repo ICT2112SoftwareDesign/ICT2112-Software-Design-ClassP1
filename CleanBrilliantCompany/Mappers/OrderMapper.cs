@@ -398,5 +398,30 @@ namespace CleanBrilliantCompany.Models
             }
             return orders;
         }
+
+        public int GetTotalOrderCount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "SELECT COUNT(*) FROM CustOrder";
+                var command = new SqlCommand(query, connection);
+
+                connection.Open();
+                return (int)command.ExecuteScalar();
+            }
+        }
+
+        public decimal GetTotalOrderValue()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "SELECT SUM(orderTotal) FROM CustOrder WHERE Status != 'Cancelled'";
+                var command = new SqlCommand(query, connection);
+
+                connection.Open();
+                var result = command.ExecuteScalar();
+                return result != DBNull.Value ? Convert.ToDecimal(result) : 0;
+            }
+        }
     }
 }
