@@ -44,9 +44,35 @@
 
 					<td><a asp-controller="ReturnForm" asp-action="DisplayReturnForm" asp-route-itemId="@item.GetItemId()" class="btn btn-primary">View</a></td>
 
-					<td><a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-productId="@item.GetProductId()" asp-route-itemId="@item.GetItemId()" class="btn btn-danger delete-btn">Delete</a></td>
-
+					<td>
+						<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal-@item.GetReturnId()">
+							Delete
+						</button>
+					</td>
 				</tr>
+				<!-- Delete Confirmation Modal -->
+
+				<div class="modal fade" id="deleteConfirmationModal-@item.GetReturnId()" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="deleteConfirmationLabel">Delete Confirmation</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								Are you sure you want to delete this return form? <br /><br />
+								NOTE: Deleting a return form sets the item back to ToReturn status, it doesn't recall any Email sent to manufacturers. <br />
+								Creating a new return form will send another email to the manufacturer. <br />
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+								<a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-productId="@item.GetProductId()" asp-route-itemId="@item.GetItemId()" class="btn btn-danger delete-btn">Delete</a>
+							</div>
+						</div>
+					</div>
+				</div>
 			}
 		}
 	</tbody>
@@ -58,15 +84,16 @@
 
 
 
-<script>
-	document.querySelectorAll('.delete-btn').forEach(function(button) {
-		button.addEventListener('click', function(event) {
 
-			   const confirmDelete = confirm("Are you sure you want to delete this return form? Deleting a return form sets the item back to ToReturn status.");
+@* <script> *@
+@* 	document.querySelectorAll('.delete-btn').forEach(function(button) { *@
+@* 		button.addEventListener('click', function(event) { *@
 
-			if (!confirmDelete) {
-				event.preventDefault();
-			 }
-		 });
-	 });
-</script>
+@* 			   const confirmDelete = confirm("Are you sure you want to delete this return form? NOTE: Deleting a return form sets the item back to ToReturn status, it doesn't recall any Email sent to manufacturers. Creating a new return form will "); *@
+
+@* 			if (!confirmDelete) { *@
+@* 				event.preventDefault(); *@
+@* 			 } *@
+@* 		 }); *@
+@* 	 }); *@
+@* </script> *@

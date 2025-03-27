@@ -48,8 +48,7 @@ builder.Services.AddScoped<IReturnForm, ItemControl>();
 builder.Services.AddScoped<iProduct, ProductControl>();
 builder.Services.AddScoped<iProductQuantity, ProductControl>();
 builder.Services.AddScoped<iReorderRequest, ReorderRequestManagement>();
-
-
+builder.Services.AddScoped<iManufacturer, ProductControl>();
 
 
 builder.Services.AddScoped<ReturnFormControl>();

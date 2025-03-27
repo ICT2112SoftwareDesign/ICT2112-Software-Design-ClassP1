@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ProductControl : iProductQuery, iProduct, iProductQuantity
+    public class ProductControl : iProductQuery, iProduct, iProductQuantity, iManufacturer
     {
         private readonly ProductMapper _productMapper;
         private readonly iReorderRequest _ireorderRequest;

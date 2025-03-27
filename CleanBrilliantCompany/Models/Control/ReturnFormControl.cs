@@ -12,22 +12,26 @@ namespace CleanBrilliantCompany.Models.Control
 	public class ReturnFormControl : iReturnFormQuery
 	{
 		private readonly ReturnFormMapper _mapper;
-		private readonly ItemControl _itemControl;
-        private readonly ProductControl _productControl;
+		private readonly IItemUpdate _iItemUpdate;
+        private readonly IItem _iItem;
+        private readonly IReturnForm _iReturnForm;
+		private readonly iManufacturer _iManufacturer;
         private readonly IConfiguration _configuration;
 
-        public ReturnFormControl(ReturnFormMapper mapper, IConfiguration configuration, ItemControl itemControl, ProductControl productControl)
+        public ReturnFormControl(ReturnFormMapper mapper, IConfiguration configuration, IItemUpdate iItemUpdate, IItem iItem, IReturnForm iReturnForm, iManufacturer iManufacturer)
 		{
             _configuration = configuration;
             _mapper = mapper;
-            _itemControl = itemControl;
-			_productControl = productControl;
+            _iItemUpdate = iItemUpdate;
+			_iItem = iItem;
+			_iReturnForm = iReturnForm;
+            _iManufacturer = iManufacturer;
 
         }
 
 		public List<Item> displayAllRefundedItems()
 		{
-			return _itemControl.getRefundedItems();
+			return _iReturnForm.getToReturnItems().Result;
 
         }
 
@@ -43,17 +47,17 @@ namespace CleanBrilliantCompany.Models.Control
 			ReturnForm? returnForm = _mapper.getDatabaseQueryStatus(_mapper.findByItemId(itemId));
 
 			if (returnForm != null) {
-                Item item = _itemControl.getItemById(itemId).Result;
+                Item item = _iItem.getItemById(itemId).Result;
                 Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
                 int productId = (int)itemDict["ProductId"];
-                Product product = _itemControl.retrieveProductDetails(productId).Result;
+                Product product = _iReturnForm.retrieveProductDetails(productId).Result;
                 Dictionary<string, object> prodDict = product.retrieveProductInfo();
 
                 int manufId = (int)prodDict["ManufacturerId"];
                 string prodName = (string)prodDict["ProductName"];
 
-				ProductManufacturer prodManuf = _productControl.getManufacturerDetails(manufId);
+				ProductManufacturer prodManuf = _iManufacturer.getManufacturerDetails(manufId);
                 Dictionary<string, object> manufDict = prodManuf.retrieveProductManufacturerInfo();
 
 
@@ -70,24 +74,24 @@ namespace CleanBrilliantCompany.Models.Control
 		{
 			bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(itemId));
 
-            _itemControl.updateItemStatus(itemId, null, null, null, null, ItemStatus.ToReturn);
-            _itemControl.updateProductQuantity(productId, 1, "increase");
+            _iItemUpdate.updateItemStatus(itemId, null, null, null, null, ItemStatus.ToReturn);
+            _iItemUpdate.updateProductQuantity(productId, 1, "increase");
             
             return deleteResult;
 		}
 
 		public ReturnForm generateReturnForm(int productId, int itemId) {
 
-            Item item = _itemControl.getItemById(itemId).Result;
+            Item item = _iItem.getItemById(itemId).Result;
             Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
-            Product product = _itemControl.retrieveProductDetails(productId).Result;
+            Product product = _iReturnForm.retrieveProductDetails(productId).Result;
             Dictionary<string, object> prodDict = product.retrieveProductInfo();
 
             int manufId = (int)prodDict["ManufacturerId"];
             string prodName = (string)prodDict["ProductName"];
 
-            ProductManufacturer prodManuf = _productControl.getManufacturerDetails(manufId);
+            ProductManufacturer prodManuf = _iManufacturer.getManufacturerDetails(manufId);
             Dictionary<string, object> manufDict = prodManuf.retrieveProductManufacturerInfo();
 
             string manufName = (string)manufDict["CompanyName"];
@@ -112,7 +116,7 @@ namespace CleanBrilliantCompany.Models.Control
 		{
 			Debug.WriteLine($"Finding item for item id: {model.GetItemId()}");
 
-			Item item = await _itemControl.getItemById((int)model.GetItemId());
+			Item item = await _iItem.getItemById((int)model.GetItemId());
 			Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
 			// Check whether the Item is in ToReturn Status.
@@ -129,14 +133,14 @@ namespace CleanBrilliantCompany.Models.Control
 			{
 				// Mapper function to insert return form.
 				ReturnForm? form = _mapper.getDatabaseQueryStatus(_mapper.insert(model));
-				await _itemControl.updateItemStatus((int)model.GetItemId(), null, null, null, form!.GetReturnId(), ItemStatus.Returned);
-				_itemControl.updateProductQuantity((int)model.GetProductId(), 1, "decrease");
+				await _iItemUpdate.updateItemStatus((int)model.GetItemId(), null, null, null, form!.GetReturnId(), ItemStatus.Returned);
+                _iItemUpdate.updateProductQuantity((int)model.GetProductId(), 1, "decrease");
 
                 if (form != null)
 				{
 
                     // Get email from iManufacturer.
-                    ProductManufacturer prodManuf = _productControl.getManufacturerDetails((int)model.GetManufacturerId());
+                    ProductManufacturer prodManuf = _iManufacturer.getManufacturerDetails((int)model.GetManufacturerId());
 					string manufacturerEmail = (string)prodManuf.retrieveProductManufacturerInfo()["Email"];
 					string manufacturerName = (string)prodManuf.retrieveProductManufacturerInfo()["CompanyName"];
 
