@@ -9,7 +9,6 @@ namespace CleanBrilliantCompany.Models
 
     public class FeedbackRDM
     {
-        // ✅ Use public properties instead of private fields with setters
         public int FeedbackId { get; set; }
         public int StaffId { get; set; }
         public string StaffName { get; set; }
@@ -145,13 +144,13 @@ namespace CleanBrilliantCompany.Models
                         {
                             FeedbackRDM feedback = new FeedbackRDM
                             {
-                                FeedbackId = reader.GetInt32(0),  // ✅ Feedback ID
-                                StaffId = reader.GetInt32(1),     // ✅ Staff ID
-                                StaffName = reader.GetString(2),  // ✅ Staff Name
-                                Feedback = reader.GetString(3),   // ✅ Feedback Text
-                                Status = reader.GetString(4),     // ✅ Status
-                                ManagerComments = reader.GetString(5), // ✅ Manager Comments (handle NULL)
-                                DateSubmitted = reader.GetDateTime(6) // ✅ Date Submitted
+                                FeedbackId = reader.GetInt32(0),  
+                                StaffId = reader.GetInt32(1),     
+                                StaffName = reader.GetString(2),  
+                                Feedback = reader.GetString(3),   
+                                Status = reader.GetString(4),     
+                                ManagerComments = reader.GetString(5), 
+                                DateSubmitted = reader.GetDateTime(6) 
                             };
 
                             feedbackList.Add(feedback);
@@ -187,13 +186,13 @@ namespace CleanBrilliantCompany.Models
                         {
                             feedback = new FeedbackRDM
                             {
-                                FeedbackId = reader.GetInt32(0),  // ✅ Feedback ID
-                                StaffId = reader.GetInt32(1),     // ✅ Staff ID
-                                StaffName = reader.GetString(2),  // ✅ Staff Name
-                                Feedback = reader.GetString(3),   // ✅ Feedback Text
-                                Status = reader.GetString(4),     // ✅ Status
-                                ManagerComments = reader.GetString(5), // ✅ Manager Comments (Handle NULL)
-                                DateSubmitted = reader.GetDateTime(6) // ✅ Date Submitted
+                                FeedbackId = reader.GetInt32(0),  
+                                StaffId = reader.GetInt32(1),    
+                                StaffName = reader.GetString(2),  
+                                Feedback = reader.GetString(3),   
+                                Status = reader.GetString(4),     
+                                ManagerComments = reader.GetString(5), 
+                                DateSubmitted = reader.GetDateTime(6) 
                             };
                         }
                     }
@@ -293,13 +292,13 @@ namespace CleanBrilliantCompany.Models
                         {
                             FeedbackRDM feedback = new FeedbackRDM
                             {
-                                FeedbackId = reader.GetInt32(0),  // ✅ Feedback ID
-                                StaffId = reader.GetInt32(1),     // ✅ Staff ID
-                                StaffName = reader.GetString(2),  // ✅ Staff Name
-                                Feedback = reader.GetString(3),   // ✅ Feedback Text
-                                Status = reader.GetString(4),     // ✅ Status
-                                ManagerComments = reader.GetString(5), // ✅ Manager Comments (Handles NULL values)
-                                DateSubmitted = reader.GetDateTime(6) // ✅ Date Submitted
+                                FeedbackId = reader.GetInt32(0), 
+                                StaffId = reader.GetInt32(1),     
+                                StaffName = reader.GetString(2), 
+                                Feedback = reader.GetString(3),  
+                                Status = reader.GetString(4),    
+                                ManagerComments = reader.GetString(5), 
+                                DateSubmitted = reader.GetDateTime(6)
                             };
 
                             feedbackList.Add(feedback);
@@ -353,10 +352,9 @@ namespace CleanBrilliantCompany.Models
         public FeedbackRDM GetFeedbackById(int feedbackId)
         {
             var feedback = _repository.GetFeedbackById(feedbackId);
-            return feedback ?? new FeedbackRDM { Feedback = "Feedback Not Found" }; // ✅ Now returns `FeedbackRDM`
+            return feedback ?? new FeedbackRDM { Feedback = "Feedback Not Found" };
         }
 
-        // ✅ Returns List<FeedbackRDM> directly
         public List<FeedbackRDM> GetAllFeedback()
         {
             return _repository.GetAllFeedback();

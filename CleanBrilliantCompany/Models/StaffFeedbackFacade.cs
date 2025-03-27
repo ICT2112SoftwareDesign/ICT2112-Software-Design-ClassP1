@@ -24,7 +24,6 @@ public class StaffFeedbackFacade
         _feedbackSubmission.EditFeedback(feedbackId, feedback);
     }
 
-    // ✅ Now correctly fetching all feedback details
     public List<FeedbackRDM> GetAllFeedback()
     {
         return _feedbackRetrieval.GetAllFeedback();
