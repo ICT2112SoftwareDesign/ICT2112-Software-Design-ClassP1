@@ -102,9 +102,7 @@ namespace CleanBrilliantCompany.Controllers
 
             var ecoFriendlyEmissionPercent = Math.Round((ecoFriendlyItemEmission / allItemEmission) * 100.0, 2);
 
-            var ecoFriendlyProducts = _productControl.getAllProductCarbonFootprint()
-                .Where(x => x.getEcoStatus()
-                .Equals("Eco-Friendly"));
+            var products = _productControl.getAllProductCarbonFootprint();
 
             var viewModel = new EcoFriendlyReportViewModel
             {
@@ -115,19 +113,32 @@ namespace CleanBrilliantCompany.Controllers
 
             viewModel.ItemCarbonFootprints = new List<object>();
 
-            foreach (ProductCarbonFootprintRDM prod in ecoFriendlyProducts)
+            foreach (ProductCarbonFootprintRDM prod in products)
             {
+                var productItems = allItemCF.Where(x => x.getProductId() == prod.getProductId());
+                int numOfProductItems = productItems.Count();
                 viewModel.ItemCarbonFootprints.Add(new
                 {
                     name = prod.getProductName(),
                     baseEmission = prod.calculateSelfEmission(),
-                    averagePerItemEmission = Math.Round(allItemCF
-                            .Where(x => x.getProductId() == prod.getProductId())
-                            .Average(x => x.calculateSelfEmission()), 
-                        2)
+                    ecoStatus = prod.getEcoStatus(),
+                    numOfProductItems = numOfProductItems,
+                    averagePerItemEmission = Math.Round(productItems.Average(x => x.calculateSelfEmission()), 2)
                 });
             }
             return View("EcoFriendlyReport", viewModel);
+        }
+        public IActionResult ProductItemEmissionTrend(int productId)
+        {
+            if (_productControl.getProductCarbonFootprint(productId) == 0) return NotFound("The specified product does not exist");
+
+            List<ItemCarbonFootprintRDM> productItems = _itemControl.getAllItemCarbonFootprint().Where(x => x.getProductId() == productId).ToList();
+
+            Dictionary<string, float> result = productItems.GroupBy(o => o.retrieveDateCreated().ToString("yyyy-MM-dd"))
+                .OrderBy(g => DateTime.Parse(g.Key))
+                .ToDictionary(g => g.Key, g => g.Sum(o => (float)o.calculateSelfEmission()));
+            
+            return Json(result);
         }
     }
 }

@@ -41,9 +41,6 @@
             <a href="/manager" class="btn btn-sm btn-info shadow-sm mr-2">
                 <i class="fas fa-eye fa-sm text-white-50"></i> Manager View Feedback
             </a>
-            <a href="#" class="btn btn-sm btn-success shadow-sm">
-                <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
-            </a>
         </div>
     </div>
 
@@ -86,44 +83,71 @@
 <!-- Eco-Friendly Item Emissions Table -->
     <div class="card p-4 mt-4 shadow-sm">
         <h4>Eco-Friendly Item Emissions</h4>
+        <div class="mx-4">
+            <input class="form-check-input" id="include_checkbox" type="checkbox" id="includeNonEcoFriendly">
+            <label class="form-check-label" for="include_checkbox">Include non-eco friendly products</label><br>
+        </div>
         <table id="carbonTable" class="display" style="width:100%">
             <thead>
                 <tr>
                     <th>Product Name</th>
                     <th>Product Base Emission (kg CO₂)</th>
-                    <th>Avg Item Emission (kg CO₂)</th>
+                    <th>Eco-friendly Status</th>
+                    <th>Item Count</th>
+                    <th>Avg Per-Item Emission (kg CO₂)</th>
                 </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
     </div>
-<script>
-        // Sample data source
-        const data = @Html.Raw(Json.Serialize(Model.ItemCarbonFootprints))
-        ;
-
+    <script>
+        const data = @Html.Raw(Json.Serialize(Model.ItemCarbonFootprints));
+        var table;
+        var tableData = data.filter((data) => data.ecoStatus === "Eco-Friendly");
+        function addData() {
+            tableData.forEach(item => {
+                        table.row.add([
+                            item.name,
+                            `${item.baseEmission} kg CO₂`,
+                            `${item.ecoStatus}`,
+                            `${item.numOfProductItems}`,
+                            `${item.averagePerItemEmission} kg CO₂`
+                        ]).draw(false);
+                    });
+        }
+        function loadTable() {
+            table = $('#carbonTable').DataTable({
+                        columnDefs: [
+                            { width: "30%", targets: 0 },
+                            { width: "20%", targets: 1 },
+                            { width: "17.5%", targets: 2 },
+                            { width: "12.5%", className: 'dt-head-left dt-body-left', targets: 3 },
+                            { width: "20%", targets: 4 }
+                        ]
+                    });
+                    addData();
+         }
+         
+        document.getElementById("include_checkbox").addEventListener("change", function() {
+            table.clear();
+            
+            if(this.checked) {
+                tableData = data;
+            } else {
+                tableData = data.filter((data) => data.ecoStatus === "Eco-Friendly");
+            }
+            addData();
+            table.draw();
+        });
         $(document).ready(function () {
-            let table = $('#carbonTable').DataTable({
-                columnDefs: [
-                    { width: "40%", targets: 0 },
-                    { width: "30%", targets: 1 },
-                    { width: "30%", targets: 2 }
-                ]
-            });
-            data.forEach(item => {
-                table.row.add([
-                    item.name,
-                    `${item.baseEmission} kg CO₂`,
-                    `${item.averagePerItemEmission} kg CO₂`
-                ]).draw(false);
-            });
+            loadTable();
         });
     </script>
     <script>
  
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
     <script>
 
     </script>
