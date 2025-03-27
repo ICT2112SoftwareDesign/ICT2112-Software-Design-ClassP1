@@ -22,7 +22,7 @@ namespace CleanBrilliantCompany.Controllers
 
         private readonly ReviewManagement _reviewManagement;
 
-        private readonly IShippingAgents _shippingAgents;
+        private readonly IShippingAgent _shippingAgent;
         private readonly IWishlistManagement _wishlistManagement;
 
 
@@ -34,7 +34,7 @@ namespace CleanBrilliantCompany.Controllers
             OrderManagement orderManagement,
             CartManagement cartManagement,
             IProduct productService,
-            IShippingAgents shippingAgents,
+            IShippingAgent shippingAgent,
             ReviewManagement reviewManagement,
             IWishlistManagement wishlistManagement)
         {
@@ -45,7 +45,7 @@ namespace CleanBrilliantCompany.Controllers
             _orderManagement = orderManagement;
             _cartManagement = cartManagement;
             _productService = productService;
-            _shippingAgents = shippingAgents;
+            _shippingAgent = shippingAgent;
             _reviewManagement = reviewManagement;
             _wishlistManagement = wishlistManagement;
         }
@@ -469,8 +469,8 @@ namespace CleanBrilliantCompany.Controllers
             var products = _cartManagement.getCartProductDetails(cart);
 
             // Fetch available shipping options
-            var serviceTypes = _shippingAgents.getServiceTypes();
-            var shippingMethods = _shippingAgents.getShippingMethods();
+            var serviceTypes = _orderManagement.getServiceTypes();
+            var shippingMethods = _orderManagement.getShippingMethods();
 
             if (!serviceTypes.Any() || !shippingMethods.Any())
             {
@@ -478,17 +478,22 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("GetAllProducts", "CustomerPage");
             }
 
-            var defaultServiceType = serviceTypes.First(); // Use the first available service type
-            var shippingAgents = _shippingAgents.getShippingAgentList(Enum.TryParse<Service>(defaultServiceType, out var serviceEnum) ? serviceEnum : Service.OneDay);
+            // Flip the assignments to ensure correct values
+            var defaultShippingType = shippingMethods.First(); // e.g., "Truck"
+            var defaultServiceType = serviceTypes.First(); // e.g., "3 Days"
+
+            // Log the default values for debugging
+            Console.WriteLine($"Default Shipping Type: {defaultShippingType}, Default Service Type: {defaultServiceType}");
+            
+
+            // Fetch available shipping agents
+            var shippingAgents = _orderManagement.getAvailableShippingAgents(defaultShippingType, defaultServiceType);
 
             if (!shippingAgents.Any())
             {
                 TempData["Error"] = "No shipping agents are available at the moment.";
                 return RedirectToAction("GetAllProducts", "CustomerPage");
             }
-
-            var defaultShippingAgent = shippingAgents.First(); // Use the first available shipping agent
-            var defaultShippingType = shippingMethods.First(); // Use the first available shipping method
 
             // Calculate the cart total
             decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
@@ -506,13 +511,11 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.ShippingAgents = shippingAgents;   // Available shipping agents
             ViewBag.SelectedServiceType = defaultServiceType; // Dynamically determined default value
             ViewBag.SelectedShippingType = defaultShippingType; // Dynamically determined default value
-            ViewBag.SelectedShippingAgent = defaultShippingAgent; // Dynamically determined default value
             ViewBag.ShippingFee = shippingFee;
             ViewBag.FinalTotal = cartTotal + shippingFee;
 
             return View("~/Views/Order/Checkout.cshtml");
         }
-
         // Process the checkout form (Update shipping details)
         [HttpPost]
         public IActionResult Checkout(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
@@ -559,10 +562,12 @@ namespace CleanBrilliantCompany.Controllers
             var products = _cartManagement.getCartProductDetails(cart);
 
             // Calculate the cart total
-            decimal cartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
+            decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
 
-            // Fetch available shipping options using OrderManagement
-            var shippingAgents = _orderManagement.getAvailableShippingAgents(serviceType);
+            // Fetch available shipping agents using both shippingType and serviceType
+            var shippingAgents = _orderManagement.getAvailableShippingAgents(shippingType, serviceType);
+
+            // Fetch available service types and shipping methods
             var serviceTypes = _orderManagement.getServiceTypes();
             var shippingMethods = _orderManagement.getShippingMethods();
 

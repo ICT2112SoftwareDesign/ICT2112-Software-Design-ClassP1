@@ -9,18 +9,20 @@ namespace CleanBrilliantCompany.Models
     {
         private readonly IOrderDatabase _orderDatabase;
         private readonly ICartManagement _cartManagement;
-        private readonly IShippingAgents _shippingAgents;
+        private readonly IShippingAgent _shippingAgent;
         private readonly ISubmitRefund _submitRefund;
+        private readonly IOrderFulfilment _orderFulfilment;
 
 
-        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, IShippingAgents shippingAgents, ISubmitRefund submitRefund)
+        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, ISubmitRefund submitRefund, IShippingAgent shippingAgent, IOrderFulfilment orderFulfilment)
         {
             _orderDatabase = orderDatabase;
             _cartManagement = cartManagement;
-            _shippingAgents = shippingAgents;
             _submitRefund = submitRefund;
+            _shippingAgent = shippingAgent;
+            _orderFulfilment = orderFulfilment;
         }
-
+    
         public int createOrder(
             int customerId,
             string deliveryAddress,
@@ -44,12 +46,26 @@ namespace CleanBrilliantCompany.Models
                 // Calculate the shipping fee
                 decimal shippingFee = calculateShippingFee(serviceType);
 
-                // Serialize the shipping details into JSON
+                // Fetch all available shipping agents
+                var availableAgents = _shippingAgent.GetAllShippingAgentsAsync().Result;
+
+                // Validate the provided shipping agent
+                var selectedAgent = availableAgents.FirstOrDefault(agent =>
+                    agent.ShippingAgentCompany.Equals(shippingAgent, StringComparison.OrdinalIgnoreCase) &&
+                    agent.ShippingMethod.Equals(shippingType, StringComparison.OrdinalIgnoreCase) &&
+                    agent.ServiceType.Equals(serviceType, StringComparison.OrdinalIgnoreCase));
+
+                if (selectedAgent == null)
+                {
+                    throw new Exception("Invalid shipping agent, method, or service type selected.");
+                }
+
+                 // Serialize the shipping details into JSON
                 var shippingDetails = new
                 {
-                    ShippingAgent = shippingAgent,
-                    ShippingMethod = shippingType,
-                    ServiceType = serviceType,
+                    ShippingAgent = selectedAgent.ShippingAgentCompany,
+                    ShippingMethod = selectedAgent.ShippingMethod,
+                    ServiceType = selectedAgent.ServiceType,
                     ShippingFee = shippingFee.ToString("F2")
                 };
                 string orderShippingJson = System.Text.Json.JsonSerializer.Serialize(shippingDetails);
@@ -82,23 +98,45 @@ namespace CleanBrilliantCompany.Models
             }
         }
 
-          // Fetch available shipping agents for a given shipping type
-        public List<string> getAvailableShippingAgents(string shippingType)
+        public List<string> getAvailableShippingAgents(string shippingType, string serviceType)
         {
-            var selectedServiceEnum = Enum.TryParse<Service>(shippingType, out var serviceEnum) ? serviceEnum : Service.OneDay;
-            return _shippingAgents.getShippingAgentList(selectedServiceEnum);
+
+            // Trim and normalize the inputs
+            if (string.IsNullOrWhiteSpace(shippingType) || string.IsNullOrWhiteSpace(serviceType))
+            {
+                return new List<string>();
+            }
+            shippingType = shippingType.Trim();
+            serviceType = serviceType.Trim();
+
+            // Fetch all agents
+            var allAgents = _shippingAgent.GetAllShippingAgentsAsync().Result;
+
+            // Filter agents by shipping type and service type
+            var filteredAgents = allAgents
+                .Where(agent => agent.ShippingMethod.Equals(shippingType, StringComparison.OrdinalIgnoreCase) &&
+                                agent.ServiceType.Equals(serviceType, StringComparison.OrdinalIgnoreCase))
+                .Select(agent => agent.ShippingAgentCompany)
+                .Distinct()
+                .ToList();
+
+            return filteredAgents;
         }
 
-        // Fetch available service types
         public List<string> getServiceTypes()
         {
-            return _shippingAgents.getServiceTypes();
+            return _shippingAgent.GetAllShippingAgentsAsync().Result
+                .Select(agent => agent.ServiceType)
+                .Distinct()
+                .ToList();
         }
 
-        // Fetch available shipping methods
         public List<string> getShippingMethods()
         {
-            return _shippingAgents.getShippingMethods();
+            return _shippingAgent.GetAllShippingAgentsAsync().Result
+                .Select(agent => agent.ShippingMethod)
+                .Distinct()
+                .ToList();
         }
 
         public decimal calculateShippingFee(string serviceType)

@@ -77,9 +77,9 @@ builder.Services.AddTransient<OrderManagement>();
 builder.Services.AddTransient<CartManagement>();
 builder.Services.AddTransient<ICartManagement, CartManagement>();
 builder.Services.AddSingleton<IWishlistDatabase>(new WishlistMapper(connectionString));
-builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
 builder.Services.AddTransient<WishlistManagement>();
 builder.Services.AddTransient<ReviewManagement>();
+
 
 // Team 4 Dependencies
 // Add services to the container.
