@@ -6,9 +6,6 @@
 
 <h1>Alerts</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Alert</a>
-</p>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -38,9 +35,7 @@
                         @Html.DisplayFor(modelItem => item.AlertMessage)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.AlertID" class="btn btn-sm btn-info">Edit</a>
                         <a asp-action="Details" asp-route-id="@item.AlertID" class="btn btn-sm btn-primary">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.AlertID" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
         }
