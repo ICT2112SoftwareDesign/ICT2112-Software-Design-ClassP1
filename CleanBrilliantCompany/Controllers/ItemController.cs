@@ -214,5 +214,29 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Index");
         }
 
+
+        // retrieving to returned items
+        [HttpPost]
+        [Route("getToReturnItems")]
+        public async Task<IActionResult> getToReturnItems()
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            List<Item> items = await _itemControl.getToReturnItems();
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            foreach (var info in itemsInfo)
+            {
+                Console.WriteLine($"ItemId: {info["ItemId"]}");
+            }
+
+            // Console.WriteLine($"Product Category: {productInfo[0]["ProductCategory"]}");
+            // Console.WriteLine($"Manufacturer ID: {productInfo[0]["ManufacturerId"]}");
+            // Console.WriteLine($"Quantity: {productInfo[0]["Quantity"]}");
+
+            return RedirectToAction("Index");
+        }
     }
 }
