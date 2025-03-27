@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    [Route("staff/shippingagent")]
+    [Route("shippingagent")]
     public class ShippingAgentController : Controller
     {
         private readonly _IShippingAgentDB _IShippingAgentDB;
@@ -37,14 +37,14 @@ namespace CleanBrilliantCompany.Controllers
             };
 
             // Pass the view model to the view with absolute path
-            return View("~/Views/Staff/ShippingAgent/shippingagent.cshtml", viewModel);
+            return View("~/Views/ShippingAgent/shippingagent.cshtml", viewModel);
         }
 
         // Display Add Shipping Agent form
         [HttpGet("add")]
         public IActionResult Add()
         {
-            return View("~/Views/Staff/ShippingAgent/add-shippingagent.cshtml", new ShippingAgent());
+            return View("~/Views/ShippingAgent/add-shippingagent.cshtml", new ShippingAgent());
         }
 
         // Process Add Shipping Agent form submission
@@ -78,7 +78,7 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // If we got this far, something failed; redisplay form
-            return View("~/Views/Staff/ShippingAgent/add-shippingagent.cshtml", shippingAgent);
+            return View("~/Views/ShippingAgent/add-shippingagent.cshtml", shippingAgent);
         }
 
         // Get ShippingAgent by ID method
@@ -92,7 +92,7 @@ namespace CleanBrilliantCompany.Controllers
                 return NotFound();
             }
 
-            return View("~/Views/Staff/ShippingAgent/edit-shippingagent.cshtml", agent);
+            return View("~/Views/ShippingAgent/edit-shippingagent.cshtml", agent);
         }
 
         // Update ShippingAgent method
@@ -124,7 +124,7 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // If we got this far, something failed; redisplay form
-            return View("~/Views/Staff/ShippingAgent/edit-shippingagent.cshtml", shippingAgent);
+            return View("~/Views/ShippingAgent/edit-shippingagent.cshtml", shippingAgent);
         }
 
         // Delete ShippingAgent method
