@@ -11,7 +11,7 @@ namespace CleanBrilliantCompany.Controllers
     public class TransactionController : Controller
     {
         private readonly TransactionControl _transactionControl;
-
+        
         // Constructor
         public TransactionController(IConfiguration configuration)
         {
