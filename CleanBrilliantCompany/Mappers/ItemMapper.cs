@@ -38,7 +38,100 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // get all items
-        public List<Item> getAllItems()
+        // public List<Item> getAllItems()
+        // {
+        //     List<Item> items = new List<Item>();
+
+        //     using (SqlConnection connection = new SqlConnection(_connectionString))
+        //     {
+        //         connection.Open();
+
+        //         // Define the SQL query to retrieve items
+        //             string query = @"
+        //                 SELECT itemId, Item.productId, Product.productName, salePrice, Item.batchCode, itemStatus, 
+        //                     ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
+        //                 FROM Item
+        //                 INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
+        //                 INNER JOIN Product ON Item.productId = Product.productId
+        //                 ORDER BY ProductBatch.expiryDate ASC";
+
+        //         using (SqlCommand command = new SqlCommand(query, connection))
+        //         {
+        //             // Execute the query and get the results
+        //             using (SqlDataReader reader = command.ExecuteReader())
+        //             {
+        //                 // Check if the query executed successfully and returned any rows
+        //                 if (getDatabaseQueryStatus(reader))
+        //                 {
+        //                     // Iterate through each row in the result set
+        //                     while (reader.Read())
+        //                     {
+        //                         ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+        //                         // Create the Item object using the constructor
+        //                         Item item = new Item(
+        //                             reader.GetInt32(reader.GetOrdinal("itemId")),
+        //                             reader.GetInt32(reader.GetOrdinal("productId")),
+        //                             (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
+        //                             reader.GetInt32(reader.GetOrdinal("batchCode")),
+        //                             reader.GetInt32(reader.GetOrdinal("warehouseId")),
+        //                             status,
+        //                             reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
+        //                             reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
+        //                             reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
+        //                             reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId")),
+        //                             reader.GetString(reader.GetOrdinal("productName")),
+        //                             reader.GetDateTime(reader.GetOrdinal("expiryDate"))
+        //                         );
+
+        //                         // Add the item to the list
+        //                         items.Add(item);
+        //                     }
+        //                 }
+        //                 else
+        //                 {
+        //                     Console.WriteLine("No data found for the query.");
+        //                 }
+        //             }
+        //         }
+        //     }
+
+        //     return items;
+        // }
+        public int getItemCount()
+        {
+            int count = 0;
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve the item count
+                String query = "SELECT COUNT(*) " +
+                               "FROM Item " +
+                               "INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode " +
+                               "INNER JOIN Product ON Item.productId = Product.productId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    // Execute the query and get the result
+                    var result = command.ExecuteScalar(); // ExecuteScalar returns the first column of the first row
+
+                    if (result != null)
+                    {
+                        // Convert the result to an integer
+                        count = Convert.ToInt32(result);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No data found for the query.");
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        public List<Item> getAllItems(int pageNumber, int pageSize)
         {
             List<Item> items = new List<Item>();
 
@@ -46,17 +139,25 @@ namespace CleanBrilliantCompany.Mappers
             {
                 connection.Open();
 
-                // Define the SQL query to retrieve items
+                // Calculate the number of rows to skip for pagination
+                int offset = (pageNumber - 1) * pageSize;
+
+                // Define the SQL query to retrieve items with pagination
                 string query = @"
                     SELECT itemId, Item.productId, Product.productName, salePrice, Item.batchCode, itemStatus, 
                         ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
                     FROM Item
                     INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
                     INNER JOIN Product ON Item.productId = Product.productId
-                    ORDER BY ProductBatch.expiryDate ASC";
+                    ORDER BY ProductBatch.expiryDate ASC
+                    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
+                    // Add the parameters for pagination
+                    command.Parameters.AddWithValue("@Offset", offset);
+                    command.Parameters.AddWithValue("@PageSize", pageSize);
+
                     // Execute the query and get the results
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -97,6 +198,7 @@ namespace CleanBrilliantCompany.Mappers
 
             return items;
         }
+
 
         // get 1 item by id
         public Item getItemById(int itemId)
@@ -278,6 +380,62 @@ namespace CleanBrilliantCompany.Mappers
             return items;
         }
 
+        // get items with status toReturn
+        public List<Item> getToReturnItems()
+        {
+            List<Item> items = new List<Item>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve items
+                string query = @"
+                    SELECT * 
+                    FROM Item
+                    WHERE itemStatus = 'ToReturn'";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    // Execute the query and get the results
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Check if the query executed successfully and returned any rows
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            // Iterate through each row in the result set
+                            while (reader.Read())
+                            {
+                                ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+                                // Create the Item object using the constructor
+                                Item item = new Item(
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    status,
+                                    reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                    reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
+                                    reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                );
+
+                                // Add the item to the list
+                                items.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No data found for the query.");
+                        }
+                    }
+                }
+            }
+
+            return items;
+        }
+
         // create item
         public bool createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
         {
@@ -353,7 +511,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
 
-        public bool updateItemStatusOld(int itemId, ItemStatus status)
+        public bool deleteItem(int itemId)
         {
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -361,12 +519,11 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 string insertQuery = @"
-            UPDATE dbo.Item SET itemStatus = @status WHERE itemId = @itemId;";
+            DELETE FROM Item WHERE itemId = @itemId";
 
                 using (SqlCommand command = new SqlCommand(insertQuery, connection))
                 {
                     command.Parameters.AddWithValue("@itemId", itemId);
-                    command.Parameters.AddWithValue("@status", status);
 
                     int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
                     return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
@@ -612,7 +769,7 @@ namespace CleanBrilliantCompany.Mappers
                             foreach (int itemId in updatedItemIds)
                             {
                                 updateItemStatus(itemId, null, orderId, null, null, ItemStatus.Sold);
-                                
+
                             }
                         }
                     }
