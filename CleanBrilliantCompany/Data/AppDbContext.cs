@@ -11,11 +11,9 @@ namespace CleanBrilliantCompany.Data
 
         public DbSet<DashboardTable> DashboardTable { get; set; }
         public DbSet<DashboardTypeTable> DashboardTableType { get; set; }
-        public DbSet<StockStatusTable> StockStatusTable { get; set; }
         public DbSet<AlertTypeTable> AlertTypeTable { get; set; }
         public DbSet<InventoryLevelTable> InventoryLevelTable { get; set; }
         public DbSet<InventoryAlertsTable> InventoryAlertsTable { get; set; }
-        
         public DbSet<ProductTable> ProductTable { get; set; } // Added for simulation
 
 
@@ -28,9 +26,6 @@ namespace CleanBrilliantCompany.Data
 
             modelBuilder.Entity<DashboardTypeTable>()
                 .HasKey(t => t.TypeId);
-
-            modelBuilder.Entity<StockStatusTable>()
-                .HasKey(s => s.StockCode);
             
             modelBuilder.Entity<AlertTypeTable>()
                 .HasKey(a => a.AlertType);
@@ -64,9 +59,6 @@ namespace CleanBrilliantCompany.Data
             modelBuilder.Entity<DashboardTypeTable>()
                 .ToTable("DashboardType");
 
-            modelBuilder.Entity<StockStatusTable>()
-                .ToTable("StockStatus");
-
             modelBuilder.Entity<AlertTypeTable>()
                 .ToTable("InventoryAlertType");
 
@@ -77,44 +69,6 @@ namespace CleanBrilliantCompany.Data
                 .ToTable("InventoryAlerts");
 
             modelBuilder.Entity<ProductTable>().ToTable("Product");
-
-            /*
-            // Relationships between tables
-            // One-to-many relationship between DashboardTypeTable and DashboardTable
-            // One DashboardTypeTable can have many DashboardTable
-            modelBuilder.Entity<DashboardTable>()
-                .HasOne(d => d.Type)
-                .WithMany()
-                .HasForeignKey(d => d.TypeId);
-
-            // One-to-many relationship between InventoryLevelTable and StockStatusTable
-            // One StockStatusTable can have many InventoryLevelTable
-            modelBuilder.Entity<InventoryLevelTable>()
-                .HasOne(i => i.StockStatus)
-                .WithMany()
-                .HasForeignKey(i => i.StockCode);
-
-            // One-to-many relationship between InventoryLevelTable and DashboardTable
-            // One DashboardTable can have many InventoryLevels
-            modelBuilder.Entity<InventoryLevelTable>()
-                .HasOne(i => i.DashboardTable)
-                .WithMany(d => d.InventoryLevels)
-                .HasForeignKey(i => i.DashboardId);
-
-            // One-to-many relationship between InventoryAlertsTable and InventoryLevelTable
-            // One InventoryLevelTable can have many InventoryAlerts
-            modelBuilder.Entity<InventoryAlertsTable>()
-                .HasOne(a => a.InventoryLevel)
-                .WithMany(i => i.AlertTypes)
-                .HasForeignKey(a => a.InventoryId);
-
-            // One-to-many relationship between InventoryAlertsTable and AlertTypeTable
-            // One AlertTypeTable can have many InventoryAlertsTable
-            modelBuilder.Entity<InventoryAlertsTable>()
-                .HasOne(a => a.AlertTypes)
-                .WithMany()
-                .HasForeignKey(a => a.AlertType);
-            */
         }
     }
 }

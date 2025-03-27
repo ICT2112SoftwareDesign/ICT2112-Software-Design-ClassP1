@@ -9,8 +9,9 @@ namespace CleanBrilliantCompany.Models
         private readonly Dictionary<int, int> _stockLevel;
         private readonly Dictionary<int, int> _threshold;
         private readonly Dictionary<int, bool> _replenishmentStatus;
+        private readonly List<int> _lowStockProducts;
+        private readonly List<int> _overStockProducts;
 
-        // Public properties for EF Core to access, but with private setters
         public Dictionary<int, int> StockLevel
         {
             get => new Dictionary<int, int>(_stockLevel);
@@ -29,12 +30,27 @@ namespace CleanBrilliantCompany.Models
             private set => throw new InvalidOperationException("Use SetReplenishmentStatus to modify ReplenishmentStatus.");
         }
 
+        // Lists to store product IDs for low stock and overstock alerts
+        public List<int> LowStockProducts => new List<int>(_lowStockProducts);
+        public List<int> OverStockProducts => new List<int>(_overStockProducts);
+
+        // Computed properties to provide string representations for the view
+        public string LowStockAlert => LowStockProducts.Count > 0
+            ? $"Low stock alert for products: {string.Join(", ", LowStockProducts)}"
+            : "No low stock alerts.";
+
+        public string OverStockAlert => OverStockProducts.Count > 0
+            ? $"Overstock alert for products: {string.Join(", ", OverStockProducts)}"
+            : "No overstock alerts.";
+
         public InventoryDashboardRDM(string name, int validityDuration)
-            : base(name, DateTime.Now, DateTime.Now, validityDuration)
+            : base(0, name, DateTime.Now, DateTime.Now, validityDuration, 2)
         {
             _stockLevel = new Dictionary<int, int>();
             _threshold = new Dictionary<int, int>();
             _replenishmentStatus = new Dictionary<int, bool>();
+            _lowStockProducts = new List<int>();
+            _overStockProducts = new List<int>();
         }
 
         public InventoryDashboardRDM(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, DateTime generatedDate)
@@ -43,6 +59,8 @@ namespace CleanBrilliantCompany.Models
             _stockLevel = new Dictionary<int, int>();
             _threshold = new Dictionary<int, int>();
             _replenishmentStatus = new Dictionary<int, bool>();
+            _lowStockProducts = new List<int>();
+            _overStockProducts = new List<int>();
         }
 
         public int GetDashboardId()
@@ -157,7 +175,7 @@ namespace CleanBrilliantCompany.Models
 
         public bool NeedsReplenishment(int productId)
         {
-            return _stockLevel[productId] < _threshold[productId] * 0.35; // DOUBLE CHECK THIS LATER!!
+            return IsLowStock(productId);
         }
 
         public void UpdateDashboardData(Dictionary<int, int> stockLevels, Dictionary<int, int> thresholds)
@@ -180,6 +198,31 @@ namespace CleanBrilliantCompany.Models
                 bool needsReplenishment = _stockLevel[productId] < _threshold[productId] * 0.35;
                 SetReplenishmentStatus(productId, needsReplenishment);
             }
+        }
+
+        public void GenerateAlerts()
+        {
+            _lowStockProducts.Clear();
+            _overStockProducts.Clear();
+
+            _lowStockProducts.AddRange(_stockLevel.Keys.Where(productId => IsLowStock(productId)));
+            _overStockProducts.AddRange(_stockLevel.Keys.Where(productId => IsOverStock(productId)));
+
+            //var lowStockProducts = _stockLevel.Keys
+            //    .Where(productId => IsLowStock(productId))
+            //    .ToList();
+
+            //var overStockProducts = _stockLevel.Keys
+            //    .Where(productId => IsOverStock(productId))
+            //    .ToList();
+
+            //LowStockAlert = lowStockProducts.Count > 0
+            //    ? $"Low stock alert for products: {string.Join(", ", lowStockProducts)}"
+            //    : "No low stock alerts.";
+
+            //OverStockAlert = overStockProducts.Count > 0
+            //    ? $"Overstock alert for products: {string.Join(", ", overStockProducts)}"
+            //    : "No overstock alerts.";
         }
 
     }

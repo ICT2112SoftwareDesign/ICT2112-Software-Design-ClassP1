@@ -6,6 +6,7 @@ using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Entities;
+using Microsoft.CodeAnalysis;
 
 namespace CleanBrilliantCompany.Mapper
 {
@@ -18,66 +19,107 @@ namespace CleanBrilliantCompany.Mapper
             _context = context;
         }
 
-        private StockStatusTable GetStockStatus(string stockCode)
-        {
-            var stockStatus = _context.StockStatusTable.FirstOrDefault(s => s.StockCode == stockCode);
-            if (stockStatus == null)
-            {
-                throw new InvalidOperationException($"Stock status with code {stockCode} not found in StockStatus table.");
-            }
-            return stockStatus;
-        }
-
         public void SaveDashboard(InventoryDashboardRDM dashboard)
         {
-            var now = DateTime.Now;
-
-            // Map the business model (InventoryDashboardRDM) to the entity (DashboardEntity)
-            var dashboardEntity = new DashboardTable
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                Name = dashboard.Name,
-                RequestedStartDate = now,
-                RequestedEndDate = now,
-                GeneratedDate = now,
-                ValidityDuration = dashboard.ValidityDuration,
-                TypeId = dashboard.Type,
-                InventoryLevels = new List<InventoryLevelTable>()
-            };
-
-            // Map stock levels, thresholds, replenishment status, and alerts to InventoryLevelTable and AlertTypeTable entities
-            var stockLevels = dashboard.GetAllStockLevels();
-            var thresholds = dashboard.GetAllThresholds();
-            var replenishmentStatuses = dashboard.GetAllReplenishmentStatuses();
-            var stockStatuses = dashboard.GetAllStockStatuses();
-
-            foreach (var productId in stockLevels.Keys)
-            {
-                var stockCode = stockStatuses.ContainsKey(productId) ? stockStatuses[productId] : "N";
-                var inventoryLevel = new InventoryLevelTable
+                try
                 {
-                    ProductId = productId,
-                    StockLevel = stockLevels.ContainsKey(productId) ? stockLevels[productId] : 0,
-                    Threshold = thresholds.ContainsKey(productId) ? thresholds[productId] : 0,
-                    ReplenishmentStatus = replenishmentStatuses.ContainsKey(productId) ? replenishmentStatuses[productId] : false,
-                    StockCode = stockCode,
-                    StockStatus = GetStockStatus(stockCode)
-                };
-                dashboardEntity.InventoryLevels.Add(inventoryLevel);
+                    var now = DateTime.Now;
+
+                    // Save the dashboard metadata
+                    var dashboardEntity = new DashboardTable
+                    {
+                        Name = dashboard.Name,
+                        RequestedStartDate = now,
+                        RequestedEndDate = now,
+                        GeneratedDate = now,
+                        ValidityDuration = dashboard.ValidityDuration,
+                        TypeId = 2
+                    };
+
+                    Console.WriteLine($"Saving dashboard: {dashboardEntity.Name}");
+                    _context.DashboardTable.Add(dashboardEntity);
+                    _context.SaveChanges();
+                    Console.WriteLine($"Dashboard saved with DashboardId: {dashboardEntity.DashboardId}");
+
+                    // Save stock levels and thresholds to InventoryLevel
+                    var stockLevels = dashboard.GetAllStockLevels();
+                    var thresholds = dashboard.GetAllThresholds();
+
+                    // Dictionary to map ProductId to InventoryId
+                    var productToInventoryIdMap = new Dictionary<int, int>();
+
+                    foreach (var productId in stockLevels.Keys)
+                    {
+                        var inventoryLevel = new InventoryLevelTable
+                        {
+                            DashboardId = dashboardEntity.DashboardId,
+                            ProductId = productId,
+                            StockLevel = stockLevels[productId],
+                            Threshold = thresholds.ContainsKey(productId) ? thresholds[productId] : 100,
+                            ReplenishmentStatus = stockLevels[productId] < (thresholds.ContainsKey(productId) ? thresholds[productId] : 100) * 0.35
+                        };
+                        _context.InventoryLevelTable.Add(inventoryLevel);
+                        _context.SaveChanges(); // Save each entry to get the generated InventoryId
+                        productToInventoryIdMap[productId] = inventoryLevel.InventoryId; // Store the mapping
+                    }
+                    Console.WriteLine($"Saved {stockLevels.Count} InventoryLevel records");
+
+                    // Now generate and save alerts
+                    var lowStockProducts = dashboard.LowStockProducts;
+                    var overStockProducts = dashboard.OverStockProducts;
+
+                    foreach (var productId in lowStockProducts)
+                    {
+                        var inventoryLevel = _context.InventoryLevelTable
+                            .FirstOrDefault(il => il.ProductId == productId && il.DashboardId == dashboardEntity.DashboardId);
+                        if (inventoryLevel != null)
+                        {
+                            var alert = new InventoryAlertsTable
+                            {
+                                InventoryId = inventoryLevel.InventoryId,
+                                ProductId = productId,
+                                AlertType = "LS",
+                                AlertDate = now
+                            };
+                            _context.InventoryAlertsTable.Add(alert);
+                        }
+                    }
+
+                    foreach (var productId in overStockProducts)
+                    {
+                        var inventoryLevel = _context.InventoryLevelTable
+                            .FirstOrDefault(il => il.ProductId == productId && il.DashboardId == dashboardEntity.DashboardId);
+                        if (inventoryLevel != null)
+                        {
+                            var alert = new InventoryAlertsTable
+                            {
+                                InventoryId = inventoryLevel.InventoryId,
+                                ProductId = productId,
+                                AlertType = "OS",
+                                AlertDate = now
+                            };
+                            _context.InventoryAlertsTable.Add(alert);
+                        }
+                    }
+
+                    _context.SaveChanges();
+                    Console.WriteLine("Saved InventoryAlerts records");
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($"Error saving dashboard: {ex.Message}");
+                    throw;
+                }
             }
-
-            _context.DashboardTable.Add(dashboardEntity);
-            _context.SaveChanges();
-
-            // Update the DashboardId in the business model
-            typeof(Dashboard).GetProperty("DashboardId")
-                ?.SetValue(dashboard, dashboardEntity.DashboardId, null);
         }
 
         public InventoryDashboardRDM? GetLatestDashboard()
         {
             var dashboardEntity = _context.DashboardTable
-                .Include(d => d.InventoryLevels)
-                .ThenInclude(i => i.StockStatus)
                 .Where(t => t.TypeId == 2)
                 .OrderByDescending(d => d.GeneratedDate)
                 .FirstOrDefault();
@@ -93,12 +135,16 @@ namespace CleanBrilliantCompany.Mapper
                 dashboardEntity.ValidityDuration,
                 dashboardEntity.GeneratedDate);
 
-            // Populate stock levels, thresholds, and replenishment status from the database
+            // Manually query InventoryLevelTable to populate stock levels, thresholds, and replenishment statuses
+            var inventoryLevels = _context.InventoryLevelTable
+                .Where(i => i.DashboardId == dashboardEntity.DashboardId)
+                .ToList();
+
             var stockLevels = new Dictionary<int, int>();
             var thresholds = new Dictionary<int, int>();
             var replenishmentStatuses = new Dictionary<int, bool>();
 
-            foreach (var inventoryLevel in dashboardEntity.InventoryLevels)
+            foreach (var inventoryLevel in inventoryLevels)
             {
                 stockLevels[inventoryLevel.ProductId] = inventoryLevel.StockLevel;
                 thresholds[inventoryLevel.ProductId] = inventoryLevel.Threshold;
@@ -107,8 +153,164 @@ namespace CleanBrilliantCompany.Mapper
 
             dashboard.UpdateDashboardData(stockLevels, thresholds);
             dashboard.UpdateReplenishmentStatus();
+            dashboard.GenerateAlerts(); // Ensure alerts are generated
 
             return dashboard;
+        }
+
+        //public Dictionary<int, (int LowStockCount, int OverStockCount)> GetAlertCounts()
+        //{
+        //    var alertCounts = _context.InventoryAlertsTable
+        //.Join(_context.InventoryLevelTable,
+        //      alert => alert.InventoryId,
+        //      level => level.InventoryId,
+        //      (alert, level) => new { alert, level })
+        //.GroupBy(x => x.level.ProductId)
+        //.ToDictionary(
+        //    g => g.Key,
+        //    g => (
+        //        LowStockCount: g.Count(x => x.alert.AlertType == "LS"),
+        //        OverStockCount: g.Count(x => x.alert.AlertType == "OS")
+        //    ));
+
+        //    return alertCounts;
+        //}
+
+        public Dictionary<int, (int LowStockWeeks, int OverStockWeeks)> GetConsecutiveWeeklyAlerts()
+        {
+            var result = new Dictionary<int, (int LowStockWeeks, int OverStockWeeks)>();
+
+            // Debug: Check the number of records in InventoryAlertsTable
+            var alertCount = _context.InventoryAlertsTable.Count();
+            Console.WriteLine($"Total alerts in InventoryAlertsTable: {alertCount}");
+
+            // Query only InventoryAlertsTable
+            var alerts = _context.InventoryAlertsTable
+                .Select(a => new
+                {
+                    a.ProductId,
+                    a.AlertType,
+                    a.AlertDate
+                })
+                .ToList();
+
+            // Debug: Log the raw alerts
+            Console.WriteLine("Raw Alerts:");
+            foreach (var alert in alerts)
+            {
+                Console.WriteLine($"Product {alert.ProductId}, Type: '{alert.AlertType}' (Length: {alert.AlertType.Length}), Date: {alert.AlertDate}");
+            }
+
+            // Group by ProductId, AlertType, and Date to deduplicate same-day alerts
+            var groupedAlerts = alerts
+                .GroupBy(a => new { a.ProductId, a.AlertType, Date = a.AlertDate.Date })
+                .Select(g => g.First())
+                .GroupBy(a => new { a.ProductId, a.AlertType })
+                .ToList();
+
+            // Debug: Log the grouped alerts
+            Console.WriteLine("Grouped Alerts:");
+            foreach (var group in groupedAlerts)
+            {
+                Console.WriteLine($"Product {group.Key.ProductId}, Type: '{group.Key.AlertType}' (Length: {group.Key.AlertType.Length})");
+                foreach (var alert in group)
+                {
+                    Console.WriteLine($"  Date: {alert.AlertDate}");
+                }
+            }
+
+            // Group by ProductId to process all alert types for each product
+            var products = groupedAlerts.GroupBy(g => g.Key.ProductId);
+
+            foreach (var productGroup in products)
+            {
+                int productId = productGroup.Key;
+                int lowStockWeeks = 0;
+                int overStockWeeks = 0;
+
+                Console.WriteLine($"Processing Product {productId}");
+
+                foreach (var group in productGroup)
+                {
+                    var alertType = group.Key.AlertType?.Trim(); // Trim to remove any whitespace
+
+                    // Debug: Log the alertType
+                    Console.WriteLine($"Checking alertType for Product {productId}: '{alertType}' (Length: {alertType?.Length ?? 0})");
+
+                    // Convert to week numbers
+                    var weeklyFlags = group
+                        .Select(a => new
+                        {
+                            Week = System.Globalization.CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+                                a.AlertDate, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday),
+                            Year = a.AlertDate.Year
+                        })
+                        .Distinct()
+                        .OrderBy(a => a.Year)
+                        .ThenBy(a => a.Week)
+                        .ToList();
+
+                    // Debug: Log the weekly flags
+                    Console.WriteLine($"Weekly Flags for Product {productId}, Type: {alertType}");
+                    foreach (var flag in weeklyFlags)
+                    {
+                        Console.WriteLine($"  Year: {flag.Year}, Week: {flag.Week}");
+                    }
+
+                    int consecutiveWeeks = 1;
+                    int maxConsecutive = 0;
+
+                    if (weeklyFlags.Count == 1)
+                    {
+                        maxConsecutive = 1;
+                    }
+                    else
+                    {
+                        for (int i = 1; i < weeklyFlags.Count; i++)
+                        {
+                            var prev = weeklyFlags[i - 1];
+                            var curr = weeklyFlags[i];
+
+                            bool isNextWeek =
+                                (curr.Year == prev.Year && curr.Week == prev.Week + 1) ||
+                                (curr.Year == prev.Year + 1 && prev.Week >= 52 && curr.Week == 1);
+
+                            if (isNextWeek)
+                            {
+                                consecutiveWeeks++;
+                            }
+                            else
+                            {
+                                maxConsecutive = Math.Max(maxConsecutive, consecutiveWeeks);
+                                consecutiveWeeks = 1;
+                            }
+                        }
+                        maxConsecutive = Math.Max(maxConsecutive, consecutiveWeeks);
+                    }
+
+                    if (alertType == "LS")
+                    {
+                        lowStockWeeks = maxConsecutive;
+                        Console.WriteLine($"Assigned lowStockWeeks = {lowStockWeeks} for Product {productId}");
+                    }
+                    else if (alertType == "OS")
+                    {
+                        overStockWeeks = maxConsecutive;
+                        Console.WriteLine($"Assigned overStockWeeks = {overStockWeeks} for Product {productId}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Unexpected alertType: '{alertType}' for Product {productId}");
+                    }
+
+                    Console.WriteLine($"Product {productId}, Type: {alertType}, Max Consecutive: {maxConsecutive}");
+                }
+
+                result[productId] = (lowStockWeeks, overStockWeeks);
+                Console.WriteLine($"Final result[{productId}]: LS={lowStockWeeks}, OS={overStockWeeks}");
+            }
+
+            return result;
         }
     }
 }

@@ -19,7 +19,17 @@ namespace CleanBrilliantCompany.Controllers
             {
                 var inventoryDashboard = _inventoryControl.FetchDashboard();
                 var chartData = _inventoryControl.GenerateStockLevelChartData();
+                var alertStreaks = _inventoryControl.GetWeeklyConsecutiveAlertCounts();
+
+                // Debug: Log the alert streaks to confirm data
+                Console.WriteLine("Alert Streaks:");
+                foreach (var streak in alertStreaks)
+                {
+                    Console.WriteLine($"Product {streak.Key}: LS={streak.Value.LowStockWeeks}, OS={streak.Value.OverStockWeeks}");
+                }
+
                 ViewBag.ChartData = chartData;
+                ViewBag.AlertStreaks = alertStreaks;
                 return View("ViewInventoryDashboard", inventoryDashboard);
             }
             catch (InvalidOperationException ex)

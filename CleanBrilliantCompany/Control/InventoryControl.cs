@@ -20,10 +20,7 @@ namespace CleanBrilliantCompany.Control
 
         public void CreateDashboard(string name, int validityDuration)
         {
-            var newDashboard = new InventoryDashboardRDM(name, validityDuration)
-            {
-                Type = 2
-            };
+            var newDashboard = new InventoryDashboardRDM(name, validityDuration);
 
             // Fetch stock levels from IProduct
             var stockLevels = _productService.GetProductStockLevels();
@@ -42,6 +39,7 @@ namespace CleanBrilliantCompany.Control
             // Update dashboard with stock levels and thresholds
             newDashboard.UpdateDashboardData(stockLevels, thresholds);
             newDashboard.UpdateReplenishmentStatus();
+            newDashboard.GenerateAlerts(); // Generate alerts after updating data
 
             // Save the dashboard with the updated data
             _inventoryRepository.SaveDashboard(newDashboard);
@@ -63,6 +61,8 @@ namespace CleanBrilliantCompany.Control
             var dashboard = FetchDashboard();
             var lowStock = CheckLowStock();
             var overStock = CheckOverStock();
+            //var alertCounts = _inventoryRepository.GetAlertCounts();
+            var alertStreaks = GetWeeklyConsecutiveAlertCounts();
 
             var report = new StringBuilder();
             report.AppendLine($"<h1>Inventory Report - {dashboard.Name}</h1>");
@@ -83,6 +83,23 @@ namespace CleanBrilliantCompany.Control
             foreach (var productId in overStock)
             {
                 report.AppendLine($"<li>Product {productId}: {dashboard.GetStockLevel(productId)} (above threshold {dashboard.GetThreshold(productId)})</li>");
+            }
+            report.AppendLine("</ul>");
+            report.AppendLine("<h2>Alerts</h2>");
+            report.AppendLine($"<p>{dashboard.LowStockAlert}</p>");
+            report.AppendLine($"<p>{dashboard.OverStockAlert}</p>");
+            report.AppendLine("<h2>Consecutive Weekly Alerts</h2><ul>");
+            foreach (var productId in alertStreaks.Keys)
+            {
+                var streaks = alertStreaks[productId];
+                if (streaks.LowStockWeeks > 0)
+                {
+                    report.AppendLine($"<li>Product {productId}: Low Stock for {streaks.LowStockWeeks} week(s) in a row</li>");
+                }
+                if (streaks.OverStockWeeks > 0)
+                {
+                    report.AppendLine($"<li>Product {productId}: Over Stock for {streaks.OverStockWeeks} week(s) in a row</li>");
+                }
             }
             report.AppendLine("</ul>");
 
@@ -149,12 +166,10 @@ namespace CleanBrilliantCompany.Control
                 : "No overstock alerts.";
         }
 
-        // Chart generation methods
         public string GenerateStockLevelChartData()
         {
             try
             {
-                // Fetch data from the dashboard
                 var dashboard = FetchDashboard();
                 var stockLevels = dashboard.GetAllStockLevels();
                 if (stockLevels == null || !stockLevels.Any())
@@ -163,10 +178,23 @@ namespace CleanBrilliantCompany.Control
                 }
 
                 var thresholds = dashboard.GetAllThresholds();
+                //var alertCounts = _inventoryRepository.GetAlertCounts();
 
                 var labels = stockLevels.Keys.Select(id => $"Product {id}").ToList();
                 var stockData = stockLevels.Values.ToList();
                 var thresholdData = stockLevels.Keys.Select(id => thresholds.ContainsKey(id) ? thresholds[id] : 0).ToList();
+                var lowStockFlags = stockLevels.Keys
+                    .Select(id => stockLevels[id] < thresholds[id] * 0.3 ? "Low" : null)
+                    .ToList();
+                var overStockFlags = stockLevels.Keys
+                    .Select(id => stockLevels[id] > thresholds[id] * 1.6 ? "Over" : null)
+                    .ToList();
+                //var lowStockCounts = stockLevels.Keys
+                //    .Select(id => alertCounts.ContainsKey(id) ? alertCounts[id].LowStockCount : 0)
+                //    .ToList();
+                //var overStockCounts = stockLevels.Keys
+                //    .Select(id => alertCounts.ContainsKey(id) ? alertCounts[id].OverStockCount : 0)
+                //    .ToList();
 
                 var chartData = new
                 {
@@ -189,7 +217,11 @@ namespace CleanBrilliantCompany.Control
                             borderColor = "rgba(255, 99, 132, 1)",
                             borderWidth = 1
                         }
-                    }
+                    },
+                    lowStockFlags = lowStockFlags,
+                    overStockFlags = overStockFlags,
+                    //lowStockCounts = lowStockCounts,
+                    //overStockCounts = overStockCounts
                 };
 
                 return System.Text.Json.JsonSerializer.Serialize(chartData);
@@ -209,10 +241,19 @@ namespace CleanBrilliantCompany.Control
                             borderColor = "rgba(75, 192, 192, 1)",
                             borderWidth = 1
                         }
-                    }
+                    },
+                    lowStockFlags = new string[] { },
+                    overStockFlags = new string[] { },
+                    lowStockCounts = new int[] { },
+                    overStockCounts = new int[] { }
                 };
                 return System.Text.Json.JsonSerializer.Serialize(errorChartData);
             }
+        }
+
+        public Dictionary<int, (int LowStockWeeks, int OverStockWeeks)> GetWeeklyConsecutiveAlertCounts()
+        {
+            return _inventoryRepository.GetConsecutiveWeeklyAlerts();
         }
     }
 }

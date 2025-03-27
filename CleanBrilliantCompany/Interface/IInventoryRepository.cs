@@ -6,7 +6,8 @@ namespace CleanBrilliantCompany.Interface
     {
         void SaveDashboard(InventoryDashboardRDM dashboard);
         InventoryDashboardRDM GetLatestDashboard();
-        //InventoryDashboardRDM GetDashboardById(int id);
+        //Dictionary<int, (int LowStockCount, int OverStockCount)> GetAlertCounts();
 
+        Dictionary<int, (int LowStockWeeks, int OverStockWeeks)> GetConsecutiveWeeklyAlerts();
     }
 }
