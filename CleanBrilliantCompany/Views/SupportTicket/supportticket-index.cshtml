@@ -1,0 +1,52 @@
+@model List<CleanBrilliantCompany.Models.SupportTicket.SupportTicketSDM>
+
+@{
+    ViewData["Title"] = "Support Ticket List";
+}
+
+<h2>Support Tickets</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Customer ID</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var ticket in Model)
+    {
+        <tr>
+            <td>@ticket.TicketId</td>
+            <td>@ticket.CustomerId</td>
+            <td>@ticket.Status</td>
+            <td>@ticket.CreatedAt</td>
+            <td>
+                <a asp-controller="SupportTicket" asp-action="displayTicketDetails" asp-route-ticketId="@ticket.TicketId">
+                    View
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Create New Support Ticket Form -->
+<h3>Create a New Support Ticket</h3>
+
+<form asp-action="CreateSupportTicket" method="post">
+    <div class="form-group">
+        <label for="customerId">Customer ID</label>
+        <input type="number" name="customerId" id="customerId" class="form-control" value="7" readonly /> <!-- test customer ID -->
+    </div>
+
+    <div class="form-group">
+        <label for="ticketDetails">Ticket Details</label>
+        <textarea name="ticketDetails" id="ticketDetails" class="form-control" rows="4" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">+ Create Support Ticket</button>
+</form>

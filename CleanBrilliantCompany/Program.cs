@@ -4,6 +4,10 @@ using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Observers;
 using Microsoft.Extensions.DependencyInjection;
 
+using CleanBrilliantCompany.Data.SupportTicket;
+using CleanBrilliantCompany.Models.SupportTicket;
+using CleanBrilliantCompany.Interfaces.SupportTicket;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -72,7 +76,20 @@ builder.Services.AddSingleton<IWishlistDatabase>(new WishlistMapper(connectionSt
 builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
 builder.Services.AddTransient<WishlistManagement>();
 builder.Services.AddTransient<ReviewManagement>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+// Get the connection string from appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Adding services for Support Ticket
+builder.Services.AddScoped<ISupportTicket, SupportTicketManagement>();
+builder.Services.AddScoped<iSupportTicketQuery, SupportTicketManagement>();
+builder.Services.AddScoped<SupportTicketManagement>();
+builder.Services.AddScoped<SupportTicketTableDataGateway>(provider =>
+    new SupportTicketTableDataGateway(connectionString!));
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
