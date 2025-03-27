@@ -221,12 +221,13 @@ namespace CleanBrilliantCompany.Data
             }
         }
 
+        // In RefundMapper.cs
         public decimal GetTotalRefundAmount()
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                string query = "SELECT SUM(refundAmount) FROM dbo.Refund WHERE status = 'Approved'";
+                string query = "SELECT SUM(CAST(refundAmount AS DECIMAL(18,2))) FROM dbo.Refund WHERE status = 'Approved'";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     var result = cmd.ExecuteScalar();

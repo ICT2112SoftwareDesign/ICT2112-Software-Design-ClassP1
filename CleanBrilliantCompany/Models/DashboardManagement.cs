@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
 
-namespace CleanBrilliantCompany.Management
+namespace CleanBrilliantCompany.Models
 {
     public class DashboardManagement
     {
@@ -17,14 +14,23 @@ namespace CleanBrilliantCompany.Management
             _refundDatabase = refundDatabase;
         }
 
-        public (int TotalOrders, int TotalRefunds, decimal NetRevenue, int PendingRefunds) GetDashboardMetrics()
+        public DashboardSummary GetDashboardSummary()
         {
-            int totalOrders = _orderDatabase.GetTotalOrderCount();
-            int totalRefunds = _refundDatabase.GetTotalRefundCount();
-            decimal netRevenue = _orderDatabase.GetTotalOrderValue() - _refundDatabase.GetTotalRefundAmount();
-            int pendingRefunds = _refundDatabase.GetPendingRefundCount();
-
-            return (totalOrders, totalRefunds, netRevenue, pendingRefunds);
+            return new DashboardSummary
+            {
+                TotalOrders = _orderDatabase.GetTotalOrderCount(),
+                TotalRefunds = _refundDatabase.GetTotalRefundCount(),
+                NetRevenue = _orderDatabase.GetTotalOrderValue() - _refundDatabase.GetTotalRefundAmount(),
+                PendingRefunds = _refundDatabase.GetPendingRefundCount()
+            };
         }
+    }
+
+    public class DashboardSummary
+    {
+        public int TotalOrders { get; set; }
+        public int TotalRefunds { get; set; }
+        public decimal NetRevenue { get; set; }
+        public int PendingRefunds { get; set; }
     }
 }

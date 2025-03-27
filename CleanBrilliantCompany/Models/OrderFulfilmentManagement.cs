@@ -3,7 +3,7 @@ using CleanBrilliantCompany.Models;
 using System;
 using System.Collections.Generic;
 
-namespace CleanBrilliantCompany.Management
+namespace CleanBrilliantCompany.Models
 {
     public class OrderFulfilmentManagement : IOrder
     {
