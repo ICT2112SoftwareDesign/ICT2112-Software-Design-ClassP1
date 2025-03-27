@@ -4,7 +4,7 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Services
 {
-    public interface IShippingAgentService
+    public interface _IShippingAgentDB
     {
         Task<List<CleanBrilliantCompany.Models.ShippingAgent>> GetShippingAgentsAsync();
         Task<CleanBrilliantCompany.Models.ShippingAgent> GetShippingAgentByIdAsync(int id);

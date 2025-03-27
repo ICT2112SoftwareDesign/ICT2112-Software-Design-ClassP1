@@ -12,11 +12,11 @@ using Microsoft.EntityFrameworkCore; // Required for ToListAsync()
 
 namespace CleanBrilliantCompany.Services
 {
-    public class ShippingAgentService : IShippingAgentService
+    public class ShippingAgentDB : _IShippingAgentDB
     {
         private readonly ApplicationDbContext _context;
 
-        public ShippingAgentService(ApplicationDbContext context)
+        public ShippingAgentDB(ApplicationDbContext context)
         {
             _context = context;
         }

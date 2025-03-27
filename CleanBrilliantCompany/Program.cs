@@ -15,7 +15,7 @@ builder.Services.AddControllersWithViews();
 
 // Register services properly
 builder.Services.AddScoped<ShippingAgentMapper>();
-builder.Services.AddScoped<IShippingAgentService, ShippingAgentService>();
+builder.Services.AddScoped<_IShippingAgentDB, ShippingAgentDB>();
 
 // Register DatabaseService
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

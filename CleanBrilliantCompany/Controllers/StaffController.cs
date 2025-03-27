@@ -9,12 +9,12 @@ namespace CleanBrilliantCompany.Controllers.Staff
     [Route("staff")]
     public class StaffController : Controller
     {
-        private readonly IShippingAgentService _shippingAgentService;
+        private readonly _IShippingAgentDB _IShippingAgentDB2;
 
         // Add constructor with dependency injection
-        public StaffController(IShippingAgentService shippingAgentService)
+        public StaffController(_IShippingAgentDB ShippingAgentDB)
         {
-            _shippingAgentService = shippingAgentService;
+            _IShippingAgentDB2 = ShippingAgentDB;
         }
 
         [HttpGet("")]

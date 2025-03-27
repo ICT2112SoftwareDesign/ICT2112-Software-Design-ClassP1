@@ -9,19 +9,19 @@ namespace CleanBrilliantCompany.Controllers
     [Route("staff/shippingagent")]
     public class ShippingAgentController : Controller
     {
-        private readonly IShippingAgentService _shippingAgentService;
+        private readonly _IShippingAgentDB _IShippingAgentDB2;
 
         // Add constructor with dependency injection
-        public ShippingAgentController(IShippingAgentService shippingAgentService)
+        public ShippingAgentController(_IShippingAgentDB ShippingAgentDB)
         {
-            _shippingAgentService = shippingAgentService;
+            _IShippingAgentDB2 = ShippingAgentDB;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
             // Get shipping agents from the service
-            var agents = await _shippingAgentService.GetShippingAgentsAsync();
+            var agents = await _IShippingAgentDB2.GetShippingAgentsAsync();
 
             // Debug information to console
             System.Console.WriteLine($"ShippingAgentController retrieved {agents.Count} agents");
@@ -56,7 +56,7 @@ namespace CleanBrilliantCompany.Controllers
                 try
                 {
                     // Call service to add shipping agent
-                    var result = await _shippingAgentService.AddShippingAgentAsync(shippingAgent);
+                    var result = await _IShippingAgentDB2.AddShippingAgentAsync(shippingAgent);
 
                     if (result)
                     {
@@ -85,7 +85,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet("update/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
-            var agent = await _shippingAgentService.GetShippingAgentByIdAsync(id);
+            var agent = await _IShippingAgentDB2.GetShippingAgentByIdAsync(id);
 
             if (agent == null)
             {
@@ -109,7 +109,7 @@ namespace CleanBrilliantCompany.Controllers
                 try
                 {
                     // Call service to update shipping agent
-                    await _shippingAgentService.UpdateShippingAgentAsync(shippingAgent);
+                    await _IShippingAgentDB2.UpdateShippingAgentAsync(shippingAgent);
 
                     // Redirect to shipping agent list with success message
                     TempData["SuccessMessage"] = "Shipping agent updated successfully.";
@@ -131,7 +131,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _shippingAgentService.DeleteShippingAgentAsync(id);
+            var result = await _IShippingAgentDB2.DeleteShippingAgentAsync(id);
 
             if (result)
             {
