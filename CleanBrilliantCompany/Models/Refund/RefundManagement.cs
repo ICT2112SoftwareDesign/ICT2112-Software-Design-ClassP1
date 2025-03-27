@@ -8,12 +8,12 @@ namespace CleanBrilliantCompany.Models
     public class RefundManagement : IRefundQuery, ISubmitRefund
     {   
         private readonly IRefundDatabase _refundDatabase;
-        private readonly IOrder _order;
+        private readonly Func<IOrder> _orderFactory;
 
-        public RefundManagement(IRefundDatabase refundDatabase, IOrder order)
+        public RefundManagement(IRefundDatabase refundDatabase, Func<IOrder> orderFactory)
         {
             _refundDatabase = refundDatabase;
-            _order = order;
+            _orderFactory = orderFactory;
         }
         public Refund_RDM GetRefundDetails(int refundId) 
         {
@@ -27,15 +27,15 @@ namespace CleanBrilliantCompany.Models
         public void UpdateRefund(int refundId, string status)
         {
             _refundDatabase.UpdateRefundStatus(refundId, status, DateTime.Now);
-            string orderStatus = "";
-            if (status == "Approved")
-            {
-                orderStatus = "Refunded";
-            }
-            else {
-                orderStatus = "Rejected";
-            }
-            _order.updateOrderStatus(refundId, orderStatus);
+
+            string orderStatus = status == "Approved" ? "Refunded" : "Rejected";
+
+            var refundDetails = _refundDatabase.ViewRefund(refundId);
+            int orderId = refundDetails.OrderId;
+
+            // Resolve IOrder only when needed
+            var orderService = _orderFactory();
+            orderService.updateOrderStatus(orderId, orderStatus);
         }
 
         public Refund_RDM SubmitRefund(int orderId, string refundReason, float refundAmount, Dictionary<int, int> refundedProducts)

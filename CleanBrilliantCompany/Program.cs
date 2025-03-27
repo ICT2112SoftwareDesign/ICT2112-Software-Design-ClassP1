@@ -99,6 +99,10 @@ builder.Services.AddScoped<IRefundQuery, RefundManagement>();
 builder.Services.AddScoped<IRefundDetails, RefundDetails>();
 //builder.Services.AddScoped<IOrder, MockOrderService>(); // change later when team5 is done
 builder.Services.AddScoped<ISubmitRefund, RefundManagement>();
+builder.Services.AddScoped<Func<IOrder>>(sp => () => sp.GetRequiredService<IOrder>());
+builder.Services.AddScoped<ISubmitRefund, RefundManagement>();
+
+
 // Adding services for Support Ticket
 //builder.Services.AddScoped<ISupportTicket, SupportTicketManagement>();
 //builder.Services.AddScoped<iSupportTicketQuery, SupportTicketManagement>();

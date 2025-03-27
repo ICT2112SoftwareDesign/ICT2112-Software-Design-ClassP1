@@ -140,16 +140,34 @@ namespace CleanBrilliantCompany.Models
             return _orderDatabase.updateOrder(order);
         }
 
+        //public bool updateOrderStatus(int orderId, string status)
+        //{
+        //    var order = _orderDatabase.getOrderById(orderId);
+        //    if (order == null)
+        //    {
+        //        return false;
+        //    }
+
+        //    order.UpdateStatus(status);
+        //    return _orderDatabase.updateOrder(order);
+        //}
+
         public bool updateOrderStatus(int orderId, string status)
         {
+            Console.WriteLine($"Updating order {orderId} to status: {status}");
+
             var order = _orderDatabase.getOrderById(orderId);
             if (order == null)
             {
+                Console.WriteLine("Order not found.");
                 return false;
             }
 
             order.UpdateStatus(status);
-            return _orderDatabase.updateOrder(order);
+            bool result = _orderDatabase.updateOrder(order);
+
+            Console.WriteLine($"Order update success: {result}");
+            return result;
         }
 
         public bool cancelOrder(int orderId, int customerId)
