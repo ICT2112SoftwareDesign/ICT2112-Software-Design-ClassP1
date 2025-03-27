@@ -383,8 +383,7 @@
                     <!-- NEW MAIN CONTENT: Cost Dashboard -->
                     <div class="container-fluid">
                         <h2>-</h2>
-                        <p>Generated Date: @Model.StartDate.ToShortDateString()   |   Validity Date: @Model.EndDate.ToShortDateString()</p>
-
+                        <p>Generated Date: @Model.GeneratedDate.ToShortDateString()   |   Validity Date: @Model.EndDate.ToShortDateString()</p>
                         <!-- Charts Section -->
                    <div class="row mt-4">
                         <div class="col-md-4">
@@ -576,24 +575,25 @@
 <script>
 // User Interactions
 document.getElementById("generateDashboardBtn").addEventListener("click", () => {
-    fetch("/CostPage/GenerateDashboard", { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            const alertBox = document.getElementById("dashboardAlert");
-            alertBox.style.display = "block";
-            alertBox.textContent = data.message;
+    fetch("/CostPage/GenerateDashboard", {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        const alertBox = document.getElementById("dashboardAlert");
+        alertBox.style.display = "block";
+        alertBox.textContent = data.message;
 
-            console.log("[DEBUG] Dashboard response:", data.message);
+        console.log("[DEBUG] Dashboard response:", data.message);
 
-            if (data.message.includes("New dashboard created")) {
-                // Give 5s before reloading to show alert
-                setTimeout(() => location.reload(), 5000);
-            }
-        })
-        .catch(err => {
-            console.error("Error generating dashboard:", err);
-            alert("Something went wrong.");
-        });
+        if (data.message.includes("Dashboard has been created")) {
+            setTimeout(() => location.reload(), 5000);
+        }
+    })
+    .catch(err => {
+        console.error("Error generating dashboard:", err);
+        alert("Something went wrong.");
+    });
 });
 
 (function() {

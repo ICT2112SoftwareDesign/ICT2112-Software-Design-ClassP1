@@ -1,15 +1,20 @@
 public static class DashboardMapper
 {
-    public static DashboardDTO ToDTO(DashboardTable entity) => new DashboardDTO
+    public static DashboardDTO ToDTO(DashboardTable table)
     {
-        DashboardId = entity.DashboardId,
-        Name = entity.Name,
-        RequestedStartDate = entity.RequestedStartDate,
-        RequestedEndDate = entity.RequestedEndDate,
-        GeneratedDate = entity.GeneratedDate,
-        ValidityDuration = entity.ValidityDuration,
-        TypeId = entity.TypeId
-    };
+
+        Console.WriteLine($"DEBUG - From DB: Name={table.Name}, GenDate={table.GeneratedDate}, Start={table.RequestedStartDate}");
+
+        return new DashboardDTO
+        {
+            Name = table.Name,
+            RequestedStartDate = table.RequestedStartDate,
+            RequestedEndDate = table.RequestedEndDate,
+            GeneratedDate = table.GeneratedDate,
+            ValidityDuration = table.ValidityDuration,
+            Type = table.TypeId
+        };
+    }
 
     public static DashboardTable ToEntity(DashboardDTO dto) => new DashboardTable
     {
@@ -17,8 +22,8 @@ public static class DashboardMapper
         Name = dto.Name,
         RequestedStartDate = dto.RequestedStartDate,
         RequestedEndDate = dto.RequestedEndDate,
-        GeneratedDate = dto.GeneratedDate,
+        GeneratedDate = dto.GeneratedDate ?? DateTime.Now,
         ValidityDuration = dto.ValidityDuration,
-        TypeId = dto.TypeId
+        TypeId = dto.Type  
     };
 }

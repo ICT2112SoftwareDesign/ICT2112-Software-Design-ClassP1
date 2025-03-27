@@ -9,20 +9,20 @@ public class CostSimulation
 
     public CostSimulation()
     {
-        // 🔹 Fake Dashboards
-        Dashboards = new List<DashboardDTO>
-        {
-            new DashboardDTO
-            {
-                DashboardId = 1,
-                Name = "Cleaning Supplies Cost Dashboard",
-                RequestedStartDate = DateTime.Now.AddMonths(-6),
-                RequestedEndDate = DateTime.Now,
-                GeneratedDate = DateTime.Now.AddDays(-1),
-                ValidityDuration = 5,
-                TypeId = 1
-            }
-        };
+        // // 🔹 Fake Dashboards
+        // Dashboards = new List<DashboardDTO>
+        // {
+        //     new DashboardDTO
+        //     {
+        //         DashboardId = 1,
+        //         Name = "Cleaning Supplies Cost Dashboard",
+        //         RequestedStartDate = DateTime.Now.AddMonths(-6),
+        //         RequestedEndDate = DateTime.Now,
+        //         GeneratedDate = DateTime.Now.AddDays(-1),
+        //         ValidityDuration = 5,
+        //         TypeId = 1
+        //     }
+        // };
         
 
         // 🔹 Fake Cleaning & Laundry Product Manufacturers

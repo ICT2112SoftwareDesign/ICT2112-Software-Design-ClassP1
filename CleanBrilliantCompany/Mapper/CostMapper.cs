@@ -2,25 +2,23 @@ using CleanBrilliantCompany.DTO;
 
 public class CostMapper
 {
-    private readonly CostSimulation? costSimulation;
 
-    public CostMapper(CostSimulation? costSimulation = null)
+    private readonly ApplicationDbContext _db;
+
+    public CostMapper(ApplicationDbContext dbContext)
     {
-        this.costSimulation = costSimulation ?? throw new ArgumentNullException(nameof(costSimulation));
-    }
+        _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+}
 
     // 🔹 Fetch Product Manufacturers DTOs
     public List<ProductManufacturerDTO> GetAllManufacturers()
     {
-        if (costSimulation == null || costSimulation.Manufacturers == null)
-            return new List<ProductManufacturerDTO>();
-
-        return costSimulation.Manufacturers
+        return _db.Manufacturers
             .Select(m => new ProductManufacturerDTO
             {
                 ManufacturerId = m.ManufacturerId,
                 CompanyName = m.CompanyName,
-                Address = m.Address,
+                Address = m.ManufacturerAddress,
                 Email = m.Email
             })
             .ToList();
@@ -28,40 +26,76 @@ public class CostMapper
 
     // 🔹 Fetch Product Batches DTOs
     public List<ProductBatchDTO> GetAllProductBatches()
+{
+    var productBatches = _db.ProductBatch.ToList();    
+    var products = _db.Product.Select(p => new { p.ProductId, p.ManufacturerId }).ToList();  // Only fetch ProductId and ManufacturerId for the join
+
+    var enrichedBatches = productBatches.Select(batch =>
     {
-        if (costSimulation == null || costSimulation.ProductBatches == null)
+        var product = products.FirstOrDefault(p => p.ProductId == batch.ProductId);
+
+        var productBatchDTO = new ProductBatchDTO
         {
-            Console.WriteLine("[DEBUG] No product batches found.");
-            return new List<ProductBatchDTO>();
-        }
+            BatchCode = batch.BatchCode,
+            ProductId = batch.ProductId,
+            ExpiryDate = batch.ExpiryDate,
+            ReceiveDate = batch.ReceiveDate,
+            ManufactureDate = batch.ManufactureDate,
+            BatchQuantity = batch.Quantity,
+            BatchPrice = Convert.ToDecimal(batch.BatchCost),  // Explicitly convert BatchCost to Decimal
+            ManufacturerId = product?.ManufacturerId ?? -1 // If no product found, set ManufacturerId to -1
+        };
 
-        var batches = costSimulation.ProductBatches.ToList();
-        Console.WriteLine($"[DEBUG] CostMapper: Retrieved {batches.Count} batches.");
+        return productBatchDTO;
+    }).ToList();
 
-        foreach (var batch in batches)
-        {
-            Console.WriteLine($"[DEBUG] CostMapper: PASSING BATCHES BatchCode {batch.BatchCode}, ProductId {batch.ProductId}, ManufacturerId {batch.ManufacturerId}");
-        }
-
-        return batches;
+    return enrichedBatches;
+}
+  public List<ItemDTO> GetAllItems()
+    {
+        return _db.Items
+            .Select(i => new ItemDTO
+            {
+                ItemId = i.ItemId,
+                ProductId = i.ProductId,
+                SalePrice = (decimal)i.SalePrice,
+                BatchCode = i.BatchCode,
+                WarehouseId = i.WarehouseId,
+                ItemStatus = i.ItemStatus,
+                ReservationId = i.ReservationId,
+                OrderId = i.OrderId,
+                TransferId = i.TransferId,
+                ReturnId = i.ReturnId
+            })
+            .ToList();
     }
 
-    public List<ItemDTO> GetAllItems()
+    public DashboardDTO ToDTO(DashboardTable table)
     {
-        if (costSimulation == null || costSimulation.Items == null)
+        return new DashboardDTO
         {
-            Console.WriteLine("[DEBUG] No items found.");
-            return new List<ItemDTO>();
-        }
-
-        var items = costSimulation.Items.ToList();
-        Console.WriteLine($"[DEBUG] CostMapper: Retrieved {items.Count} items.");
-
-        foreach (var item in items)
-        {
-            Console.WriteLine($"[DEBUG] CostMapper: PASSING ITEMS ItemId {item.ItemId}, ProductId {item.ProductId}, BatchCode {item.BatchCode}, SalePrice {item.SalePrice}, ItemStatus {item.ItemStatus}");
-        }
-
-        return items;
+            DashboardId = table.DashboardId,
+            Name = table.Name,
+            RequestedStartDate = table.RequestedStartDate,
+            RequestedEndDate = table.RequestedEndDate,
+            GeneratedDate = table.GeneratedDate,
+            ValidityDuration = table.ValidityDuration,
+            Type = table.TypeId
+        };
     }
+
+    public DashboardTable ToEntity(DashboardDTO dto)
+    {
+        return new DashboardTable
+        {
+            Name = dto.Name,
+            RequestedStartDate = dto.RequestedStartDate,
+            RequestedEndDate = dto.RequestedEndDate,
+            GeneratedDate = dto.GeneratedDate ?? DateTime.Now,
+            ValidityDuration = dto.ValidityDuration,
+            TypeId = dto.Type
+        };
+    }
+
+
 }

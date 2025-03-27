@@ -1,21 +1,18 @@
 public class CostControl 
 {
-
     private readonly ApplicationDbContext dbContext;
-
     private List<CostDashboardRdm> dashboards; 
     private CostMapper costMapper; 
-    private readonly ILogger<CostDashboardRdm> logger;  // Inject Logger
+    private ILogger<CostDashboardRdm>? logger;
+    private IVisualizationService? visualizationService;
+    private IAlertService? alertService;
 
-    private readonly IVisualizationService visualizationService;  // Inject Visualization Service
-
-    private readonly IAlertService alertService;  // Inject Alert Service
-
-    private readonly DashboardFactory dashboardFactory;  // ✅ Use Factory
-
-
-    public CostControl(CostMapper costMapper, ILogger<CostDashboardRdm> logger,IVisualizationService visualizationService, IAlertService alertService,
-    ApplicationDbContext dbContext )
+    public CostControl(
+        CostMapper costMapper,
+        ILogger<CostDashboardRdm> logger,
+        IVisualizationService visualizationService,
+        IAlertService alertService,
+        ApplicationDbContext dbContext)
     {
         this.dbContext = dbContext;
         this.costMapper = costMapper;
@@ -23,135 +20,194 @@ public class CostControl
         this.visualizationService = visualizationService;
         this.alertService = alertService;
         this.dashboards = new List<CostDashboardRdm>();
-        this.dashboardFactory = new DashboardFactory(logger, visualizationService,alertService); 
+
         LoadDashboards(); 
     }
 
-    // 🔹 Load dashboards from the database (or fake DB)
-
-    
     private void LoadDashboards()
-{
-
-    logger.LogInformation("[DEBUG] Attempting to load dashboards from database...");
-    
-    var dashboardEntity = dbContext.Dashboards
-        .Where(d => d.TypeId == 4)
-        .OrderByDescending(d => d.RequestedStartDate)
-        .FirstOrDefault();
-
-    CostDashboardRdm costDashboard;
-
-    if (dashboardEntity == null)
     {
-        logger.LogWarning("⚠ No dashboard found in database. Creating a new one.");
+        logger!.LogInformation("[DEBUG] Attempting to load dashboards from database...");
 
-        var newDashboardDto = new DashboardDTO
+        var dashboardEntity = dbContext.Dashboards
+            .Where(d => d.TypeId == 4)
+            .OrderByDescending(d => d.RequestedStartDate)
+            .FirstOrDefault();
+
+        CostDashboardRdm costDashboard;
+
+        if (dashboardEntity == null)
         {
-            Name = "New Cost Dashboard Generated",
-            RequestedStartDate = DateTime.Now,
-            RequestedEndDate = DateTime.Now,
-            GeneratedDate = DateTime.Now,
-            ValidityDuration = 1,
-            TypeId = 4
-        };
+            logger!.LogWarning("⚠ No dashboard found in database. Creating a new one.");
 
-        var newEntity = DashboardMapper.ToEntity(newDashboardDto);
-        dbContext.Dashboards.Add(newEntity);
-        dbContext.SaveChanges();
+            var newDashboardDto = new DashboardDTO
+            {
+                Name = "New Cost Dashboard Generated",
+                RequestedStartDate = DateTime.Now,
+                RequestedEndDate = DateTime.Now,
+                GeneratedDate = DateTime.Now,
+                ValidityDuration = 1,
+                Type = 4
+            };
 
-        // ✅ Use factory for new dashboards
-        costDashboard = (CostDashboardRdm)dashboardFactory.CreateDashboard(
-            "Cost",
-            newDashboardDto.Name,
-            newDashboardDto.RequestedStartDate,
-            newDashboardDto.RequestedEndDate,
-            newDashboardDto.TypeId
-        );
+            var newEntity = DashboardMapper.ToEntity(newDashboardDto);
+            dbContext.Dashboards.Add(newEntity);
+            dbContext.SaveChanges();
+
+            var dashboard = DashboardFactory.createDashboard(newDashboardDto);
+            if (dashboard == null)
+            {
+                throw new InvalidOperationException("DashboardFactory.createDashboard returned null.");
+            }
+            costDashboard = (CostDashboardRdm)dashboard;
+            costDashboard.InitializeServices(logger!, visualizationService!, alertService!);
+        }
+        else
+        {
+            var dto = costMapper.ToDTO(dashboardEntity);
+            var dashboard = DashboardFactory.createDashboard(dto);
+            if (dashboard == null)
+            {
+                throw new InvalidOperationException("DashboardFactory.createDashboard returned null.");
+            }
+            costDashboard = (CostDashboardRdm)dashboard;
+            costDashboard.InitializeServices(logger!, visualizationService!, alertService!);
+        }
+
+        var manufacturers = costMapper.GetAllManufacturers();
+        var productBatches = costMapper.GetAllProductBatches();
+        var items = costMapper.GetAllItems();
+
+        costDashboard.ProcessManufacturers(manufacturers);
+        costDashboard.ProcessProductBatches(productBatches);
+        costDashboard.ProcessItems(items);
+        
+
+        dashboards.Add(costDashboard);
+        logger!.LogInformation($"✅ Loaded dashboard: {costDashboard.Name}");
     }
-    else
-    {
-        // ✅ Use factory for loading existing dashboards too
-        var dto = DashboardMapper.ToDTO(dashboardEntity);
 
-        costDashboard = (CostDashboardRdm)dashboardFactory.CreateDashboard(
-            "Cost",
-            dto.Name,
-            dto.RequestedStartDate,
-            dto.RequestedEndDate,
-            dto.TypeId
-        );
-    }
-
-    var manufacturers = costMapper.GetAllManufacturers();
-    var productBatches = costMapper.GetAllProductBatches();
-    var item = costMapper.GetAllItems();
-
-    costDashboard.ProcessManufacturers(manufacturers);
-    costDashboard.ProcessProductBatches(productBatches);
-    costDashboard.ProcessItems(item);
-
-    dashboards.Add(costDashboard);
-    logger.LogInformation($"✅ Loaded dashboard: {costDashboard.Name}");
-}
-
-    // 🔹 Method to Retrieve the Latest Dashboard
     public CostDashboardRdm? GetLatestDashboard()
     {
-        return dashboards.OrderByDescending(d => d.StartDate).FirstOrDefault();
+        logger!.LogInformation("🔍 Retrieving the latest dashboard from memory...");
+        return dashboards.OrderByDescending(d => d.GeneratedDate).FirstOrDefault();
     }
 
-    public bool GenerateNewDashboardIfOutdated()
+   public void generateNewDashboard(DashboardDTO dto) 
     {
-        logger.LogInformation("[DEBUG] Checking for outdated dashboard...");
+        dto.Type = 4;
 
-        var existingDashboard = dbContext.Dashboards
-            .Where(d => d.TypeId == 4)
+        var dashboardBase = DashboardFactory.createDashboard(dto);
+        if (dashboardBase is not CostDashboardRdm costdashboard)
+        {
+            logger!.LogError("❌ Failed to create CostDashboardRdm from factory.");
+            return;
+        }
+        costdashboard.InitializeServices(logger!, visualizationService!, alertService!);
+        
+
+        var manufacturers = costMapper.GetAllManufacturers();
+        var productBatches = costMapper.GetAllProductBatches();
+        var items = costMapper.GetAllItems();
+
+        costdashboard.ProcessManufacturers(manufacturers);
+        costdashboard.ProcessProductBatches(productBatches);
+        costdashboard.ProcessItems(items);
+
+        var dashboardEntity = DashboardMapper.ToEntity(dto);
+        dashboardEntity.GeneratedDate = DateTime.Now;
+        dbContext.Dashboards.Add(dashboardEntity);
+        dbContext.SaveChanges();
+
+        dashboards.Add(costdashboard);
+
+        logger!.LogInformation($"✅ New dashboard generated: {costdashboard.Name}");
+    }
+    
+    public void UpdateDashboard()
+    {
+        var today = DateTime.Today;
+
+        logger!.LogInformation($"🔄 Checking if a dashboard was already created today ({today})...");
+
+        var dashboardDto = new DashboardDTO
+        {
+            Name = "Cost Dashboard",
+            RequestedStartDate = DateTime.Today,
+            RequestedEndDate = DateTime.Today,
+            GeneratedDate = DateTime.Now,
+            ValidityDuration = 1,
+            Type = 4
+        };
+
+        var latestDashboard = dbContext.Dashboards
+            .Where(d => d.TypeId == dashboardDto.Type)
             .OrderByDescending(d => d.GeneratedDate)
             .FirstOrDefault();
 
-        if (existingDashboard != null && existingDashboard.GeneratedDate.Date == DateTime.Today)
+        if (latestDashboard != null && latestDashboard.GeneratedDate.Date == today)
         {
-            logger.LogInformation("✅ Existing dashboard is already up-to-date.");
-            return false; // nothing changed
-        }
+            logger!.LogInformation($"🗑 Dashboard with ID {latestDashboard.DashboardId} was generated today — deleting and updating...");
 
-        if (existingDashboard != null)
-        {
-            logger.LogInformation("🗑 Deleting outdated dashboard...");
-            dbContext.Dashboards.Remove(existingDashboard);
+            dbContext.Dashboards.Remove(latestDashboard);
             dbContext.SaveChanges();
+
+            var newDashboard = costMapper.ToEntity(dashboardDto);
+            newDashboard.GeneratedDate = DateTime.Now;
+
+            var dashboardBase = DashboardFactory.createDashboard(dashboardDto);
+            if (dashboardBase is not CostDashboardRdm costDashboard)
+            {
+                logger!.LogError("❌ Failed to create CostDashboardRdm from factory.");
+                return;
+            }
+
+            costDashboard.InitializeServices(logger!, visualizationService!, alertService!);
+
+            var manufacturers = costMapper.GetAllManufacturers();
+            var productBatches = costMapper.GetAllProductBatches();
+            var items = costMapper.GetAllItems();
+
+            costDashboard.ProcessManufacturers(manufacturers);
+            costDashboard.ProcessProductBatches(productBatches);
+            costDashboard.ProcessItems(items);
+
+            dashboards.Add(costDashboard);
+
+            dbContext.Dashboards.Add(newDashboard);
+            dbContext.SaveChanges();
+
+            logger!.LogInformation($"✅ Dashboard replaced. New dashboard created with name: {newDashboard.Name}, GeneratedDate: {newDashboard.GeneratedDate}");
         }
-
-        var newDashboardDto = new DashboardDTO
+        else
         {
-            Name = "New Cost Dashboard Generated",
-            RequestedStartDate = DateTime.Now,
-            RequestedEndDate = DateTime.Now.AddMonths(1),
-            GeneratedDate = DateTime.Now,
-            ValidityDuration = 1,
-            TypeId = 4
-        };
+            logger!.LogInformation("🆕 No dashboard created today — creating a new one...");
 
-        var newEntity = DashboardMapper.ToEntity(newDashboardDto);
-        dbContext.Dashboards.Add(newEntity);
-        dbContext.SaveChanges();
+            var newDashboard = costMapper.ToEntity(dashboardDto);
+            newDashboard.GeneratedDate = DateTime.Now;
 
-        var costDashboard = (CostDashboardRdm)dashboardFactory.CreateDashboard(
-            "Cost",
-            newDashboardDto.Name,
-            newDashboardDto.RequestedStartDate,
-            newDashboardDto.RequestedEndDate,
-            newDashboardDto.TypeId
-        );
+            var dashboardBase = DashboardFactory.createDashboard(dashboardDto);
+            if (dashboardBase is not CostDashboardRdm costDashboard)
+            {
+                logger!.LogError("❌ Failed to create CostDashboardRdm from factory.");
+                return;
+            }
 
-        costDashboard.ProcessManufacturers(costMapper.GetAllManufacturers());
-        costDashboard.ProcessProductBatches(costMapper.GetAllProductBatches());
-        costDashboard.ProcessItems(costMapper.GetAllItems());
+            costDashboard.InitializeServices(logger!, visualizationService!, alertService!);
 
-        dashboards.Add(costDashboard);
+            var manufacturers = costMapper.GetAllManufacturers();
+            var productBatches = costMapper.GetAllProductBatches();
+            var items = costMapper.GetAllItems();
 
-        logger.LogInformation($"✅ Created new dashboard: {costDashboard.Name}");
-        return true; // new dashboard created
+            costDashboard.ProcessManufacturers(manufacturers);
+            costDashboard.ProcessProductBatches(productBatches);
+            costDashboard.ProcessItems(items);
+
+            dashboards.Add(costDashboard);
+
+            dbContext.Dashboards.Add(newDashboard);
+            dbContext.SaveChanges();
+
+            logger!.LogInformation($"✅ New dashboard created with name: {newDashboard.Name}, GeneratedDate: {newDashboard.GeneratedDate}");
+        }
     }
 }

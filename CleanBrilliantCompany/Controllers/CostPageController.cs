@@ -11,15 +11,14 @@ public class CostPageController : Controller
     // Logger for the PC class
     private readonly ILogger<CostPageController> logger;
 
-
-    // Constructor
-    public CostPageController(ILogger<CostPageController> logger, CostMapper costMapper,ILogger<CostDashboardRdm> dashboardLogger, IVisualizationService visualizationService, IAlertService alertService,ApplicationDbContext dbContext) 
-    {
-        this.logger = logger;
-        
-        // ✅ Initialize CostControl
-        costControl = new CostControl(costMapper,dashboardLogger,visualizationService,alertService,dbContext);
-    }
+    public CostPageController(
+        ILogger<CostPageController> logger, 
+        CostControl costControl
+        ) 
+        {
+            this.logger = logger;
+            this.costControl = costControl;
+        }
 
     [HttpGet("")]
     public IActionResult Index()
@@ -32,17 +31,27 @@ public class CostPageController : Controller
         }
         return View(latestDashboard);
     }
-    
+
     [HttpPost("GenerateDashboard")]
     public IActionResult GenerateDashboard()
     {
-        bool created = costControl.GenerateNewDashboardIfOutdated();
+        var latest = costControl.GetLatestDashboard();
+        if (latest?.GeneratedDate != null && latest.GeneratedDate.Value.Date == DateTime.Today)
+        {
+            logger.LogInformation("📅 A dashboard has already been created today. No new dashboard generated.");
+            return Json(new { message = "📅 Dashboard is already up to date for today. No new dashboard created." });
+        }
 
-        if (created)
-            return Ok(new { message = "✅ New dashboard created." });
-        else
-            return Ok(new { message = "ℹ️ Dashboard is already up-to-date." });
+        costControl.UpdateDashboard();
+        logger.LogInformation("📊 Dashboard creation/update requested.");
+
+        return Json(new { message = "✅ Dashboard has been created or updated successfully." });
     }
+
+
+    // MODIFIED -------------------------------------------------------------------------------------
+
+    
 
     [HttpGet("GetCostVisualization")]
     public IActionResult GetCostVisualization()
@@ -356,11 +365,6 @@ public class CostPageController : Controller
 
         return Json(recentBatches);
     }
-
-
-    
-
-        
 
     
 }

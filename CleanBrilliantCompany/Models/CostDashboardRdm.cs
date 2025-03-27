@@ -2,12 +2,10 @@ using CleanBrilliantCompany.DTO;
 
 public class CostDashboardRdm : Dashboard
 {
-    private readonly ILogger<CostDashboardRdm> logger;
-    private readonly IVisualizationService visualizationService;
-
-    private readonly IAlertService alertService;
-    private readonly AbstractCostDetails costDetails;  // Using Abstract Class
-
+    private ILogger<CostDashboardRdm>? logger;
+    private IVisualizationService? visualizationService;
+    private IAlertService? alertService;
+    private AbstractCostDetails? costDetails;  // Using Abstract Class
 
     public string Name { get; }
     public DateTime StartDate { get; }
@@ -15,86 +13,57 @@ public class CostDashboardRdm : Dashboard
     public int ValidityDuration { get; }
     public int Type { get; }
 
-    // private Dictionary<int, ProductBatchDTO> batchDetails = new();
-    // private Dictionary<int, ProductManufacturerDTO> manufacturerDetails = new();
-
     private List<ProductBatchDTO> batchDetails = new();
     private List<ProductManufacturerDTO> manufacturerDetails = new();
     private List<ItemDTO> itemDetails = new();
 
-
-    // (Note: You need the cast because CreateNewDashboard() returns Dashboard, not CostDashboardRdm.)
-    public override Dashboard CreateNewDashboard(string name, DateTime startDate, DateTime endDate, int validityDuration)
+    public CostDashboardRdm(
+        int id,
+        string name,
+        DateTime requestedStartDate,
+        DateTime requestedEndDate,
+        int validityDuration,
+        int type,
+        DateTime? generatedDate = null
+    ) : base(id, name, requestedStartDate, requestedEndDate, validityDuration, type, generatedDate)
     {
-        return new CostDashboardRdm(
-            new DashboardDTO
-            {
-                Name = name,
-                RequestedStartDate = startDate,
-                RequestedEndDate = endDate,
-                ValidityDuration = validityDuration
-            },
-            new List<ProductManufacturerDTO>(),
-            new List<ProductBatchDTO>(),
-            new List<ItemDTO>(),
-            logger,
-            visualizationService,
-            alertService
-        );
+        Name = name;
+        StartDate = requestedStartDate;
+        EndDate = requestedEndDate;
+        ValidityDuration = validityDuration;
+        Type = type;
     }
-    
-    public CostDashboardRdm(DashboardDTO dto, 
-                        List<ProductManufacturerDTO> manufacturers,
-                        List<ProductBatchDTO> productBatches,
-                        List<ItemDTO> items,
-                        ILogger<CostDashboardRdm> logger,
-                        IVisualizationService visualizationService,
-                        IAlertService alertService) 
+        
+    public void InitializeServices(
+        ILogger<CostDashboardRdm> logger,
+        IVisualizationService visualizationService,
+        IAlertService alertService)
     {
         this.logger = logger;
         this.visualizationService = visualizationService;
         this.alertService = alertService;
-        Name = dto.Name;
-        StartDate = dto.RequestedStartDate;
-        EndDate = dto.RequestedEndDate;
-        ValidityDuration = dto.ValidityDuration;
-        Type = dto.TypeId;
 
-
-
-        ProcessManufacturers(manufacturers);
-        ProcessProductBatches(productBatches);
-        ProcessItems(items);
-
-        Console.WriteLine($"[DEBUG] Creating ConcreteCostDetails with {batchDetails.Count} batches");
-        costDetails = new ConcreteCostDetails(alertService, batchDetails,itemDetails);
-        GetBatchBudgetSummary(); 
+        this.costDetails = new ConcreteCostDetails(alertService, batchDetails, itemDetails);
     }
-   
-        
+
     public void ProcessManufacturers(List<ProductManufacturerDTO> manufacturers)
     {
         manufacturerDetails.AddRange(manufacturers);
     }
 
-
     public void ProcessProductBatches(List<ProductBatchDTO> productBatches)
     {
         batchDetails.AddRange(productBatches);
-    
     }
 
     public void ProcessItems(List<ItemDTO> items)
     {
         itemDetails.AddRange(items);
-    
     }
-
 
     //////////////////////////////////////////
     /// Cost Control Methods
      
-
     // 🔹 Get All Manufacturers
     public List<ProductManufacturerDTO> GetAllManufacturers()
     {
@@ -112,22 +81,20 @@ public class CostDashboardRdm : Dashboard
         return itemDetails.ToList(); // ✅ Works with List<T>
     }
 
-
     // 🔹 Get Manufacturer Info for a Batch
-
     public ProductManufacturerDTO? GetManufacturerForBatch(int batchCode)
     {
         var batch = batchDetails.FirstOrDefault(b => b.BatchCode == batchCode);
         if (batch == null)
         {
-            logger.LogWarning($"Batch with code {batchCode} not found.");
+            logger!.LogWarning($"Batch with code {batchCode} not found.");
             return null;
         }
 
         var manufacturer = manufacturerDetails.FirstOrDefault(m => m.ManufacturerId == batch.ManufacturerId);
         if (manufacturer == null)
         {
-            logger.LogWarning($"Manufacturer with ID {batch.ManufacturerId} not found for batch {batchCode}.");
+            logger!.LogWarning($"Manufacturer with ID {batch.ManufacturerId} not found for batch {batchCode}.");
             return null;
         }
 
@@ -140,7 +107,7 @@ public class CostDashboardRdm : Dashboard
         return batchDetails.Where(b => b.ManufacturerId == manufacturerId).ToList();
     }
 
-    // 🔹 Get Batches for a Specific Product ID
+    // // 🔹 Get Batches for a Specific Product ID
     public List<ProductBatchDTO> GetBatchesByProduct(int productId)
     {
         var batches = batchDetails.Where(b => b.ProductId == productId).ToList();
@@ -173,20 +140,19 @@ public class CostDashboardRdm : Dashboard
 
     //////////////////////////////////////////
 
-
     //////////////////////////////////////////
     // Below are the methods that will be called from the concrete interface for the visualization service
 
-     // 🔹 Generate Cost Visualization Data (returns JSON-ready data)
+    // 🔹 Generate Cost Visualization Data (returns JSON-ready data)
     public object GenerateCostVisualization()
     {
-        return visualizationService.GenerateCostVisualization(this);
+        return visualizationService!.GenerateCostVisualization(this);
     }
 
     // 🔹 Generate Supplier Comparison Data (returns JSON-ready data)
     public object GenerateSupplierComparison()
     {
-        return visualizationService.GenerateSupplierComparison(this);
+        return visualizationService!.GenerateSupplierComparison(this);
     }
     
     //////////////////////////////////////////
@@ -195,25 +161,18 @@ public class CostDashboardRdm : Dashboard
     // Demo to check if each batch exceeds $500
     public object GetBatchBudgetSummary()
     {
-        return costDetails.GetBatchBudgetSummary();  // ✅ Forward the call
+        return costDetails!.GetBatchBudgetSummary();  // ✅ Forward the call
     }
 
     public object CheckProductPerformance(int productId)
     {
         Console.WriteLine($"[DEBUG] Checking performance for Product ID: {productId}");
 
-        return costDetails.CheckProductPerformance(productId);  // ✅ Forward call to costDetails
+        return costDetails!.CheckProductPerformance(productId);  // ✅ Forward call to costDetails
     }
     
     public List<Alert> GetAlerts()
     {
-        return costDetails.GetAlerts();  // ✅ Fetch alerts from costDetails
+        return costDetails!.GetAlerts();  // ✅ Fetch alerts from costDetails
     }
-
-    
-    
-
-    
-
-    //////////////////////////////////////////
 }
