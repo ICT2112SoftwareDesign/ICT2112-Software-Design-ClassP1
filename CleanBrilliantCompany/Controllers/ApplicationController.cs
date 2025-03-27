@@ -38,5 +38,22 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
+        public ApplicationController(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        // Retrieve Staff ID from Session
+        public int? GetLoggedInStaffId()
+        {
+            return _httpContextAccessor.HttpContext.Session.GetInt32("LoggedInStaffId");
+        }
+
+        // Log out Staff
+        public virtual void Logout()
+        {
+            _httpContextAccessor.HttpContext.Session.Clear();
+        }
+
     }
 }
