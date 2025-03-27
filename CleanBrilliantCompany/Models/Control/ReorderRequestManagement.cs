@@ -18,7 +18,7 @@ namespace CleanBrilliantCompany.Models.Control
                 ManufacturerId = 8,
                 ExpectedDeliveryDate = new DateTime(2025, 4, 1),
                 Status = "Pending",
-                DefectQuantity = 0
+                DefectQuantity = 0 // idk what do i do with this?
             },
             new ReorderRequestSample
             {
@@ -28,7 +28,7 @@ namespace CleanBrilliantCompany.Models.Control
                 ManufacturerId = 1,
                 ExpectedDeliveryDate = new DateTime(2025, 4, 5),
                 Status = "Approved",
-                DefectQuantity = 2
+                DefectQuantity = 1
             },
             new ReorderRequestSample
             {
@@ -38,8 +38,18 @@ namespace CleanBrilliantCompany.Models.Control
                 ManufacturerId = 10,
                 ExpectedDeliveryDate = new DateTime(2025, 4, 10),
                 Status = "Pending",
-                DefectQuantity = 5
-            }
+                DefectQuantity = 1
+            },
+            new ReorderRequestSample // Added new Approved
+            {
+                ReorderId = 4,
+                ProductId = 999,
+                Quantity = 2,
+                ManufacturerId = 10,
+                ExpectedDeliveryDate = new DateTime(2025, 4, 11),
+                Status = "Approved",
+                DefectQuantity = 1
+            },
         };
             return reorderRequests;
         }

@@ -40,8 +40,27 @@ namespace CleanBrilliantCompany.Models.Control
         public void createProduct(string productName, string category, float productCost, 
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
-            _productMapper.insert(productName, category, productCost, 
+            // Create the product
+            int productId = _productMapper.insert(productName, category, productCost, 
                                     manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
+
+            Console.WriteLine($"ProductId: '{productId}'");
+            
+            // Create Batch
+            // createProductBatch(int productId, DateTime expiryDate, 
+            // DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+
+            // int batchCode = createProductBatch(productId, DateTime expiryDate, 
+            // DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+
+            // Create the amount of items
+            for (int x = 0; x < quantity; x++)
+            {
+                double salePrice = productCost * 1.2;
+                int warehouseId = 1;
+                //createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status); 
+                // _lazyItemCreation.Value.createItem(productId, salePrice, ,warehouseId, ItemStatus.Available);
+            }
         }
 
         public void deleteProduct(int productId)

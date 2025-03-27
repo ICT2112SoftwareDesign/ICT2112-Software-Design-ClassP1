@@ -82,7 +82,58 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-        public string insert(string productName, string category, float productCost,
+        // public string insert(string productName, string category, float productCost,
+        // int manufacturerId, float productWeight, int quantity, int volume,
+        // float toxicityPercentage, int carbonFootprint, string productState)
+        // {
+        //     try
+        //     {
+        //         using (SqlConnection connection = new SqlConnection(_connectionString))
+        //         {
+        //             connection.Open();
+
+        //             string query = @"
+        //                 INSERT INTO dbo.Product (productName, productCategory, productCost, manufacturerId, 
+        //                                         productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
+        //                 VALUES (@ProductName, @Category, @ProductCost, @ManufacturerId, 
+        //                         @ProductWeight, @Quantity, @Volume, @ToxicityPercentage, @CarbonFootprint, @ProductState)";
+
+        //             using (SqlCommand command = new SqlCommand(query, connection))
+        //             {
+        //                 command.Parameters.AddWithValue("@ProductName", productName);
+        //                 command.Parameters.AddWithValue("@Category", category);
+        //                 command.Parameters.AddWithValue("@ProductCost", productCost);
+        //                 command.Parameters.AddWithValue("@ManufacturerId", manufacturerId);
+        //                 command.Parameters.AddWithValue("@ProductWeight", productWeight);
+        //                 command.Parameters.AddWithValue("@Quantity", quantity);
+        //                 command.Parameters.AddWithValue("@Volume", volume);
+        //                 command.Parameters.AddWithValue("@ToxicityPercentage", toxicityPercentage);
+        //                 command.Parameters.AddWithValue("@CarbonFootprint", carbonFootprint);
+        //                 command.Parameters.AddWithValue("@ProductState", productState);
+
+        //                 // Execute the insert operation synchronously
+        //                 int rowsAffected = command.ExecuteNonQuery();
+
+        //                 // Check if the insert was successful using getDatabaseQueryStatus
+        //                 if (getDatabaseQueryStatus(null, rowsAffected))
+        //                 {
+        //                     return $"Product '{productName}' inserted successfully.";
+        //                 }
+        //                 else
+        //                 {
+        //                     return "Error inserting product.";
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"Error inserting product: {ex.Message}");
+        //         return $"Error inserting product: {ex.Message}";
+        //     }
+        // }
+
+        public int insert(string productName, string category, float productCost,
         int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
@@ -95,6 +146,7 @@ namespace CleanBrilliantCompany.Mappers
                     string query = @"
                         INSERT INTO dbo.Product (productName, productCategory, productCost, manufacturerId, 
                                                 productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
+                        OUTPUT INSERTED.productId
                         VALUES (@ProductName, @Category, @ProductCost, @ManufacturerId, 
                                 @ProductWeight, @Quantity, @Volume, @ToxicityPercentage, @CarbonFootprint, @ProductState)";
 
@@ -111,27 +163,28 @@ namespace CleanBrilliantCompany.Mappers
                         command.Parameters.AddWithValue("@CarbonFootprint", carbonFootprint);
                         command.Parameters.AddWithValue("@ProductState", productState);
 
-                        // Execute the insert operation synchronously
-                        int rowsAffected = command.ExecuteNonQuery();
+                        object result = command.ExecuteScalar();
+                        int productId = Convert.ToInt32(result);
 
-                        // Check if the insert was successful using getDatabaseQueryStatus
-                        if (getDatabaseQueryStatus(null, rowsAffected))
+                        if (productId == -1)
                         {
-                            return $"Product '{productName}' inserted successfully.";
+                            Console.WriteLine("Error: Product not created");
                         }
                         else
                         {
-                            return "Error inserting product.";
+                            Console.WriteLine($"Product inserted successfully. ProductId: {productId}");
                         }
+                        return productId;
                     }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error inserting product: {ex.Message}");
-                return $"Error inserting product: {ex.Message}";
+                return -1;
             }
         }
+
 
         public void delete(int productId)
         {
