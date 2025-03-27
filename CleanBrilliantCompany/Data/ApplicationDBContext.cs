@@ -8,7 +8,7 @@ namespace CleanBrilliantCompany.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<IngredientSDM> Ingredients { get; set; }
-        public DbSet<GoalsSDM> Goals { get; set; }
+        // public DbSet<GoalsSDM> Goals { get; set; }
         
         // We need this just for mapping - this doesn't create a new entity since other team handles it
         // This is just for the ORM to access the existing Product table
@@ -32,6 +32,24 @@ namespace CleanBrilliantCompany.Data
                 .Property(i => i.IngredientToxicity)
                 .IsRequired();
                 
+            /*    
+            modelBuilder.Entity<GoalsSDM>()
+                .HasKey("goalId");
+
+            modelBuilder.Entity<GoalsSDM>()
+                .Property<int>("goalId")
+                .HasColumnName("GoalId"); // Optional, if you want column name control
+
+            modelBuilder.Entity<GoalsSDM>()
+                .Property<float>("targetEmission");
+
+            modelBuilder.Entity<GoalsSDM>()
+                .Property<int>("goalYear");
+
+            modelBuilder.Entity<GoalsSDM>()
+                .Property<int>("goalMonth");
+            */
+
             // Configure the Product mapping
             modelBuilder.Entity<ProductMapping>()
                 .HasKey(p => p.ProductId);

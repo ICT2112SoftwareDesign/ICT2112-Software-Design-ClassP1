@@ -9,10 +9,10 @@ using CleanBrilliantCompany.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+/*
 namespace CleanBrilliantCompany.Data
 {
-    public class GoalsGateway : IGoalsDB, IGoalsQuery
+    public class GoalsGateway : IGoalsDB
     {
         private readonly ApplicationDbContext _context;
 
@@ -72,4 +72,5 @@ namespace CleanBrilliantCompany.Data
         }
     }
 }
+*/
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Models.Entity;
-
+/*
 namespace CleanBrilliantCompany.Interfaces
 {
     public interface IGoalsDB
@@ -14,3 +14,4 @@ namespace CleanBrilliantCompany.Interfaces
         Task<GoalsSDM> FindGoalByDate(int goalYear, int goalMonth);
     }
 }
+*/

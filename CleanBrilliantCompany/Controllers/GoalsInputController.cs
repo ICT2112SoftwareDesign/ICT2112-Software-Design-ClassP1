@@ -6,7 +6,7 @@ using CleanBrilliantCompany.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Globalization;
-
+/*
 namespace CleanBrilliantCompany.Controllers
 {
     public class GoalsInputController : Controller
@@ -72,3 +72,4 @@ namespace CleanBrilliantCompany.Controllers
         }
     }
 }
+*/

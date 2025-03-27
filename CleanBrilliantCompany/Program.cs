@@ -24,8 +24,7 @@ builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
 builder.Services.AddScoped<ICarbonNotification, CarbonNotification>();
 
-builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
-builder.Services.AddScoped<IGoalsQuery, GoalsGateway>();
+//builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
 
 var app = builder.Build();
 
@@ -55,6 +54,7 @@ app.MapControllerRoute(
     pattern: "toxicity/product/{productName}",
     defaults: new { Controller = "Toxicity", action = "ViewByProductName" });
 
+/*
 app.MapControllerRoute(
     name: "goalsManagement",
     pattern: "Goals",
@@ -72,6 +72,7 @@ app.MapControllerRoute(
     pattern: "Goals/GoalsModification",
     defaults: new { controller = "GoalsPage", action = "GoalsModification" }
 );
+*/
 
 app.MapControllerRoute(
     name: "alerts",

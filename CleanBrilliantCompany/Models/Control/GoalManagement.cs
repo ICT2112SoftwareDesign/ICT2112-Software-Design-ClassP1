@@ -4,18 +4,16 @@ using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Interfaces;
 
-
+/*
 namespace CleanBrilliantCompany.Models.Control
 {
     public class GoalsManagement
     {
         private readonly IGoalsDB _goalDb;
-        private readonly IGoalsQuery _goalsQuery;
 
-        public GoalsManagement(IGoalsDB goalsDb, IGoalsQuery goalsQuery)
+        public GoalsManagement(IGoalsDB goalsDb)
         {
             _goalDb = goalsDb;
-            _goalsQuery = goalsQuery;
         }
 
         public async Task AddGoal(int goalId, float targetEmission, int goalYear, int goalMonth)
@@ -40,3 +38,4 @@ namespace CleanBrilliantCompany.Models.Control
         }
     }
 }
+*/
