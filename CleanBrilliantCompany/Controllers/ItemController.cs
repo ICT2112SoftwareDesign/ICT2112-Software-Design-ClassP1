@@ -10,37 +10,65 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ItemControl _itemControl;
 
-        public ItemController(IConfiguration configuration)
+        public ItemController(IConfiguration configuration, iProduct iProduct, iProductQuantity iProductQuantity)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-            _itemControl = new ItemControl(connectionString, null);
+            // string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+            _itemControl = new ItemControl(configuration, iProduct, iProductQuantity);
         }
-        public async Task<IActionResult> Index(int? searchedItemId)
+
+
+        // default get all items
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-            if (searchedItemId != null)
-            {
-                Item item = await _itemControl.getItemById(searchedItemId.Value);
-                itemsInfo.Add(item.retrieveItemInfo());
-            }
-            else
-            {
-                List<Item> items = await _itemControl.getAllItems();
+            List<Item> items = await _itemControl.getAllItems();
 
-                foreach (var item in items)
-                {
-                    itemsInfo.Add(item.retrieveItemInfo());
-                }
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
             }
 
             return View(itemsInfo);
         }
 
         [HttpPost]
-        [Route("addItem")]
-        public async Task<IActionResult> addItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        [Route("searchById")]
+        public async Task<IActionResult> searchById(int searchedItemId)
         {
-            bool result = await _itemControl.createItem(itemId, productId, salePrice, batchCode, warehouseId, status);
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            Item? item = await _itemControl.getItemById(searchedItemId);
+
+            if (item != null)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            return View("Index", itemsInfo);  // Reuse Index view
+        }
+
+        [HttpPost]
+        [Route("searchByName")]
+        public async Task<IActionResult> searchByName(string searchedProductName)
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            List<Item> items = await _itemControl.getItemByProductName(searchedProductName);
+
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            return View("Index", itemsInfo);  // Reuse Index view
+        }
+
+
+
+        [HttpPost]
+        [Route("addItem")]
+        public async Task<IActionResult> addItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        {
+            bool result = await _itemControl.createItem(productId, salePrice, batchCode, warehouseId, status);
             if (result)
             {
                 return RedirectToAction("Index");
@@ -87,7 +115,7 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
-        
+
         // to test update item status & id (related to iItemUpdate)
         [HttpPost]
         [Route("updateItemStatus")]
@@ -111,6 +139,23 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
+        // TESTING FOR IPRODUCT METHOD
+        [HttpPost]
+        [Route("retrieveProductDetails")]
+        public async Task<IActionResult> retrieveProductDetails(int testProductId)
+        {
+            testProductId = 2;
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+            Product? product = await _itemControl.retrieveProductDetails(testProductId);
+            productInfo.Add(product.retrieveProductInfo());
+            Console.WriteLine($"Product ID: {productInfo[0]["ProductId"]}");
+            // Console.WriteLine($"Product Name: {productInfo[0]["ProductName"]}");
+            // Console.WriteLine($"Product Category: {productInfo[0]["ProductCategory"]}");
+            // Console.WriteLine($"Manufacturer ID: {productInfo[0]["ManufacturerId"]}");
+            // Console.WriteLine($"Quantity: {productInfo[0]["Quantity"]}");
+
+            return RedirectToAction("Index");
+        }
 
         // TESTING FOR IWAREHOUSE METHOD
         [HttpPost]
@@ -122,7 +167,7 @@ namespace CleanBrilliantCompany.Controllers
 
             int result = await _itemControl.getProductQuantityByWarehouse(productId, warehouseId);
 
-            if (result >= 0) 
+            if (result >= 0)
             {
                 Console.WriteLine("QUANTITY: " + result);
                 return RedirectToAction("Index", new { quantity = result });
@@ -133,6 +178,41 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
+        // REFUNDED ITEMS FROM MOD 1
+        [HttpPost]
+        [Route("refundedItems")]
+        public async Task<IActionResult> refundedItems(List<int> itemIds, string refundReason)
+        {
+            itemIds = [4, 5]; // list of items to be refunded (this is from order 1 so b4 running this prob ned to press the order items btn)
+            refundReason = "Defective";
+            _itemControl.returnItemToInventory(itemIds, refundReason);
+            return RedirectToAction("Index");
+        }
+
+        // HANDLE ORDERING OF ITEMS
+        [HttpPost]
+        [Route("adjustInventory")]
+        public async Task<IActionResult> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
+        {
+            orderId = 1;
+            orderProducts = new Dictionary<int, int> {
+                {2, 2} // product id, quantity so prod id 2, quantity:2
+            };
+
+            _itemControl.adjustInventory(orderId, orderProducts);
+            return RedirectToAction("Index");
+        }
+
+        // HANDLING CANCELLING OF ORDERS
+        [HttpPost]
+        [Route("processCancelledOrder")]
+        public async Task<IActionResult> processCancelledOrder(int orderId)
+        {
+            orderId = 1;
+
+            _itemControl.processCancelledOrder(orderId);
+            return RedirectToAction("Index");
+        }
 
     }
 }

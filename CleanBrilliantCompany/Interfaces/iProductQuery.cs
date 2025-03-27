@@ -16,7 +16,7 @@ namespace CleanBrilliantCompany.Interfaces
         // Product Batch
         List<ProductBatch> getAllProductBatch();
         ProductBatch getBatchDetails(int batchCode); 
-        public void createProductBatch(int productId, DateTime expiryDate, 
+        public int createProductBatch(int productId, DateTime expiryDate, 
             DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost);
 
         // Stock History

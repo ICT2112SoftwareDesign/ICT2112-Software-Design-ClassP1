@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace CleanBrilliantCompany.Mappers
 {
@@ -50,7 +51,8 @@ namespace CleanBrilliantCompany.Mappers
                         ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
                     FROM Item
                     INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
-                    INNER JOIN Product ON Item.productId = Product.productId";
+                    INNER JOIN Product ON Item.productId = Product.productId
+                    ORDER BY ProductBatch.expiryDate ASC";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -95,7 +97,7 @@ namespace CleanBrilliantCompany.Mappers
             return items;
         }
 
-        // get 1 item 
+        // get 1 item by id
         public Item getItemById(int itemId)
         {
             Item item = null;
@@ -105,8 +107,14 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 // Define the SQL query to retrieve the item by its ID
-                string query = @"SELECT itemId, productId, salePrice, batchCode, warehouseId, itemStatus, reservationId, orderId, transferId, returnId 
-                         FROM Item WHERE itemId = @itemId";
+                string query =
+                         @"SELECT itemId, Item.productId, Product.productName, salePrice, Item.batchCode, itemStatus, 
+                        ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
+                        FROM Item
+                        INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
+                        INNER JOIN Product ON Item.productId = Product.productId
+                        WHERE itemId = @itemId
+                        ORDER BY ProductBatch.expiryDate ASC";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -133,7 +141,9 @@ namespace CleanBrilliantCompany.Mappers
                                     reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
                                     reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
                                     reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
-                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetDateTime(reader.GetOrdinal("expiryDate"))
                                 );
                             }
                         }
@@ -146,6 +156,68 @@ namespace CleanBrilliantCompany.Mappers
             }
 
             return item;
+        }
+
+        // get item by product name
+        public List<Item> getItemByProductName(string productName)
+        {
+            List<Item> items = new List<Item>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve the item by its ID
+                string query =
+                        @"SELECT itemId, Item.productId, Product.productName, salePrice, Item.batchCode, itemStatus, 
+                        ProductBatch.expiryDate, warehouseId, reservationId, orderId, transferId, returnId 
+                        FROM Item
+                        INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
+                        INNER JOIN Product ON Item.productId = Product.productId
+                        WHERE Product.productName = @productName
+                        ORDER BY ProductBatch.expiryDate ASC";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@productName", productName);
+                    // Execute the query and get the results
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Check if the query executed successfully and returned any rows
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            // Iterate through each row in the result set
+                            while (reader.Read())
+                            {
+                                ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+
+                                // Create the Item object using the constructor
+                                Item item = new Item(
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    status,
+                                    reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                    reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
+                                    reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetDateTime(reader.GetOrdinal("expiryDate"))
+                                );
+                                items.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"No item found with searched product name.");
+                        }
+                    }
+                }
+            }
+
+            return items;
         }
 
         // get item by status (for reserve feature)
@@ -165,7 +237,7 @@ namespace CleanBrilliantCompany.Mappers
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@status", itemStatus);
+                    command.Parameters.AddWithValue("@itemStatus", itemStatus).ToString();
                     // Execute the query and get the results
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -205,9 +277,8 @@ namespace CleanBrilliantCompany.Mappers
             return items;
         }
 
-
         // create item
-        public bool createItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        public bool createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -219,7 +290,6 @@ namespace CleanBrilliantCompany.Mappers
 
                 using (SqlCommand command = new SqlCommand(insertQuery, connection))
                 {
-                    command.Parameters.AddWithValue("@itemId", itemId);
                     command.Parameters.AddWithValue("@productId", productId);
                     command.Parameters.AddWithValue("@salePrice", salePrice);
                     command.Parameters.AddWithValue("@batchCode", batchCode);
@@ -451,5 +521,126 @@ namespace CleanBrilliantCompany.Mappers
                 return totalQuantity;
             }
         }
+
+        // handle refunded items
+        public void returnItemToInventory(List<int> itemIds, string refundReason)
+        {
+            if (refundReason == "Defect")
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string updateQuery = $@"
+                        UPDATE Item 
+                        SET itemStatus = 'ToReturn', orderId = NULL
+                        WHERE itemId IN ({string.Join(",", itemIds)}) 
+                        AND orderId IS NOT NULL 
+                        AND itemStatus = 'Sold';";
+
+                    using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        // to deduct product qty & update item status to ordered
+        public List<Item> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
+        {
+            List<Item> items = new List<Item>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                foreach (var kvp in orderProducts)
+                {
+                    int productId = kvp.Key;
+                    int quantity = kvp.Value;
+
+                    // first query to return the items to be updated
+                    string selectOrderItemsQuery = @"
+                    SELECT TOP (@quantity) * 
+                    FROM Item
+                    INNER JOIN ProductBatch ON Item.batchCode = ProductBatch.batchCode
+                    INNER JOIN Product ON Item.productId = Product.productId
+                    WHERE itemStatus = 'Available' AND Item.productId = @productId
+                    ORDER BY ProductBatch.expiryDate ASC;";
+
+                    List<int> updatedItemIds = new List<int>();
+
+                    using (SqlCommand command = new SqlCommand(selectOrderItemsQuery, connection))
+                    {
+                        // command.Parameters.AddWithValue("@orderId", orderId);
+                        command.Parameters.AddWithValue("@quantity", quantity);
+                        command.Parameters.AddWithValue("@productId", productId);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+                                updatedItemIds.Add(reader.GetInt32(0)); // list of item id
+                                Item item = new Item(
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    status,
+                                    reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                    reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
+                                    reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                );
+                                // Add the item to the list
+                                items.Add(item);
+                            }
+                        }
+                        Console.WriteLine("ITEMS: " + items);
+
+                        Console.WriteLine("UPDATED ITEMS NUMBER: " + updatedItemIds.Count);
+
+                        if (updatedItemIds.Count == 2)
+                        {
+                            // Update the selected items using updateItemStatus method
+                            foreach (int itemId in updatedItemIds)
+                            {
+                                updateItemStatus(itemId, null, orderId, null, null, ItemStatus.Sold);
+                                
+                            }
+                        }
+                    }
+                }
+            }
+
+            return items;
+        }
+
+        // to cancel order (would need to edit the orderId to null)
+        public void processCancelledOrder(int orderId)
+        {
+            Console.WriteLine("PROCESS ITEM MAPPER: " + orderId.GetType());
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string insertQuery = @"
+                UPDATE Item SET orderId = NULL, itemStatus = 'Available' WHERE orderId = @orderId";
+
+                using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@orderId", orderId);
+
+                    int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+                    Console.WriteLine("ROWS AFFECTED: " + rowsAffected);
+                }
+
+
+            }
+        }
+
     }
 }

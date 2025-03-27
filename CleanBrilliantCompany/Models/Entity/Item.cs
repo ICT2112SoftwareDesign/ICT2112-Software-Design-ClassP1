@@ -1,3 +1,5 @@
+using CleanBrilliantCompany.Interfaces;
+
 namespace CleanBrilliantCompany.Models.Entity
 {
     public enum ItemStatus
@@ -26,6 +28,8 @@ namespace CleanBrilliantCompany.Models.Entity
         private int? ReturnId;
         private string ProductName;
         private DateTime ExpiryDate;
+
+        private List<IObserver> _observers = new List<IObserver>();
  
         // Constructor to initialize the private fields
         public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
@@ -125,6 +129,37 @@ namespace CleanBrilliantCompany.Models.Entity
         private void setTransferId(int? transferId) => TransferId = transferId;
         private void setReturnId(int? returnId) => ReturnId = returnId;
 
-        public Item() { } // dk if need anot 
-    }
+        public void Attach(IObserver observer)
+        {
+            Console.WriteLine("Called Attach Observer method");
+            _observers.Add(observer);
+        }
+
+        public void Detach(IObserver observer)
+        {
+            _observers.Remove(observer);
+        }
+
+        public void Notify()
+        {
+            var items = retrieveItemInfo();
+            foreach (var observer in _observers)
+            {
+                observer.Update(items);
+            }
+        }
+
+        public void UpdateStatus(ItemStatus newStatus)
+        {
+            Console.WriteLine("Entered UpdateStatus");
+
+            ItemStatus = newStatus;
+            Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
+            
+            Notify();
+        }
+
+        public Item() { }
+
+}
 }

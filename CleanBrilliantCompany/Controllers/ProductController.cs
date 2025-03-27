@@ -3,6 +3,7 @@ using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Models.ViewModel;
 using Microsoft.Extensions.Configuration;
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -11,10 +12,10 @@ namespace CleanBrilliantCompany.Controllers
         private readonly ProductControl _productControl;
         private readonly AgingControl _agingControl; // Testing
 
-        public ProductController(IConfiguration configuration)
+        public ProductController(IConfiguration configuration, iReorderRequest reorderRequest)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            _productControl = new ProductControl(connectionString);
+            _productControl = new ProductControl(configuration, reorderRequest);
+
             _agingControl = new AgingControl(_productControl); // Testing
         }
 
@@ -183,7 +184,7 @@ namespace CleanBrilliantCompany.Controllers
                 }
             }
 
-            return RedirectToAction("displayProducts");
+            return RedirectToAction("displayProductBatch");
         }
 
         // ProductManufecturer
@@ -210,6 +211,11 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("displayProducts");
         }
 
-        
+        // Reorder Request
+        public async Task<IActionResult> ReorderRequest() 
+        {
+            _productControl.processReorderRequest();
+            return RedirectToAction("displayProducts");
+        }
     }
 }

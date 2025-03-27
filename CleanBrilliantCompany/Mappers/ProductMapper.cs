@@ -82,8 +82,8 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-        public string insert(string productName, string category, float productCost, 
-        int manufacturerId, float productWeight, int quantity, int volume, 
+        public string insert(string productName, string category, float productCost,
+        int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
             try
@@ -129,7 +129,7 @@ namespace CleanBrilliantCompany.Mappers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error inserting product: {ex.Message}");
-                return $"Error inserting product: {ex.Message}"; 
+                return $"Error inserting product: {ex.Message}";
             }
         }
 
@@ -170,8 +170,8 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public void update(int productId, string productName, string productCategory, 
-        float productCost, int manufacturerId, float productWeight, int quantity, int volume, 
+        public void update(int productId, string productName, string productCategory,
+        float productCost, int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
             try
@@ -211,7 +211,7 @@ namespace CleanBrilliantCompany.Mappers
                         // Execute the insert operation synchronously
                         int rowsAffected = command.ExecuteNonQuery();
 
-                         // Check if the insert was successful using getDatabaseQueryStatus
+                        // Check if the insert was successful using getDatabaseQueryStatus
                         if (getDatabaseQueryStatus(null, rowsAffected))
                         {
                             Console.WriteLine($"Product: '{productId}' updated successfully.");
@@ -227,6 +227,92 @@ namespace CleanBrilliantCompany.Mappers
             {
                 Console.WriteLine($"Error updating product: {ex.Message}");
             }
+        }
+
+        public void update(int productId, int oldQty, int quantity, string arithmeticOperations)
+        {
+            try
+            {
+                int finalQuantity;
+                switch (arithmeticOperations.ToLower())
+                {
+                    case "increase":
+                        finalQuantity = oldQty + quantity;
+                        break;
+                    case "decrease":
+                        finalQuantity = oldQty - quantity;
+                        break;
+                    default:
+                        throw new InvalidOperationException("Unsupported operation. Use 'increase' or 'decrease'.");
+                }
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                        UPDATE dbo.Product
+                        SET quantity = @Quantity
+                        WHERE productId = @ProductId";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductId", productId);
+                        command.Parameters.AddWithValue("@Quantity", finalQuantity);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (getDatabaseQueryStatus(null, rowsAffected))
+                        {
+                            Console.WriteLine($"Product: '{productId}' updated successfully to quantity: {finalQuantity}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error updating product.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating product: {ex.Message}");
+            }
+        
+            // try
+            // {
+            //     using (SqlConnection connection = new SqlConnection(_connectionString))
+            //     {
+            //         connection.Open();
+
+            //         string query = @"
+            //             UPDATE dbo.Product
+            //             SET quantity = @Quantity
+            //             WHERE productId = @ProductId";
+
+            //         using (SqlCommand command = new SqlCommand(query, connection))
+            //         {
+            //             command.Parameters.AddWithValue("@ProductId", productId);
+            //             command.Parameters.AddWithValue("@Quantity", quantity);
+
+            //             // Execute the insert operation synchronously
+            //             int rowsAffected = command.ExecuteNonQuery();
+
+            //              // Check if the insert was successful using getDatabaseQueryStatus
+            //             if (getDatabaseQueryStatus(null, rowsAffected))
+            //             {
+            //                 Console.WriteLine($"Product: '{productId}' updated successfully.");
+            //             }
+            //             else
+            //             {
+            //                 Console.WriteLine("Error updating product.");
+            //             }
+            //         }
+            //     }
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine($"Error updating product: {ex.Message}");
+            // }
         }
 
         public List<Product> findAllProducts()
@@ -284,12 +370,12 @@ namespace CleanBrilliantCompany.Mappers
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open(); 
+                    connection.Open();
 
                     string query = @"
                         SELECT batchCode, productId, expiryDate, receiveDate, manufactureDate, 
                             quantity, batchCost
-                        FROM dbo.ProductBatch"; 
+                        FROM dbo.ProductBatch";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -302,11 +388,11 @@ namespace CleanBrilliantCompany.Mappers
                                     ProductBatch batch = new ProductBatch(
                                         reader.GetInt32(reader.GetOrdinal("batchCode")),
                                         reader.GetInt32(reader.GetOrdinal("productId")),
-                                        reader.GetDateTime(reader.GetOrdinal("expiryDate")), 
-                                        reader.GetDateTime(reader.GetOrdinal("receiveDate")), 
-                                        reader.GetDateTime(reader.GetOrdinal("manufactureDate")), 
+                                        reader.GetDateTime(reader.GetOrdinal("expiryDate")),
+                                        reader.GetDateTime(reader.GetOrdinal("receiveDate")),
+                                        reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
                                         reader.GetInt32(reader.GetOrdinal("quantity")),
-                                        (int)reader.GetDouble(reader.GetOrdinal("batchCost")) 
+                                        (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
                                     );
 
                                     // Add the product to the list
@@ -361,21 +447,30 @@ namespace CleanBrilliantCompany.Mappers
                     }
                 }
             }
-            return null; 
+            return null;
         }
 
-        public void insert(int productId, DateTime expiryDate, 
-            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+        public int insert(int productId, DateTime expiryDate,
+    DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
                 string query = @"
-                    INSERT INTO dbo.ProductBatch (productId, expiryDate, receiveDate, manufactureDate, 
-                                                quantity, batchCost)
-                    SELECT @ProductId, @ExpiryDate, @ReceiveDate, @ManufactureDate, @Quantity, @BatchCost
-                    WHERE EXISTS (SELECT 1 FROM dbo.Product WHERE productId = @ProductId)";
+                    DECLARE @OutputTable TABLE (batchCode INT);
+                    DECLARE @NewBatchCode INT;
+
+                    IF EXISTS (SELECT 1 FROM dbo.Product WHERE productId = @ProductId)
+                    BEGIN
+                        INSERT INTO dbo.ProductBatch (productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost)
+                        OUTPUT INSERTED.batchCode INTO @OutputTable(batchCode)
+                        VALUES (@ProductId, @ExpiryDate, @ReceiveDate, @ManufactureDate, @Quantity, @BatchCost);
+
+                        SELECT @NewBatchCode = batchCode FROM @OutputTable;
+                    END
+
+                    SELECT ISNULL(@NewBatchCode, -1);";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -386,19 +481,23 @@ namespace CleanBrilliantCompany.Mappers
                     command.Parameters.AddWithValue("@Quantity", quantity);
                     command.Parameters.AddWithValue("@BatchCost", batchCost);
 
-                    int rowsAffected = command.ExecuteNonQuery();
+                    object result = command.ExecuteScalar();
+                    int newBatchCode = Convert.ToInt32(result);
 
-                    if (getDatabaseQueryStatus(null, rowsAffected))
+                    if (newBatchCode == -1)
                     {
-                        Console.WriteLine("Batch inserted successfully.");
+                        Console.WriteLine("Error: Product ID does not exist. Batch not inserted.");
                     }
                     else
                     {
-                        Console.WriteLine("Error: Product ID does not exist.");
+                        Console.WriteLine($"Batch inserted successfully. New BatchCode: {newBatchCode}");
                     }
+
+                    return newBatchCode;
                 }
             }
         }
+
 
         // StockHistory
         public List<StockHistory> findAllStockHistory()
@@ -443,49 +542,37 @@ namespace CleanBrilliantCompany.Mappers
             return stockHistoryList;
         }
 
-        // public List<StockHistory> findStockHistoryByBatchCode(int batchCode)
-        // {
-        //     List<StockHistory> stockHistoryList = new List<StockHistory>();
+        public void insert(int batchCode, DateOnly stockTakeDate, int quantity, DateTime recordedDate)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
 
-        //     using (SqlConnection connection = new SqlConnection(_connectionString))
-        //     {
-        //         connection.Open();
+                string query = @"
+                    INSERT INTO dbo.StockHistory (batchCode, stockTakeDate, quantity, recordedDate)
+                    VALUES (@BatchCode, @StockTakeDate, @Quantity, @RecordedDate);";
 
-        //         string query = @"
-        //             SELECT stockId, batchCode, stockTakeDate, quantity, recordedDate
-        //             FROM dbo.StockHistory
-        //             WHERE batchCode = @BatchCode
-        //             ORDER BY stockTakeDate DESC";  // Orders by most recent stock check
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@BatchCode", batchCode);
+                    command.Parameters.AddWithValue("@StockTakeDate", stockTakeDate.ToDateTime(new TimeOnly(0, 0)));
+                    command.Parameters.AddWithValue("@Quantity", quantity);
+                    command.Parameters.AddWithValue("@RecordedDate", recordedDate);
 
-        //         using (SqlCommand command = new SqlCommand(query, connection))
-        //         {
-        //             command.Parameters.AddWithValue("@BatchCode", batchCode);
-        //             using (SqlDataReader reader = command.ExecuteReader())
-        //             {
-        //                 if (getDatabaseQueryStatus(reader))
-        //                 {
-        //                     while (reader.Read())
-        //                     {
-        //                         // Convert DateTime to Date
-        //                         DateTime stockTakeDateTime = reader.GetDateTime(reader.GetOrdinal("stockTakeDate"));
-        //                         DateOnly stockTakeDate = DateOnly.FromDateTime(stockTakeDateTime);
-        //                         stockHistoryList.Add(new StockHistory
-        //                         {
-        //                             StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
-        //                             BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-        //                             // StockTakeDate = reader.GetDateTime(reader.GetOrdinal("stockTakeDate")),
-        //                             StockTakeDate = stockTakeDate,
-        //                             Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-        //                             RecordedDate = reader.GetDateTime(reader.GetOrdinal("recordedDate"))
-        //                             // RecordedDate = recordedDate
-        //                         });
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     return stockHistoryList;
-        // }
+                    int rowsAffected = command.ExecuteNonQuery();
+                    // Console.WriteLine($"{rowsAffected} row(s) inserted into StockHistory.");
+
+                    if (getDatabaseQueryStatus(null, rowsAffected))
+                    {
+                        Console.WriteLine($"{rowsAffected} row(s) inserted into StockHistory.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error inserting StockHistory.");
+                    }
+                }
+            }
+        }
 
         // ProductManufacturer
         public ProductManufacturer getProductManufacturerById(int manufacturerId)
