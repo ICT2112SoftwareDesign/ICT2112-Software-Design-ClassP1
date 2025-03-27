@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Models;
 
-namespace CleanBrilliantCompany.Services
+namespace CleanBrilliantCompany.Interfaces
 {
     public interface _IShippingAgentDB
     {

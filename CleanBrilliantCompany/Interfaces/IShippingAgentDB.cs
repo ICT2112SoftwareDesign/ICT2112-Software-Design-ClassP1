@@ -5,12 +5,12 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Services;
+using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Data;
 using Microsoft.EntityFrameworkCore; // Required for ToListAsync()
 
 
-namespace CleanBrilliantCompany.Services
+namespace CleanBrilliantCompany.Interfaces
 {
     public class ShippingAgentDB : _IShippingAgentDB
     {

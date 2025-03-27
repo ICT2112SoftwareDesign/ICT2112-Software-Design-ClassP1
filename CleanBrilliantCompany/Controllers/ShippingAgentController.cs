@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Services;
+using CleanBrilliantCompany.Interfaces;
 using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Controllers
