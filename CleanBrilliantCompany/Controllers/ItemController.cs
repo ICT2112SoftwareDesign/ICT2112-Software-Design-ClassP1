@@ -82,11 +82,19 @@ namespace CleanBrilliantCompany.Controllers
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
             List<Item> items = await _itemControl.getItemByProductName(searchedProductName);
-
-            foreach (var item in items)
+            if (items.Any())
             {
-                itemsInfo.Add(item.retrieveItemInfo());
+                foreach (var item in items)
+                {
+                    itemsInfo.Add(item.retrieveItemInfo());
+                }
+                TempData["SuccessMessage"] = "Item Found";
             }
+            else
+            {
+                TempData["ErrorMessage"] = "No item found with searched Product Name";
+            }
+
 
             return View("Index", itemsInfo);  // Reuse Index view
         }
@@ -118,27 +126,31 @@ namespace CleanBrilliantCompany.Controllers
             bool result = await _itemControl.updateItem(itemId, salePrice);
             if (result)
             {
+                TempData["SuccessMessage"] = "Item Price Updated";
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["ErrorMessage"] = "Item failed to update";
                 return BadRequest(new { error = "Failed to add item." });
             }
         }
 
         [HttpPost]
         [Route("deleteItem")]
-        public async Task<IActionResult> deleteItem(int deleteItemId) 
+        public async Task<IActionResult> deleteItem(int deleteItemId)
         {
             Console.WriteLine("ItemID: " + deleteItemId);
 
             bool result = await _itemControl.deleteItem(deleteItemId);
             if (result)
             {
+                TempData["SuccessMessage"] = "Item Successfully Deleted";
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["ErrorMessage"] = "Failed to delete item";
                 return BadRequest(new { error = "Failed to delete item." });
             }
         }
@@ -159,10 +171,12 @@ namespace CleanBrilliantCompany.Controllers
             bool result = await _itemControl.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status);
             if (result)
             {
+                TempData["SuccessMessage"] = "Item Updated";
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["ErrorMessage"] = "Item failed to update";
                 return BadRequest(new { error = "Failed to add item." });
             }
         }
