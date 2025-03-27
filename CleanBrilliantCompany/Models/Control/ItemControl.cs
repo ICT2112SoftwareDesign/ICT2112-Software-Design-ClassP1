@@ -29,9 +29,14 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // METHODS FOR IITEM
-        public async Task<List<Item>> getAllItems()
+        public async Task<List<Item>> getAllItems(int pageNumber, int pageSize)
         {
-            return await Task.FromResult(_itemMapper.getAllItems()); // mapper uses iItemQuery to interact with control 
+            return await Task.FromResult(_itemMapper.getAllItems(pageNumber, pageSize)); // mapper uses iItemQuery to interact with control 
+        }
+
+        public int getItemCount()
+        {
+            return _itemMapper.getItemCount();
         }
 
         public async Task<Item> getItemById(int itemId)
@@ -53,6 +58,12 @@ namespace CleanBrilliantCompany.Models.Control
         public async Task<bool> updateItem(int itemId, float salePrice)
         {
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
+        }
+
+        // delete item 
+        public async Task<bool> deleteItem(int itemId)
+        {
+            return await Task.FromResult(_itemMapper.deleteItem(itemId));
         }
 
         public void RegisterObservers(Item item)
@@ -94,10 +105,10 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // for transaction feature, might remove in future
-        public async Task<bool> updateItemStatusOld(int itemId, ItemStatus status)
-        {
-            return await Task.FromResult(_itemMapper.updateItemStatusOld(itemId, status));
-        }
+        // public async Task<bool> updateItemStatusOld(int itemId, ItemStatus status)
+        // {
+        //     return await Task.FromResult(_itemMapper.updateItemStatusOld(itemId, status));
+        // }
 
 
         // METHODS FOR RESERVE FEATURE (IRESERVE)
@@ -176,7 +187,7 @@ namespace CleanBrilliantCompany.Models.Control
 
         public async Task<List<Item>> getToReturnItems()
         {
-           return await Task.FromResult(_itemMapper.getToReturnItems());
+            return await Task.FromResult(_itemMapper.getToReturnItems());
         }
 
 
