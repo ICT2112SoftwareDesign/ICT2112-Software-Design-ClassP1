@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse, IReturnForm
     {
         private readonly ItemMapper _itemMapper;
 
@@ -155,7 +155,7 @@ namespace CleanBrilliantCompany.Models.Control
                     int quantity = entry.Value;
                     string arithmeticOperations = "decrease";
 
-                    updateProductQuantity(productId, quantity, arithmeticOperations); 
+                    updateProductQuantity(productId, quantity, arithmeticOperations);
                 }
             }
 
@@ -170,9 +170,15 @@ namespace CleanBrilliantCompany.Models.Control
 
         public void processCancelledOrder(int orderId)
         {
-            updateProductQuantity(2, 2, "increase"); 
+            updateProductQuantity(2, 2, "increase");
             _itemMapper.processCancelledOrder(orderId);
         }
+
+        public async Task<List<Item>> getToReturnItems()
+        {
+           return await Task.FromResult(_itemMapper.getToReturnItems());
+        }
+
 
     }
 }
