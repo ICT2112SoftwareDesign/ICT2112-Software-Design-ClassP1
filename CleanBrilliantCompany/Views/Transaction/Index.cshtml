@@ -7,12 +7,62 @@
 <h2>Transaction Log Overview</h2>
 
 <!-- Form to Filter by Date -->
-<h3>Search Transactions by Date</h3>
+@* <h4>Search Transactions by Date</h4> *@
 <form method="get">
-    <label for="searchDate">Select Date:</label>
+    <label for="searchDate">Search Transactions by Date:</label>
     <input type="date" name="searchDate" id="searchDate" />
     <button type="submit">Search</button>
 </form>
+
+<h3>Filter by Adjustment Type</h3>
+<form method="get">
+    <label for="adjustmentType">Select Adjustment Type:</label>
+    <select name="adjustmentType" id="adjustmentType">
+        <option value="All">All</option>
+        <option value="Sold">Sold</option>
+        <option value="Reserved">Reserved</option>
+        <option value="Transferred">Transferred</option>
+        <option value="Refunded">Refunded</option>
+        <option value="Returned">Returned</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<!-- Display Counts for Each Adjustment Type -->
+<div class="row">
+    <div class="col-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Sold</h5>
+                <p class="card-text">@ViewData["TotalSoldCount"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Reserved</h5>
+                <p class="card-text">@ViewData["TotalReservedCount"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Transferred</h5>
+                <p class="card-text">@ViewData["TotalTransferredCount"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Refunded</h5>
+                <p class="card-text">@ViewData["TotalRefundedCount"]</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Button to switch between views -->
 <div>
@@ -124,7 +174,7 @@
             <p> 
                 @if (TransactionInfo["AdjustmentType"].ToString() == "Sold")
                 {
-                    @string.Format("{0} [Item Id {1}] was sold by staff {2} at {3}",
+                    @string.Format("{0} [Item ID {1}] was sold by staff {2} at {3}",
                         TransactionInfo["ProductName"],
                         TransactionInfo["ItemId"],
                         TransactionInfo["StaffId"],
@@ -133,7 +183,7 @@
                 }
                 else if (TransactionInfo["AdjustmentType"].ToString() == "Reserved")
                 {
-                    @string.Format("{0} [Item Id {1}] was reserved by staff {2} at {3}",
+                    @string.Format("{0} [Item ID {1}] was reserved by staff {2} at {3}",
                         TransactionInfo["ProductName"],
                         TransactionInfo["ItemId"],
                         TransactionInfo["StaffId"],
@@ -142,7 +192,7 @@
                 }
                 else if (TransactionInfo["AdjustmentType"].ToString() == "Transferred")
                 {
-                    @string.Format("{0} [Item Id {1}] was transferred by staff {2} at {3}",
+                    @string.Format("{0} [Item ID {1}] was transferred by staff {2} at {3}",
                         TransactionInfo["ProductName"],
                         TransactionInfo["ItemId"],
                         TransactionInfo["StaffId"],
@@ -151,7 +201,16 @@
                 }
                 else if (TransactionInfo["AdjustmentType"].ToString() == "Refunded")
                 {
-                    @string.Format("{0} [Item Id {1}] was refunded by staff {2} at {3}",
+                    @string.Format("{0} [Item ID {1}] was refunded by staff {2} at {3}",
+                        TransactionInfo["ProductName"],
+                        TransactionInfo["ItemId"],
+                        TransactionInfo["StaffId"],
+                        Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")
+                    )
+                }
+                else if (TransactionInfo["AdjustmentType"].ToString() == "Returned")
+                {
+                    @string.Format("{0} [Item ID {1}] was returned to Manufacturer 1 by staff {2} at {3}",
                         TransactionInfo["ProductName"],
                         TransactionInfo["ItemId"],
                         TransactionInfo["StaffId"],
