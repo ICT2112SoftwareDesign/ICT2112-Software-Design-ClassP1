@@ -42,7 +42,8 @@ namespace CleanBrilliantCompany.Controllers
             if (item != null)
             {
                 itemsInfo.Add(item.retrieveItemInfo());
-            }
+                TempData["SuccessMessage"] = "Item Found";
+            } else TempData["ErrorMessage"] = "No item found with the searched ID";
 
             return View("Index", itemsInfo);  // Reuse Index view
         }
