@@ -181,7 +181,7 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Support/FAQs.cshtml");
         }
 
-        public IActionResult escalateIssue(Int32 orderID, String issueDescription)
+        public IActionResult escalateIssue(String issueDescription)
         {
             // Retrieve customer ID from the session using the correct key
             int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
@@ -191,7 +191,15 @@ namespace CleanBrilliantCompany.Controllers
                 return Json(new { redirectUrl = Url.Action("Login", "BeforeLoginPage") });
             }
 
-            bool success = _supportManagement.createSupportTicket(customerID, orderID, issueDescription);
+            bool success = _supportManagement.createSupportTicket(customerID, issueDescription);
+            if (success)
+            {
+                Console.WriteLine("Support ticket created, pop up will appear!");
+                TempData["Success"] = "Issue has been successfully raised!";
+            } else{
+                TempData["Error"] = "Failed to raise the issue!";
+            }
+
             return RedirectToAction("viewFAQs");
         }
 
@@ -245,22 +253,6 @@ namespace CleanBrilliantCompany.Controllers
 
             return RedirectToAction("startChatSession");
         }
-
-        // public IActionResult escalateToAgent(Int32 orderID, String query)
-        // {
-        //     // Retrieve customer ID from the session using the correct key
-        //     int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-        //     if (customerID == null)
-        //     {
-        //         TempData["Error"] = "User not logged in.";
-        //         return RedirectToAction("Login", "BeforeLoginPage");
-        //     }
-
-        //     bool success = _supportManagement.escalateToHumanAgent(customerID, orderID, query);
-        //     ViewBag.escalateIssue = success;
-
-        //     return RedirectToAction("startChatSession");
-        // }
 
         public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
         {

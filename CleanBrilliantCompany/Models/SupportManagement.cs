@@ -56,9 +56,10 @@ namespace CleanBrilliantCompany.Models
             return response;
         }
 
+        // remove this
         public bool escalateToHumanAgent(Int32 customerID, String query)
         {
-            bool success = _supportTicketService.createTicket(customerID, 0, query);
+            bool success = _supportTicketService.createSupportTicket(customerID, query);
             if (success)
             {
                 Console.WriteLine("Successfully escalated the issue!");
@@ -72,12 +73,13 @@ namespace CleanBrilliantCompany.Models
             return success;
         }
 
-        public bool createSupportTicket(Int32 customerID, Int32 orderID, String ticketDetails)
+        public bool createSupportTicket(Int32 customerID, String ticketDetails)
         {
-            bool success = _supportTicketService.createTicket(customerID, orderID, ticketDetails);
+            bool success = _supportTicketService.createSupportTicket(customerID, ticketDetails);
             if (success)
             {
                 Console.WriteLine("Support ticket created successfully!");
+
             }
             else
             {
