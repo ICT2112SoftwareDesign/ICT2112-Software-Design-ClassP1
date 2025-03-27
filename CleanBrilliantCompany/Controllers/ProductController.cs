@@ -12,10 +12,16 @@ namespace CleanBrilliantCompany.Controllers
         private readonly ProductControl _productControl;
 
         // public ProductController(IConfiguration configuration, iReorderRequest reorderRequest, IItemCreation iItemCreation)
-        public ProductController(IConfiguration configuration, iReorderRequest reorderRequest)
+        // // public ProductController(IConfiguration configuration, iReorderRequest reorderRequest)
+        // // public ProductController(IConfiguration configuration, iReorderRequest reorderRequest, Lazy<IItemCreation> lazyItemCreation)
+        // {
+        //     _productControl = new ProductControl(configuration, reorderRequest, iItemCreation);
+        //     // _productControl = new ProductControl(configuration, reorderRequest);
+        // }
+
+        public ProductController(ProductControl productControl)
         {
-            // _productControl = new ProductControl(configuration, reorderRequest, iItemCreation);
-            _productControl = new ProductControl(configuration, reorderRequest);
+            _productControl = productControl;
         }
 
         // To change idk where yall put the stuffs

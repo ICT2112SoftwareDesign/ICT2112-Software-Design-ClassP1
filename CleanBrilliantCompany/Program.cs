@@ -24,7 +24,12 @@ builder.Services.AddScoped<iProductQuantity, ProductControl>();
 builder.Services.AddScoped<iBatch, ProductControl>();
 builder.Services.AddScoped<iReorderRequest, ReorderRequestManagement>();
 
+// My controller instantiate diff now**
+builder.Services.AddScoped<ProductControl>();
 
+// Lazy resolver for breaking circular dependency
+builder.Services.AddScoped(provider =>
+    new Lazy<IItemCreation>(() => provider.GetRequiredService<IItemCreation>()));
 
 
 

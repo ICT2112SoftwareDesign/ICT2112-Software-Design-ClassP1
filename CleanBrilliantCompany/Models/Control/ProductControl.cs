@@ -10,14 +10,17 @@ namespace CleanBrilliantCompany.Models.Control
         private readonly ProductMapper _productMapper;
         private readonly iReorderRequest _ireorderRequest;
         // private readonly IItemCreation _iItemCreation;
+        private readonly Lazy<IItemCreation> _lazyItemCreation;
 
-        //  public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, IItemCreation iItemCreation)
-        public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest)
+        // public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, IItemCreation iItemCreation)
+        // public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest)
+        public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, Lazy<IItemCreation> lazyItemCreation)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _productMapper = new ProductMapper(connectionString);
             _ireorderRequest = ireorderRequest;
             // _iItemCreation = iItemCreation;
+            _lazyItemCreation = lazyItemCreation;
 
             Console.WriteLine("Products loaded from database.");
         }
@@ -189,8 +192,8 @@ namespace CleanBrilliantCompany.Models.Control
                 // Add the amount of items into the db.
                 for (int i = 0; i < request.Quantity; i++)
                 {
-                    // TODO: Error on itemcreation cus of dependency injection loop
                     // _iItemCreation.createItem(request.ProductId, salePrice, batchCode, warehouseId, ItemStatus.Available);
+                    _lazyItemCreation.Value.createItem(request.ProductId, salePrice, batchCode, warehouseId, ItemStatus.Available);
                     Console.WriteLine($"Added Item");
                 }
             }
