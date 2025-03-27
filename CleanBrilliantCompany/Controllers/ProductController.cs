@@ -22,10 +22,17 @@ namespace CleanBrilliantCompany.Controllers
         // To change idk where yall put the stuffs
         public async Task<IActionResult> Index()
         {
-            var products = _productControl.getAllProducts();
-            // return View("~/Views/Product/TestProduct.cshtml", products);
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
 
-            return View(products);
+            List<Product> products = _productControl.getAllProducts();
+
+            foreach (var product in products)
+            {
+                productInfo.Add(product.retrieveProductInfo());
+            }
+            //_agingControl.testProductInterfaceMethods(); // Just to see the iProduct working
+
+            return View("~/Views/Product/TestProduct.cshtml", productInfo);
         }
 
         public async Task<IActionResult> displayProducts()
