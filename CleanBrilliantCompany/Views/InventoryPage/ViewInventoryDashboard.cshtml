@@ -53,7 +53,7 @@ else
         </div>
         <div class="card-body">
             <p><strong>Data for:</strong> @Model.RequestedStartDate.ToString("yyyy-MM-dd")</p>
-            <p><strong>Generated:</strong> @Model.GeneratedDate.ToString("d")</p>
+            <p><strong>Generated:</strong> @(Model.GeneratedDate.HasValue ? Model.GeneratedDate.Value.ToString("d") : "Not generated")</p>
             <p><strong>Validity Duration:</strong> @Model.ValidityDuration days</p>
         </div>
     </div>
@@ -67,27 +67,55 @@ else
         </div>
     </div>
 
-    @if (stockLevels.Any())
+    <!-- Alerts Section (Bottom) -->
+    <div class="alerts mb-4">
+        @if (Model.LowStockProducts.Count > 0)
+        {
+            @* <div class="card shadow mb-4"> *@
+            @*     <div class="card-header py-3"> *@
+            @*         <h6 class="m-0 font-weight-bold text-primary">Low Stock Products</h6> *@
+            @*     </div> *@
+            @*     <div class="card-body"> *@
+            @*         <ul class="list-group list-group-flush"> *@
+            @*             @foreach (var productId in LowStockAlert) *@
+            @*             { *@
+            @*                 <li class="list-group-item"> *@
+            @*                     Product @productId *@
+            @*                 </li> *@
+            @*             } *@
+            @*         </ul> *@
+            @*     </div> *@
+            @* </div> *@
+            <div class="alert alert-danger"> 
+                <strong>Low Stock Alert:</strong> @Model.LowStockAlert 
+            </div>
+        }
+        @if (Model.OverStockProducts.Count > 0)
+        {
+            <div class="alert alert-warning">
+                <strong>Overstock Alert:</strong> @Model.OverStockAlert
+            </div>
+        }
+    </div>
+
+    <!-- Replenishment Actions Section -->
+    var productsToReplenish = Model.GetAllReplenishmentStatuses()
+        .Where(kvp => kvp.Value == true)
+        .Select(kvp => kvp.Key)
+        .ToList();
+
+    @if (productsToReplenish.Any())
     {
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Stock Levels</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Replenishment Actions</h6>
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
-                    @foreach (var stock in stockLevels)
+                    @foreach (var productId in productsToReplenish)
                     {
-                        var stockStatus = Model.GetStockStatus(stock.Key);
-                        var statusDescription = stockStatus switch
-                        {
-                            "L" => "Low Stock",
-                            "N" => "Normal",
-                            "O" => "Over Stock",
-                            _ => "Unknown"
-                        };
-                        var replenish = Model.GetReplenishmentStatus(stock.Key) == true ? "Yes" : "No";
                         <li class="list-group-item">
-                            Product @stock.Key: @stock.Value units (Threshold: @Model.GetThreshold(stock.Key), Status: @statusDescription, Replenish: @replenish)
+                            Product @productId: @Model.GetStockLevel(productId) units (Threshold: @Model.GetThreshold(productId))
                         </li>
                     }
                 </ul>
@@ -96,10 +124,50 @@ else
     }
     else
     {
-        <div class="alert alert-warning" role="alert">
-            No stock levels available for this dashboard.
+        <div class="alert alert-info" role="alert">
+            No products require replenishment at this time.
         </div>
     }
+
+    <h2>Consecutive Weekly Alerts (Historical)</h2>
+    <ul>
+        @{
+            var streaks = ViewBag.AlertStreaks as Dictionary<int, (int LowStockWeeks, int OverStockWeeks)>;
+
+            if (streaks != null && streaks.Any())
+            {
+                foreach (var product in streaks)
+                {
+                    var productId = product.Key;
+                    var lowWeeks = product.Value.LowStockWeeks;
+                    var overWeeks = product.Value.OverStockWeeks;
+
+                    if (lowWeeks > 1 || overWeeks > 1)
+                    {
+                        <li>
+                            Product @productId:
+                            @if (lowWeeks > 1)
+                            {
+                                <text>Low Stock for @lowWeeks consecutive week@(lowWeeks > 1 ? "s" : "")</text>
+                            }
+                            @if (lowWeeks > 0 && overWeeks > 1)
+                            {
+                                <text>, </text>
+                            }
+                            @if (overWeeks > 0)
+                            {
+                                <text>Over Stock for @overWeeks consecutive week@(overWeeks > 1 ? "s" : "")</text>
+                            }
+                        </li>
+                    }
+                }
+            }
+            else
+            {
+                <li>No historical alert streaks to show.</li>
+            }
+        }
+    </ul>
 }
 
 @section Scripts {
@@ -115,7 +183,16 @@ else
             const ctx = document.getElementById('stockLevelChart').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
-                data: chartData,
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets.map(dataset => {
+                        return {
+                            ...dataset,
+                            backgroundColor: dataset.label === "Stock Levels" ? "rgba(75, 192, 192, 0.2)" : "rgba(255, 99, 132, 0.2)",
+                            borderColor: dataset.label === "Stock Levels" ? "rgba(75, 192, 192, 1)" : "rgba(255, 99, 132, 1)"
+                        };
+                    })
+                },
                 options: {
                     scales: {
                         y: {
@@ -136,6 +213,27 @@ else
                         legend: {
                             display: true,
                             position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const datasetLabel = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    const index = context.dataIndex;
+                                    const lowStockFlag = chartData.lowStockFlags[index];
+                                    const overStockFlag = chartData.overStockFlags[index];
+                                    const lowStockCount = chartData.lowStockCounts[index];
+                                    const overStockCount = chartData.overStockCounts[index];
+
+                                    let label = `${datasetLabel}: ${value} units`;
+                                    if (lowStockFlag) {
+                                        label += ` (Low Stock, ${lowStockCount} times)`;
+                                    } else if (overStockFlag) {
+                                        label += ` (Over Stock, ${overStockCount} times)`;
+                                    }
+                                    return label;
+                                }
+                            }
                         }
                     }
                 }
