@@ -10,13 +10,15 @@ namespace CleanBrilliantCompany.Models
         private readonly IOrderDatabase _orderDatabase;
         private readonly ICartManagement _cartManagement;
         private readonly IShippingAgents _shippingAgents;
+        private readonly ISubmitRefund _submitRefund;
 
 
-        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, IShippingAgents shippingAgents)
+        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, IShippingAgents shippingAgents, ISubmitRefund submitRefund)
         {
             _orderDatabase = orderDatabase;
             _cartManagement = cartManagement;
             _shippingAgents = shippingAgents;
+            _submitRefund = submitRefund;
         }
 
         public int createOrder(
@@ -174,7 +176,9 @@ namespace CleanBrilliantCompany.Models
             order.UpdateStatus("RefundRequested");
 
             // I can't do this without a concrete implementation of submitRefund yet
-            // _submitRefund.submitRefund(orderId, refundReason, order.GetOrderTotal(), order.GetOrderProducts());
+            var orderTotal = (float)order.RetrieveOrderTotal();
+            var orderProds = order.RetrieveOrderProducts();
+            _submitRefund.SubmitRefund(orderId, refundReason,orderTotal, orderProds);
             return _orderDatabase.updateOrder(order);
         }
 
