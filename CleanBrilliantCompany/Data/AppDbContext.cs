@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using CleanBrilliantCompany.Entities;
+using CleanBrilliantCompany.Interface;
 
 namespace CleanBrilliantCompany.Data
 {
@@ -14,8 +15,10 @@ namespace CleanBrilliantCompany.Data
         public DbSet<AlertTypeTable> AlertTypeTable { get; set; }
         public DbSet<InventoryLevelTable> InventoryLevelTable { get; set; }
         public DbSet<InventoryAlertsTable> InventoryAlertsTable { get; set; }
-
         
+        public DbSet<ProductTable> ProductTable { get; set; } // Added for simulation
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +40,9 @@ namespace CleanBrilliantCompany.Data
             
             modelBuilder.Entity<InventoryAlertsTable>()
                 .HasKey(a => a.AlertId);
+
+            modelBuilder.Entity<ProductTable>()
+                .HasKey(p => p.productId);
 
             // Auto-generate primary key
             modelBuilder.Entity<DashboardTable>()
@@ -70,6 +76,9 @@ namespace CleanBrilliantCompany.Data
             modelBuilder.Entity<InventoryAlertsTable>()
                 .ToTable("InventoryAlerts");
 
+            modelBuilder.Entity<ProductTable>().ToTable("Product");
+
+            /*
             // Relationships between tables
             // One-to-many relationship between DashboardTypeTable and DashboardTable
             // One DashboardTypeTable can have many DashboardTable
@@ -105,6 +114,7 @@ namespace CleanBrilliantCompany.Data
                 .HasOne(a => a.AlertTypes)
                 .WithMany()
                 .HasForeignKey(a => a.AlertType);
+            */
         }
     }
 }
