@@ -31,7 +31,7 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // Create and populate the view model
-            var viewModel = new ShippingAgentViewModel
+            var viewModel = new ShippingAgentManagement
             {
                 ShippingAgents = agents
             };

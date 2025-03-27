@@ -32,11 +32,11 @@ namespace CleanBrilliantCompany.Models
 
 namespace CleanBrilliantCompany.Models
 {
-    public class ShippingAgentViewModel
+    public class ShippingAgentManagement
     {
         public List<ShippingAgent> ShippingAgents { get; set; }
 
-        public ShippingAgentViewModel()
+        public ShippingAgentManagement()
         {
             ShippingAgents = new List<ShippingAgent>();
         }
