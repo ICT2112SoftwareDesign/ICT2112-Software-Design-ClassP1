@@ -12,14 +12,14 @@ namespace CleanBrilliantCompany.Controllers
         private readonly TransferControl _transferControl;
         //private readonly IWarehouse? _iWarehouse;
 
-        public TransferController(IConfiguration configuration, IWarehouse warehouseInterface)
+        public TransferController(IConfiguration configuration, IWarehouse warehouseInterface, IItemUpdate itemUpdateInterface)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             // _itemControl = new ItemControl(connectionString, null);
             //_transferControl = transferControl;
-            
 
-            _transferControl = new TransferControl(connectionString, warehouseInterface);
+
+            _transferControl = new TransferControl(connectionString, warehouseInterface, itemUpdateInterface);
 
         }
 
@@ -92,7 +92,7 @@ namespace CleanBrilliantCompany.Controllers
         [Route("addTransfer")]
         public async Task<IActionResult> addTransfer(int transferId, int productId, int sourceWarehouse, int destinationWarehouse, int quantity, TransferStatus status)
         {
-            Console.WriteLine("TRANSFER ID: " + transferId);
+            //  Console.WriteLine("TRANSFER ID: " + transferId);
             Console.WriteLine("PRODUCT ID: " + productId);
             Console.WriteLine("SOURCE WAREHOUSE ID: " + sourceWarehouse);
             Console.WriteLine("DESTINATION WAREHOUSE ID: " + destinationWarehouse);
@@ -113,22 +113,45 @@ namespace CleanBrilliantCompany.Controllers
             Console.WriteLine("AVAILABLE CAPACITY: " + availableCapacity);
 
             // Validation: Check if adding the quantity exceeds max capacity
-            if(quantity > availableCapacity)
+            if (quantity > availableCapacity)
             {
                 return BadRequest(new { error = "Quantity exceeds available capacity." });
                 // return Json(new { success = false, error = "Quantity exceeds available capacity." });
             }
 
-            if(quantity > sourceWarehouseQuantity)
+            if (quantity > sourceWarehouseQuantity)
             {
                 return BadRequest(new { error = "Quantity exceeds available stock in source warehouse." });
                 // return Json(new { success = false, error = "Quantity exceeds available stock in source warehouse." });
             }
 
-            // Proceed with transfer if capacity check passes
-            bool result = await _transferControl.createTransfer(transferId, productId, sourceWarehouse, destinationWarehouse, quantity, status);
 
-            if (result)
+            // Proceed with transfer if capacity check passes
+            int newTransferId = await _transferControl.createTransfer(transferId, productId, sourceWarehouse, destinationWarehouse, quantity, status);
+            List<Item> transferItems = await _transferControl.getItemByProductAndWarehouse(productId, quantity, sourceWarehouse);
+            //Console.WriteLine("ITEMS TO TRANSFER: " + transferItems);
+
+
+            foreach (var item in transferItems)
+            {
+                Console.WriteLine("ITEM ID: " + item.getItem());
+                bool updateItemStatus = await _transferControl.updateItemStatus(item.getItem(), null, null, newTransferId, null, ItemStatus.Transferred);
+                Console.WriteLine("TRANSFER ID: " + newTransferId);
+                if (!updateItemStatus)
+                {
+                    // Log or handle failed status update
+                    Console.WriteLine($"Failed to update status for item {item.getItem()}");
+                    // Potentially rollback the transfer or take corrective action
+                }
+
+            }
+
+            // for (int i = 0; i < getItemsToTransfer.Count; i++)
+            // {
+            //     bool updateItemStatus = await _transferControl.updateItemStatus(getItemsToTransfer[i].ItemId, null, null, transferId, null, ItemStatus.Transferred);
+            // }
+
+            if (newTransferId > 0)
             {
                 // currentCapacity += quantity;
                 // Console.WriteLine("CURRENT CAPACITY: " + currentCapacity);
@@ -148,6 +171,19 @@ namespace CleanBrilliantCompany.Controllers
             Console.WriteLine("TRANSFER ID: " + transferId);
 
             bool result = await _transferControl.deleteTransfer(transferId);
+            List<Item> transferredItems = await _transferControl.getTransferredItems(transferId);
+
+            foreach (var item in transferredItems)
+            {
+                Console.WriteLine("ITEM ID: " + item.getItem());
+                bool updateItemStatus = await _transferControl.updateItemStatus(item.getItem(), null, null, null, null, ItemStatus.Available);
+                if (!updateItemStatus)
+                {
+                    // Log or handle failed status update
+                    Console.WriteLine($"Failed to update status for item {item.getItem()}");
+                    // Potentially rollback the transfer or take corrective action
+                }
+            }
 
             if (result)
             {
@@ -169,7 +205,23 @@ namespace CleanBrilliantCompany.Controllers
             Console.WriteLine("STATUS: " + status);
 
             bool result = await _transferControl.updateTransfer(transferId, destinationWarehouse, status);
-
+            List<Item> transferredItems = await _transferControl.getTransferredItems(transferId);
+            //Console.WriteLine("TRANSFERRED ITEMS: " + transferredItems);
+            //bool updateItemStatus = await _transferControl.updateItemStatus(transferId, null, null, null, null, ItemStatus.Available);
+            if (status == TransferStatus.Completed)
+            {
+                foreach (var item in transferredItems)
+                {
+                    Console.WriteLine("ITEM ID: " + item.getItem());
+                    bool updateItemStatus = await _transferControl.updateItemStatus(item.getItem(), null, null, null, null, ItemStatus.Available);
+                    if (!updateItemStatus)
+                    {
+                        // Log or handle failed status update
+                        Console.WriteLine($"Failed to update status for item {item.getItem()}");
+                        // Potentially rollback the transfer or take corrective action
+                    }
+                }
+            }
             if (result)
             {
                 return RedirectToAction("Transfer");

@@ -87,51 +87,18 @@ namespace CleanBrilliantCompany.Mappers
             return transfers;
         }
 
-        public bool createTransfer(int transferId, int productId, int sourceWarehouse, int destinationWarehouse, int quantity, TransferStatus status)
+        public int createTransfer(int transferId, int productId, int sourceWarehouse, int destinationWarehouse, int quantity, TransferStatus status)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
                 string insertQuery = @"
-                    DECLARE @NewTransferId INT;
-
-                    BEGIN TRY 
-							BEGIN TRANSACTION;
-                    
-                    -- Insert the transfer record and capture the new ID
+                     -- Insert the transfer record and capture the new ID
                     INSERT INTO dbo.ItemTransfer (productId, sourceWarehouse, destinationWarehouse, quantity, transferStatus, staffId) 
                     VALUES (@productId, @sourceWarehouse, @destinationWarehouse, @quantity, @transferStatus, @staffId);
-                    
-                    SET @NewTransferId = SCOPE_IDENTITY();
-                    
-                    -- Update the specified quantity of items with earliest expiry dates
-                    WITH ItemsToUpdate AS (
-                        SELECT TOP(@quantity) i.itemId
-                        FROM Item i
-                        INNER JOIN productBatch pb ON i.batchCode = pb.batchCode
-                        WHERE i.productId = @productId 
-                        AND i.warehouseId = @sourceWarehouse 
-                        AND (i.itemStatus = 'Available' OR i.itemStatus IS NULL)
-                        AND (i.transferId IS NULL)
-                        ORDER BY pb.expiryDate ASC
-                    )
-                    UPDATE Item
-                    SET itemStatus = @itemStatus, transferId = @NewTransferId
-                    -- for update status = completed, update warehouseId to destinationWarehouse for item with selected transferId
-                    -- for delete transfer, update transferId in item to null
-                    FROM Item i
-                    INNER JOIN ItemsToUpdate itu ON i.itemId = itu.itemId;
-                    
-                    -- Return the count of updated items to verify
-                    SELECT @@ROWCOUNT AS ItemsUpdated
-                            COMMIT TRANSACTION;
-                    END TRY 
 
-					BEGIN CATCH
-						ROLLBACK TRANSACTION;
-						THROW;
-					END CATCH;
+                    SELECT SCOPE_IDENTITY()
                     ;";
 
                 using (SqlCommand command = new SqlCommand(insertQuery, connection))
@@ -141,12 +108,23 @@ namespace CleanBrilliantCompany.Mappers
                     command.Parameters.AddWithValue("@sourceWarehouse", sourceWarehouse);
                     command.Parameters.AddWithValue("@destinationWarehouse", destinationWarehouse);
                     command.Parameters.AddWithValue("@quantity", quantity);
-                    command.Parameters.AddWithValue("@transferStatus", "Pending");
+                    command.Parameters.AddWithValue("@transferStatus", TransferStatus.Pending.ToString());
                     command.Parameters.AddWithValue("@staffId", 1); // Hardcoded staff ID for now
-                    command.Parameters.AddWithValue("@itemStatus", ItemStatus.Transferred.ToString());
+                    //command.Parameters.AddWithValue("@itemStatus", ItemStatus.Transferred.ToString());
 
-                    int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
-                    return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
+                    object scopedIdentity = command.ExecuteScalar(); // Get the new ID
+                    if (scopedIdentity != null && int.TryParse(scopedIdentity.ToString(), out int newTransferId))
+                    {
+                        return newTransferId; // Return the new transferId
+                    }
+                    else
+                    {
+                        return -1; // Return -1 if insertion fails
+                    }
+
+
+                    // int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+                    // return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
                 }
             }
         }
@@ -168,7 +146,7 @@ namespace CleanBrilliantCompany.Mappers
                                 if @status = 'Completed'
                                 BEGIN
                                     UPDATE dbo.Item
-                                    SET warehouseId = @destinationWarehouse, transferId = null, itemStatus = 'Available'
+                                    SET warehouseId = @destinationWarehouse
                                     WHERE transferId = @transferId;
                                 END  
 
@@ -178,7 +156,8 @@ namespace CleanBrilliantCompany.Mappers
                             BEGIN CATCH
                                 ROLLBACK TRANSACTION;
                                 THROW;
-                            END CATCH;";
+                            END CATCH
+                            ;";
                 using (SqlCommand command = new SqlCommand(updateQuery, connection))
                 {
                     command.Parameters.AddWithValue("@transferId", transferId);
@@ -222,17 +201,22 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 string selectQuery = @"
-                        SELECT 
-                        p.productId, 
-                        p.productName, 
-                        w.warehouseName, 
-                        COUNT(i.itemId) AS TotalQuantity, 
-                        i.warehouseId
-                        FROM Item i
-                        INNER JOIN Product p ON p.productId = i.productId
-                        INNER JOIN Warehouse w ON w.warehouseId = i.warehouseId  -- Join with Warehouse table
-                        GROUP BY p.productId, p.productName, w.warehouseName, i.warehouseId
-                        HAVING COUNT(i.itemId) < 10;";
+                                    
+                SELECT 
+                    p.productId, 
+                    p.productName, 
+                    w.warehouseId,
+                    w.warehouseName, 
+                    COUNT(i.itemId) AS TotalQuantity
+                FROM Warehouse w
+                CROSS JOIN Product p  -- Ensures every product is considered for every warehouse
+                LEFT JOIN Item i 
+                    ON p.productId = i.productId 
+                    AND w.warehouseId = i.warehouseId 
+                    AND i.itemStatus = 'Available'  -- Only count available items
+                GROUP BY p.productId, p.productName, w.warehouseId, w.warehouseName
+                HAVING COUNT(i.itemId) < 10;
+                ";
                 // SELECT * FROM dbo.ItemTransfer
 
 

@@ -6,15 +6,21 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class TransferControl : IWarehouse
+    public class TransferControl
     {
         private readonly IWarehouse _iWarehouseInterface ;
+        private readonly IItemUpdate _iItemUpdateInterface;
+
+        //private readonly IItemUpdate _iItemUpdateInterface;
+
         private readonly TransferMapper _transferMapper;
 
-        public TransferControl(string connectionString, IWarehouse iWarehouseInterface)
+        public TransferControl(string connectionString, IWarehouse iWarehouseInterface, IItemUpdate iItemUpdateInterface)
         {
             _transferMapper = new TransferMapper(connectionString);
             _iWarehouseInterface = iWarehouseInterface;
+            _iItemUpdateInterface = iItemUpdateInterface;
+           // _iItemUpdateInterface = iItemUpdateInterface;
             Console.WriteLine("Warehouses loaded from database.");
         }
 
@@ -25,9 +31,9 @@ namespace CleanBrilliantCompany.Models.Control
             //return await _iWarehouseInterface.getWarehouseDetails(warehouseId);
         }
 
-        public async Task<List<Item>> getItemByProductAndWarehouse(int productId, int warehouseId)
+        public async Task<List<Item>> getItemByProductAndWarehouse(int productId, int quantity, int warehouseId)
         {
-            return await _iWarehouseInterface.getItemByProductAndWarehouse(productId, warehouseId);
+            return await _iWarehouseInterface.getItemByProductAndWarehouse(productId, quantity, warehouseId);
         }
 
         public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId)
@@ -40,7 +46,7 @@ namespace CleanBrilliantCompany.Models.Control
             return await _iWarehouseInterface.getAllWarehouseDetails();
         }
 
-        public async Task<bool> createTransfer(int transferId, int productId, int sourceWarehouseId, int destinationWarehouseId, int quantity, TransferStatus status)
+        public async Task<int> createTransfer(int transferId, int productId, int sourceWarehouseId, int destinationWarehouseId, int quantity, TransferStatus status)
         {
             return await Task.FromResult(_transferMapper.createTransfer(transferId, productId, sourceWarehouseId, destinationWarehouseId, quantity, status));
         }
@@ -63,6 +69,15 @@ namespace CleanBrilliantCompany.Models.Control
         public async Task<bool> updateTransfer(int transferId, int destinationWarehouse, TransferStatus status)
         {
             return await Task.FromResult(_transferMapper.updateTransfer(transferId, destinationWarehouse, status));
+        }
+
+        public async Task<bool> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status){
+            return await _iItemUpdateInterface.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status);
+        }
+
+        public async Task<List<Item>> getTransferredItems(int transferId)
+        {
+            return await _iWarehouseInterface.getTransferredItems(transferId);
         }
     }
 }

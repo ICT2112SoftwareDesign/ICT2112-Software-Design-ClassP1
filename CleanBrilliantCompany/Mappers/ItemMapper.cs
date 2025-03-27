@@ -560,16 +560,16 @@ namespace CleanBrilliantCompany.Mappers
                             // Iterate through each row in the result set
                             while (reader.Read())
                             {
-                                // // Create the Item object using the constructor
-                                // warehouse = new Warehouse(
-                                //     reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                //     reader.GetString(reader.GetOrdinal("warehouseAddress")),
-                                //     reader.GetInt32(reader.GetOrdinal("currentCapacity")),
-                                //     reader.GetInt32(reader.GetOrdinal("maxCapactiy")),
-                                //     reader.GetInt32(reader.GetOrdinal("productId")),
-                                //     reader.GetInt32(reader.GetOrdinal("quantity")),
-                                //     reader.GetInt32(reader.GetOrdinal("itemId"))
-                                // );
+                                // Create the Item object using the constructor
+                                warehouse = new Warehouse(
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    reader.GetString(reader.GetOrdinal("warehouseAddress")),
+                                    reader.GetInt32(reader.GetOrdinal("currentCapacity")),
+                                    reader.GetInt32(reader.GetOrdinal("maxCapacity")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    reader.GetInt32(reader.GetOrdinal("itemId"))
+                                );
                             }
                         }
                         else
@@ -583,7 +583,7 @@ namespace CleanBrilliantCompany.Mappers
             return warehouse;
         }
 
-        public List<Item> getItemByProductAndWarehouse(int productId, int warehouseId)
+        public List<Item> getItemByProductAndWarehouse(int productId, int quantity, int warehouseId)
         {
             List<Item> items = new List<Item>();
 
@@ -592,13 +592,26 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 // Define the SQL query to retrieve the item by its ID
-                string query = @"SELECT * FROM Item 
-                WHERE productId = @productId AND warehouseId = @warehouseId";
+                string query = @"
+                SELECT TOP(@quantity) i.itemId
+                        FROM Item i
+                        INNER JOIN productBatch pb ON i.batchCode = pb.batchCode
+                        WHERE i.productId = @productId
+                        AND i.warehouseId = @warehouseId
+                        AND (i.itemStatus = 'Available' OR i.itemStatus IS NULL)
+                        AND (i.transferId IS NULL)
+                        ORDER BY pb.expiryDate ASC
+                ";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
+                    command.Parameters.AddWithValue("@quantity", quantity);
                     command.Parameters.AddWithValue("@productId", productId);
                     command.Parameters.AddWithValue("@warehouseId", warehouseId);
+
+                    // Console.WriteLine("DB PRODUCT ID: " + productId);
+                    // Console.WriteLine("DB QUANTITY: " + quantity);
+                    // Console.WriteLine("DB WAREHOUSE ID: " + warehouseId);
                     // Execute the query and get the results
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -608,20 +621,20 @@ namespace CleanBrilliantCompany.Mappers
                             // Iterate through each row in the result set
                             while (reader.Read())
                             {
-                                ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+                                //ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
 
                                 // Create the Item object using the constructor
                                 Item item = new Item(
-                                    reader.GetInt32(reader.GetOrdinal("itemId")),
-                                    reader.GetInt32(reader.GetOrdinal("productId")),
-                                    (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
-                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                    status,
-                                    reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
-                                    reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
-                                    reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
-                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                    reader.GetInt32(reader.GetOrdinal("itemId"))
+                                // reader.GetInt32(reader.GetOrdinal("productId")),
+                                // (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
+                                // reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                // reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                // status,
+                                // reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                // reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
+                                // reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
+                                // reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
                                 );
                                 // Add the item to the list
                                 items.Add(item);
@@ -636,6 +649,7 @@ namespace CleanBrilliantCompany.Mappers
             }
 
             return items;
+
         }
 
         public int getProductQuantityByWarehouse(int productId, int warehouseId)
@@ -653,7 +667,7 @@ namespace CleanBrilliantCompany.Mappers
                     INNER JOIN Product ON Product.productId = Item.productId
                     INNER JOIN Warehouse ON Warehouse.warehouseId = Item.warehouseId
                 WHERE Product.productId = @productId AND Item.warehouseId = @warehouseId AND Item.itemStatus = 'Available';
-";
+                ";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -802,5 +816,99 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
+        public List<Warehouse> getAllWarehouseDetails()
+        {
+            List<Warehouse> warehouses = new List<Warehouse>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve items
+                string query = "SELECT * FROM Warehouse";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    // Execute the query and get the results
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Check if the query executed successfully and returned any rows
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            // Iterate through each row in the result set
+                            while (reader.Read())
+                            {
+                                // ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+                                // Create the Item object using the constructor
+                                Warehouse warehouse = new Warehouse(
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                    reader.GetString(reader.GetOrdinal("warehouseAddress")),
+                                    reader.GetInt32(reader.GetOrdinal("currentCapacity")),
+                                    reader.GetInt32(reader.GetOrdinal("maxCapacity"))
+                                );
+
+                                // Add the item to the list
+                                warehouses.Add(warehouse);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No data found for the query.");
+                        }
+                    }
+                }
+            }
+
+            return warehouses;
+        }
+
+        public List<Item> getTransferredItems(int transferId)
+        {
+            List<Item> transferredItems = new List<Item>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query to retrieve items
+                string query = @"SELECT itemId FROM Item 
+                WHERE itemStatus = 'Transferred' AND transferId = @transferId;
+                ";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@transferId", transferId);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Check if the query executed successfully and returned any rows
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            // Iterate through each row in the result set
+                            while (reader.Read())
+                            {
+                                //ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
+
+                                // Create the Item object using the constructor
+                                Item item = new Item(
+                                    reader.GetInt32(reader.GetOrdinal("itemId"))
+
+                                );
+                                // Add the item to the list
+                                transferredItems.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"FAILED TO RETRIEVES ITEMS {transferredItems}.");
+                        }
+                    }
+                }
+            }
+
+            return transferredItems;
+        }
     }
+
+
 }

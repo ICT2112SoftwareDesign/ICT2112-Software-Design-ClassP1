@@ -6,10 +6,12 @@ namespace CleanBrilliantCompany.Interfaces
     {
         Task <Warehouse> getWarehouseDetails(int warehouseId);
         
-        Task<List<Item>> getItemByProductAndWarehouse(int productId, int warehouseId);
+        Task<List<Item>> getItemByProductAndWarehouse(int productId, int quantity, int warehouseId);
 
         Task<int> getProductQuantityByWarehouse(int productId, int warehouseId);
 
         Task<List<Warehouse>> getAllWarehouseDetails();
+
+        Task<List<Item>> getTransferredItems(int transferId);
     }
 }
