@@ -9,6 +9,7 @@
 <!-- Load jQuery and Bootstrap -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> *@
 
 <div class="container mt-4">
     <h2 class="text-center">Feedback System</h2>
@@ -52,32 +53,62 @@
             <ul class="list-group">
                 @foreach (var feedback in Model)
                 {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>@feedback.Feedback</strong> <br>
-                            <small class="text-muted">
-                                By: <strong>@feedback.StaffName</strong> |
-                                Status:
-                                @if (feedback.Status == "Resolved")
+                    var collapseId = "collapse-" + feedback.FeedbackId;
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>@feedback.Feedback</strong> <br />
+                                <small class="text-muted">
+                                    By: <strong>@feedback.StaffName</strong> |
+                                    Status:
+                                    @if (feedback.Status == "Resolved")
+                                    {
+                                        <span class="badge bg-success">Resolved</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info">@feedback.Status</span>
+                                    }
+                                </small>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Toggle Button -->
+                                @if (!string.IsNullOrEmpty(feedback.ManagerComments))
                                 {
-                                    <span class="badge bg-success">Resolved</span>
+                                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false"
+                                        aria-controls="@collapseId">
+                                        <span class="me-2">&#9660;</span> <!-- 'me-2' adds margin-end (right) to the arrow -->
+                                    
+                                    </button>
+
+
+
                                 }
-                                else
+
+                                @if (feedback.Status != "Resolved")
                                 {
-                                    <span class="badge bg-info">@feedback.Status</span>
+                                    <a href="@Url.Action("EditFeedback", "Feedback", new { feedbackId = feedback.FeedbackId })"
+                                        class="btn btn-sm btn-warning text-black">Edit</a>
                                 }
-                            </small>
+                            </div>
                         </div>
 
-                        <!-- Disable Edit if Status is Resolved -->
-                        @if (feedback.Status != "Resolved")
+                        <!-- Collapsible Manager Comment -->
+                        @if (!string.IsNullOrEmpty(feedback.ManagerComments))
                         {
-                            <a href="@Url.Action("EditFeedback", "Feedback", new { feedbackId = feedback.FeedbackId })"
-                               class="btn btn-sm btn-warning px-3 py-1 text-black">Edit</a>
+                            <div class="collapse mt-2" id="@collapseId">
+                                <div class="card card-body bg-light">
+                                    <strong>Manager's Comment:</strong><br />
+                                    @feedback.ManagerComments
+                                </div>
+                            </div>
                         }
                     </li>
                 }
             </ul>
+
         }
         else
         {
