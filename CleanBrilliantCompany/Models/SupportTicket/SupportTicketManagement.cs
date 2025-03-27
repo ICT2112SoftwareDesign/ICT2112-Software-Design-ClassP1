@@ -15,9 +15,9 @@ namespace CleanBrilliantCompany.Models.SupportTicket
             _gateway = gateway;
         }
 
-        public bool createSupportTicket(int customerId)
+        public bool createSupportTicket(int customerId, string ticketDetails)
         {
-            return _gateway.CreateSupportTicket(customerId);
+            return _gateway.CreateSupportTicket(customerId, ticketDetails);
         }
 
         public void deleteTicket(int ticketId)
@@ -50,6 +50,23 @@ namespace CleanBrilliantCompany.Models.SupportTicket
                 throw new Exception("Ticket not found");
             }
             return ticket;
+        }
+
+        public List<SupportTicketSDM> viewTicketByCustomer(int customerId)
+        {
+            // Call the data gateway method to fetch tickets for the customer
+            var tickets = _gateway.ViewTicketByCustomer(customerId);
+            
+            // Optionally, map or transform data before returning
+            return tickets.Select(ticket => new SupportTicketSDM
+            {
+                TicketId = ticket.TicketId,
+                CustomerId = ticket.CustomerId,
+                Status = ticket.Status,
+                CreatedAt = ticket.CreatedAt,
+                TicketDetails = ticket.TicketDetails,
+                ResolutionDetails = ticket.ResolutionDetails
+            }).ToList();
         }
 
         public bool checkSupportTicketQuery()

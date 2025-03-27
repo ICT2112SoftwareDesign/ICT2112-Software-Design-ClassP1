@@ -26,7 +26,7 @@
     <tr>
         <th>Resolution</th>
         <td>
-            @if (Model.Status == "Closed")
+            @if (Model.Status == "Reviewed")
             {
                 @Model.ResolutionDetails
             }
@@ -41,4 +41,4 @@
         </td>
     </tr>
 </table>
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+<a asp-action="SupportTicket" class="btn btn-secondary">Back to List</a>

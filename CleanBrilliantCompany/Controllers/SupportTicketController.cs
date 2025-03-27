@@ -3,7 +3,7 @@ using CleanBrilliantCompany.Models.SupportTicket;
 
 namespace CleanBrilliantCompany.Controllers.SupportTicket
 {
-    [Route("supportticket")]
+    [Route("staff/supportticket")]
     public class SupportTicketController : Controller
     {
         private readonly SupportTicketManagement _manager;
@@ -14,7 +14,7 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
         }
 
         [Route("")]
-        public IActionResult Index()
+        public IActionResult SupportTicket()
         {
             var tickets = _manager.viewAllTickets();
             return View("~/Views/SupportTicket/supportticket-index.cshtml", tickets);
@@ -39,16 +39,26 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
         public IActionResult updateSupportTicket(int ticketId, string resolutionDetails)
         {
             _manager.updateSupportTicket(ticketId, resolutionDetails);
-            return RedirectToAction("Index");
+            return RedirectToAction("SupportTicket");
         }
 
         // for testing ISupportTicket interface 
-        // [HttpPost]
-        // [Route("CreateSupportTicket")]
-        // public IActionResult createSupportTicket(int customerId)
-        // {
-        //     _manager.createSupportTicket(customerId);
-        //     return RedirectToAction("Index");
-        // }
+        [HttpPost]
+        [Route("CreateSupportTicket")]
+        public IActionResult CreateSupportTicket(int customerId, string ticketDetails)
+        {
+            bool success = _manager.createSupportTicket(customerId, ticketDetails);
+
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Your ticket has been successfully created!";
+                return RedirectToAction("SupportTicket");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to create support ticket. Please try again.";
+                return RedirectToAction("SupportTicket");
+            }
+        }
     }
 }
