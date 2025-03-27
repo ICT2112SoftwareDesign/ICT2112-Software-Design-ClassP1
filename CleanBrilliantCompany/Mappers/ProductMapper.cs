@@ -60,20 +60,19 @@ namespace CleanBrilliantCompany.Mappers
                         {
                             if (reader.Read())
                             {
-                                return new Product
-                                {
-                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                    ProductName = reader.GetString(reader.GetOrdinal("productName")),
-                                    ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
-                                    ProductCost = (float)reader.GetDouble(reader.GetOrdinal("productCost")),
-                                    ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
-                                    ProductWeight = (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    Volume = reader.GetInt32(reader.GetOrdinal("volume")),
-                                    ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
-                                    CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
-                                    ProductState = reader.GetString(reader.GetOrdinal("productState"))
-                                };
+                                return new Product(
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetString(reader.GetOrdinal("productCategory")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("productCost")),
+                                    reader.GetInt32(reader.GetOrdinal("manufacturerId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    reader.GetInt32(reader.GetOrdinal("volume")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
+                                    reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
+                                    reader.GetString(reader.GetOrdinal("productState"))
+                                );
                             }
                         }
                     }
@@ -83,9 +82,8 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-
-        public string insert(string productName, string category, float productCost, 
-        int manufacturerId, float productWeight, int quantity, int volume, 
+        public string insert(string productName, string category, float productCost,
+        int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
             try
@@ -131,7 +129,7 @@ namespace CleanBrilliantCompany.Mappers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error inserting product: {ex.Message}");
-                return $"Error inserting product: {ex.Message}"; 
+                return $"Error inserting product: {ex.Message}";
             }
         }
 
@@ -172,8 +170,8 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public void update(int productId, string productName, string productCategory, 
-        float productCost, int manufacturerId, float productWeight, int quantity, int volume, 
+        public void update(int productId, string productName, string productCategory,
+        float productCost, int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
             try
@@ -213,7 +211,7 @@ namespace CleanBrilliantCompany.Mappers
                         // Execute the insert operation synchronously
                         int rowsAffected = command.ExecuteNonQuery();
 
-                         // Check if the insert was successful using getDatabaseQueryStatus
+                        // Check if the insert was successful using getDatabaseQueryStatus
                         if (getDatabaseQueryStatus(null, rowsAffected))
                         {
                             Console.WriteLine($"Product: '{productId}' updated successfully.");
@@ -229,6 +227,92 @@ namespace CleanBrilliantCompany.Mappers
             {
                 Console.WriteLine($"Error updating product: {ex.Message}");
             }
+        }
+
+        public void update(int productId, int oldQty, int quantity, string arithmeticOperations)
+        {
+            try
+            {
+                int finalQuantity;
+                switch (arithmeticOperations.ToLower())
+                {
+                    case "increase":
+                        finalQuantity = oldQty + quantity;
+                        break;
+                    case "decrease":
+                        finalQuantity = oldQty - quantity;
+                        break;
+                    default:
+                        throw new InvalidOperationException("Unsupported operation. Use 'increase' or 'decrease'.");
+                }
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                        UPDATE dbo.Product
+                        SET quantity = @Quantity
+                        WHERE productId = @ProductId";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductId", productId);
+                        command.Parameters.AddWithValue("@Quantity", finalQuantity);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (getDatabaseQueryStatus(null, rowsAffected))
+                        {
+                            Console.WriteLine($"Product: '{productId}' updated successfully to quantity: {finalQuantity}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error updating product.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating product: {ex.Message}");
+            }
+        
+            // try
+            // {
+            //     using (SqlConnection connection = new SqlConnection(_connectionString))
+            //     {
+            //         connection.Open();
+
+            //         string query = @"
+            //             UPDATE dbo.Product
+            //             SET quantity = @Quantity
+            //             WHERE productId = @ProductId";
+
+            //         using (SqlCommand command = new SqlCommand(query, connection))
+            //         {
+            //             command.Parameters.AddWithValue("@ProductId", productId);
+            //             command.Parameters.AddWithValue("@Quantity", quantity);
+
+            //             // Execute the insert operation synchronously
+            //             int rowsAffected = command.ExecuteNonQuery();
+
+            //              // Check if the insert was successful using getDatabaseQueryStatus
+            //             if (getDatabaseQueryStatus(null, rowsAffected))
+            //             {
+            //                 Console.WriteLine($"Product: '{productId}' updated successfully.");
+            //             }
+            //             else
+            //             {
+            //                 Console.WriteLine("Error updating product.");
+            //             }
+            //         }
+            //     }
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine($"Error updating product: {ex.Message}");
+            // }
         }
 
         public List<Product> findAllProducts()
@@ -253,20 +337,22 @@ namespace CleanBrilliantCompany.Mappers
                         {
                             while (reader.Read())
                             {
-                                products.Add(new Product
-                                {
-                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                    ProductName = reader.GetString(reader.GetOrdinal("productName")),
-                                    ProductCategory = reader.GetString(reader.GetOrdinal("productCategory")),
-                                    ProductCost = (float)reader.GetDouble(reader.GetOrdinal("productCost")),
-                                    ManufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId")),
-                                    ProductWeight = (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    Volume = reader.GetInt32(reader.GetOrdinal("volume")),
-                                    ToxicityPercentage = (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
-                                    CarbonFootprint = reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
-                                    ProductState = reader.GetString(reader.GetOrdinal("productState"))
-                                });
+                                Product product = new Product(
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetString(reader.GetOrdinal("productCategory")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("productCost")),
+                                    reader.GetInt32(reader.GetOrdinal("manufacturerId")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("productWeight")),
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    reader.GetInt32(reader.GetOrdinal("volume")),
+                                    (float)reader.GetDouble(reader.GetOrdinal("toxicityPercentage")),
+                                    reader.GetInt32(reader.GetOrdinal("carbonFootprint")),
+                                    reader.GetString(reader.GetOrdinal("productState"))
+                                );
+
+                                // Add the product to the list
+                                products.Add(product);
                             }
                         }
                     }
@@ -284,12 +370,12 @@ namespace CleanBrilliantCompany.Mappers
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open(); 
+                    connection.Open();
 
                     string query = @"
                         SELECT batchCode, productId, expiryDate, receiveDate, manufactureDate, 
                             quantity, batchCost
-                        FROM dbo.ProductBatch"; 
+                        FROM dbo.ProductBatch";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -299,16 +385,18 @@ namespace CleanBrilliantCompany.Mappers
                             {
                                 while (reader.Read())
                                 {
-                                    batches.Add(new ProductBatch
-                                    {
-                                        BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                        ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                        ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")), 
-                                        ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")), 
-                                        ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")), 
-                                        Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                        BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost")) 
-                                    });
+                                    ProductBatch batch = new ProductBatch(
+                                        reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                        reader.GetInt32(reader.GetOrdinal("productId")),
+                                        reader.GetDateTime(reader.GetOrdinal("expiryDate")),
+                                        reader.GetDateTime(reader.GetOrdinal("receiveDate")),
+                                        reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
+                                        reader.GetInt32(reader.GetOrdinal("quantity")),
+                                        (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                                    );
+
+                                    // Add the product to the list
+                                    batches.Add(batch);
                                 }
                             }
                         }
@@ -345,35 +433,44 @@ namespace CleanBrilliantCompany.Mappers
                             if (reader.Read())
                             {
                                 return new ProductBatch
-                                {
-                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                    ExpiryDate = reader.GetDateTime(reader.GetOrdinal("expiryDate")),
-                                    ReceiveDate = reader.GetDateTime(reader.GetOrdinal("receiveDate")),
-                                    ManufactureDate = reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    BatchCost = (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
-                                };
+                                (
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetDateTime(reader.GetOrdinal("expiryDate")),
+                                    reader.GetDateTime(reader.GetOrdinal("receiveDate")),
+                                    reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                                );
                             }
                         }
                     }
                 }
             }
-            return null; 
+            return null;
         }
 
-        public void insert(int productId, DateTime expiryDate, 
-            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+        public int insert(int productId, DateTime expiryDate,
+    DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
                 string query = @"
-                    INSERT INTO dbo.ProductBatch (productId, expiryDate, receiveDate, manufactureDate, 
-                                                quantity, batchCost)
-                    SELECT @ProductId, @ExpiryDate, @ReceiveDate, @ManufactureDate, @Quantity, @BatchCost
-                    WHERE EXISTS (SELECT 1 FROM dbo.Product WHERE productId = @ProductId)";
+                    DECLARE @OutputTable TABLE (batchCode INT);
+                    DECLARE @NewBatchCode INT;
+
+                    IF EXISTS (SELECT 1 FROM dbo.Product WHERE productId = @ProductId)
+                    BEGIN
+                        INSERT INTO dbo.ProductBatch (productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost)
+                        OUTPUT INSERTED.batchCode INTO @OutputTable(batchCode)
+                        VALUES (@ProductId, @ExpiryDate, @ReceiveDate, @ManufactureDate, @Quantity, @BatchCost);
+
+                        SELECT @NewBatchCode = batchCode FROM @OutputTable;
+                    END
+
+                    SELECT ISNULL(@NewBatchCode, -1);";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -384,212 +481,135 @@ namespace CleanBrilliantCompany.Mappers
                     command.Parameters.AddWithValue("@Quantity", quantity);
                     command.Parameters.AddWithValue("@BatchCost", batchCost);
 
-                    int rowsAffected = command.ExecuteNonQuery();
+                    object result = command.ExecuteScalar();
+                    int newBatchCode = Convert.ToInt32(result);
 
-                    if (getDatabaseQueryStatus(null, rowsAffected))
+                    if (newBatchCode == -1)
                     {
-                        Console.WriteLine("Batch inserted successfully.");
+                        Console.WriteLine("Error: Product ID does not exist. Batch not inserted.");
                     }
                     else
                     {
-                        Console.WriteLine("Error: Product ID does not exist.");
+                        Console.WriteLine($"Batch inserted successfully. New BatchCode: {newBatchCode}");
                     }
+
+                    return newBatchCode;
                 }
             }
         }
 
+
         // StockHistory
-        public List<StockHistory> findStockHistoryByBatchCode(int batchCode)
+        public List<StockHistory> findAllStockHistory()
         {
             List<StockHistory> stockHistoryList = new List<StockHistory>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-
                 string query = @"
-                    SELECT stockId, batchCode, stockCheckDate, quantity, timeRecorded
+                    SELECT stockId, batchCode, stockTakeDate, quantity, recordedDate
                     FROM dbo.StockHistory
-                    WHERE batchCode = @BatchCode
-                    ORDER BY stockCheckDate DESC";  // Orders by most recent stock check
+                    ORDER BY stockTakeDate DESC";  // Orders by most recent stock check
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@BatchCode", batchCode);
-
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (getDatabaseQueryStatus(reader))
                         {
                             while (reader.Read())
                             {
-                                // If timeRecorded is of type TIME, we convert it to DateTime
-                                DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
-                                stockHistoryList.Add(new StockHistory
-                                {
-                                    StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
-                                    BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
-                                    Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
-                                    TimeRecorded = timeRecorded
-                                });
+                                DateTime stockTakeDateTime = reader.GetDateTime(reader.GetOrdinal("stockTakeDate"));
+                                DateOnly stockTakeDate = DateOnly.FromDateTime(stockTakeDateTime);
+                                StockHistory stockHistory = new StockHistory
+                                (
+                                    reader.GetInt32(reader.GetOrdinal("stockId")),
+                                    reader.GetInt32(reader.GetOrdinal("batchCode")),
+                                    stockTakeDate,
+                                    reader.GetInt32(reader.GetOrdinal("quantity")),
+                                    reader.GetDateTime(reader.GetOrdinal("recordedDate"))
+                                );
+
+                                stockHistoryList.Add(stockHistory);
                             }
+                        }
+                    }
+
+                }
+
+            }
+            return stockHistoryList;
+        }
+
+        public void insert(int batchCode, DateOnly stockTakeDate, int quantity, DateTime recordedDate)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    INSERT INTO dbo.StockHistory (batchCode, stockTakeDate, quantity, recordedDate)
+                    VALUES (@BatchCode, @StockTakeDate, @Quantity, @RecordedDate);";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@BatchCode", batchCode);
+                    command.Parameters.AddWithValue("@StockTakeDate", stockTakeDate.ToDateTime(new TimeOnly(0, 0)));
+                    command.Parameters.AddWithValue("@Quantity", quantity);
+                    command.Parameters.AddWithValue("@RecordedDate", recordedDate);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    // Console.WriteLine($"{rowsAffected} row(s) inserted into StockHistory.");
+
+                    if (getDatabaseQueryStatus(null, rowsAffected))
+                    {
+                        Console.WriteLine($"{rowsAffected} row(s) inserted into StockHistory.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error inserting StockHistory.");
+                    }
+                }
+            }
+        }
+
+        // ProductManufacturer
+        public ProductManufacturer getProductManufacturerById(int manufacturerId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    SELECT ManufacturerId, CompanyName, ManufacturerAddress, Email
+                    FROM dbo.ProductManufacturer
+                    WHERE ManufacturerId = @ManufacturerId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ManufacturerId", manufacturerId);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            ProductManufacturer manufacturer = new ProductManufacturer
+                            (
+                                reader.GetInt32(reader.GetOrdinal("ManufacturerId")),
+                                reader.GetString(reader.GetOrdinal("CompanyName")),
+                                reader.GetString(reader.GetOrdinal("ManufacturerAddress")),
+                                reader.GetString(reader.GetOrdinal("Email"))
+                            );
+
+                            return manufacturer;
                         }
                     }
                 }
             }
-
-            return stockHistoryList;
+            // Return null if not found
+            return null;
         }
 
-        // // StockHistory
-        // public async Task<List<StockHistory>> findStockHistoryByBatchCode(int batchCode)
-        // {
-        //     List<StockHistory> stockHistoryList = new List<StockHistory>();
-
-        //     using (SqlConnection connection = new SqlConnection(_connectionString))
-        //     {
-        //         await connection.OpenAsync();
-
-        //         string query = @"
-        //             SELECT stockId, batchCode, stockCheckDate, quantity, timeRecorded
-        //             FROM dbo.StockHistory
-        //             WHERE batchCode = @BatchCode
-        //             ORDER BY stockCheckDate DESC";  // Orders by most recent stock check
-
-        //         using (SqlCommand command = new SqlCommand(query, connection))
-        //         {
-        //             command.Parameters.AddWithValue("@BatchCode", batchCode);
-
-        //             using (SqlDataReader reader = await command.ExecuteReaderAsync())
-        //             {
-        //                 while (await reader.ReadAsync())
-        //                 {
-        //                     // If timeRecorded is of type TIME, we convert it to DateTime
-        //                     DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
-        //                     stockHistoryList.Add(new StockHistory
-        //                     {
-        //                         StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
-        //                         BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-        //                         StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
-        //                         Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
-        //                         // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
-        //                         TimeRecorded = timeRecorded
-        //                     });
-        //                 }
-        //             }
-        //         }
-        //     }
-
-        //     return stockHistoryList;
-        // }
-
-
-        // Interface Methods
-        public async Task<Product> getDatabaseQueryStatus(Task<Product> task)
-        {
-            try
-            {
-                return await task;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return null;
-            }
-        }
-
-        public async Task<string> getDatabaseQueryStatus(Task<string> task)
-        {
-            try
-            {
-                return await task;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database insert failed: {ex.Message}");
-                return $"Database insert failed: {ex.Message}";
-            }
-        }
-
-        public async Task<(string status, List<Product> products)> getDatabaseQueryStatus(Task<List<Product>> task)
-        {
-            try
-            {
-                List<Product> products = await task;
-
-                if (products.Count > 0)
-                {
-                    return ("Query executed successfully", products);
-                }
-                else
-                {
-                    return ("No products found", products);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return ($"Database query failed: {ex.Message}", new List<Product>());
-            }
-        }
-
-        public async Task<(string status, List<ProductBatch> batch)> getDatabaseQueryStatus(Task<List<ProductBatch>> batch)
-        {
-            try
-            {
-                List<ProductBatch> batchList = await batch;
-
-                if (batchList.Count > 0)
-                {
-                    return ("Query executed successfully", batchList);
-                }
-                else
-                {
-                    return ("No product batches found", batchList);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return ($"Database query failed: {ex.Message}", new List<ProductBatch>()); 
-            }
-        }
-
-        public async Task<ProductBatch> getDatabaseQueryStatus(Task<ProductBatch> task)
-        {
-            try
-            {
-                return await task;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return null;
-            }
-        }
-
-        public async Task<(string status, List<StockHistory> stockHistory)> getDatabaseQueryStatus(Task<List<StockHistory>> task)
-        {
-            try
-            {
-                List<StockHistory> stockHistoryList = await task;
-
-                if (stockHistoryList.Count > 0)
-                {
-                    return ("Query executed successfully", stockHistoryList);
-                }
-                else
-                {
-                    return ("No stock history found", stockHistoryList);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database query failed: {ex.Message}");
-                return ($"Database query failed: {ex.Message}", new List<StockHistory>());
-            }
-        }
     }
 }

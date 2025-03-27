@@ -1,65 +1,74 @@
-@model CleanBrilliantCompany.Models.ViewModel.BatchDetailsViewModel
+@* @model Dictionary<string, List<CleanBrilliantCompany.Models.Entity.StockHistory>> *@
+@model List<Dictionary<string, object>>
 
 <h2>Product Batch Listings</h2>
 
-@if (Model.ProductBatches != null && Model.ProductBatches.Any())
-{
-    <table border="1">
-        <tr>
-            <th>Batch Code</th>
-            <th>Product ID</th>
-            <th>Expiry Date</th>
-            <th>Receive Date</th>
-            <th>Manufacture Date</th>
-            <th>Quantity</th>
-            <th>Batch Cost</th>
-        </tr>
-        @foreach (var batch in Model.ProductBatches)
-        {
-            <tr>
-                <td>@batch.BatchCode</td>
-                <td>@batch.ProductId</td>
-                <td>@batch.ExpiryDate.ToString("yyyy-MM-dd")</td>
-                <td>@batch.ReceiveDate.ToString("yyyy-MM-dd")</td>
-                <td>@batch.ManufactureDate.ToString("yyyy-MM-dd")</td>
-                <td>@batch.Quantity</td>
-                <td>$@batch.BatchCost</td>
-            </tr>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Product Batch Listings</title>
+</head>
+<body>
 
-            <!-- Display Stock History for this Batch -->
-            @if (Model.StockHistory != null && Model.StockHistory.Any(s => s.BatchCode == batch.BatchCode))
+@if (Model != null && Model.Any())
+    {
+        <table border="1">
+            <tr>
+                <th>Stock ID</th>
+                <th>Batch Code</th>
+                <th>Stock Take Date</th>
+                <th>Quantity</th>
+                <th>Time Recorded</th>
+            </tr>
+            @foreach (var stockHistoryInfo in Model) 
             {
                 <tr>
-                    <td colspan="7">
-                        <strong>Stock History:</strong>
-                        <table border="1">
-                            <tr>
-                                <th>Stock ID</th>
-                                <th>Stock Check Date</th>
-                                <th>Quantity</th>
-                                <th>Time Recorded</th>
-                            </tr>
-                            @foreach (var stock in Model.StockHistory.Where(s => s.BatchCode == batch.BatchCode))
-                            {
-                                <tr>
-                                    <td>@stock.StockId</td>
-                                    <td>@stock.StockCheckDate.ToString("yyyy-MM-dd")</td>
-                                    <td>@stock.Quantity</td>
-                                    <td>@stock.TimeRecorded.ToString("HH:mm:ss")</td>
-                                </tr>
-                            }
-                        </table>
-                    </td>
+                    <td>@stockHistoryInfo["StockId"]</td>
+                    <td>@stockHistoryInfo["BatchCode"]</td>
+                    <td>@stockHistoryInfo["StockTakeDate"]</td>
+                    <td>@stockHistoryInfo["Quantity"]</td>
+                    <td>@stockHistoryInfo["RecordedDate"]</td>
                 </tr>
             }
-            else
+        </table>
+    }
+    else
+    {
+        <p>No product batches available.</p>
+    }
+
+
+@* @if (Model != null && Model.Any())
+    {
+        <table border="1">
+            <tr>
+                <th>Stock ID</th>
+                <th>Batch Code</th>
+                <th>Stock Take Date</th>
+                <th>Quantity</th>
+                <th>Time Recorded</th>
+            </tr>
+            @foreach (var kvp in Model)
             {
-                <p>No stock history available.</p>
+                var batchCode = kvp.Key;            
+                var stockHistories = kvp.Value;  
+
+                @foreach (var stockHistory in stockHistories)
+                {
+                    <tr>
+                        <td>@stockHistory.StockId</td>
+                        <td>@batchCode</td>
+                        <td>@stockHistory.StockTakeDate.ToString("yyyy-MM-dd")</td>
+                        <td>@stockHistory.Quantity</td>
+                        <td>@stockHistory.RecordedDate.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
             }
-        }
-    </table>
-}
-else
-{
-    <p>No product batches available.</p>
-}
+        </table>
+    }
+    else
+    {
+        <p>No product batches available.</p>
+    } *@
+</body>
+</html>
