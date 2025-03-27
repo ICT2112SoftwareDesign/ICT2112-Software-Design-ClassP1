@@ -113,10 +113,14 @@ builder.Services.AddScoped<SupportTicketManagement>();
 builder.Services.AddScoped<SupportTicketTableDataGateway>(provider =>
     new SupportTicketTableDataGateway(connectionString!));
 
+// Adding services for Shipping Agent
+builder.Services.AddScoped<ShippingAgentMapper>();
+builder.Services.AddScoped<IShippingAgent, ShippingAgentMapper>();
+builder.Services.AddScoped<IShippingAgentDB>();
+
 
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();
-
 
 var app = builder.Build();
 

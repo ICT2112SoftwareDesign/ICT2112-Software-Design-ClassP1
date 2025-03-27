@@ -35,3 +35,10 @@
 [27/3/2025 4:55:45 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
 [27/3/2025 4:56:26 pm] Authentication attempt by user: harry@harry.com
 [27/3/2025 4:56:26 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
+[27/3/2025 8:04:18 PM] Authentication attempt by user: john.doe@example.com
+[27/3/2025 8:05:22 PM] Authentication attempt by user: john.doe@example.com
+[27/3/2025 8:06:29 PM] Authentication attempt by user: john.doe@example.com
+[27/3/2025 8:07:16 PM] Authentication attempt by user: john.doe@example.com
+[27/3/2025 8:07:16 PM] Authentication failed for user: john.doe@example.com. Reason: User not found
+[27/3/2025 8:07:20 PM] Authentication attempt by user: john.doe@example.com
+[27/3/2025 8:07:20 PM] Authentication failed for user: john.doe@example.com. Reason: User not found
