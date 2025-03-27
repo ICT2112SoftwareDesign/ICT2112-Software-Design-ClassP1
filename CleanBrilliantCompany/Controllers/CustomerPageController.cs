@@ -19,15 +19,15 @@ namespace CleanBrilliantCompany.Controllers
         private readonly CartManagement _cartManagement;
         private readonly IProduct _productService;
 
-        private readonly ReviewManagement _reviewManagement; 
+        private readonly ReviewManagement _reviewManagement;
 
         private readonly IShippingAgents _shippingAgents;
         private readonly IWishlistManagement _wishlistManagement;
 
 
         public CustomerPageController(
-            ILogger<CustomerPageController> logger, 
-            CustomerManagement customerManagement, 
+            ILogger<CustomerPageController> logger,
+            CustomerManagement customerManagement,
             SupportManagement supportManagement,
             IChatbot chatbotService,
             OrderManagement orderManagement,
@@ -35,7 +35,7 @@ namespace CleanBrilliantCompany.Controllers
             IProduct productService,
             IShippingAgents shippingAgents,
             ReviewManagement reviewManagement,
-            IWishlistManagement wishlistManagement) 
+            IWishlistManagement wishlistManagement)
         {
             _logger = logger;
             _customerManagement = customerManagement;
@@ -68,9 +68,9 @@ namespace CleanBrilliantCompany.Controllers
             else
             {
                 ViewBag.Message = "No customer details available.";
-            } 
+            }
 
-    
+
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }
         [HttpPost]
@@ -124,39 +124,41 @@ namespace CleanBrilliantCompany.Controllers
                 return "Username already exists.";
             }
 
-            return null; 
+            return null;
         }
 
         [HttpPost]
         public IActionResult updatePassword(string newPassword, string confirmPassword)
         {
             int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-            
+
             if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
             {
                 ViewBag.Message = "New password and Confirm Password Cannot be Empty";
                 CustomerDetails();
-                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml"); 
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
             }
 
             if (newPassword != confirmPassword)
             {
                 ViewBag.Message = "Passwords do not match!";
                 CustomerDetails();
-                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml"); 
+                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
             }
 
             bool passwordSuccess = _customerManagement.updatePassword(loggedInId, newPassword);
-            if(passwordSuccess){
+            if (passwordSuccess)
+            {
                 CustomerDetails();
                 return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
             }
-            else{
+            else
+            {
                 ViewBag.Message = "Password failed to update!";
                 CustomerDetails();
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
-            
+
         }
 
         [HttpPost]
@@ -188,7 +190,7 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Error"] = "User not logged in.";
                 return Json(new { redirectUrl = Url.Action("Login", "BeforeLoginPage") });
             }
-            
+
             bool success = _supportManagement.createSupportTicket(customerID, orderID, issueDescription);
             return RedirectToAction("viewFAQs");
         }
@@ -200,12 +202,12 @@ namespace CleanBrilliantCompany.Controllers
             string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
 
             // Check if JSON exists and is not empty
-            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson) 
-                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson) 
+            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson)
+                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson)
                 : new List<Dictionary<string, string>>();
 
             ViewBag.ChatHistory = chatHistory;
-            
+
             return View("~/Views/Support/Chatbot.cshtml");
         }
 
@@ -222,13 +224,13 @@ namespace CleanBrilliantCompany.Controllers
 
             if (string.IsNullOrEmpty(query)) return RedirectToAction("startChatSession");
 
-           string botResponse = _supportManagement.handleQuery(customerID, query);
+            string botResponse = _supportManagement.handleQuery(customerID, query);
 
             string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
 
             // Check if JSON is null or empty before deserialization
-            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson) 
-                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson) 
+            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson)
+                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson)
                 : new List<Dictionary<string, string>>();
 
             var userMessage = new Dictionary<string, string> { { "user", query } };
@@ -253,7 +255,7 @@ namespace CleanBrilliantCompany.Controllers
         //         TempData["Error"] = "User not logged in.";
         //         return RedirectToAction("Login", "BeforeLoginPage");
         //     }
-            
+
         //     bool success = _supportManagement.escalateToHumanAgent(customerID, orderID, query);
         //     ViewBag.escalateIssue = success;
 
@@ -263,27 +265,27 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
         {
             List<Product> products = _productService.getAllProducts();
-            
+
             // Apply search filter
             if (!string.IsNullOrEmpty(query))
             {
                 products = products.Where(p => p.GetProductDetails()["ProductName"].ToString().Contains(query, System.StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            
+
             // Apply category filter
             if (filters != "All")
             {
                 products = products.Where(p => p.GetProductDetails()["Category"].ToString() == filters).ToList();
             }
-            
+
             // Apply sorting
-            products = sortOrder == "asc" 
-                ? products.OrderBy(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList() 
+            products = sortOrder == "asc"
+                ? products.OrderBy(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList()
                 : products.OrderByDescending(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList();
-            
+
             // Convert to a list of dictionaries
             var productDetails = products.Select(product => product.GetProductDetails()).ToList();
-            
+
             return View("~/Views/Products/Index.cshtml", productDetails);
         }
 
@@ -311,7 +313,7 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.ProductId = productId;
             return View("~/Views/Products/ProductDetails.cshtml", productDetails);
         }
-        
+
 
 
         // CART INPUT CONTROLLER METHODS
@@ -399,9 +401,9 @@ namespace CleanBrilliantCompany.Controllers
 
             return RedirectToAction("ViewCart"); // Redirect back to the cart page
         }
-        
 
-       public IActionResult viewCart()
+
+        public IActionResult viewCart()
         {
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerID == null)
@@ -432,7 +434,7 @@ namespace CleanBrilliantCompany.Controllers
         // ORDER INPUT CONTROLLER METHODS
 
         // Display checkout Page (After pressing Checkout button)
-       [HttpGet]
+        [HttpGet]
         public IActionResult Checkout()
         {
             // Retrieve customer ID from the session
@@ -504,7 +506,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // Process the checkout form (Update shipping details)
-       [HttpPost]
+        [HttpPost]
         public IActionResult Checkout(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
         {
             int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
@@ -610,7 +612,7 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction("Checkout");
             }
-            
+
             decimal finalTotal = cartTotal + shippingFee;
 
             // Pass order details to the Payment view
@@ -631,9 +633,9 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Order/Payment.cshtml");
         }
 
-       [HttpPost]
-        public IActionResult processPayment(string deliveryAddress, string serviceType, string shippingType, string shippingAgent, 
-                                            string cardName, string cardNumber, string expiryDate, string cvv)
+        [HttpPost]
+        public IActionResult processPayment(string deliveryAddress, string serviceType, string shippingType, string shippingAgent,
+                                             string cardName, string cardNumber, string expiryDate, string cvv)
         {
             // Retrieve customer ID from the session
             int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
@@ -652,7 +654,7 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             // Validate payment details (mocked for now)
-            if (string.IsNullOrWhiteSpace(cardName) || string.IsNullOrWhiteSpace(cardNumber) || 
+            if (string.IsNullOrWhiteSpace(cardName) || string.IsNullOrWhiteSpace(cardNumber) ||
                 string.IsNullOrWhiteSpace(expiryDate) || string.IsNullOrWhiteSpace(cvv))
             {
                 TempData["Error"] = "Please enter all payment details.";
@@ -695,7 +697,7 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Order/OrderConfirmation.cshtml");
         }
 
-       [HttpGet]
+        [HttpGet]
         public IActionResult ToShip()
         {
             int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
@@ -707,7 +709,7 @@ namespace CleanBrilliantCompany.Controllers
 
             // Fetch orders with status "Pending"
             var orders = _orderManagement.getOrderHistory(customerId.Value)
-                                        .Where(o => o.GetStatus() == "Pending")
+                                        .Where(o => o.RetrieveStatus() == "Pending")
                                         .ToList();
 
             // Initialize the shippingDetails dictionary
@@ -717,14 +719,14 @@ namespace CleanBrilliantCompany.Controllers
             foreach (var order in orders)
             {
                 // Fetch product details
-                order.SetOrderProductsDetails(_cartManagement.getCartProductDetails(order.GetOrderProducts()));
+                order.UpdateOrderProductsDetails(_cartManagement.getCartProductDetails(order.RetrieveOrderProducts()));
 
                 // Deserialize shipping details from OrderShipping
-                if (!string.IsNullOrEmpty(order.GetOrderShipping()))
+                if (!string.IsNullOrEmpty(order.RetrieveOrderShipping()))
                 {
                     try
                     {
-                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.GetOrderShipping());
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.RetrieveOrderShipping());
                         if (details != null)
                         {
                             // Dynamically calculate the shipping fee
@@ -733,12 +735,12 @@ namespace CleanBrilliantCompany.Controllers
                                 details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
                             }
 
-                            shippingDetails[order.GetOrderID()] = details;
+                            shippingDetails[order.RetrieveOrderID()] = details;
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.GetOrderID()}: {ex.Message}");
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.RetrieveOrderID()}: {ex.Message}");
                     }
                 }
             }
@@ -760,7 +762,7 @@ namespace CleanBrilliantCompany.Controllers
 
             // Fetch orders with status "Shipped"
             var orders = _orderManagement.getOrderHistory(customerId.Value)
-                                        .Where(o => o.GetStatus() == "Shipped")
+                                        .Where(o => o.RetrieveStatus() == "Shipped")
                                         .ToList();
 
             // Initialize the shippingDetails dictionary
@@ -770,14 +772,14 @@ namespace CleanBrilliantCompany.Controllers
             foreach (var order in orders)
             {
                 // Fetch product details
-                order.SetOrderProductsDetails(_cartManagement.getCartProductDetails(order.GetOrderProducts()));
+                order.UpdateOrderProductsDetails(_cartManagement.getCartProductDetails(order.RetrieveOrderProducts()));
 
                 // Deserialize shipping details from OrderShipping
-                if (!string.IsNullOrEmpty(order.GetOrderShipping()))
+                if (!string.IsNullOrEmpty(order.RetrieveOrderShipping()))
                 {
                     try
                     {
-                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.GetOrderShipping());
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.RetrieveOrderShipping());
                         if (details != null)
                         {
                             // Dynamically calculate the shipping fee
@@ -786,12 +788,12 @@ namespace CleanBrilliantCompany.Controllers
                                 details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
                             }
 
-                            shippingDetails[order.GetOrderID()] = details;
+                            shippingDetails[order.RetrieveOrderID()] = details;
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.GetOrderID()}: {ex.Message}");
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.RetrieveOrderID()}: {ex.Message}");
                     }
                 }
             }
@@ -803,7 +805,7 @@ namespace CleanBrilliantCompany.Controllers
 
 
 
-       [HttpGet]
+        [HttpGet]
         public IActionResult Completed()
         {
             int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
@@ -817,7 +819,7 @@ namespace CleanBrilliantCompany.Controllers
             var orders = _orderManagement.getOrderHistory(customerId.Value);
 
             // Filter only Completed orders
-            var completedOrders = orders.Where(o => o.GetStatus() == "Completed").ToList();
+            var completedOrders = orders.Where(o => o.RetrieveStatus() == "Completed").ToList();
 
             // Get all reviewed product IDs by this customer
             var reviewedProductIds = _reviewManagement
@@ -834,14 +836,14 @@ namespace CleanBrilliantCompany.Controllers
             foreach (var order in completedOrders)
             {
                 // Fetch product details
-                order.SetOrderProductsDetails(_cartManagement.getCartProductDetails(order.GetOrderProducts()));
+                order.UpdateOrderProductsDetails(_cartManagement.getCartProductDetails(order.RetrieveOrderProducts()));
 
                 // Deserialize shipping details from OrderShipping
-                if (!string.IsNullOrEmpty(order.GetOrderShipping()))
+                if (!string.IsNullOrEmpty(order.RetrieveOrderShipping()))
                 {
                     try
                     {
-                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.GetOrderShipping());
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.RetrieveOrderShipping());
                         if (details != null)
                         {
                             // Dynamically calculate the shipping fee
@@ -850,12 +852,12 @@ namespace CleanBrilliantCompany.Controllers
                                 details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
                             }
 
-                            shippingDetails[order.GetOrderID()] = details;
+                            shippingDetails[order.RetrieveOrderID()] = details;
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.GetOrderID()}: {ex.Message}");
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.RetrieveOrderID()}: {ex.Message}");
                     }
                 }
             }
@@ -868,7 +870,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet]
         public IActionResult Cancelled()
         {
-           int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -879,7 +881,7 @@ namespace CleanBrilliantCompany.Controllers
             var orders = _orderManagement.getOrderHistory(customerId.Value);
 
             // Filter only Completed orders
-            var cancelledOrders = orders.Where(o => o.GetStatus() == "Cancelled").ToList();
+            var cancelledOrders = orders.Where(o => o.RetrieveStatus() == "Cancelled").ToList();
 
             // Initialize the shippingDetails dictionary
             var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
@@ -888,14 +890,14 @@ namespace CleanBrilliantCompany.Controllers
             foreach (var order in cancelledOrders)
             {
                 // Fetch product details
-                order.SetOrderProductsDetails(_cartManagement.getCartProductDetails(order.GetOrderProducts()));
+                order.UpdateOrderProductsDetails(_cartManagement.getCartProductDetails(order.RetrieveOrderProducts()));
 
                 // Deserialize shipping details from OrderShipping
-                if (!string.IsNullOrEmpty(order.GetOrderShipping()))
+                if (!string.IsNullOrEmpty(order.RetrieveOrderShipping()))
                 {
                     try
                     {
-                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.GetOrderShipping());
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.RetrieveOrderShipping());
                         if (details != null)
                         {
                             // Dynamically calculate the shipping fee
@@ -904,12 +906,12 @@ namespace CleanBrilliantCompany.Controllers
                                 details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
                             }
 
-                            shippingDetails[order.GetOrderID()] = details;
+                            shippingDetails[order.RetrieveOrderID()] = details;
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.GetOrderID()}: {ex.Message}");
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.RetrieveOrderID()}: {ex.Message}");
                     }
                 }
             }
@@ -921,7 +923,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet]
         public IActionResult Refund()
         {
-           int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -932,7 +934,7 @@ namespace CleanBrilliantCompany.Controllers
             var orders = _orderManagement.getOrderHistory(customerId.Value);
 
             // Filter orders with statuses "Refunded" or "Refund Requested"
-            var refundOrders = orders.Where(o => o.GetStatus() == "Refunded" || o.GetStatus() == "RefundRequested").ToList();
+            var refundOrders = orders.Where(o => o.RetrieveStatus() == "Refunded" || o.RetrieveStatus() == "RefundRequested").ToList();
 
             // Initialize the shippingDetails dictionary
             var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
@@ -941,14 +943,14 @@ namespace CleanBrilliantCompany.Controllers
             foreach (var order in refundOrders)
             {
                 // Fetch product details
-                order.SetOrderProductsDetails(_cartManagement.getCartProductDetails(order.GetOrderProducts()));
+                order.UpdateOrderProductsDetails(_cartManagement.getCartProductDetails(order.RetrieveOrderProducts()));
 
                 // Deserialize shipping details from OrderShipping
-                if (!string.IsNullOrEmpty(order.GetOrderShipping()))
+                if (!string.IsNullOrEmpty(order.RetrieveOrderShipping()))
                 {
                     try
                     {
-                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.GetOrderShipping());
+                        var details = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(order.RetrieveOrderShipping());
                         if (details != null)
                         {
                             // Dynamically calculate the shipping fee
@@ -957,12 +959,12 @@ namespace CleanBrilliantCompany.Controllers
                                 details["ShippingFee"] = _orderManagement.calculateShippingFee(details["ServiceType"]).ToString("F2");
                             }
 
-                            shippingDetails[order.GetOrderID()] = details;
+                            shippingDetails[order.RetrieveOrderID()] = details;
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.GetOrderID()}: {ex.Message}");
+                        _logger.LogError($"Error deserializing OrderShipping for OrderID {order.RetrieveOrderID()}: {ex.Message}");
                     }
                 }
             }
@@ -1019,54 +1021,54 @@ namespace CleanBrilliantCompany.Controllers
 
         //REVIEW INPUT CONTROLLER METHODS 
         [HttpGet]
-        public IActionResult RateProduct (int productId)
-        { 
-            var product = _productService.getProductDetails(productId); 
+        public IActionResult RateProduct(int productId)
+        {
+            var product = _productService.getProductDetails(productId);
             if (product == null)
-            { 
-                TempData["Error"] = "Product Not found"; 
-                return RedirectToAction("Completed"); 
+            {
+                TempData["Error"] = "Product Not found";
+                return RedirectToAction("Completed");
             }
-            ViewBag.ProductId = productId; 
-            ViewBag.ProductName = product.GetProductDetails()["ProductName"]; 
+            ViewBag.ProductId = productId;
+            ViewBag.ProductName = product.GetProductDetails()["ProductName"];
 
             return View("~/Views/Review/RateProduct.cshtml");
         }
 
         [HttpGet]
         public IActionResult EditReview(int productId)
-        { 
+        {
             int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
-                if (customerId == null)
-                    return RedirectToAction("Login", "BeforeLoginPage");
+            if (customerId == null)
+                return RedirectToAction("Login", "BeforeLoginPage");
 
-                var review = _reviewManagement
-                    .ViewReviewsByCustomer(customerId.Value)
-                    .FirstOrDefault(r => r.GetProductId() == productId);
+            var review = _reviewManagement
+                .ViewReviewsByCustomer(customerId.Value)
+                .FirstOrDefault(r => r.GetProductId() == productId);
 
-                if (review == null)
-                {
-                    TempData["Error"] = "Review not found.";
-                    return RedirectToAction("Completed");
-                }
+            if (review == null)
+            {
+                TempData["Error"] = "Review not found.";
+                return RedirectToAction("Completed");
+            }
 
-                var product = _productService.getProductDetails(productId);
+            var product = _productService.getProductDetails(productId);
 
-                ViewBag.ProductId = productId;
-                ViewBag.ProductName = product?.GetProductDetails()["ProductName"];
-                ViewBag.ReviewText = review.GetReview();
-                ViewBag.Rating = review.GetRating();
-                ViewBag.ReviewId = review.GetReviewId();
+            ViewBag.ProductId = productId;
+            ViewBag.ProductName = product?.GetProductDetails()["ProductName"];
+            ViewBag.ReviewText = review.GetReview();
+            ViewBag.Rating = review.GetRating();
+            ViewBag.ReviewId = review.GetReviewId();
 
-                return View("~/Views/Review/RateProduct.cshtml");
+            return View("~/Views/Review/RateProduct.cshtml");
         }
 
         [HttpPost]
-        public IActionResult SubmitReview (string reviewText, int rating, int productId)
-        {    
+        public IActionResult SubmitReview(string reviewText, int rating, int productId)
+        {
             Console.WriteLine($"Review: {reviewText}, Rating: {rating}, ProductID: {productId}");
-            if(!_reviewManagement.WriteReview(reviewText, rating, productId))
-            { 
+            if (!_reviewManagement.WriteReview(reviewText, rating, productId))
+            {
                 TempData["Error"] = "Failed to submit review. Make sure all fields are valid.";
             }
             else
@@ -1077,19 +1079,19 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Completed"); // gotta check where to go next. 
         }
         [HttpPost]
-            public IActionResult SubmitEditedReview(int reviewId, string reviewText, int rating, int productId)
+        public IActionResult SubmitEditedReview(int reviewId, string reviewText, int rating, int productId)
+        {
+            if (!_reviewManagement.EditReview(reviewId, reviewText, rating))
             {
-                if (!_reviewManagement.EditReview(reviewId, reviewText, rating))
-                {
-                    TempData["Error"] = "Failed to update review.";
-                }
-                else
-                {
-                    TempData["Success"] = "Review updated successfully!";
-                }
-
-                return RedirectToAction("Completed");
+                TempData["Error"] = "Failed to update review.";
             }
+            else
+            {
+                TempData["Success"] = "Review updated successfully!";
+            }
+
+            return RedirectToAction("Completed");
+        }
 
 
         [HttpPost]
@@ -1108,7 +1110,7 @@ namespace CleanBrilliantCompany.Controllers
         }
         [HttpPost]
         public IActionResult DeleteReview(int reviewId)
-        {   
+        {
             Console.WriteLine($"Deleting review with ID: {reviewId}");
 
             if (!_reviewManagement.DeleteReview(reviewId))
@@ -1126,17 +1128,17 @@ namespace CleanBrilliantCompany.Controllers
         //[HttpPost]
         //public IActionResult RemoveReview(int reviewId)
         //{
-         //   if (!_reviewManagement.DeleteReview(reviewId))
-         //   {
-          //      TempData["Error"] = "Failed to delete review.";
-          //  }
-         //   else
-          //  {
+        //   if (!_reviewManagement.DeleteReview(reviewId))
+        //   {
+        //      TempData["Error"] = "Failed to delete review.";
+        //  }
+        //   else
+        //  {
         //        TempData["Success"] = "Review deleted successfully!";
-         //   }
+        //   }
 
-         //   return RedirectToAction("GetAllProducts");
-       // }
+        //   return RedirectToAction("GetAllProducts");
+        // }
 
         [HttpGet]
         public IActionResult ViewReviews()
@@ -1163,93 +1165,93 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Review/ProductReviews.cshtml", reviews);
         }
 
-    // part of ProductInputController
-    [HttpPost]
-    public IActionResult AddToWishlist(int productId)
-    {
-        // Retrieve customer ID from the session
-        int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-        if (customerID == null)
+        // part of ProductInputController
+        [HttpPost]
+        public IActionResult AddToWishlist(int productId)
         {
-            TempData["Error"] = "User not logged in.";
-            return RedirectToAction("Login", "BeforeLoginPage");
-        }
-        
+            // Retrieve customer ID from the session
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
 
-        // Call the wishlist management service
-        var success = _wishlistManagement.addToWishlist(customerID.Value, productId);
-        
-        if (success)
+
+            // Call the wishlist management service
+            var success = _wishlistManagement.addToWishlist(customerID.Value, productId);
+
+            if (success)
+            {
+                TempData["Success"] = "Product added to wishlist successfully!";
+            }
+            else
+            {
+                TempData["Info"] = "Product is already in your wishlist.";
+            }
+
+            return RedirectToAction("GetAllProducts");
+        }
+
+        // part of ProductInputController
+        public IActionResult viewWishlist()
         {
-            TempData["Success"] = "Product added to wishlist successfully!";
+            // Retrieve customer ID from the session
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+
+            // Get customer details to retrieve the name
+            var customer = _customerManagement.getCustomer(customerID.Value);
+            string customerName = customer?.getSession<string>("username") ?? "My";
+            // Get wishlist items from wishlist management service
+            var productIds = _wishlistManagement.viewWishlist(customerID.Value);
+
+            // Get detailed product information for each wishlist item
+            var wishlistProducts = new Dictionary<int, Dictionary<string, object>>();
+
+            foreach (var productId in productIds)
+            {
+                var product = _productService.getProductDetails(productId);
+                if (product != null)
+                {
+                    wishlistProducts.Add(productId, product.GetProductDetails());
+                }
+            }
+            // Pass the customer name to the view
+            ViewBag.CustomerName = customerName;
+            return View("~/Views/Wishlist/WishlistIndex.cshtml", wishlistProducts);
         }
-        else
+
+        [HttpPost]
+        public IActionResult removeFromWishlist(int productId)
         {
-            TempData["Info"] = "Product is already in your wishlist.";
+            // Retrieve customer ID from the session
+            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
+            if (customerID == null)
+            {
+                TempData["Error"] = "User not logged in.";
+                return RedirectToAction("Login", "BeforeLoginPage");
+            }
+
+            // Call the wishlist management service
+            var success = _wishlistManagement.removeFromWishlist(customerID.Value, productId);
+
+            if (success)
+            {
+                TempData["Success"] = "Product removed from wishlist successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to remove product from wishlist.";
+            }
+
+            return RedirectToAction("viewWishlist");
         }
-
-        return RedirectToAction("GetAllProducts");
-    }
-
-// part of ProductInputController
-public IActionResult viewWishlist()
-{
-    // Retrieve customer ID from the session
-    int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-    if (customerID == null)
-    {
-        TempData["Error"] = "User not logged in.";
-        return RedirectToAction("Login", "BeforeLoginPage");
-    }
-
-
-    // Get customer details to retrieve the name
-    var customer = _customerManagement.getCustomer(customerID.Value);
-    string customerName = customer?.getSession<string>("username") ?? "My";
-    // Get wishlist items from wishlist management service
-    var productIds = _wishlistManagement.viewWishlist(customerID.Value);
-    
-    // Get detailed product information for each wishlist item
-    var wishlistProducts = new Dictionary<int, Dictionary<string, object>>();
-    
-    foreach (var productId in productIds)
-    {
-        var product = _productService.getProductDetails(productId);
-        if (product != null)
-        {
-            wishlistProducts.Add(productId, product.GetProductDetails());
-        }
-    }
-    // Pass the customer name to the view
-    ViewBag.CustomerName = customerName;
-    return View("~/Views/Wishlist/WishlistIndex.cshtml", wishlistProducts);
-}
-
-[HttpPost]
-public IActionResult removeFromWishlist(int productId)
-{
-    // Retrieve customer ID from the session
-    int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-    if (customerID == null)
-    {
-        TempData["Error"] = "User not logged in.";
-        return RedirectToAction("Login", "BeforeLoginPage");
-    }
-
-    // Call the wishlist management service
-    var success = _wishlistManagement.removeFromWishlist(customerID.Value, productId);
-    
-    if (success)
-    {
-        TempData["Success"] = "Product removed from wishlist successfully!";
-    }
-    else
-    {
-        TempData["Error"] = "Failed to remove product from wishlist.";
-    }
-
-    return RedirectToAction("viewWishlist");
-}
 
 
 
