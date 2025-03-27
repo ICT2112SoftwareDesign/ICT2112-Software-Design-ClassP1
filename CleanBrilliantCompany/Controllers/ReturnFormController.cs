@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
 {
-
-	public class ReturnFormController : Controller
+    
+    public class ReturnFormController : Controller
     {
 
 		private readonly ReturnFormControl _returnFormControl;
@@ -17,13 +17,14 @@ namespace CleanBrilliantCompany.Controllers
 			_returnFormControl = returnFormControl;
 		}
 
-		public List<ReturnForm> DisplayAllReturnForms()
+        [HttpPost]
+        [Route("inventory/management/stockflow/returns/display")]
+        public List<ReturnForm> DisplayAllReturnForms()
 		{
 			return _returnFormControl.displayReturnForms();
 		}
 
-
-		[Route("returns/view/{itemId}")]
+        [Route("inventory/management/stockflow/returns/view/{itemId}")]
 		public IActionResult DisplayReturnForm(int itemId)
 		{
 			ReturnForm? returnForm = _returnFormControl.getReturnFormById(itemId);
@@ -36,9 +37,10 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
 
-		// Handle deleting return forms.
-		[Route("returns/delete")]
-		public IActionResult DeleteReturnForm(int productId, int itemId)
+        // Handle deleting return forms.
+        [HttpGet]
+        [Route("inventory/management/stockflow/returns/delete")]
+        public IActionResult DeleteReturnForm(int productId, int itemId)
 		{
 			bool result = _returnFormControl.deleteReturnForm(productId, itemId);
 
@@ -50,9 +52,10 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
 
-		// Handle confirm sending return forms.
-		[Route("returns/confirm")]
-		public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, string manufacturerName, string manufacturerEmail, int productId, string productName, int itemId, string returnReason, int staffId)
+        // Handle confirm sending return forms.
+        [HttpPost]
+        [Route("inventory/management/stockflow/returns/confirm-create")]
+        public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, string manufacturerName, string manufacturerEmail, int productId, string productName, int itemId, string returnReason, int staffId)
 		{
 
 			// Example staff ID set to 1.
@@ -69,8 +72,8 @@ namespace CleanBrilliantCompany.Controllers
 			return RedirectToAction("Returns", "StockFlowPage");
 		}
 
-		// Generate new return forms for sending (not sent yet)
-		[Route("returns/create")]
+        // Generate new return forms for sending (not sent yet)
+        [Route("inventory/management/stockflow/returns/create")]
         public IActionResult Create(int productId, int itemId) {
 
             ReturnForm model = _returnFormControl.generateReturnForm(productId, itemId);
@@ -78,7 +81,7 @@ namespace CleanBrilliantCompany.Controllers
 			return View(model);
 		}
 
-        [Route("returns/toReturn")]
+        [Route("inventory/management/stockflow/returns/to-return")]
         public ActionResult ShowAllToReturn()
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();

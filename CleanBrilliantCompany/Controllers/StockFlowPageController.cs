@@ -12,12 +12,6 @@ namespace CleanBrilliantCompany.Controllers
 			_returnFormController = returnFormController;
 		}
 
-        [Route("")]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [Route("returns")]
 		public IActionResult Returns()
 		{
