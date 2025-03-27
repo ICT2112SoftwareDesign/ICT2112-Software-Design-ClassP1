@@ -8,21 +8,21 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
         private readonly IOrderCFManagement _orderCFManagement; // for inserting order record
         private readonly IItemCF _itemCF; // for retrieving item CF
 
-        //private readonly IOrder _order; // for retrieving list of item Ids
+        private readonly IOrder _order; // for retrieving list of item Ids
 
         // Calculate the carbon footprint for a shipment.
-        public CalculateShipmentCFImpl(IOrderCFManagement orderCFManagement, IItemCF itemCF)
+        public CalculateShipmentCFImpl(IOrderCFManagement orderCFManagement, IItemCF itemCF, IOrder order)
         {
             _orderCFManagement = orderCFManagement;
             _itemCF = itemCF;
+            _order = order;
         }
 
         public float CalculateCarbonFootprint(ShipmentSDM shipment)
         {
             float totalEmission = 0.0f;
 
-            List<int> orderItemsIdList = new List<int>();
-            //List<int> orderItemsIdList = _orderCFManagement.getItemIdList() // waiting for implementation from mod 1 side
+            List<int> orderItemsIdList = _order.getOrderItemIds(shipment.OrderId);
             foreach(int itemId in orderItemsIdList){
                 double itemCF = _itemCF.getItemCarbonFootprintByItemId(itemId);
                 totalEmission += (float)itemCF;

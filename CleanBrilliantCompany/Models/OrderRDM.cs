@@ -1,0 +1,99 @@
+using System;
+using System.Collections.Generic;
+
+namespace CleanBrilliantCompany.Models
+{
+    public class OrderRDM
+    {
+        // Private fields
+        private int _orderID;
+        private int _customerID;
+        private string _orderAddress;
+        private Dictionary<int, int> _orderProducts; // Product ID -> Quantity
+        private string _orderShipping;
+        private List<int> _orderItems; // List of serial numbers for products
+        private DateTime _orderDate;
+        private string _status;
+        private decimal _orderTotal;
+        private Dictionary<int, Dictionary<string, object>> _orderProductsDetails;
+        private int v1;
+        private int v2;
+        private Dictionary<int, int> dict;
+        private string v3;
+        private object value;
+        private DateTime now;
+        private string v4;
+        private int v5;
+
+        // Constructor to initialize the fields
+        public OrderRDM(
+            int orderID,
+            int customerID,
+            string orderAddress,
+            Dictionary<int, int> orderProducts,
+            string orderShipping,
+            List<int> orderItems, // Updated to List<int>
+            DateTime orderDate,
+            string status,
+            decimal orderTotal)
+        {
+            _orderID = orderID;
+            _customerID = customerID;
+            _orderAddress = orderAddress;
+            _orderProducts = orderProducts;
+            _orderShipping = orderShipping;
+            _orderItems = orderItems ?? new List<int>(); // Ensure it's not null
+            _orderDate = orderDate;
+            _status = status;
+            _orderTotal = orderTotal;
+            _orderProductsDetails = new Dictionary<int, Dictionary<string, object>>();
+        }
+
+        public OrderRDM(int v1, int v2, Dictionary<int, int> dict, string v3, object value, DateTime now, string v4, int v5)
+        {
+            this.v1 = v1;
+            this.v2 = v2;
+            this.dict = dict;
+            this.v3 = v3;
+            this.value = value;
+            this.now = now;
+            this.v4 = v4;
+            this.v5 = v5;
+        }
+
+        // Public methods to access and modify the fields
+
+        public int GetOrderID() => _orderID;
+        public void SetOrderID(int orderID) => _orderID = orderID;
+
+        public int GetCustomerID() => _customerID;
+        public void SetCustomerID(int customerID) => _customerID = customerID;
+
+        public string GetOrderAddress() => _orderAddress;
+        public void SetOrderAddress(string orderAddress) => _orderAddress = orderAddress;
+
+        public Dictionary<int, int> GetOrderProducts() => _orderProducts;
+        public void SetOrderProducts(Dictionary<int, int> orderProducts) => _orderProducts = orderProducts;
+
+        public string GetOrderShipping() => _orderShipping;
+        public void SetOrderShipping(string orderShipping) => _orderShipping = orderShipping;
+
+        /// Gets the list of serial numbers for the products in the order.
+        public List<int> GetOrderItems() => _orderItems;
+
+        /// Sets the list of serial numbers for the products in the order.
+        public void SetOrderItems(List<int> orderItems) => _orderItems = orderItems ?? new List<int>();
+
+        public DateTime GetOrderDate() => _orderDate;
+        public void SetOrderDate(DateTime orderDate) => _orderDate = orderDate;
+
+        public string GetStatus() => _status;
+        public void SetStatus(string status) => _status = status;
+
+        public decimal GetOrderTotal() => _orderTotal;
+        public void SetOrderTotal(decimal orderTotal) => _orderTotal = orderTotal;
+
+        public Dictionary<int, Dictionary<string, object>> GetOrderProductsDetails() => _orderProductsDetails;
+        public void SetOrderProductsDetails(Dictionary<int, Dictionary<string, object>> orderProductsDetails) => _orderProductsDetails = orderProductsDetails;
+    }
+}
