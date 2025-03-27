@@ -16,53 +16,35 @@ namespace CleanBrilliantCompany.Models
         private string _status;
         private decimal _orderTotal;
         private Dictionary<int, Dictionary<string, object>> _orderProductsDetails;
-        private int v1;
-        private int v2;
-        private Dictionary<int, int> dict;
-        private string v3;
-        private object value;
-        private DateTime now;
-        private string v4;
-        private int v5;
+        private double _orderWeight;  // New field for total weight
 
-        // Constructor to initialize the fields
+        // Constructor to initialize all fields, including orderWeight.
         public OrderRDM(
             int orderID,
             int customerID,
             string orderAddress,
             Dictionary<int, int> orderProducts,
             string orderShipping,
-            List<int> orderItems, // Updated to List<int>
+            List<int> orderItems,
             DateTime orderDate,
             string status,
-            decimal orderTotal)
+            decimal orderTotal,
+            double orderWeight)
         {
             _orderID = orderID;
             _customerID = customerID;
             _orderAddress = orderAddress;
             _orderProducts = orderProducts;
             _orderShipping = orderShipping;
-            _orderItems = orderItems ?? new List<int>(); // Ensure it's not null
+            _orderItems = orderItems ?? new List<int>();
             _orderDate = orderDate;
             _status = status;
             _orderTotal = orderTotal;
             _orderProductsDetails = new Dictionary<int, Dictionary<string, object>>();
+            _orderWeight = orderWeight;
         }
 
-        public OrderRDM(int v1, int v2, Dictionary<int, int> dict, string v3, object value, DateTime now, string v4, int v5)
-        {
-            this.v1 = v1;
-            this.v2 = v2;
-            this.dict = dict;
-            this.v3 = v3;
-            this.value = value;
-            this.now = now;
-            this.v4 = v4;
-            this.v5 = v5;
-        }
-
-        // Public methods to access and modify the fields
-
+        // Public methods to access and modify the fields.
         public int GetOrderID() => _orderID;
         public void SetOrderID(int orderID) => _orderID = orderID;
 
@@ -80,7 +62,6 @@ namespace CleanBrilliantCompany.Models
 
         /// Gets the list of serial numbers for the products in the order.
         public List<int> GetOrderItems() => _orderItems;
-
         /// Sets the list of serial numbers for the products in the order.
         public void SetOrderItems(List<int> orderItems) => _orderItems = orderItems ?? new List<int>();
 
@@ -95,5 +76,12 @@ namespace CleanBrilliantCompany.Models
 
         public Dictionary<int, Dictionary<string, object>> GetOrderProductsDetails() => _orderProductsDetails;
         public void SetOrderProductsDetails(Dictionary<int, Dictionary<string, object>> orderProductsDetails) => _orderProductsDetails = orderProductsDetails;
+
+        // New public property for OrderWeight.
+        public double OrderWeight
+        {
+            get { return _orderWeight; }
+            set { _orderWeight = value; }
+        }
     }
 }

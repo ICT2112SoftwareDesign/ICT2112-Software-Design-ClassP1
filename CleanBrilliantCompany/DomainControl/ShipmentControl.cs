@@ -8,54 +8,48 @@ namespace CleanBrilliantCompany.Models
     public class ShipmentControl
     {
         private readonly IRoutingService _routingService;
+        private readonly IOrder _orderService;  // Module 1's order interface
 
-        public ShipmentControl(IRoutingService routingService)
+        public ShipmentControl(IRoutingService routingService, IOrder orderService)
         {
             _routingService = routingService;
+            _orderService = orderService;
         }
 
         // Asynchronous shipment creation method.
-        // Note: The totalWeight parameter has been removed.
-        public async Task<ShipmentSDM> CreateShipmentAsync(int orderId, string shippingMethod, string senderAddress, string recipientAddress)
+        // Retrieves order details from IOrder and uses the OrderWeight property.
+        public async Task<ShipmentSDM> CreateShipmentAsync(int orderId, string senderAddress)
         {
-            // Hardcoded method to simulate retrieval of order details (IOrder interface in the future).
-            OrderDetails orderDetails = GetOrderDetailsHardcoded(orderId);
-
-            // Use the recipient address from order details.
-            string recipientAddrFromOrder = orderDetails.RecipientAddress;
-            List<Item> items = orderDetails.Items;
-            double totalWeight = CalculateTotalWeight(items);
-
-            ITransportStrategy strategy = SelectStrategy(shippingMethod);
-            var routeSegments = await strategy.CreateRouteAsync(senderAddress, recipientAddrFromOrder);
-
-            var shipment = new ShipmentSDM
+            // Retrieve order details from Module 1 via IOrder.
+            OrderRDM orderRDM = _orderService.getOrderDetails(orderId);
+            if (orderRDM == null)
             {
-                OrderId = orderDetails.OrderId,
+                throw new Exception($"Order with ID {orderId} not found.");
+            }
+
+            // Extract recipient address and shipping method from OrderRDM.
+            string recipientAddress = orderRDM.GetOrderAddress();
+            string shippingMethod = orderRDM.GetOrderShipping();
+
+            // Use the order weight directly from OrderRDM.
+            double totalWeight = orderRDM.OrderWeight;
+
+            // Select the appropriate transport strategy.
+            ITransportStrategy strategy = SelectStrategy(shippingMethod);
+
+            // Generate route segments using the fixed sender address and the recipient address.
+            var routeSegments = await strategy.CreateRouteAsync(senderAddress, recipientAddress);
+
+            // Construct and return the shipment entity.
+            return new ShipmentSDM
+            {
+                OrderId = orderRDM.GetOrderID(),
                 TotalWeight = totalWeight,
                 RouteSegments = routeSegments
             };
-
-            return shipment;
         }
 
-        // Hardcoded method simulating IOrder retrieval.
-        private OrderDetails GetOrderDetailsHardcoded(int orderId)
-        {
-            return new OrderDetails
-            {
-                OrderId = orderId,
-                RecipientAddress = "Buckingham Palace",
-                ShippingMethod = "Air",
-                Items = new List<Item>
-                {
-                    new Item { Name = "Bleach", Weight = 2.0, Quantity = 2, BatchCode = 1 },
-                    new Item { Name = "Detergent", Weight = 1.0, Quantity = 4, BatchCode = 2 }
-                }
-            };
-        }
-
-        // Helper method for selecting the appropriate strategy.
+        // Helper method for selecting the appropriate transport strategy.
         private ITransportStrategy SelectStrategy(string method)
         {
             if (method.Equals("Air", StringComparison.OrdinalIgnoreCase))
@@ -65,25 +59,7 @@ namespace CleanBrilliantCompany.Models
             else // default to Truck
                 return new TruckTransportStrategy(_routingService);
         }
-
-        // Helper method to calculate total weight from a list of items.
-        public double CalculateTotalWeight(List<Item> items)
-        {
-            double total = 0;
-            foreach (var item in items)
-            {
-                total += item.Weight * item.Quantity;
-            }
-            return total;
-        }
     }
 
-    // Representation of order details.
-    public class OrderDetails
-    {
-        public int OrderId { get; set; }
-        public string RecipientAddress { get; set; }
-        public string ShippingMethod { get; set; }
-        public List<Item> Items { get; set; }
-    }
+    // Note: OrderRDM is provided by Module 1.
 }
