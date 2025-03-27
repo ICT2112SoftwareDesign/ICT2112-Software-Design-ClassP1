@@ -1,49 +1,55 @@
 @model List<Dictionary<string, object>>
 
 <h2>Item List</h2>
-<div class="row mb-3">
+<div class="row mb-3 ml-2">
     @* Search ITEM ID *@
-    <div class="col-md-auto">
-        <form method="post" asp-action="searchById" class="row g-2">
-            <div class="col">
+
+    <form method="post" asp-action="searchById">
+        <div class="row">
+            <div>
                 <input class="form-control" id="itemId" type="number" name="searchedItemId"
                     placeholder="Search Item by Id" required>
             </div>
-            <div class="col-auto">
+            <div class="col">
                 <button type="submit" class="btn btn-primary">
                     Search
                 </button>
             </div>
-            <div class="col-auto">
-                <a asp-action="Index" class="btn btn-secondary">
-                    Clear
-                </a>
-            </div>
-        </form>
-    </div>
+
+        </div>
+    </form>
+
+    <form method="post" asp-action="ClearSearch">
+        <button type="submit" class="btn btn-secondary ml-2">
+            Clear
+        </button>
+    </form>
 
     @* SEARCH PRODUCT NAME *@
-    <div class="col-md-auto">
-        <form method="post" asp-action="searchByName" class="row g-2">
-            <div class="col">
-                <input class="form-control" id="productName" type="text" name="searchedProductName"
-                    placeholder="Search Product by Name" required>
+    <div class="row ml-5">
+        <form method="post" asp-action="searchByName">
+            <div class="row">
+                <div>
+                    <input class="form-control" id="productName" type="text" name="searchedProductName"
+                        placeholder="Search Product by Name" required>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </div>
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">
-                    Search
-                </button>
-            </div>
-            <div class="col-auto">
-                <a asp-action="Index" class="btn btn-secondary">
-                    Clear
-                </a>
-            </div>
+        </form>
+        <form method="post" asp-action="ClearSearch">
+            <button type="submit" class="btn btn-secondary ml-2">
+                Clear
+            </button>
         </form>
     </div>
 </div>
 
-<div class="row mb-3">
+
+<div class="row mb-3 mt-5">
     @* Refund Button *@
     <div class="col-auto">
         <form method="post" asp-action="refundedItems">
@@ -138,6 +144,18 @@
         }
     </tbody>
 </table>
+
+<div style="justify-self: center;">
+    <a>Page</a>
+    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+    {
+        <a href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">@i</a>
+        @if (i < ViewBag.TotalPages)
+        {
+            <span> | </span>
+        }
+    }
+</div>
 
 @* button to trigger add model *@
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
@@ -381,8 +399,8 @@
 @* popup messages *@
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050; right: 20px; top: 20px;">
     <!-- Success Toast -->
-    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive"
-        aria-atomic="true">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+        aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
                 <strong>Success:</strong> <span id="successMessageText"></span>
@@ -392,8 +410,8 @@
     </div>
 
     <!-- Error Toast -->
-    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive"
-        aria-atomic="true">
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert"
+        aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
                 <strong>Error:</strong> <span id="errorMessageText"></span>

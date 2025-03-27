@@ -19,17 +19,44 @@ namespace CleanBrilliantCompany.Controllers
 
         // default get all items
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-            List<Item> items = await _itemControl.getAllItems();
+            List<Item> items = await _itemControl.getAllItems(page, pageSize);
+            int itemsCount = _itemControl.getItemCount();
 
             foreach (var item in items)
             {
                 itemsInfo.Add(item.retrieveItemInfo());
             }
 
+            int totalPages = (int)Math.Ceiling((double)itemsCount / pageSize);
+            // Pass data to the view
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            Console.WriteLine("TOTAL NUM OF ITEMS: " + itemsCount);
+
+            Console.WriteLine("TOTAL PAGE NUMBER: " + totalPages);
+            Console.WriteLine("TOTAL PAGE SIZE: " + pageSize);
+
             return View(itemsInfo);
+        }
+
+
+        // default get all items
+        [HttpPost]
+        public async Task<IActionResult> ClearSearch(int page = 1, int pageSize = 10)
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            List<Item> items = await _itemControl.getAllItems(page, pageSize);
+
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            return RedirectToAction("Index", new { page = page, pageSize = pageSize });
         }
 
         [HttpPost]
@@ -43,7 +70,8 @@ namespace CleanBrilliantCompany.Controllers
             {
                 itemsInfo.Add(item.retrieveItemInfo());
                 TempData["SuccessMessage"] = "Item Found";
-            } else TempData["ErrorMessage"] = "No item found with the searched ID";
+            }
+            else TempData["ErrorMessage"] = "No item found with the searched ID";
 
             return View("Index", itemsInfo);  // Reuse Index view
         }

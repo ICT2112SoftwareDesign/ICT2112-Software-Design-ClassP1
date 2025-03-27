@@ -29,9 +29,13 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // METHODS FOR IITEM
-        public async Task<List<Item>> getAllItems()
+        public async Task<List<Item>> getAllItems(int pageNumber, int pageSize)
         {
-            return await Task.FromResult(_itemMapper.getAllItems()); // mapper uses iItemQuery to interact with control 
+            return await Task.FromResult(_itemMapper.getAllItems(pageNumber, pageSize)); // mapper uses iItemQuery to interact with control 
+        }
+
+        public int getItemCount() {
+            return _itemMapper.getItemCount();
         }
 
         public async Task<Item> getItemById(int itemId)
