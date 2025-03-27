@@ -95,9 +95,9 @@ namespace CleanBrilliantCompany.Controllers
 
         [HttpPost]
         [Route("addItem")]
-        public async Task<IActionResult> addItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        public async Task<IActionResult> addItem(int productId, int batchCode, int warehouseId, ItemStatus status)
         {
-            bool result = await _itemControl.createItem(productId, salePrice, batchCode, warehouseId, status);
+            bool result = await _itemControl.createItem(productId, batchCode, warehouseId, status);
             if (result)
             {
                 return RedirectToAction("Index");

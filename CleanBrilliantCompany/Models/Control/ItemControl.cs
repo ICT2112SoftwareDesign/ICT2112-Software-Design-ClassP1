@@ -51,8 +51,27 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getItemByProductName(productName));
         }
 
-        public async Task<bool> createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        public async Task<bool> createItem(int productId, int batchCode, int warehouseId, ItemStatus status)
         {
+            Product product = await retrieveProductDetails(productId);
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+            float salePrice = 0.0f;  
+            status = ItemStatus.Available;
+
+            if (product != null)
+            {
+                productInfo.Add(product.retrieveProductInfo());
+
+                float costPrice = Convert.ToSingle(productInfo[0]["ProductCost"]); // Safe conversion
+
+                Console.WriteLine("==================");
+                Console.WriteLine($"COST PRICE: {costPrice}");
+                Console.WriteLine("==================");
+
+                salePrice = MathF.Ceiling(costPrice * 1.3f * 10) / 10f;
+            }
+
+
             return await Task.FromResult(_itemMapper.createItem(productId, salePrice, batchCode, warehouseId, status));
         }
 
