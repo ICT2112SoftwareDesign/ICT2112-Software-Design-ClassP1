@@ -5,6 +5,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Mapper;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -12,19 +15,29 @@ var config = builder.Configuration;
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Register services properly - using the new approach
+// Create the ShippingAgentDBService class in the Services folder first
 builder.Services.AddScoped<ShippingAgentMapper>();
-builder.Services.AddScoped<_IShippingAgentDB, ShippingAgentMapper>();
+builder.Services.AddScoped<IShippingAgent, ShippingAgentMapper>();
+// This line was trying to register an interface as its own implementation
+// Change it to use a concrete implementation class
+builder.Services.AddScoped<IShippingAgentDB>();
 
-// Remove DbContext registration and use direct SQL connection
-// Create ShippingAgentMapper instance after services are registered to demonstrate data fetching
-// Note: This is for debugging only and should be removed in production
-var serviceProvider = builder.Services.BuildServiceProvider();
-var shippingAgentMapper = serviceProvider.GetRequiredService<ShippingAgentMapper>();
-var agents = shippingAgentMapper.FetchShippingAgents();
-Console.WriteLine($"Debug: Found {agents.Count} shipping agents");
-
+// Build the app first
 var app = builder.Build();
+
+// Use proper logging instead of BuildServiceProvider
+app.Lifetime.ApplicationStarted.Register(() => {
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    var mapper = app.Services.GetRequiredService<ShippingAgentMapper>();
+    
+    try {
+        var agents = mapper.GetShippingAgentsAsync().Result.ToList();
+        logger.LogInformation($"Debug: Found {agents.Count} shipping agents");
+    }
+    catch (Exception ex) {
+        logger.LogError(ex, "Error fetching shipping agents during startup");
+    }
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -35,16 +48,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

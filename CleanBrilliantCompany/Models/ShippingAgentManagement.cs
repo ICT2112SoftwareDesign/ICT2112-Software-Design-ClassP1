@@ -8,11 +8,11 @@ namespace CleanBrilliantCompany.Models
 {
     public class ShippingAgentManagement
     {
-        public List<ShippingAgent> ShippingAgents { get; set; }
+        public List<ShippingAgent_RDM> ShippingAgents { get; set; }
 
         public ShippingAgentManagement()
         {
-            ShippingAgents = new List<ShippingAgent>();
+            ShippingAgents = new List<ShippingAgent_RDM>();
         }
     }
 }

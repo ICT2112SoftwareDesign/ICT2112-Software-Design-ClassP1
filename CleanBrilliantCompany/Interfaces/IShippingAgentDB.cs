@@ -1,87 +1,62 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Data;
-using Microsoft.EntityFrameworkCore; // Required for ToListAsync()
-
+using CleanBrilliantCompany.Mapper; 
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public class ShippingAgentDB : _IShippingAgentDB
+    public class IShippingAgentDB : IShippingAgent
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ShippingAgentMapper _mapper;
 
-        public ShippingAgentDB(ApplicationDbContext context)
+        public IShippingAgentDB(ShippingAgentMapper mapper)
         {
-            _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<List<ShippingAgent>> GetShippingAgentsAsync()
+        public async Task<IEnumerable<ShippingAgent_RDM>> GetAllShippingAgentsAsync()
         {
-            return await _context.ShippingAgents.ToListAsync(); // Fetch from DB
+            // Call the correct method from mapper
+            return await _mapper.GetShippingAgentsAsync();
         }
 
-        public async Task<ShippingAgent> GetShippingAgentByIdAsync(int id)
+        public async Task<ShippingAgent_RDM> GetShippingAgentByIdAsync(int id)
         {
-            return await _context.ShippingAgents.FindAsync(id) ?? new ShippingAgent();
-        }
-
-
-        public async Task<bool> AddShippingAgentAsync(ShippingAgent shippingAgent)
-        {
-            try
-            {
-                _context.ShippingAgents.Add(shippingAgent);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR adding shipping agent: {ex.Message}\n{ex.StackTrace}");
-                return false;
-            }
-        }
-
-
-        public async Task<bool> UpdateShippingAgentAsync(ShippingAgent shippingAgent)
-        {
-            try
-            {
-                _context.ShippingAgents.Update(shippingAgent);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR updating shipping agent: {ex.Message}\n{ex.StackTrace}");
-                return false;
-            }
+            return await _mapper.GetShippingAgentByIdAsync(id);
         }
 
         public async Task<bool> DeleteShippingAgentAsync(int id)
         {
-            try
-            {
-                var shippingAgent = await _context.ShippingAgents.FindAsync(id);
-                if (shippingAgent == null)
-                {
-                    return false;
-                }
+            return await _mapper.DeleteShippingAgentAsync(id);
+        }
 
-                _context.ShippingAgents.Remove(shippingAgent);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
+        public async Task<ShippingAgent_RDM> CreateShippingAgentAsync(ShippingAgent_RDM shippingAgent)
+        {
+            // Call the correct method and handle the return value conversion
+            bool success = await _mapper.AddShippingAgentAsync(shippingAgent);
+            if (success)
             {
-                Console.WriteLine($"ERROR deleting shipping agent: {ex.Message}\n{ex.StackTrace}");
-                return false;
+                // Since AddShippingAgentAsync doesn't return the created object with ID,
+                // we would ideally need to retrieve it after creation
+                // This is a simplified placeholder approach
+                return shippingAgent;
             }
+            return new ShippingAgent_RDM(); // Return empty object instead of null
+        }
+
+        public async Task<ShippingAgent_RDM> UpdateShippingAgentAsync(int id, ShippingAgent_RDM shippingAgent)
+        {
+            // Set ID to ensure correct record is updated
+            shippingAgent.ShippingAgentId = id;
+            
+            // Call the correct method
+            bool success = await _mapper.UpdateShippingAgentAsync(shippingAgent);
+            if (success)
+            {
+                return shippingAgent;
+            }
+            return new ShippingAgent_RDM(); // Return empty object instead of null
         }
     }
 }

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Interfaces;
 using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Controllers.Staff
@@ -9,14 +8,7 @@ namespace CleanBrilliantCompany.Controllers.Staff
     [Route("staff")]
     public class StaffController : Controller
     {
-        private readonly _IShippingAgentDB _IShippingAgentDB;
-
-        // Add constructor with dependency injection
-        public StaffController(_IShippingAgentDB ShippingAgentDB)
-        {
-            _IShippingAgentDB = ShippingAgentDB;
-        }
-
+        
         [HttpGet("")]
         public IActionResult Index()
         {

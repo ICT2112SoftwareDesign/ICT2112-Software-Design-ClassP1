@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@* @model ShippingAgentManagement *@
 @model CleanBrilliantCompany.Models.ShippingAgentManagement
 
 @{
     ViewData["Title"] = "Shipping Agents";
 }
-
-
 
 <head>
 
@@ -311,8 +308,9 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
-                                        @if (Model != null && Model.ShippingAgents != null)
+                                        @if (Model.ShippingAgents != null && Model.ShippingAgents.Any())
                                         {
                                             @foreach (var agent in Model.ShippingAgents)
                                             {

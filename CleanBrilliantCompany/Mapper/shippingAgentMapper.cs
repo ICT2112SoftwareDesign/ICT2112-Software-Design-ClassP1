@@ -5,10 +5,11 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interfaces;
+using System.Linq;
 
 namespace CleanBrilliantCompany.Mapper
 {
-    public class ShippingAgentMapper : _IShippingAgentDB
+    public class ShippingAgentMapper : IShippingAgent
     {
         private readonly string _connectionString;
 
@@ -18,9 +19,101 @@ namespace CleanBrilliantCompany.Mapper
                 ?? throw new ArgumentNullException("Connection string not found.");
         }
 
-        public async Task<List<ShippingAgent>> GetShippingAgentsAsync()
+        // IShippingAgent interface implementation
+        public async Task<IEnumerable<ShippingAgent_RDM>> GetAllShippingAgentsAsync()
         {
-            var agents = new List<ShippingAgent>();
+            return await GetShippingAgentsAsync();
+        }
+
+        public async Task<ShippingAgent_RDM> GetShippingAgentByIdAsync(int id)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await conn.OpenAsync();
+                    string query = "SELECT * FROM ShippingAgent WHERE shippingAgentId = @Id";
+                    
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", id);
+                        
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                return new ShippingAgent_RDM
+                                {
+                                    ShippingAgentId = reader.GetInt32(reader.GetOrdinal("shippingAgentId")),
+                                    ShippingAgentCompany = reader.IsDBNull(reader.GetOrdinal("shippingAgentCompany")) ? "N/A" : reader.GetString(reader.GetOrdinal("shippingAgentCompany")),
+                                    ShippingMethod = reader.IsDBNull(reader.GetOrdinal("shippingMethod")) ? "N/A" : reader.GetString(reader.GetOrdinal("shippingMethod")),
+                                    ServiceType = reader.IsDBNull(reader.GetOrdinal("serviceType")) ? "N/A" : reader.GetString(reader.GetOrdinal("serviceType"))
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ ERROR getting shipping agent by ID: {ex.Message}\n{ex.StackTrace}");
+                }
+            }
+            
+            return new ShippingAgent_RDM(); // Return empty object instead of null
+        }
+
+        public async Task<ShippingAgent_RDM> CreateShippingAgentAsync(ShippingAgent_RDM shippingAgent)
+        {
+            bool success = await AddShippingAgentAsync(shippingAgent);
+            
+            if (success)
+            {
+                // Get the last inserted ID
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    try
+                    {
+                        await conn.OpenAsync();
+                        string query = "SELECT TOP 1 * FROM ShippingAgent ORDER BY shippingAgentId DESC";
+                        
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                shippingAgent.ShippingAgentId = reader.GetInt32(reader.GetOrdinal("shippingAgentId"));
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"❌ ERROR retrieving newly created shipping agent: {ex.Message}");
+                    }
+                }
+                
+                return shippingAgent;
+            }
+            
+            return new ShippingAgent_RDM(); // Return empty object instead of null
+        }
+
+        public async Task<ShippingAgent_RDM> UpdateShippingAgentAsync(int id, ShippingAgent_RDM shippingAgent)
+        {
+            shippingAgent.ShippingAgentId = id;
+            bool success = await UpdateShippingAgentAsync(shippingAgent);
+            
+            if (success)
+            {
+                return shippingAgent;
+            }
+            
+            return new ShippingAgent_RDM(); // Return empty object instead of null
+        }
+
+        // Helper methods (not part of the interface)
+        public async Task<List<ShippingAgent_RDM>> GetShippingAgentsAsync()
+        {
+            var agents = new List<ShippingAgent_RDM>();
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
@@ -40,7 +133,7 @@ namespace CleanBrilliantCompany.Mapper
                             rowCount++;
                             Console.WriteLine($"📌 Processing Row {rowCount}...");
 
-                            var agent = new ShippingAgent
+                            var agent = new ShippingAgent_RDM
                             {
                                 ShippingAgentId = reader.GetInt32(reader.GetOrdinal("shippingAgentId")),
                                 ShippingAgentCompany = reader.IsDBNull(reader.GetOrdinal("shippingAgentCompany")) ? "N/A" : reader.GetString(reader.GetOrdinal("shippingAgentCompany")),
@@ -64,44 +157,7 @@ namespace CleanBrilliantCompany.Mapper
             return agents;
         }
 
-        public async Task<ShippingAgent> GetShippingAgentByIdAsync(int id)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                try
-                {
-                    await conn.OpenAsync();
-                    string query = "SELECT * FROM ShippingAgent WHERE shippingAgentId = @Id";
-                    
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Id", id);
-                        
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                        {
-                            if (await reader.ReadAsync())
-                            {
-                                return new ShippingAgent
-                                {
-                                    ShippingAgentId = reader.GetInt32(reader.GetOrdinal("shippingAgentId")),
-                                    ShippingAgentCompany = reader.IsDBNull(reader.GetOrdinal("shippingAgentCompany")) ? "N/A" : reader.GetString(reader.GetOrdinal("shippingAgentCompany")),
-                                    ShippingMethod = reader.IsDBNull(reader.GetOrdinal("shippingMethod")) ? "N/A" : reader.GetString(reader.GetOrdinal("shippingMethod")),
-                                    ServiceType = reader.IsDBNull(reader.GetOrdinal("serviceType")) ? "N/A" : reader.GetString(reader.GetOrdinal("serviceType"))
-                                };
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"❌ ERROR getting shipping agent by ID: {ex.Message}\n{ex.StackTrace}");
-                }
-            }
-            
-            return new ShippingAgent(); // Return empty object if not found
-        }
-
-        public async Task<bool> AddShippingAgentAsync(ShippingAgent shippingAgent)
+        public async Task<bool> AddShippingAgentAsync(ShippingAgent_RDM shippingAgent)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
@@ -130,7 +186,7 @@ namespace CleanBrilliantCompany.Mapper
             }
         }
 
-        public async Task<bool> UpdateShippingAgentAsync(ShippingAgent shippingAgent)
+        public async Task<bool> UpdateShippingAgentAsync(ShippingAgent_RDM shippingAgent)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
@@ -189,7 +245,7 @@ namespace CleanBrilliantCompany.Mapper
         }
 
         // Non-async method for compatibility with existing code
-        public List<ShippingAgent> FetchShippingAgents()
+        public List<ShippingAgent_RDM> FetchShippingAgents()
         {
             return GetShippingAgentsAsync().GetAwaiter().GetResult();
         }
