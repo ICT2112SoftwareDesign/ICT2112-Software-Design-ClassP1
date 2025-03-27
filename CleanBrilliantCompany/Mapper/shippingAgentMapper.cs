@@ -33,11 +33,11 @@ namespace CleanBrilliantCompany.Mapper
                 {
                     await conn.OpenAsync();
                     string query = "SELECT * FROM ShippingAgent WHERE shippingAgentId = @Id";
-                    
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Id", id);
-                        
+
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                         {
                             if (await reader.ReadAsync())
@@ -58,55 +58,56 @@ namespace CleanBrilliantCompany.Mapper
                     Console.WriteLine($"❌ ERROR getting shipping agent by ID: {ex.Message}\n{ex.StackTrace}");
                 }
             }
-            
+
             return new ShippingAgent_RDM(); // Return empty object instead of null
         }
 
-        public async Task<ShippingAgent_RDM> CreateShippingAgentAsync(ShippingAgent_RDM shippingAgent)
+        public async Task<ShippingAgent_RDM> AddShippingAgentAsync(ShippingAgent_RDM shippingAgent)
         {
-            bool success = await AddShippingAgentAsync(shippingAgent);
-            
-            if (success)
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                // Get the last inserted ID
-                using (SqlConnection conn = new SqlConnection(_connectionString))
+                try
                 {
-                    try
+                    await conn.OpenAsync();
+
+                    string insertQuery = @"
+                INSERT INTO ShippingAgent (shippingAgentCompany, shippingMethod, serviceType)
+                VALUES (@Company, @Method, @Service);
+                SELECT SCOPE_IDENTITY();"; // Get last inserted ID
+
+                    using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                     {
-                        await conn.OpenAsync();
-                        string query = "SELECT TOP 1 * FROM ShippingAgent ORDER BY shippingAgentId DESC";
-                        
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                        {
-                            if (await reader.ReadAsync())
-                            {
-                                shippingAgent.ShippingAgentId = reader.GetInt32(reader.GetOrdinal("shippingAgentId"));
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"❌ ERROR retrieving newly created shipping agent: {ex.Message}");
+                        cmd.Parameters.AddWithValue("@Company", shippingAgent.ShippingAgentCompany);
+                        cmd.Parameters.AddWithValue("@Method", shippingAgent.ShippingMethod);
+                        cmd.Parameters.AddWithValue("@Service", shippingAgent.ServiceType);
+
+                        // Execute and get the newly created ID
+                        int shippingAgentId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+
+                        // Set the ID on the returned object
+                        shippingAgent.ShippingAgentId = shippingAgentId;
+
+                        return shippingAgent;
                     }
                 }
-                
-                return shippingAgent;
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ ERROR adding shipping agent: {ex.Message}\n{ex.StackTrace}");
+                    return new ShippingAgent_RDM(); // Return empty object instead of null
+                }
             }
-            
-            return new ShippingAgent_RDM(); // Return empty object instead of null
         }
 
         public async Task<ShippingAgent_RDM> UpdateShippingAgentAsync(int id, ShippingAgent_RDM shippingAgent)
         {
             shippingAgent.ShippingAgentId = id;
             bool success = await UpdateShippingAgentAsync(shippingAgent);
-            
+
             if (success)
             {
                 return shippingAgent;
             }
-            
+
             return new ShippingAgent_RDM(); // Return empty object instead of null
         }
 
@@ -157,34 +158,7 @@ namespace CleanBrilliantCompany.Mapper
             return agents;
         }
 
-        public async Task<bool> AddShippingAgentAsync(ShippingAgent_RDM shippingAgent)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                try
-                {
-                    await conn.OpenAsync();
-                    string query = @"
-                        INSERT INTO ShippingAgent (shippingAgentCompany, shippingMethod, serviceType)
-                        VALUES (@Company, @Method, @Service)";
-                    
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Company", shippingAgent.ShippingAgentCompany);
-                        cmd.Parameters.AddWithValue("@Method", shippingAgent.ShippingMethod);
-                        cmd.Parameters.AddWithValue("@Service", shippingAgent.ServiceType);
-                        
-                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
-                        return rowsAffected > 0;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"❌ ERROR adding shipping agent: {ex.Message}\n{ex.StackTrace}");
-                    return false;
-                }
-            }
-        }
+      
 
         public async Task<bool> UpdateShippingAgentAsync(ShippingAgent_RDM shippingAgent)
         {
@@ -199,14 +173,14 @@ namespace CleanBrilliantCompany.Mapper
                             shippingMethod = @Method, 
                             serviceType = @Service
                         WHERE shippingAgentId = @Id";
-                    
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Id", shippingAgent.ShippingAgentId);
                         cmd.Parameters.AddWithValue("@Company", shippingAgent.ShippingAgentCompany);
                         cmd.Parameters.AddWithValue("@Method", shippingAgent.ShippingMethod);
                         cmd.Parameters.AddWithValue("@Service", shippingAgent.ServiceType);
-                        
+
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }
@@ -227,11 +201,11 @@ namespace CleanBrilliantCompany.Mapper
                 {
                     await conn.OpenAsync();
                     string query = "DELETE FROM ShippingAgent WHERE shippingAgentId = @Id";
-                    
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Id", id);
-                        
+
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
                     }

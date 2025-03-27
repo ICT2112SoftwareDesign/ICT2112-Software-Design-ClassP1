@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Mapper; 
+using CleanBrilliantCompany.Mapper;
 
 namespace CleanBrilliantCompany.Interfaces
 {
@@ -31,25 +31,17 @@ namespace CleanBrilliantCompany.Interfaces
             return await _mapper.DeleteShippingAgentAsync(id);
         }
 
-        public async Task<ShippingAgent_RDM> CreateShippingAgentAsync(ShippingAgent_RDM shippingAgent)
+        public async Task<ShippingAgent_RDM> AddShippingAgentAsync(ShippingAgent_RDM shippingAgent)
         {
-            // Call the correct method and handle the return value conversion
-            bool success = await _mapper.AddShippingAgentAsync(shippingAgent);
-            if (success)
-            {
-                // Since AddShippingAgentAsync doesn't return the created object with ID,
-                // we would ideally need to retrieve it after creation
-                // This is a simplified placeholder approach
-                return shippingAgent;
-            }
-            return new ShippingAgent_RDM(); // Return empty object instead of null
+            // Use the improved method in ShippingAgentMapper that returns the full object with ID
+            return await _mapper.AddShippingAgentAsync(shippingAgent);
         }
 
         public async Task<ShippingAgent_RDM> UpdateShippingAgentAsync(int id, ShippingAgent_RDM shippingAgent)
         {
             // Set ID to ensure correct record is updated
             shippingAgent.ShippingAgentId = id;
-            
+
             // Call the correct method
             bool success = await _mapper.UpdateShippingAgentAsync(shippingAgent);
             if (success)

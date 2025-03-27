@@ -61,7 +61,7 @@ namespace CleanBrilliantCompany.Controllers
                     var shippingAgentRDM = ConvertToShippingAgentRDM(shippingAgent);
                     
                     // Call service to add shipping agent
-                    var result = await _shippingAgentDB.CreateShippingAgentAsync(shippingAgentRDM);
+                    var result = await _shippingAgentDB.AddShippingAgentAsync(shippingAgentRDM);
 
                     if (result != null && result.ShippingAgentId > 0)
                     {

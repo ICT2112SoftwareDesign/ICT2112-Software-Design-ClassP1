@@ -9,7 +9,7 @@ namespace CleanBrilliantCompany.Interfaces
     {
         Task<IEnumerable<ShippingAgent_RDM>> GetAllShippingAgentsAsync();
         Task<ShippingAgent_RDM> GetShippingAgentByIdAsync(int id);
-        Task<ShippingAgent_RDM> CreateShippingAgentAsync(ShippingAgent_RDM shippingAgent);
+        Task<ShippingAgent_RDM> AddShippingAgentAsync(ShippingAgent_RDM shippingAgent);
         Task<ShippingAgent_RDM> UpdateShippingAgentAsync(int id, ShippingAgent_RDM shippingAgent);
         Task<bool> DeleteShippingAgentAsync(int id);
     }
