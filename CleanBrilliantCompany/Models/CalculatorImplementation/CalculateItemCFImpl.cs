@@ -5,19 +5,19 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
     public class CalculateItemCFImpl : IItemCFCalculator
     {
         private readonly IStorageDuration _storageDuration;
-        private readonly IProductCFManagement _productCFManagement;
+        private readonly IProductCF _productCF;
         private readonly IItemCFManagement _itemCFManagement;
 
-        public CalculateItemCFImpl(IStorageDuration storageDuration, IProductCFManagement productCFManagement, IItemCFManagement itemCFManagement)
+        public CalculateItemCFImpl(IStorageDuration storageDuration, IProductCF productCF, IItemCFManagement itemCFManagement)
         {
             _storageDuration = storageDuration;
-            _productCFManagement = productCFManagement;
+            _productCF = productCF;
             _itemCFManagement = itemCFManagement;
         }
 
         public bool CalculateCarbonFootprint(int itemId, int productId)
         {
-            double baseCF = _productCFManagement.getProductCarbonFootprint(productId);
+            double baseCF = _productCF.getProductCarbonFootprint(productId);
             double EXPONENT_CONSTANT = 1.02;
             double itemCFDouble = baseCF * Math.Pow(EXPONENT_CONSTANT, _storageDuration.GetStorageDuration(itemId));
             float itemCF = (float)itemCFDouble;
