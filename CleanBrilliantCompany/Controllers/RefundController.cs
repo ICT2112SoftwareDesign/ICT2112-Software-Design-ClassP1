@@ -72,35 +72,19 @@ namespace CleanBrilliantCompany.Controllers.Refund
         }
 
         [HttpPost("CreateRefund")]
-        public IActionResult CreateRefund([FromServices] IOrder orderService, [FromServices] IRefundQuery refundManagement)
+        public IActionResult CreateRefund([FromServices] ISubmitRefund submitRefund)
         {
-            int orderId = 28;
-            Order order = orderService.GetOrderDetails(orderId);
+            
 
-            if (order == null)
-            {
-                TempData["ErrorMessage"] = "Order not found.";
-                return RedirectToAction("Refund");
-            }
-
-            Dictionary<int, int> refundedProducts = new Dictionary<int, int>();
-            foreach (var item in order.OrderItems)
-            {
-                refundedProducts[item.ProductId] = item.Quantity;
-            }
-
-            if (!refundedProducts.Any())
-            {
-                return BadRequest("No products available for refund.");
-            }
-
-            Refund_RDM newRefund = refundManagement.ProcessRefund(
-                order.OrderId,
+            Refund_RDM newRefund = submitRefund.SubmitRefund(
+                28,
                 "Wrong Items Sent",
-                order.orderTotal,
-                new List<string> { "image.png" },
-                new List<string> { "video.mp4" },
-                refundedProducts
+                3.00f,
+                new Dictionary<int, int>()
+                {
+                    { 1, 1 },
+                    { 2, 1 }
+                }
             );
 
             if (newRefund != null)
