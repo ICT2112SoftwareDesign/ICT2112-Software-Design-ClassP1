@@ -1,17 +1,5 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAssetEndpoint Include="_content/CleanBrilliantCompany/CleanBrilliantCompany.bundle.scp.css">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CleanBrilliantCompany.q62bvsy1rt.bundle.scp.css'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-0q4ZHOPGwRUk1enCF7T9tiXZi\u002BAcFvuQY0WZAt8h7aE="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1139"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00220q4ZHOPGwRUk1enCF7T9tiXZi\u002BAcFvuQY0WZAt8h7aE=\u0022"},{"Name":"Last-Modified","Value":"Thu, 27 Mar 2025 06:14:16 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/CleanBrilliantCompany/CleanBrilliantCompany.q62bvsy1rt.bundle.scp.css">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CleanBrilliantCompany.q62bvsy1rt.bundle.scp.css'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"q62bvsy1rt"},{"Name":"integrity","Value":"sha256-0q4ZHOPGwRUk1enCF7T9tiXZi\u002BAcFvuQY0WZAt8h7aE="},{"Name":"label","Value":"_content/CleanBrilliantCompany/CleanBrilliantCompany.bundle.scp.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1139"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00220q4ZHOPGwRUk1enCF7T9tiXZi\u002BAcFvuQY0WZAt8h7aE=\u0022"},{"Name":"Last-Modified","Value":"Thu, 27 Mar 2025 06:14:16 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/CleanBrilliantCompany/css/sb-admin-2.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\sb-admin-2.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

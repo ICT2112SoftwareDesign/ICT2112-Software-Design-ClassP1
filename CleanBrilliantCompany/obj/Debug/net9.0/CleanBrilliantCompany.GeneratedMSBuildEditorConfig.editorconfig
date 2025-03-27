@@ -144,6 +144,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_StaffLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TdGFmZkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -180,12 +184,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZSZWZ1bmRcc3RhZmYtdG9wYmFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/SupportTicket/supportticket-details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFRpY2tldFxzdXBwb3J0dGlja2V0LWRldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/SupportTicket/supportticket-index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFRpY2tldFxzdXBwb3J0dGlja2V0LWluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/Chatbot.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxDaGF0Ym90LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/FAQs.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxGQVFzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/ViewSupportTickets.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxWaWV3U3VwcG9ydFRpY2tldHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/TestProduct.cshtml]
@@ -203,7 +219,3 @@ build_metadata.AdditionalFiles.CssScope =
 [C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Desktop/ICT 2112 Software Design/Project/ICT2112SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-xvncqzennc

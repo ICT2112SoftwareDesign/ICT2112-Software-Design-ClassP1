@@ -1,0 +1,83 @@
+@model CleanBrilliantCompany.Models.SupportTicket.SupportTicketSDM
+@{
+    ViewData["Title"] = "Support Ticket Details";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Support Ticket Details</title>
+
+    <!-- Custom styles -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet"> 
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        @await Html.PartialAsync("~/Views/StaffRefund/staff-sidebar.cshtml")
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+
+                <!-- Topbar -->
+                @await Html.PartialAsync("~/Views/StaffRefund/staff-topbar.cshtml")
+
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Ticket #@Model.TicketId Details</h1>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>Customer ID:</th>
+                                    <td>@Model.CustomerId</td>
+                                </tr>
+                                <tr>
+                                    <th>Status:</th>
+                                    <td>@Model.Status</td>
+                                </tr>
+                                <tr>
+                                    <th>Created At:</th>
+                                    <td>@Model.CreatedAt.ToString("g")</td>
+                                </tr>
+                                <tr>
+                                    <th>Ticket Details:</th>
+                                    <td>@Model.TicketDetails</td>
+                                </tr>
+                                <tr>
+                                    <th>Resolution:</th>
+                                    <td>
+                                        @if (Model.Status == "Reviewed")
+                                        {
+                                            @Model.ResolutionDetails
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="updateSupportTicket" asp-route-ticketId="@Model.TicketId" method="post">
+                                                <div class="form-group">
+                                                    <textarea name="resolutionDetails" class="form-control" rows="3" required></textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary btn-sm">Submit Resolution</button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <a asp-action="SupportTicket" class="btn btn-secondary btn-sm mt-3">Back to List</a>
+                        </div>
+                    </div>
+
+                </div> <!-- /.container-fluid -->
+
+            </div> <!-- /#content -->
+        </div> <!-- /#content-wrapper -->
+    </div>
+</body>
+</html>

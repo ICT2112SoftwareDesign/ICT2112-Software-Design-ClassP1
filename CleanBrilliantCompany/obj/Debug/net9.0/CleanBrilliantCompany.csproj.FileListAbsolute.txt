@@ -1808,9 +1808,7 @@ C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\bin\Debug\net9.0\runtimes\win\lib\net7.0\System.Management.dll
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\scopedcss\bundle\CleanBrilliantCompany.styles.css
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\scopedcss\projectbundle\CleanBrilliantCompany.bundle.scp.css
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\d06snfodjj-xinuy12n8j.gz
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\52jn5l79k5-dyy4npzvmx.gz
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\21zb5xr67w-61n19gt1b8.gz
@@ -3503,8 +3501,6 @@ C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\ivcyby4pjw-gkye80tccc.gz
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\2h5tezwt57-jkr59enbf0.gz
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\k8wi1b9n22-l5o0ocrnlv.gz
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\yiuxaddmr2-q62bvsy1rt.gz
-C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\lzeispjsy3-q62bvsy1rt.gz
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\User\Desktop\ICT 2112 Software Design\Project\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\staticwebassets.build.endpoints.json

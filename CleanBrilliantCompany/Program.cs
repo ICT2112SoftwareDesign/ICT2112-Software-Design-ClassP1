@@ -6,7 +6,10 @@ using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.StaffAuth;
 using CleanBrilliantCompany.Observers;
+using CleanBrilliantCompany.Interfaces.SupportTicket;
+using CleanBrilliantCompany.Models.SupportTicket;
 using Microsoft.Extensions.DependencyInjection;
+using CleanBrilliantCompany.Data.SupportTicket;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,7 +69,7 @@ builder.Services.AddSingleton<IOrderDatabase>(provider =>
 builder.Services.AddTransient<CustomerManagement>();
 builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<IChatbot, ChatbotService>();
-builder.Services.AddTransient<ISupportTicket, SupportTicketService>();
+//builder.Services.AddTransient<ISupportTicket, SupportTicketService>();
 builder.Services.AddScoped<IProduct, ProductManagement>(); 
 builder.Services.AddScoped<IWishlistManagement, WishlistManagement>();
 builder.Services.AddScoped<IOrder, OrderManagement>();
@@ -104,11 +107,11 @@ builder.Services.AddScoped<ISubmitRefund, RefundManagement>();
 
 
 // Adding services for Support Ticket
-//builder.Services.AddScoped<ISupportTicket, SupportTicketManagement>();
-//builder.Services.AddScoped<iSupportTicketQuery, SupportTicketManagement>();
-//builder.Services.AddScoped<SupportTicketManagement>();
-//builder.Services.AddScoped<SupportTicketTableDataGateway>(provider =>
-//new SupportTicketTableDataGateway(connectionString!));
+builder.Services.AddScoped<ISupportTicket, SupportTicketManagement>();
+builder.Services.AddScoped<iSupportTicketQuery, SupportTicketManagement>();
+builder.Services.AddScoped<SupportTicketManagement>();
+builder.Services.AddScoped<SupportTicketTableDataGateway>(provider =>
+    new SupportTicketTableDataGateway(connectionString!));
 
 
 // This is where I add all the interfaces other users can use

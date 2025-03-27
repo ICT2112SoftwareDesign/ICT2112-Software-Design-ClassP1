@@ -20,3 +20,18 @@
 [27/3/2025 3:12:16 pm] Authentication failed for user: john.doe@example.com. Reason: User not found
 [27/3/2025 3:12:19 pm] Authentication attempt by user: john.doe@example.com
 [27/3/2025 3:12:19 pm] Authentication failed for user: john.doe@example.com. Reason: User not found
+[27/3/2025 4:45:13 pm] Authentication attempt by user: harry@harry.com
+[27/3/2025 4:45:54 pm] Authentication attempt by user: harry@harry.com
+[27/3/2025 4:45:55 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
+[27/3/2025 4:48:25 pm] Authentication attempt by user: harry@harry.com
+[27/3/2025 4:48:26 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
+[27/3/2025 4:50:08 pm] Authentication attempt by user: harry@harry.com
+[27/3/2025 4:50:09 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
+[27/3/2025 4:51:11 pm] Authentication attempt by user: harry@harry.com
+[27/3/2025 4:51:11 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
+[27/3/2025 4:54:11 pm] Authentication attempt by user: harry@harry.com
+[27/3/2025 4:54:12 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
+[27/3/2025 4:55:44 pm] Authentication attempt by user: harry@harry.com
+[27/3/2025 4:55:45 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
+[27/3/2025 4:56:26 pm] Authentication attempt by user: harry@harry.com
+[27/3/2025 4:56:26 pm] Authentication succeeded for user: harry@harry.com (ID: 19)
