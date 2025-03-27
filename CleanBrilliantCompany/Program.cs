@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Data;
-using CleanBrilliantCompany.Services;
+using CleanBrilliantCompany.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
