@@ -1,5 +1,5 @@
 using CleanBrilliantCompany.Models.Control;
-
+using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Controllers;
 using CleanBrilliantCompany.Mapper;
 using CleanBrilliantCompany.Interfaces;
@@ -50,7 +50,7 @@ builder.Services.AddScoped<iProductQuantity, ProductControl>();
 builder.Services.AddScoped<iReorderRequest, ReorderRequestManagement>();
 builder.Services.AddScoped<iManufacturer, ProductControl>();
 
-
+builder.Services.AddScoped<iReturnFormDatabase<ReturnForm>, ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormControl>();
 builder.Services.AddScoped<ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormController>();
