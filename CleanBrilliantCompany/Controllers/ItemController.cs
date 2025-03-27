@@ -127,20 +127,19 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        [Route("updateItemStatusOld")]
-        public async Task<IActionResult> updateItemStatusOld(int itemStatusIdOld, ItemStatus itemStatus)
+        [Route("deleteItem")]
+        public async Task<IActionResult> deleteItem(int deleteItemId) 
         {
-            Console.WriteLine("ItemID: " + itemStatusIdOld);
-            Console.WriteLine("Status: " + itemStatus);
+            Console.WriteLine("ItemID: " + deleteItemId);
 
-            bool result = await _itemControl.updateItemStatusOld(itemStatusIdOld, itemStatus);
+            bool result = await _itemControl.deleteItem(deleteItemId);
             if (result)
             {
                 return RedirectToAction("Index");
             }
             else
             {
-                return BadRequest(new { error = "Failed to add item." });
+                return BadRequest(new { error = "Failed to delete item." });
             }
         }
 
