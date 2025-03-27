@@ -1643,24 +1643,31 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Xinji\\.nuget\\packages\\": {}
+    "C:\\Users\\xuanw\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectUniqueName": "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "projectName": "CleanBrilliantCompany",
-      "projectPath": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
-      "packagesPath": "C:\\Users\\Xinji\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+      "projectPath": "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "packagesPath": "C:\\Users\\xuanw\\.nuget\\packages\\",
+      "outputPath": "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Xinji\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\xuanw\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1709,7 +1716,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

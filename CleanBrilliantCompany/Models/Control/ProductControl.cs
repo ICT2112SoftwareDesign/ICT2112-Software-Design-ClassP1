@@ -5,7 +5,8 @@ using System.Globalization;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ProductControl : iProductQuery, iProduct, iProductQuantity, iBatch
+
+    public class ProductControl : iProductQuery, iProduct, iProductQuantity, iManufacturer, iBatch
     {
         private readonly ProductMapper _productMapper;
         private readonly iReorderRequest _ireorderRequest;
@@ -212,7 +213,8 @@ namespace CleanBrilliantCompany.Models.Control
                 for (int i = 0; i < request.Quantity; i++)
                 {
                     // _iItemCreation.createItem(request.ProductId, salePrice, batchCode, warehouseId, ItemStatus.Available);
-                    _lazyItemCreation.Value.createItem(request.ProductId, salePrice, batchCode, warehouseId, ItemStatus.Available);
+                    // _lazyItemCreation.Value.createItem(request.ProductId, salePrice, batchCode, warehouseId, ItemStatus.Available);
+                    _lazyItemCreation.Value.createItem(request.ProductId, batchCode, warehouseId, ItemStatus.Available);
                     Console.WriteLine($"Added Item");
                 }
             }

@@ -19,17 +19,44 @@ namespace CleanBrilliantCompany.Controllers
 
         // default get all items
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-            List<Item> items = await _itemControl.getAllItems();
+            List<Item> items = await _itemControl.getAllItems(page, pageSize);
+            int itemsCount = _itemControl.getItemCount();
 
             foreach (var item in items)
             {
                 itemsInfo.Add(item.retrieveItemInfo());
             }
 
+            int totalPages = (int)Math.Ceiling((double)itemsCount / pageSize);
+            // Pass data to the view
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            Console.WriteLine("TOTAL NUM OF ITEMS: " + itemsCount);
+
+            Console.WriteLine("TOTAL PAGE NUMBER: " + totalPages);
+            Console.WriteLine("TOTAL PAGE SIZE: " + pageSize);
+
             return View(itemsInfo);
+        }
+
+
+        // default get all items
+        [HttpPost]
+        public async Task<IActionResult> ClearSearch(int page = 1, int pageSize = 10)
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            List<Item> items = await _itemControl.getAllItems(page, pageSize);
+
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            return RedirectToAction("Index", new { page = page, pageSize = pageSize });
         }
 
         [HttpPost]
@@ -42,7 +69,9 @@ namespace CleanBrilliantCompany.Controllers
             if (item != null)
             {
                 itemsInfo.Add(item.retrieveItemInfo());
+                TempData["SuccessMessage"] = "Item Found";
             }
+            else TempData["ErrorMessage"] = "No item found with the searched ID";
 
             return View("Index", itemsInfo);  // Reuse Index view
         }
@@ -53,11 +82,19 @@ namespace CleanBrilliantCompany.Controllers
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
             List<Item> items = await _itemControl.getItemByProductName(searchedProductName);
-
-            foreach (var item in items)
+            if (items.Any())
             {
-                itemsInfo.Add(item.retrieveItemInfo());
+                foreach (var item in items)
+                {
+                    itemsInfo.Add(item.retrieveItemInfo());
+                }
+                TempData["SuccessMessage"] = "Item Found";
             }
+            else
+            {
+                TempData["ErrorMessage"] = "No item found with searched Product Name";
+            }
+
 
             return View("Index", itemsInfo);  // Reuse Index view
         }
@@ -66,9 +103,9 @@ namespace CleanBrilliantCompany.Controllers
 
         [HttpPost]
         [Route("addItem")]
-        public async Task<IActionResult> addItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        public async Task<IActionResult> addItem(int productId, int batchCode, int warehouseId, ItemStatus status)
         {
-            bool result = await _itemControl.createItem(productId, salePrice, batchCode, warehouseId, status);
+            bool result = await _itemControl.createItem(productId, batchCode, warehouseId, status);
             if (result)
             {
                 return RedirectToAction("Index");
@@ -89,29 +126,32 @@ namespace CleanBrilliantCompany.Controllers
             bool result = await _itemControl.updateItem(itemId, salePrice);
             if (result)
             {
+                TempData["SuccessMessage"] = "Item Price Updated";
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["ErrorMessage"] = "Item failed to update";
                 return BadRequest(new { error = "Failed to add item." });
             }
         }
 
         [HttpPost]
-        [Route("updateItemStatusOld")]
-        public async Task<IActionResult> updateItemStatusOld(int itemStatusIdOld, ItemStatus itemStatus)
+        [Route("deleteItem")]
+        public async Task<IActionResult> deleteItem(int deleteItemId)
         {
-            Console.WriteLine("ItemID: " + itemStatusIdOld);
-            Console.WriteLine("Status: " + itemStatus);
+            Console.WriteLine("ItemID: " + deleteItemId);
 
-            bool result = await _itemControl.updateItemStatusOld(itemStatusIdOld, itemStatus);
+            bool result = await _itemControl.deleteItem(deleteItemId);
             if (result)
             {
+                TempData["SuccessMessage"] = "Item Successfully Deleted";
                 return RedirectToAction("Index");
             }
             else
             {
-                return BadRequest(new { error = "Failed to add item." });
+                TempData["ErrorMessage"] = "Failed to delete item";
+                return BadRequest(new { error = "Failed to delete item." });
             }
         }
 
@@ -131,10 +171,12 @@ namespace CleanBrilliantCompany.Controllers
             bool result = await _itemControl.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status);
             if (result)
             {
+                TempData["SuccessMessage"] = "Item Updated";
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["ErrorMessage"] = "Item failed to update";
                 return BadRequest(new { error = "Failed to add item." });
             }
         }
@@ -214,5 +256,29 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Index");
         }
 
+
+        // retrieving to returned items
+        [HttpPost]
+        [Route("getToReturnItems")]
+        public async Task<IActionResult> getToReturnItems()
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            List<Item> items = await _itemControl.getToReturnItems();
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            foreach (var info in itemsInfo)
+            {
+                Console.WriteLine($"ItemId: {info["ItemId"]}");
+            }
+
+            // Console.WriteLine($"Product Category: {productInfo[0]["ProductCategory"]}");
+            // Console.WriteLine($"Manufacturer ID: {productInfo[0]["ManufacturerId"]}");
+            // Console.WriteLine($"Quantity: {productInfo[0]["Quantity"]}");
+
+            return RedirectToAction("Index");
+        }
     }
 }

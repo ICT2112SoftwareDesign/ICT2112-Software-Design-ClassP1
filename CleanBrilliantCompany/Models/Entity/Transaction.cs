@@ -22,11 +22,24 @@ namespace CleanBrilliantCompany.Models.Entity
         private int ItemId;
         private int StaffId;
 
+        private string ProductName;
+
         public Transaction(int transactionId, DateTime dateTime, string adjustmentType, int productId, int itemId, int staffId)
         {
             TransactionId = transactionId;
             DateTime = dateTime;
             AdjustmentType = adjustmentType;
+            ProductId = productId;
+            ItemId = itemId;
+            StaffId = staffId;
+        }
+
+        public Transaction(int transactionId, DateTime dateTime, string adjustmentType, string productName, int productId, int itemId, int staffId)
+        {
+            TransactionId = transactionId;
+            DateTime = dateTime;
+            AdjustmentType = adjustmentType;
+            ProductName = productName;
             ProductId = productId;
             ItemId = itemId;
             StaffId = staffId;
@@ -57,7 +70,8 @@ namespace CleanBrilliantCompany.Models.Entity
                 { "AdjustmentType", AdjustmentType },
                 { "ProductId", ProductId },
                 { "ItemId", ItemId },
-                { "StaffId", StaffId}
+                { "StaffId", StaffId},
+                { "ProductName", ProductName}
 
             };
         }

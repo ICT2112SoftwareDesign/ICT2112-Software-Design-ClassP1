@@ -4,75 +4,233 @@
     ViewData["Title"] = "Transaction List";
 }
 
-<h2>All Transactions</h2>
-
-<!-- Table for All Transactions -->
-<table class="table">
-    <thead>
-        <tr>
-            <th>Transaction ID</th>
-            <th>Transaction Date Time</th>
-            <th>Adjustment Type</th>
-            <th>Product ID</th>
-            <th>Item ID</th>
-            <th>Staff ID</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var TransactionInfo in ViewData["AllTransactions"] as List<Dictionary<string, object>>)
-    {
-        <tr>
-            <td>@TransactionInfo["TransactionId"]</td>
-            <td>@Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")</td>
-            <td>@TransactionInfo["AdjustmentType"]</td>
-            <td>@TransactionInfo["ProductId"]</td>
-            <td>@TransactionInfo["ItemId"]</td>
-            <td>@TransactionInfo["StaffId"]</td>
-        </tr>
-    }
-    </tbody>
-</table>
+<h2>Transaction Log Overview</h2>
 
 <!-- Form to Filter by Date -->
-<h3>Search Transactions by Date</h3>
+@* <h4>Search Transactions by Date</h4> *@
 <form method="get">
-    <label for="searchDate">Select Date:</label>
+    <label for="searchDate">Search Transactions by Date:</label>
     <input type="date" name="searchDate" id="searchDate" />
     <button type="submit">Search</button>
 </form>
+
+<h3>Filter by Adjustment Type</h3>
+<form method="get">
+    <label for="adjustmentType">Select Adjustment Type:</label>
+    <select name="adjustmentType" id="adjustmentType">
+        <option value="All">All</option>
+        <option value="Sold">Sold</option>
+        <option value="Reserved">Reserved</option>
+        <option value="Transferred">Transferred</option>
+        <option value="Refunded">Refunded</option>
+        <option value="Returned">Returned</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<!-- Display Counts for Each Adjustment Type -->
+<div class="row">
+    <div class="col-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Sold</h5>
+                <p class="card-text">@ViewData["TotalSoldCount"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Reserved</h5>
+                <p class="card-text">@ViewData["TotalReservedCount"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Transferred</h5>
+                <p class="card-text">@ViewData["TotalTransferredCount"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Refunded</h5>
+                <p class="card-text">@ViewData["TotalRefundedCount"]</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Button to switch between views -->
+<div>
+    <button type="button" onclick="toggleView('tableView')" class="btn btn-primary">Table View</button>
+    <button type="button" onclick="toggleView('fullView')" class="btn btn-primary">Full View</button>
+</div>
 
 @if (ViewData["TransactionsByDate"] != null)
 {
     <h2>Transactions for @ViewData["SearchDate"]</h2>
 
-    <!-- Table for Transactions on a Specific Date -->
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Transaction ID</th>
-                <th>Transaction Date Time</th>
-                <th>Adjustment Type</th>
-                <th>Product ID</th>
-                <th>Item ID</th>
-                <th>Staff ID</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Table View (hidden by default) -->
+    <div id="tableView" style="display: block;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Transaction Date Time</th>
+                    <th>Adjustment Type</th>
+                    <th>Product ID</th>
+                    <th>Item ID</th>
+                    <th>Staff ID</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var TransactionInfo in ViewData["TransactionsByDate"] as List<Dictionary<string, object>>)
+            {
+                <tr>
+                    <td>@TransactionInfo["TransactionId"]</td>
+                    <td>@Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@TransactionInfo["AdjustmentType"]</td>
+                    <td>@TransactionInfo["ProductId"]</td>
+                    <td>@TransactionInfo["ItemId"]</td>
+                    <td>@TransactionInfo["StaffId"]</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <!-- Show message if no transactions found for the selected date -->
+        @if ((ViewData["TransactionsByDate"] as List<Dictionary<string, object>>).Count == 0)
+        {
+            <p>No transactions found for the selected date.</p>
+        }
+    </div>
+
+    <!-- Full View (hidden by default) -->
+    <div id="fullView" style="display: none;">
         @foreach (var TransactionInfo in ViewData["TransactionsByDate"] as List<Dictionary<string, object>>)
         {
-            <tr>
-                <td>@TransactionInfo["TransactionId"]</td>
-                <td>@Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")</td>
-                <td>@TransactionInfo["AdjustmentType"]</td>
-                <td>@TransactionInfo["ProductId"]</td>
-                <td>@TransactionInfo["ItemId"]</td>
-                <td>@TransactionInfo["StaffId"]</td>
-            </tr>
+            <p>
+                @string.Format("{0} [Item Id {1}] was returned to Manufacturer {2} by staff {3} at {4}",
+                    TransactionInfo["ProductName"],
+                    TransactionInfo["ItemId"],
+                    "Manufacturer 1",  
+                    TransactionInfo["StaffId"],
+                    Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")
+                )
+            </p>
         }
-        </tbody>
-    </table>
+
+        <!-- Show message if no transactions found for the selected date -->
+        @if ((ViewData["TransactionsByDate"] as List<Dictionary<string, object>>).Count == 0)
+        {
+            <p>No transactions found for the selected date.</p>
+        }
+    </div>
 }
-else
+<!-- Only show this block if no search date is provided -->
+@if (ViewData["TransactionsByDate"] == null)
 {
-    <p>No transactions found for the selected date.</p>
+    <h2>All Transactions</h2>
+
+    <!-- Table View for All Transactions (hidden by default) -->
+    <div id="tableView" style="display: block;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Transaction Date Time</th>
+                    <th>Adjustment Type</th>
+                    <th>Product ID</th>
+                    <th>Item ID</th>
+                    <th>Staff ID</th>
+                    <th>Product Name</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var TransactionInfo in ViewData["AllTransactions"] as List<Dictionary<string, object>>)
+            {
+                <tr>
+                    <td>@TransactionInfo["TransactionId"]</td>
+                    <td>@Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@TransactionInfo["AdjustmentType"]</td>
+                    <td>@TransactionInfo["ProductId"]</td>
+                    <td>@TransactionInfo["ItemId"]</td>
+                    <td>@TransactionInfo["StaffId"]</td>
+                    <td>@TransactionInfo["ProductName"]</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Full View for All Transactions (hidden by default) -->
+    <div id="fullView" style="display: none;">
+        @foreach (var TransactionInfo in ViewData["AllTransactions"] as List<Dictionary<string, object>>)
+        {
+            <p> 
+                @if (TransactionInfo["AdjustmentType"].ToString() == "Sold")
+                {
+                    @string.Format("{0} [Item ID {1}] was sold by staff {2} at {3}",
+                        TransactionInfo["ProductName"],
+                        TransactionInfo["ItemId"],
+                        TransactionInfo["StaffId"],
+                        Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")
+                    )
+                }
+                else if (TransactionInfo["AdjustmentType"].ToString() == "Reserved")
+                {
+                    @string.Format("{0} [Item ID {1}] was reserved by staff {2} at {3}",
+                        TransactionInfo["ProductName"],
+                        TransactionInfo["ItemId"],
+                        TransactionInfo["StaffId"],
+                        Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")
+                    )
+                }
+                else if (TransactionInfo["AdjustmentType"].ToString() == "Transferred")
+                {
+                    @string.Format("{0} [Item ID {1}] was transferred by staff {2} at {3}",
+                        TransactionInfo["ProductName"],
+                        TransactionInfo["ItemId"],
+                        TransactionInfo["StaffId"],
+                        Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")
+                    )
+                }
+                else if (TransactionInfo["AdjustmentType"].ToString() == "Refunded")
+                {
+                    @string.Format("{0} [Item ID {1}] was refunded by staff {2} at {3}",
+                        TransactionInfo["ProductName"],
+                        TransactionInfo["ItemId"],
+                        TransactionInfo["StaffId"],
+                        Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")
+                    )
+                }
+                else if (TransactionInfo["AdjustmentType"].ToString() == "Returned")
+                {
+                    @string.Format("{0} [Item ID {1}] was returned to Manufacturer 1 by staff {2} at {3}",
+                        TransactionInfo["ProductName"],
+                        TransactionInfo["ItemId"],
+                        TransactionInfo["StaffId"],
+                        Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm")
+                    )
+                }
+
+            </p>
+        }
+    </div>
 }
+
+<script type="text/javascript">
+    function toggleView(view) {
+        // Hide both views
+        document.getElementById('tableView').style.display = 'none';
+        document.getElementById('fullView').style.display = 'none';
+
+        // Show the selected view
+        document.getElementById(view).style.display = 'block';
+    }
+</script>
+
