@@ -1,6 +1,8 @@
 using System;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Interfaces.SupportTicket;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.SupportTicket;
 
 namespace CleanBrilliantCompany.Models
 {
@@ -43,51 +45,48 @@ namespace CleanBrilliantCompany.Models
                 }
                 return "You have entered an invalid order ID. Please enter a valid order ID.";
             }
-            else if (parameters.ContainsKey("issueDescription"))
-            {
-                string issueDescription = parameters["issueDescription"];
-                Console.WriteLine($"This is the issue description: {issueDescription}");
-                if (escalateToHumanAgent(customerID, issueDescription))
-                {
-                    return "Your issue has been escalated. Please wait for the agent to contact you!";
-                }
-            }
+            // else if (parameters.ContainsKey("issueDescription"))
+            // {
+            //     string issueDescription = parameters["issueDescription"];
+            //     Console.WriteLine($"This is the issue description: {issueDescription}");
+            //     if (escalateToHumanAgent(customerID, issueDescription))
+            //     {
+            //         return "Your issue has been escalated. Please wait for the agent to contact you!";
+            //     }
+            // }
 
             return response;
         }
 
         // remove this
-        public bool escalateToHumanAgent(Int32 customerID, String query)
-        {
-            bool success = _supportTicketService.createSupportTicket(customerID, query);
-            if (success)
-            {
-                Console.WriteLine("Successfully escalated the issue!");
-            }
-            else
-            {
-                Console.WriteLine("Failed to escalate the issue.");
-                return false;
-            }
+        // public bool escalateToHumanAgent(Int32 customerID, String query)
+        // {
+        //     bool success = _supportTicketService.createSupportTicket(customerID, query);
+        //     if (success)
+        //     {
+        //         Console.WriteLine("Successfully escalated the issue!");
+        //     }
+        //     else
+        //     {
+        //         Console.WriteLine("Failed to escalate the issue.");
+        //         return false;
+        //     }
 
-            return success;
-        }
+        //     return success;
+        // }
 
         public bool createSupportTicket(Int32 customerID, String ticketDetails)
         {
             bool success = _supportTicketService.createSupportTicket(customerID, ticketDetails);
-            if (success)
-            {
-                Console.WriteLine("Support ticket created successfully!");
-
-            }
-            else
-            {
-                Console.WriteLine("Failed to create support ticket.");
-                return false;
-            }
+            
 
             return success;
+        }
+
+        public List<SupportTicketSDM> viewTicketByCustomer(int customerId) 
+        {
+            List<SupportTicketSDM> allCustomerSupportTicket = _supportTicketService.viewTicketByCustomer(customerId);
+            return allCustomerSupportTicket;
         }
 
         public Dictionary<string, string> FetchFAQs()

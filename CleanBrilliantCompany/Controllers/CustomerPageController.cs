@@ -6,6 +6,7 @@ using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CleanBrilliantCompany.Models.SupportTicket;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -201,6 +202,14 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             return RedirectToAction("viewFAQs");
+        }
+
+        public IActionResult viewSupportTickets(Int32 customerID)
+        {
+            var allCustomerSupportTicket = _supportManagement.viewTicketByCustomer(customerID);
+            ViewBag.AllSupportTickets = allCustomerSupportTicket;
+            Console.WriteLine($"In view support ticket: {allCustomerSupportTicket.Count}");
+            return View("~/Views/Support/ViewSupportTickets.cshtml");
         }
 
         // ChatbotInputController Methods

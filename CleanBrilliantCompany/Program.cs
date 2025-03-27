@@ -65,7 +65,6 @@ builder.Services.AddSingleton<IOrderDatabase>(provider =>
 builder.Services.AddTransient<CustomerManagement>();
 builder.Services.AddTransient<SupportManagement>();
 builder.Services.AddTransient<IChatbot, ChatbotService>();
-builder.Services.AddTransient<ISupportTicket, SupportTicketService>();
 builder.Services.AddScoped<IProduct, ProductManagement>(); 
 builder.Services.AddScoped<IWishlistManagement, WishlistManagement>();
 builder.Services.AddScoped<IOrder, OrderManagement>();
@@ -79,9 +78,6 @@ builder.Services.AddTransient<ReviewManagement>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-// Get the connection string from appsettings.json
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Adding services for Support Ticket
 builder.Services.AddScoped<ISupportTicket, SupportTicketManagement>();

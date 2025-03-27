@@ -1,0 +1,38 @@
+@model List<CleanBrilliantCompany.Models.SupportTicket.SupportTicketSDM>
+
+@{
+    ViewData["Title"] = "View All Support Tickets";
+}
+
+<h2>All Support Tickets</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Customer ID</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    @if (ViewBag.AllSupportTickets != null)
+    {
+        @foreach (var ticket in ViewBag.AllSupportTickets)
+        {
+            <tr>
+                <td>@ticket.TicketId</td>
+                <td>@ticket.CustomerId</td>
+                <td>@ticket.Status</td>
+                <td>@ticket.CreatedAt</td>
+                <td>@ticket.TicketDetails</td>
+                <td>@ticket.ResolutionDetails</td>
+            </tr>
+        }
+    } else {
+        <p>No support ticket raised.</p>
+    }
+    </tbody>
+</table>
