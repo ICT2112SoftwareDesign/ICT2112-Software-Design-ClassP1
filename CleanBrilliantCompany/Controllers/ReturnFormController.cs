@@ -38,9 +38,9 @@ namespace CleanBrilliantCompany.Controllers
 
 		// Handle deleting return forms.
 		[Route("returns/delete")]
-		public IActionResult DeleteReturnForm(int itemId)
+		public IActionResult DeleteReturnForm(int productId, int itemId)
 		{
-			bool result = _returnFormControl.deleteReturnForm(itemId);
+			bool result = _returnFormControl.deleteReturnForm(productId, itemId);
 
 			if (result)
 			{

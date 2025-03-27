@@ -44,7 +44,7 @@
 
 					<td><a asp-controller="ReturnForm" asp-action="DisplayReturnForm" asp-route-itemId="@item.GetItemId()" class="btn btn-primary">View</a></td>
 
-					<td><a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-itemId="@item.GetItemId()" class="btn btn-danger delete-btn">Delete</a></td>
+					<td><a asp-controller="ReturnForm" asp-action="DeleteReturnForm" asp-route-productId="@item.GetProductId()" asp-route-itemId="@item.GetItemId()" class="btn btn-danger delete-btn">Delete</a></td>
 
 				</tr>
 			}

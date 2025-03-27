@@ -66,11 +66,13 @@ namespace CleanBrilliantCompany.Models.Control
             return returnForm;
         }
 
-		public bool deleteReturnForm(int itemId)
+		public bool deleteReturnForm(int productId, int itemId)
 		{
 			bool deleteResult = _mapper.getDatabaseQueryStatus(_mapper.delete(itemId));
-            _itemControl?.updateItemStatus(itemId, null, null, null, null, ItemStatus.ToReturn);
 
+            _itemControl.updateItemStatus(itemId, null, null, null, null, ItemStatus.ToReturn);
+            _itemControl.updateProductQuantity(productId, 1, "increase");
+            
             return deleteResult;
 		}
 
@@ -128,7 +130,7 @@ namespace CleanBrilliantCompany.Models.Control
 				// Mapper function to insert return form.
 				ReturnForm? form = _mapper.getDatabaseQueryStatus(_mapper.insert(model));
 				await _itemControl.updateItemStatus((int)model.GetItemId(), null, null, null, form!.GetReturnId(), ItemStatus.Returned);
-
+				_itemControl.updateProductQuantity((int)model.GetProductId(), 1, "decrease");
 
                 if (form != null)
 				{
