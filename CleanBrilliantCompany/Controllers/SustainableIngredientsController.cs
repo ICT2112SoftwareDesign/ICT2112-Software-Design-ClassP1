@@ -2,25 +2,41 @@
 // <filename> SustainableIngredientsController.cs </filename>
 // <author> Yuen Wee Kin, Edwin </author>
 
+using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CleanBrilliantCompany.Controllers
 {
     public class SustainableIngredientsController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        // Inject DbContext
+        public SustainableIngredientsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         /// <summary>
         /// Action method for the sustainable ingredients page. 
         /// </summary>
         /// <returns>View displaying the sustainable resources.</returns>
         public IActionResult Index()
         {
+            // Retrieve ingredients from database.
+            // var ingredientTest = _context.Ingredients.ToList();
+
+
             // Hardcoded list of products.
             var products = new List<dynamic>
             {
-                new {Id = 1, ProductName = "Eco-Friendly Detergent"},
-                new {Id = 2, ProductName = "Biodegradable Packaging"},
-                new {Id = 3, ProductName = "Sustainable Textile"}
+                new {Id = 101, ProductName = "Eco-Friendly Detergent"},
+                new {Id = 102, ProductName = "Biodegradable Packaging"},
+                new {Id = 103, ProductName = "Sustainable Textile"}
             };
 
             // Send to view.
@@ -79,7 +95,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(int ProductId, string IngredientName, int ThresholdQuantity, string MeasurementUnit)
+        public IActionResult ProcessResource(int ProductId, string IngredientName, int ThresholdQuantity, string MeasurementUnit)
         {
             var validUnits = new List<string> { "kg", "g", "l", "ml", "pcs" };
 
@@ -100,11 +116,8 @@ namespace CleanBrilliantCompany.Controllers
                     UpdatedAt = DateTime.Now,
                 };
 
-                Console.WriteLine($"New Ingredient Created: {newIngredient.IngredientName}, Status:{newIngredient.ReorderStatus}");
 
-                // TODO: Add to database.
-                // TODO: Save changes to DB
-
+                // ProcessResource(newIngredient);
                 // Redirect to list view.
                 return RedirectToAction("Index");
             }
@@ -113,5 +126,12 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.ErrorMessage = "Invalid input. Please check your data.";
             return View();
         }
+
+        // private void AddIngredient(IngredientSDM ingredient)
+        // {
+        //     Console.WriteLine($"New Ingredient Created: {ingredient.IngredientName}, Status:{ingredient.ReorderStatus}");
+        //     // TODO: Add to database.
+        //     // TODO: Save changes to DB
+        // }
     }
 }

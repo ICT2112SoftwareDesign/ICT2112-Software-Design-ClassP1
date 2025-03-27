@@ -16,7 +16,7 @@
     ViewData["Title"] = "Sustainable Resource Inventory";
 }
 
-<h2>Sustainble Resource Inventory</h2>
+<h2>Sustainable Resource Inventory</h2>
 
 <p>The following sustainable resources are currently available:</p>
 
@@ -37,7 +37,7 @@
             var status = ingredient.ReorderStatus ? "Low" : "Available";
             var statusClass = ingredient.ReorderStatus ? "text-warning" : "text-success";
 
-            if (ingredient.ThresholdQuantity == 0)
+            if (ingredient.Quantity == 0)
             {
                 status = "Out of Stock";
                 statusClass = "text-danger";
@@ -58,10 +58,54 @@
     </tbody>
 </table>
 
+@* Carbon Footprint Reduction Section. *@
+<h3 class="mt-4">🌱 Carbon Footprint Reduction</h3>
+<div class="border p-3 bg-light rounded">
+    <p>This section highlights the impact of sustainable resources management.</p>
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Category</th>
+                <th>Before (kg CO₂)</th>
+                <th>After (kg CO₂)</th>
+                <th>Reduction (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @* Example Data (Replace with dynamic values) *@
+            @{
+                decimal baselineEmissions = 1000; // Example: Baseline emissions
+                decimal currentEmissions = 750; // Example: Current emissions
+                decimal reductionPercentage = ((baselineEmissions - currentEmissions) / baselineEmissions) * 100;
+                string reductionClass = reductionPercentage >= 50 ? "text-success" :
+                reductionPercentage >= 20 ? "text-warning" : "text-danger";
+            }
+            <tr>
+                <td>Overall Carbon Footprint</td>
+                <td>@baselineEmissions kg CO₂</td>
+                <td>@currentEmissions kg CO₂</td>
+                <td class="@reductionClass">
+                    <strong>@reductionPercentage.ToString("F2")%</strong>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    @* Visual Progress Bar *@
+    <div class="progress mt-3">
+        <div class="progress-bar @reductionClass" role="progressbar" style="width: @reductionPercentage%;"
+            aria-valuenow="@reductionPercentage" aria-valuemin="0" aria-valuemax="100">
+            @reductionPercentage.ToString("F2")% Reduction
+        </div>
+    </div>
+</div>
+
 @* Insert New Sustainable Resource Form *@
 <h3 class="mt-4">Add New sustainable Resource</h3>
 
-<form asp-action="Create" asp-controller="SustainableIngredients" method="post" class="border p-3 bg-light rounded">
+<form asp-action="ProcessResource" asp-controller="SustainableIngredients" method="post"
+    class="border p-3 bg-light rounded">
     <div class="mb-3">
         <label for="IngredientName" class="form-label">Resource Name: </label>
         <input type="text" id="IngredientName" name="IngredientName" class="form-control" required />
@@ -115,11 +159,12 @@
                 <li><strong>Currently Available Quantity: </strong>@ingredient.Quantity</li>
                 <li><strong>Threshold Value: </strong>@ingredient.ThresholdQuantity</li>
                 <li><strong>Suggested Actions: </strong>
-                    @(ingredient.Quantity < ingredient.ThresholdQuantity
-                                ? "Consider reordering stock or finding alternatives."
+                    @(ingredient.Quantity == 0 ? "Replenish immediately!" :
+                                ingredient.Quantity < ingredient.ThresholdQuantity
+                                ? "Consider reordering."
                                 : "Stock is sufficient.")
-            </li>
-            <hr />
+        </li>
+        <hr />
                 }
         </ul>
     </div>
