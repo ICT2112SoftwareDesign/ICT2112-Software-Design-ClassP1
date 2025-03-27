@@ -11,5 +11,6 @@ namespace CleanBrilliantCompany.Interfaces
         Task DeleteGoal(int goalId);
         Task<GoalsSDM> FindGoal(int goalId);
         Task<List<GoalsSDM>> GetAllGoals();
+        Task<GoalsSDM> FindGoalByDate(int goalYear, int goalMonth);
     }
 }

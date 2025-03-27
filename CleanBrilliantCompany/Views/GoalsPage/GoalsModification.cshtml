@@ -4,27 +4,18 @@
     ViewData["Title"] = "Modify Goal";
 }
 
+
 <h1>Modify Goal</h1>
 
 <form method="post" asp-action="ModifyGoal">
     <div>
-        <label for="goalId">Goal ID:</label>
-        <input type="number" id="goalId" name="goalId" required />
+        <label for="goalDate">Goal Date:</label>
+        <input type="month" id="goalDate" name="goalDate" required />
     </div>
 
     <div>
         <label for="targetEmission">Target Emission:</label>
         <input type="number" step="0.01" id="targetEmission" name="targetEmission" required />
-    </div>
-
-    <div>
-        <label for="goalYear">Goal Year:</label>
-        <input type="number" id="goalYear" name="goalYear" required />
-    </div>
-
-    <div>
-        <label for="goalMonth">Goal Month:</label>
-        <input type="number" id="goalMonth" name="goalMonth" min="1" max="12" required />
     </div>
 
     <button type="submit">Update Goal</button>

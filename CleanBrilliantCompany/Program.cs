@@ -7,6 +7,9 @@ using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
+// Enable logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); // Ensures logs appear in the console
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

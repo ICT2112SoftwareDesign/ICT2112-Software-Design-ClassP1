@@ -63,6 +63,13 @@ namespace CleanBrilliantCompany.Data
         {
             return await _context.Goals.AnyAsync(g => g.GetGoalYear() == goalYear && g.GetGoalMonth() == goalMonth);
         }
+
+        // Fetch goals from the database and filter in memory using the public getters
+        public async Task<GoalsSDM> FindGoalByDate(int goalYear, int goalMonth)
+        {
+            var goals = await _context.Goals.ToListAsync();
+            return goals.FirstOrDefault(g => g.GetGoalYear() == goalYear && g.GetGoalMonth() == goalMonth);
+        }
     }
 }
 
