@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Control;
 using CleanBrilliantCompany.Interface;
+using CleanBrilliantCompany.Entities;
+using Microsoft.EntityFrameworkCore;
+using CleanBrilliantCompany.DTO;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -41,6 +44,7 @@ namespace CleanBrilliantCompany.Controllers
                 ViewBag.OverStock = overStock;
                 ViewBag.Replenish = toReplenish;
 
+                _inventoryControl.InitializeMissingThresholds();
                 return View("ViewInventoryDashboard", inventoryDashboard);
             }
             catch (InvalidOperationException ex)
@@ -63,6 +67,46 @@ namespace CleanBrilliantCompany.Controllers
         {
             var report = _inventoryControl.GenerateReport();
             return Content(report, "text/html");
+        }
+
+        [HttpGet]
+        public IActionResult ViewThresholds()
+        {
+            _inventoryControl.InitializeMissingThresholds();
+            var model = _inventoryControl.GetProductThresholdsWithInfo();
+            return View("ViewThresholds", model);
+        }
+
+        [HttpGet]
+        public IActionResult EditThreshold(int id)
+        {
+            var product = _inventoryControl.GetProductLookup()[id];
+            var threshold = _inventoryControl.GetThresholdById(id);
+
+            var model = new InventoryDTO
+            {
+                ProductId = id,
+                ProductName = product.ProductName,
+                ProductCategory = product.ProductCategory,
+                Threshold = threshold?.Threshold ?? 100,
+                LastUpdated = threshold?.LastUpdated
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult EditThreshold(InventoryDTO model)
+        {
+            var thresholdModel = new ProductThresholdTable
+            {
+                ProductId = model.ProductId,
+                Threshold = model.Threshold,
+                LastUpdated = DateTime.Now
+            };
+
+            _inventoryControl.UpdateThreshold(thresholdModel);
+            return RedirectToAction("ViewThresholds");
         }
 
     }

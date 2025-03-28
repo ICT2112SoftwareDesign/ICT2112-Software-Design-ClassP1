@@ -1,0 +1,27 @@
+﻿@model List<CleanBrilliantCompany.DTO.InventoryDTO>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Threshold</th>
+            <th>Last Updated</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.ProductId</td>
+                <td>@product.ProductName</td>
+                <td>@product.Threshold</td>
+                <td>@product.LastUpdated?.ToString("g") ?? "N/A"</td>
+                <td>
+                    <a asp-action="EditThreshold" asp-route-id="@product.ProductId" class="btn btn-sm btn-primary">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,101 @@
+﻿@* @model CleanBrilliantCompany.Entities.ProductThresholdTable *@
+
+@* @{ *@
+@*     ViewData["Title"] = "Edit Threshold"; *@
+@*     Layout = "~/Views/Shared/_DashboardLayout.cshtml"; *@
+@* } *@
+
+@* <h2>Edit Threshold for Product @Model.ProductId</h2> *@
+
+@* <form asp-action="EditThreshold" method="post"> *@
+@*     <input type="hidden" asp-for="ProductId" /> *@
+
+@*     <div class="form-group"> *@
+@*         <label asp-for="Threshold"></label> *@
+@*         <input asp-for="Threshold" class="form-control" /> *@
+@*     </div> *@
+
+@*     <button type="submit" class="btn btn-primary">Save</button> *@
+@*     <a asp-action="ViewThresholds" class="btn btn-secondary">Cancel</a> *@
+@* </form> *@
+
+
+
+@* @model CleanBrilliantCompany.Entities.ProductThresholdTable *@
+
+@* @{ *@
+@*     ViewData["Title"] = "Edit Threshold"; *@
+@* } *@
+
+@* <h2>Edit Threshold for Product @Model.ProductId</h2> *@
+
+@* <form asp-action="EditThreshold" method="post"> *@
+@*     <input type="hidden" asp-for="ProductId" /> *@
+
+@*     <div class="form-group"> *@
+@*         <label asp-for="Threshold" class="control-label"></label> *@
+@*         <input asp-for="Threshold" class="form-control" /> *@
+@*         <span asp-validation-for="Threshold" class="text-danger"></span> *@
+@*     </div> *@
+
+@*     <button type="submit" class="btn btn-success">Save</button> *@
+@*     <a asp-action="ViewThresholds" class="btn btn-secondary">Cancel</a> *@
+@* </form> *@
+
+
+@* @model CleanBrilliantCompany.DTO.InventoryDTO *@
+
+@* <form asp-action="EditThreshold" method="post"> *@
+@*     <input type="hidden" asp-for="ProductId" /> *@
+
+@*     <div class="form-group"> *@
+@*         <label asp-for="ProductName"></label> *@
+@*         <input asp-for="ProductName" class="form-control" readonly /> *@
+@*     </div> *@
+
+@*     <div class="form-group"> *@
+@*         <label asp-for="Threshold"></label> *@
+@*         <input asp-for="Threshold" class="form-control" /> *@
+@*     </div> *@
+
+@*     <button type="submit" class="btn btn-primary">Save</button> *@
+@* </form> *@
+
+@model CleanBrilliantCompany.DTO.InventoryDTO
+
+@{
+    ViewData["Title"] = "Edit Threshold";
+}
+
+<h2>Edit Threshold for @Model.ProductName</h2>
+
+<form asp-action="EditThreshold" method="post">
+    <input type="hidden" asp-for="ProductId" />
+
+    <div class="form-group">
+        <label asp-for="ProductName">Product Name</label>
+        <input asp-for="ProductName" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProductCategory">Category</label>
+        <input asp-for="ProductCategory" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Threshold">Threshold</label>
+        <input asp-for="Threshold" class="form-control" />
+        <span asp-validation-for="Threshold" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="ViewThresholds" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+

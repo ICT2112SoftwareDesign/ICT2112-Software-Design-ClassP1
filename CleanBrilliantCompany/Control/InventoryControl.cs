@@ -2,44 +2,51 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.DTO;
 using CleanBrilliantCompany.Entities;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanBrilliantCompany.Control
 {
     public class InventoryControl
     {
+        private readonly AppDbContext _context;
         private readonly IInventoryRepository _inventoryRepository;
         private readonly IProduct _productService;
 
-        public InventoryControl(IInventoryRepository inventoryRepository, IProduct productService)
+        public InventoryControl(AppDbContext context, IInventoryRepository inventoryRepository, IProduct productService)
         {
             _inventoryRepository = inventoryRepository ?? throw new ArgumentNullException(nameof(inventoryRepository));
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void CreateDashboard(string name, int validityDuration)
         {
             var newDashboard = new InventoryDashboardRDM(name, validityDuration);
 
-            // Fetch stock levels from IProduct
-            // var stockLevels = _productService.GetProductStockLevels();
-
             // Get all products
             var allProducts = _productService.getAllProducts();
+
             // Extract productId and quantity
             var stockLevels = allProducts.ToDictionary(p => p.productId, p => p.quantity);
 
-            // Set default thresholds (e.g., 100) — you can customize this logic
-            var thresholds = allProducts.ToDictionary(p => p.productId, p => 100);
+            var dbThresholds = _inventoryRepository.GetAllProductThresholds();
+            var thresholds = allProducts.ToDictionary(p => p.productId, p =>
+    dbThresholds.ContainsKey(p.productId) ? dbThresholds[p.productId] : 100
+);
 
 
 
             // Update dashboard with stock levels and thresholds
-            newDashboard.UpdateStockThreshold(stockLevels, thresholds);
+            //newDashboard.UpdateStockThreshold(stockLevels, thresholds);
+            newDashboard.UpdateStockThreshold(
+    stockLevels,
+    thresholds.ToDictionary(kvp => kvp.Key, kvp => kvp.Value ?? 100)
+);
             newDashboard.UpdateReplenishmentStatus();
             newDashboard.GenerateAlerts(); // Generate alerts after updating data
 
@@ -63,7 +70,6 @@ namespace CleanBrilliantCompany.Control
             var dashboard = FetchDashboard();
             var lowStock = CheckLowStock();
             var overStock = CheckOverStock();
-            //var alertCounts = _inventoryRepository.GetAlertCounts();
             var alertStreaks = GetWeeklyConsecutiveAlertCounts();
 
             var report = new StringBuilder();
@@ -87,8 +93,6 @@ namespace CleanBrilliantCompany.Control
                 report.AppendLine($"<li>Product {productId}: {dashboard.GetStockLevel(productId)}</li>");
             }
             report.AppendLine("</ul>");
-            //report.AppendLine($"<p>{dashboard.LowStockAlert}</p>");
-            //report.AppendLine($"<p>{dashboard.OverStockAlert}</p>");
             report.AppendLine("<h2>Consecutive Weekly Alerts</h2><ul>");
             foreach (var productId in alertStreaks.Keys)
             {
@@ -120,10 +124,13 @@ namespace CleanBrilliantCompany.Control
 
             var productIds = products.Select(p => p.productId).ToHashSet();
 
-            return allStockLevels
-                .Where(kvp => productIds.Contains(kvp.Key) && kvp.Value < thresholds[kvp.Key] * 0.35)
-                .Select(kvp => kvp.Key)
-                .ToList();
+            return products
+        .Where(p =>
+            allStockLevels.ContainsKey(p.productId) &&
+            thresholds.ContainsKey(p.productId) &&
+            allStockLevels[p.productId] < (thresholds[p.productId] * 0.35)) // 35% of threshold
+        .Select(p => p.productId)
+        .ToList();
         }
 
         public List<int> CheckOverStock(string category = null)
@@ -138,50 +145,29 @@ namespace CleanBrilliantCompany.Control
 
             var productIds = products.Select(p => p.productId).ToHashSet();
 
-            return allStockLevels
-                .Where(kvp => productIds.Contains(kvp.Key) && kvp.Value > thresholds[kvp.Key] * 1.6)
-                .Select(kvp => kvp.Key)
-                .ToList();
+            //return allStockLevels
+            //    .Where(kvp => productIds.Contains(kvp.Key) && kvp.Value > thresholds[kvp.Key] * 1.6)
+            //    .Select(kvp => kvp.Key)
+            //    .ToList();
+            return products
+        .Where(p => 
+            allStockLevels.ContainsKey(p.productId) && 
+            thresholds.ContainsKey(p.productId) &&
+            allStockLevels[p.productId] > (thresholds[p.productId] * 1.6)) // 160% of threshold
+        .Select(p => p.productId)
+        .ToList();
         }
 
-        //public List<int> GenerateReplenishmentActions()
-        //{
-        //    return CheckLowStock();
-        //}
+
         public List<int> GenerateReplenishmentActions(string category = null)
         {
             return CheckLowStock(category);
-        }
-
-        public List<int> PrioritiseReplenishment()
-        {
-            var dashboard = FetchDashboard();
-            return CheckLowStock()
-                .OrderBy(productId => dashboard.GetStockLevel(productId))
-                .ToList();
-        }
-
-        public string GenerateLowStockAlert()
-        {
-            var lowStockProducts = CheckLowStock();
-            return lowStockProducts.Count > 0
-                ? $"Low stock alert for products: {string.Join(", ", lowStockProducts)}"
-                : "No low stock alerts.";
-        }
-
-        public string GenerateOverStockAlert()
-        {
-            var overStockProducts = CheckOverStock();
-            return overStockProducts.Count > 0
-                ? $"Overstock alert for products: {string.Join(", ", overStockProducts)}"
-                : "No overstock alerts.";
         }
 
         public string GenerateStockLevelChartData(string category = null)
         {
             var dashboard = FetchDashboard();
             var allStockLevels = dashboard.GetAllStockLevels();
-            var allThresholds = dashboard.GetAllThresholds();
 
             var products = _productService.getAllProducts();
 
@@ -190,14 +176,19 @@ namespace CleanBrilliantCompany.Control
                 products = products.Where(p => p.productCategory == category).ToList();
             }
 
+            // Get thresholds DIRECTLY from ProductThresholdTable (no defaults)
+            var thresholds = _context.ProductThresholdTable
+        .Where(pt => products.Select(p => p.productId).Contains(pt.ProductId))
+        .ToDictionary(pt => pt.ProductId, pt => pt.Threshold ?? 100);
+
             var productIds = products.Select(p => p.productId).ToList();
 
-            var stockLevels = allStockLevels.Where(kvp => productIds.Contains(kvp.Key)).ToDictionary(k => k.Key, v => v.Value);
-            var thresholds = allThresholds.Where(kvp => productIds.Contains(kvp.Key)).ToDictionary(k => k.Key, v => v.Value);
+            //var stockLevels = allStockLevels.Where(kvp => productIds.Contains(kvp.Key)).ToDictionary(k => k.Key, v => v.Value);
+            //var thresholds = allThresholds.Where(kvp => productIds.Contains(kvp.Key)).ToDictionary(k => k.Key, v => v.Value);
 
-            var labels = productIds.Select(id => $"Product {id}").ToList();
-            var stockData = productIds.Select(id => stockLevels.ContainsKey(id) ? stockLevels[id] : 0).ToList();
-            var thresholdData = productIds.Select(id => thresholds.ContainsKey(id) ? thresholds[id] : 0).ToList();
+            //var labels = productIds.Select(id => $"Product {id}").ToList();
+            //var stockData = productIds.Select(id => stockLevels.ContainsKey(id) ? stockLevels[id] : 0).ToList();
+            //var thresholdData = productIds.Select(id => thresholds.ContainsKey(id) ? thresholds[id] : 0).ToList();
 
             var chartData = new
             {
@@ -210,7 +201,8 @@ namespace CleanBrilliantCompany.Control
                         id = p.productId,
                         name = p.productName,
                         category = p.productCategory,
-                        stock = stockLevels.ContainsKey(p.productId) ? stockLevels[p.productId] : 0
+                        stock = allStockLevels.ContainsKey(id) ? allStockLevels[id] : 0,
+                        threshold = thresholds[id] // Guaranteed to exist
                     };
                 }).ToList(),
                 datasets = new[]
@@ -218,12 +210,12 @@ namespace CleanBrilliantCompany.Control
         new
         {
             label = "Stock Levels",
-            data = stockData
+            data = productIds.Select(id => allStockLevels.ContainsKey(id) ? allStockLevels[id] : 0)
         },
         new
         {
             label = "Thresholds",
-            data = thresholdData
+            data = productIds.Select(id => thresholds[id])
         }
     }
             };
@@ -245,7 +237,6 @@ namespace CleanBrilliantCompany.Control
             var stockLevels = dashboard.GetAllStockLevels();
             var thresholds = dashboard.GetAllThresholds();
             var replenishmentStatuses = dashboard.GetAllReplenishmentStatuses();
-            var statuses = dashboard.GetAllStockStatuses();
 
             return _productService.getAllProducts()
                 .ToDictionary(p => p.productId, p => new InventoryDTO
@@ -256,13 +247,139 @@ namespace CleanBrilliantCompany.Control
                     StockLevel = stockLevels.ContainsKey(p.productId) ? stockLevels[p.productId] : 0,
                     Threshold = thresholds.ContainsKey(p.productId) ? thresholds[p.productId] : 100,
                     ReplenishmentStatus = replenishmentStatuses.ContainsKey(p.productId) && replenishmentStatuses[p.productId],
-                    StockStatus = statuses.ContainsKey(p.productId) ? statuses[p.productId] : "N"
                 });
         }
 
         public List<ProductTable> GetAllProducts()
         {
             return _productService.getAllProducts();
+        }
+
+        //public ProductThresholdTable GetThresholdById(int id)
+        //{
+        //    return _context.ProductThresholdTable.FirstOrDefault(t => t.ProductId == id);
+        //}
+
+        public InventoryDTO GetThresholdById(int id)
+        {
+            var product = _productService.getAllProducts().FirstOrDefault(p => p.productId == id);
+            var threshold = _context.ProductThresholdTable.FirstOrDefault(t => t.ProductId == id);
+
+            return new InventoryDTO
+            {
+                ProductId = id,
+                ProductName = product?.productName ?? "Unknown",
+                ProductCategory = product?.productCategory ?? "Unknown",
+                Threshold = threshold?.Threshold ?? 100,
+                LastUpdated = threshold?.LastUpdated
+            };
+        }
+
+
+
+        public void UpdateThreshold(ProductThresholdTable model)
+        {
+            var entry = _context.ProductThresholdTable.FirstOrDefault(t => t.ProductId == model.ProductId);
+            if (entry != null)
+            {
+                entry.Threshold = model.Threshold;
+                entry.LastUpdated = DateTime.Now;
+            }
+            else
+            {
+                _context.ProductThresholdTable.Add(model);
+            }
+
+            _context.SaveChanges();
+        }
+
+        //public List<(int ProductId, string ProductName, int? Threshold, DateTime? LastUpdated)> GetThresholdsWithProductNames()
+        //{
+        //    var allProducts = _productService.getAllProducts();
+        //    var thresholdMap = _context.ProductThresholdTable.ToDictionary(t => t.ProductId);
+
+        //    var result = allProducts.Select(p =>
+        //    {
+        //        thresholdMap.TryGetValue(p.productId, out var entry);
+
+        //        return (
+        //            ProductId: p.productId,
+        //            ProductName: p.productName,
+        //            Threshold: entry?.Threshold,
+        //            LastUpdatedThreshold: entry?.LastUpdated
+        //        );
+        //    }).ToList();
+
+        //    return result;
+        //}
+        //public List<InventoryDTO> GetProductThresholdsWithInfo()
+        //{
+        //    var allProducts = _productService.getAllProducts();
+        //    var thresholdMap = _context.ProductThresholdTable.ToDictionary(t => t.ProductId);
+
+        //    var result = allProducts.Select(p =>
+        //    {
+        //        thresholdMap.TryGetValue(p.productId, out var entry);
+
+        //        return new InventoryDTO
+        //        {
+        //            ProductId = p.productId,
+        //            ProductName = p.productName,
+        //            ProductCategory = p.productCategory,
+        //            Threshold = entry?.Threshold ?? 100,
+        //            LastUpdated = entry?.LastUpdated
+        //        };
+        //    }).ToList();
+
+        //    return result;
+        //}
+
+        public List<InventoryDTO> GetProductThresholdsWithInfo()
+        {
+            return _context.ProductThresholdTable
+                .Join(
+                    _context.ProductTable,
+                    pt => pt.ProductId,
+                    p => p.productId,
+                    (pt, p) => new InventoryDTO
+                    {
+                        ProductId = p.productId,
+                        ProductName = p.productName,
+                        Threshold = pt.Threshold ?? 100, // Handle NULL if needed
+                        LastUpdated = pt.LastUpdated,
+                    })
+                .ToList();
+        }
+
+        public void InitializeMissingThresholds()
+        {
+            // Get all product IDs
+            var allProductIds = _productService.getAllProducts()
+                .Select(p => p.productId)
+                .ToList();
+
+            // Get product IDs that already have thresholds
+            var existingThresholdProductIds = _context.ProductThresholdTable
+                .Select(pt => pt.ProductId)
+                .ToList();
+
+            // Find missing product IDs
+            var missingProductIds = allProductIds
+                .Except(existingThresholdProductIds)
+                .ToList();
+
+            // Insert default thresholds (100) for missing products
+            foreach (var productId in missingProductIds)
+            {
+                _context.ProductThresholdTable.Add(new ProductThresholdTable
+                {
+                    ProductId = productId,
+                    Threshold = 100,
+                    LastUpdated = DateTime.Now
+                });
+            }
+
+            _context.SaveChanges();
         }
     }
 }

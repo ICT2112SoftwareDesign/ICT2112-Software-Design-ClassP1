@@ -14,6 +14,7 @@ namespace CleanBrilliantCompany.Data
         public DbSet<AlertTypeTable> AlertTypeTable { get; set; }
         public DbSet<InventoryLevelTable> InventoryLevelTable { get; set; }
         public DbSet<InventoryAlertsTable> InventoryAlertsTable { get; set; }
+        public DbSet<ProductThresholdTable> ProductThresholdTable { get; set; }
         public DbSet<ProductTable> ProductTable { get; set; } // Added for simulation
 
 
@@ -35,6 +36,9 @@ namespace CleanBrilliantCompany.Data
             
             modelBuilder.Entity<InventoryAlertsTable>()
                 .HasKey(a => a.AlertId);
+
+            //modelBuilder.Entity<ProductThresholdTable>()
+            //     .HasKey(pt => pt.ProductId);
 
             modelBuilder.Entity<ProductTable>()
                 .HasKey(p => p.productId);
@@ -69,6 +73,8 @@ namespace CleanBrilliantCompany.Data
                 .ToTable("InventoryAlerts");
 
             modelBuilder.Entity<ProductTable>().ToTable("Product");
+
+            modelBuilder.Entity<ProductThresholdTable>().ToTable("ProductThreshold");
         }
     }
 }

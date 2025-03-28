@@ -185,6 +185,12 @@ else
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Consecutive Weekly Alerts (Historical)</h6>
+            <!-- Button to view threshold.cshtml -->
+            <form asp-action="ViewThresholds" method="get" class="d-inline">
+                <button type="submit" class="btn btn-primary shadow-sm">
+                    <i class="fas fa-plus fa-sm text-white-50"></i> Threshold
+                </button>
+            </form>
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
@@ -272,16 +278,27 @@ else
                             display: true,
                             position: 'top'
                         },
-                        tooltip: {
+                                        tooltip: {
+            displayColors: true,
             callbacks: {
-                label: function(context) {
+                title: () => '',
+                label: function (context) {
                     const productInfo = chartData.products[context.dataIndex];
-                    return [
-                        `Product ID: ${productInfo.id}`,
+                    const datasetLabel = context.dataset.label;
+
+                    const mainLabel = `Product ${productInfo.id}`;
+                    const subDetails = [
                         `Name: ${productInfo.name}`,
                         `Category: ${productInfo.category}`,
-                        `Stock: ${productInfo.stock}`
                     ];
+
+                    if (datasetLabel === "Stock Levels") {
+                        subDetails.push(`Stock: ${productInfo.stock}`);
+                    } else if (datasetLabel === "Thresholds") {
+                        subDetails.push(`Threshold: ${productInfo.threshold}`);
+                    }
+
+                    return [mainLabel, ...subDetails];
                 }
             }
         }

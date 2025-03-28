@@ -37,10 +37,14 @@ namespace CleanBrilliantCompany.Mapper
                         ValidityDuration = dashboard.ValidityDuration,
                         TypeId = 2
                     };
+                    _context.DashboardTable.Add(dashboardEntity);
+                    _context.SaveChanges();
+
 
                     // Save stock levels and thresholds to InventoryLevel
                     var stockLevels = dashboard.GetAllStockLevels();
-                    var thresholds = dashboard.GetAllThresholds();
+                    var replenishmentStatuses = dashboard.GetAllReplenishmentStatuses();
+                    //var thresholds = dashboard.GetAllThresholds();
 
                     // Dictionary to map ProductId to InventoryId
                     var productToInventoryIdMap = new Dictionary<int, int>();
@@ -52,8 +56,9 @@ namespace CleanBrilliantCompany.Mapper
                             DashboardId = dashboardEntity.DashboardId,
                             ProductId = productId,
                             StockLevel = stockLevels[productId],
-                            Threshold = thresholds.ContainsKey(productId) ? thresholds[productId] : 100,
-                            ReplenishmentStatus = stockLevels[productId] < (thresholds.ContainsKey(productId) ? thresholds[productId] : 100) * 0.35
+                            //Threshold = thresholds.ContainsKey(productId) ? thresholds[productId] : 100,
+                            //ReplenishmentStatus = stockLevels[productId] < (thresholds.ContainsKey(productId) ? thresholds[productId] : 100) * 0.35
+                            ReplenishmentStatus = replenishmentStatuses[productId]
                         };
                         _context.InventoryLevelTable.Add(inventoryLevel);
                         _context.SaveChanges(); // Save each entry to get the generated InventoryId
@@ -128,10 +133,15 @@ namespace CleanBrilliantCompany.Mapper
                 dashboardEntity.ValidityDuration,
                 dashboardEntity.GeneratedDate);
 
-            // Manually query InventoryLevelTable to populate stock levels, thresholds, and replenishment statuses
+
+            // Get stock levels from InventoryLevelTable
             var inventoryLevels = _context.InventoryLevelTable
                 .Where(i => i.DashboardId == dashboardEntity.DashboardId)
                 .ToList();
+
+            // Get thresholds from ProductThresholdTable
+            var productThresholds = _context.ProductThresholdTable
+                .ToDictionary(p => p.ProductId, p => p.Threshold);
 
             var stockLevels = new Dictionary<int, int>();
             var thresholds = new Dictionary<int, int>();
@@ -140,9 +150,13 @@ namespace CleanBrilliantCompany.Mapper
             foreach (var inventoryLevel in inventoryLevels)
             {
                 stockLevels[inventoryLevel.ProductId] = inventoryLevel.StockLevel;
-                thresholds[inventoryLevel.ProductId] = inventoryLevel.Threshold;
+                thresholds[inventoryLevel.ProductId] = productThresholds.ContainsKey(inventoryLevel.ProductId)
+                    ? productThresholds[inventoryLevel.ProductId] ?? 100
+                    : 100;
                 replenishmentStatuses[inventoryLevel.ProductId] = inventoryLevel.ReplenishmentStatus;
             }
+
+
 
             dashboard.UpdateStockThreshold(stockLevels, thresholds);
             dashboard.UpdateReplenishmentStatus();
@@ -285,6 +299,12 @@ namespace CleanBrilliantCompany.Mapper
             }
 
             return result;
+        }
+
+        public Dictionary<int, int?> GetAllProductThresholds()
+        {
+            return _context.ProductThresholdTable
+                .ToDictionary(p => p.ProductId, p => p.Threshold);
         }
     }
 }

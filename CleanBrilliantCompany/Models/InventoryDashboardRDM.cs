@@ -124,36 +124,6 @@ namespace CleanBrilliantCompany.Models
             _replenishmentStatus[productId] = replenishmentStatus;
         }
 
-        public string GetStockStatus(int productId)
-        {
-            EnsureProductExists(productId);
-            var stockLevel = _stockLevel[productId];
-            var threshold = _threshold[productId];
-
-            if (stockLevel < threshold * 0.35)
-            {
-                return "L"; // Low Stock
-            }
-            else if (stockLevel > threshold * 1.6)
-            {
-                return "O"; // Over Stock
-            }
-            else
-            {
-                return "N"; // Normal
-            }
-        }
-
-        public Dictionary<int, string> GetAllStockStatuses()
-        {
-            var statuses = new Dictionary<int, string>();
-            foreach (var productId in _stockLevel.Keys)
-            {
-                statuses[productId] = GetStockStatus(productId);
-            }
-            return statuses;
-        }
-
         public bool IsLowStock(int productId)
         {
             return _stockLevel[productId] < _threshold[productId] * 0.35;
@@ -162,11 +132,6 @@ namespace CleanBrilliantCompany.Models
         public bool IsOverStock(int productId)
         {
             return _stockLevel[productId] > _threshold[productId] * 1.6;
-        }
-
-        public bool NeedsReplenishment(int productId)
-        {
-            return IsLowStock(productId);
         }
 
         public void UpdateStockThreshold(Dictionary<int, int> stockLevels, Dictionary<int, int> thresholds)
@@ -196,8 +161,9 @@ namespace CleanBrilliantCompany.Models
             _lowStockProducts.Clear();
             _overStockProducts.Clear();
 
-            _lowStockProducts.AddRange(_stockLevel.Keys.Where(productId => IsLowStock(productId)));
-            _overStockProducts.AddRange(_stockLevel.Keys.Where(productId => IsOverStock(productId)));
+            // These use the thresholds that came from ProductThresholdTable
+            _lowStockProducts.AddRange(_stockLevel.Keys.Where(IsLowStock));
+            _overStockProducts.AddRange(_stockLevel.Keys.Where(IsOverStock));
         }
 
     }
