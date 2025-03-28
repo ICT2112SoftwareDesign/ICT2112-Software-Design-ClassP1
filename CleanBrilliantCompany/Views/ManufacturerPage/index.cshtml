@@ -343,14 +343,14 @@
                     </div> -->
 
                                                     <!-- You can add a chart or table here -->
-                    @model DashboardDTO
+                    @model Dashboard
 
                     <h2>Manufacturer Dashboard</h2>
 
                     <div>
-                        <h3>@Model.Name ?? "No Name Available"</h3>
-                        <p><strong>Requested Start Date:</strong> @(Model.RequestedStartDate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
-                        <p><strong>Requested End Date:</strong> @(Model.RequestedEndDate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
+                        <h3>@Model.Name</h3>
+                        <p><strong>Requested Start Date:</strong> @(Model.RequestedStartDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
+                        <p><strong>Requested End Date:</strong> @(Model.RequestedEndDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
                         <p><strong>Generated Date:</strong> @(Model.GeneratedDate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
                         <p><strong>Validity Duration:</strong> @Model.ValidityDuration</p>
 

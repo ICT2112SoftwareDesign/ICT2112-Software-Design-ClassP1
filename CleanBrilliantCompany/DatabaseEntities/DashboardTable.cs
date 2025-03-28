@@ -1,0 +1,14 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
+public class DashboardTable
+{
+    [Key]
+    public int DashboardId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public DateTime RequestedStartDate { get; set; }
+    public DateTime RequestedEndDate { get; set; }
+    public DateTime? GeneratedDate { get; set; }
+    public int ValidityDuration { get; set; }
+    public int TypeId { get; set; }  // For Manufacturer Dashboard, this should be 3
+}
