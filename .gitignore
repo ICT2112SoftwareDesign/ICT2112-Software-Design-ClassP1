@@ -486,3 +486,4 @@ $RECYCLE.BIN/
 appsettings.json
 \obj
 
+*.bak
