@@ -117,6 +117,23 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
+        public bool customerUsernameExists(string username)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT COUNT(1) FROM dbo.Customer WHERE username = @Username";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
 
         // For session
         public int getIdByEmail(string email)

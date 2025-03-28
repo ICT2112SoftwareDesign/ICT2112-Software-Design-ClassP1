@@ -11,8 +11,13 @@ namespace CleanBrilliantCompany.Controllers
 
         public ApplicationController(CustomerManagement customerManagement, IHttpContextAccessor httpContextAccessor)
         {
-            _customerManagement = customerManagement;
-            _httpContextAccessor = httpContextAccessor;
+            _customerManagement = customerManagement ?? throw new ArgumentNullException(nameof(customerManagement));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        }
+
+        public int? getLoggedInCustomerId()
+        {
+            return _httpContextAccessor.HttpContext.Session.GetInt32("LoggedInUserId");
         }
 
         // Get Customer Session From Here

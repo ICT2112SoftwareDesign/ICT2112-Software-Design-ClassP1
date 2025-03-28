@@ -97,7 +97,7 @@
 
                 <!-- Modal Body -->
                 <div class="modal-body">
-                    <form method="post" asp-action="updatePassword">
+                    <form method="post" asp-controller ="CustomerInput" asp-action="updatePassword">
                         <div class="form-group">
                             <label for="newPassword">New Password</label>
                             <input type="password" class="form-control" id="newPassword" name="newPassword" required />
@@ -121,7 +121,7 @@
     <!-- Profile Details inside a card -->
     <div class="card p-4">
         <h4 class="card-title font-weight-bold">Edit Profile Details</h4>
-        <form method="post" asp-action="updateCustomerDetails">
+        <form method="post" asp-controller ="CustomerInput" asp-action="updateCustomerDetails">
             <div class="form-group row">
                 <label for="username" class="col-sm-3 col-form-label">Username</label>
                 <div class="col-sm-6">

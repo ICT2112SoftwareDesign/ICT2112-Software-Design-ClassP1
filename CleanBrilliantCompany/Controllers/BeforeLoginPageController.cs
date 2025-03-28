@@ -16,60 +16,19 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // PAGE CONTROLLER METHODS
+
+        // Redirect to Login
         public IActionResult Login()
         {
-            return View("~/Views/BeforeLogin/Login.cshtml"); // Serves Login Page
+            ViewBag.Message = TempData["Message"];
+            return View("~/Views/BeforeLogin/Login.cshtml"); 
         }
 
+        // Redirect to Register
         public IActionResult RegisterCustomer()
         {
-            return View("~/Views/BeforeLogin/RegisterCustomer.cshtml"); // Serves Registration Page
-        }
-
-        // INPUT CONTROLLER METHODS
-        
-        [HttpPost]
-        public IActionResult LoginCustomer(string email, string password)
-        {
-            //Console.WriteLine($"Received Email: {email}");
-            //Console.WriteLine($"Received Password: {password}");
-            bool isAuthenticated = _customerManagement.authenticateCustomer(email, password);
-            int loggedInCustomerId = _customerManagement.getIdByEmail(email);
-
-            if (isAuthenticated && loggedInCustomerId > 0)
-            {
-                // After user logs in stores customer id in session
-                HttpContext.Session.SetInt32("LoggedInUserId", loggedInCustomerId);
-                
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                // Show an error message
-                ViewBag.Message = "Invalid email or password.";
-                return View("~/Views/BeforeLogin/Login.cshtml");
-            }
-        }
-
-        [HttpPost]
-        public IActionResult RegisterNewCustomer(string username, string password, string confirmPassword, string email)
-        {
-            if (password != confirmPassword)
-            {
-                ViewBag.Message = "Passwords do not match.";
-                return View("~/Views/BeforeLogin/RegisterCustomer.cshtml");
-            }
-            
-            bool isRegistered = _customerManagement.createAccount(username, password, email);
-            if (isRegistered)
-            {
-                return View("~/Views/BeforeLogin/Login.cshtml");
-            }
-            else
-            {
-                ViewBag.Message = "Registration failed. Email already be in use.";
-                return View("~/Views/BeforeLogin/RegisterCustomer.cshtml");
-            }
+            ViewBag.Message = TempData["Message"];
+            return View("~/Views/BeforeLogin/RegisterCustomer.cshtml"); 
         }
     }
 }

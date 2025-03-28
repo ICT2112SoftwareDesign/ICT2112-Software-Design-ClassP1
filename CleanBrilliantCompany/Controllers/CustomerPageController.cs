@@ -10,7 +10,7 @@ using CleanBrilliantCompany.Models.SupportTicket;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    public class CustomerPageController : Controller
+    public class CustomerPageController : ApplicationController
     {
         private readonly ILogger<CustomerPageController> _logger;
         private readonly CustomerManagement _customerManagement;
@@ -36,7 +36,9 @@ namespace CleanBrilliantCompany.Controllers
             IProduct productService,
             IShippingAgents shippingAgents,
             ReviewManagement reviewManagement,
-            IWishlistManagement wishlistManagement)
+            IWishlistManagement wishlistManagement, 
+            IHttpContextAccessor httpContextAccessor
+            ) : base(customerManagement, httpContextAccessor)
         {
             _logger = logger;
             _customerManagement = customerManagement;
@@ -48,126 +50,22 @@ namespace CleanBrilliantCompany.Controllers
             _shippingAgents = shippingAgents;
             _reviewManagement = reviewManagement;
             _wishlistManagement = wishlistManagement;
-        }
+        } 
 
+        // View return is done here
+        // Customer Pages
         public IActionResult CustomerDetails()
         {
-            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-            var applicationController = new ApplicationController(_customerManagement, HttpContext.RequestServices.GetService<IHttpContextAccessor>());
-
-            // Retrieve Customer Details via Session
-            var customerDetails = applicationController.GetCustomerSession();
-
-            if (customerDetails != null)
-            {
-                ViewBag.CustomerId = loggedInId;
-                ViewBag.Email = customerDetails.getSession<string>("email");
-                ViewBag.Password = customerDetails.getSession<string>("password");
-                ViewBag.Username = customerDetails.getSession<string>("username");
-                ViewBag.CustomerAddress = customerDetails.getSession<string>("customerAddress");
-            }
-            else
-            {
-                ViewBag.Message = "No customer details available.";
-            }
-
+            ViewBag.CustomerId = TempData["CustomerId"];
+            ViewBag.Email = TempData["Email"];
+            ViewBag.Password = TempData["Password"];
+            ViewBag.Username = TempData["Username"];
+            ViewBag.CustomerAddress = TempData["CustomerAddress"];
+            ViewBag.Message = TempData["Message"];
 
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }
-        [HttpPost]
-        public IActionResult updateCustomerDetails(string username, string email, string address)
-        {
-            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-            var applicationController = new ApplicationController(_customerManagement, HttpContext.RequestServices.GetService<IHttpContextAccessor>());
-            var customerDetails = applicationController.GetCustomerSession();
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email))
-            {
-                ViewBag.Message = "Username and/or email cannot be empty";
-                CustomerDetails();
-                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-            }
-
-            bool isEmailChanged = email != customerDetails.getSession<string>("email");
-            bool isUsernameChanged = username != customerDetails.getSession<string>("username");
-
-            if (isEmailChanged || isUsernameChanged)
-            {
-                var validationMessage = validateChanges(loggedInId, username, email, isEmailChanged, isUsernameChanged);
-                if (validationMessage != null)
-                {
-                    ViewBag.Message = validationMessage;
-                    CustomerDetails();
-                    return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-                }
-            }
-            bool updateSuccessful = _customerManagement.updateCustomerDetails(loggedInId, username, email, address);
-            if (updateSuccessful)
-            {
-                CustomerDetails();
-                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-            }
-
-            ViewBag.Message = "Failed to update details.";
-            CustomerDetails();
-            return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-        }
-
-        // Check if username or email exists
-        private string validateChanges(int loggedInId, string username, string email, bool isEmailChanged, bool isUsernameChanged)
-        {
-            if (isEmailChanged && _customerManagement.customerEmailExists(loggedInId, email))
-            {
-                return "Email already exists.";
-            }
-            if (isUsernameChanged && _customerManagement.customerUsernameExists(loggedInId, username))
-            {
-                return "Username already exists.";
-            }
-
-            return null;
-        }
-
-        [HttpPost]
-        public IActionResult updatePassword(string newPassword, string confirmPassword)
-        {
-            int loggedInId = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-
-            if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
-            {
-                ViewBag.Message = "New password and Confirm Password Cannot be Empty";
-                CustomerDetails();
-                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-            }
-
-            if (newPassword != confirmPassword)
-            {
-                ViewBag.Message = "Passwords do not match!";
-                CustomerDetails();
-                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-            }
-
-            bool passwordSuccess = _customerManagement.updatePassword(loggedInId, newPassword);
-            if (passwordSuccess)
-            {
-                CustomerDetails();
-                return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-            }
-            else
-            {
-                ViewBag.Message = "Password failed to update!";
-                CustomerDetails();
-                return RedirectToAction("Login", "BeforeLoginPage");
-            }
-
-        }
-
-        [HttpPost]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return Redirect("~/");
-        }
 
 
         // INPUT CONTROLLER METHODS
@@ -185,14 +83,14 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult escalateIssue(String issueDescription)
         {
             // Retrieve customer ID from the session using the correct key
-            int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-            if (customerID == -1)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == -1)
             {
                 TempData["Error"] = "User not logged in.";
                 return Json(new { redirectUrl = Url.Action("Login", "BeforeLoginPage") });
             }
 
-            bool success = _supportManagement.createSupportTicket(customerID, issueDescription);
+            bool success = _supportManagement.createSupportTicket(customerId ?? -1, issueDescription);
             if (success)
             {
                 Console.WriteLine("Support ticket created, pop up will appear!");
@@ -207,14 +105,14 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult viewSupportTickets()
         {
             // Retrieve customer ID from the session using the correct key
-            int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-            if (customerID == -1)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == -1)
             {
                 TempData["Error"] = "User not logged in.";
                 return Json(new { redirectUrl = Url.Action("Login", "BeforeLoginPage") });
             }
 
-            var allCustomerSupportTicket = _supportManagement.viewTicketByCustomer(customerID);
+            var allCustomerSupportTicket = _supportManagement.viewTicketByCustomer(customerId ?? -1);
             ViewBag.AllSupportTickets = allCustomerSupportTicket;        
             return View("~/Views/Support/ViewSupportTickets.cshtml");
         }
@@ -239,8 +137,8 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult provideAutomatedResponse(String query)
         {
             // Retrieve customer ID from the session using the correct key
-            int customerID = HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
-            if (customerID == -1)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == -1)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
@@ -248,7 +146,7 @@ namespace CleanBrilliantCompany.Controllers
 
             if (string.IsNullOrEmpty(query)) return RedirectToAction("startChatSession");
 
-            string botResponse = _supportManagement.handleQuery(customerID, query);
+            string botResponse = _supportManagement.handleQuery(customerId ?? -1, query);
 
             string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
 
@@ -330,8 +228,8 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult addToCart(int productId, int quantity)
         {
             // Retrieve customer ID from the session using the correct key
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
@@ -343,7 +241,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("GetAllProducts"); // Redirect back to the product page
             }
 
-            var success = _cartManagement.addToCart(customerID.Value, productId, quantity);
+            var success = _cartManagement.addToCart(customerId.Value, productId, quantity);
             if (success)
             {
                 TempData["Success"] = "Product added to cart successfully!";
@@ -359,8 +257,8 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult updateQuantity(int productId, int quantity)
         {
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
@@ -372,7 +270,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("ViewCart");
             }
 
-            var success = _cartManagement.updateQuantity(customerID.Value, productId, quantity);
+            var success = _cartManagement.updateQuantity(customerId.Value, productId, quantity);
             if (success)
             {
                 TempData["Success"] = "Cart updated successfully.";
@@ -389,15 +287,15 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult removeFromCart(int productId)
         {
             // Retrieve customer ID from the session
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
             // Call the RemoveFromCart method in CartManagement
-            var success = _cartManagement.removeFromCart(customerID.Value, productId);
+            var success = _cartManagement.removeFromCart(customerId.Value, productId);
             if (success)
             {
                 TempData["Success"] = "Product removed from cart successfully.";
@@ -413,15 +311,15 @@ namespace CleanBrilliantCompany.Controllers
 
         public IActionResult viewCart()
         {
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
             // Retrieve the cart data
-            var cartData = _cartManagement.viewCart(customerID.Value);
+            var cartData = _cartManagement.viewCart(customerId.Value);
 
             // Retrieve product details for the cart
             var products = _cartManagement.getCartProductDetails(cartData);
@@ -446,19 +344,20 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult Checkout()
         {
             // Retrieve customer ID from the session
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
+            var customerDetails = base.GetCustomerSession();
             // Retrieve customer details using CustomerManagement
-            var customer = _customerManagement.getCustomer(customerID.Value);
-            string customerAddress = customer?.getSession<string>("customerAddress") ?? string.Empty;
+            // var customer = _customerManagement.getCustomer(customerId.Value);
+            string customerAddress = customerDetails?.getSession<string>("customerAddress") ?? string.Empty;
 
             // Load the cart for the customer
-            var cart = _cartManagement.viewCart(customerID.Value);
+            var cart = _cartManagement.viewCart(customerId.Value);
             if (cart == null || !cart.Any())
             {
                 TempData["Error"] = "Your cart is empty.";
@@ -517,14 +416,14 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult Checkout(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
         {
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            var cart = _cartManagement.viewCart(customerID.Value);
+            var cart = _cartManagement.viewCart(customerId.Value);
             if (cart == null || !cart.Any())
             {
                 TempData["Error"] = "Your cart is empty.";
@@ -534,7 +433,7 @@ namespace CleanBrilliantCompany.Controllers
             // Save the address if provided
             if (!string.IsNullOrWhiteSpace(deliveryAddress))
             {
-                var customer = _customerManagement.getCustomer(customerID.Value);
+                var customer = _customerManagement.getCustomer(customerId.Value);
                 customer.setSession("customerAddress", deliveryAddress); // Save to session
             }
             else
@@ -588,7 +487,7 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult placeOrder(string deliveryAddress, string serviceType, string shippingType, string shippingAgent)
         {
             // Retrieve customer ID from the session
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -646,7 +545,7 @@ namespace CleanBrilliantCompany.Controllers
                                              string cardName, string cardNumber, string expiryDate, string cvv)
         {
             // Retrieve customer ID from the session
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -708,7 +607,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet]
         public IActionResult ToShip()
         {
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -761,7 +660,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet]
         public IActionResult ToReceive()
         {
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -816,7 +715,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet]
         public IActionResult Completed()
         {
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -878,7 +777,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet]
         public IActionResult Cancelled()
         {
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -931,7 +830,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet]
         public IActionResult Refund()
         {
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -984,7 +883,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult CancelOrder(int orderId)
         {
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -1007,7 +906,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult RequestRefund(int orderId, string refundReason, string refundImage, string refundVideo)
         {
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
@@ -1046,7 +945,7 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet]
         public IActionResult EditReview(int productId)
         {
-            int? customerId = HttpContext.Session.GetInt32("LoggedInUserId");
+            int? customerId = base.getLoggedInCustomerId();
             if (customerId == null)
                 return RedirectToAction("Login", "BeforeLoginPage");
 
@@ -1178,8 +1077,8 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult AddToWishlist(int productId)
         {
             // Retrieve customer ID from the session
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
@@ -1187,7 +1086,7 @@ namespace CleanBrilliantCompany.Controllers
 
 
             // Call the wishlist management service
-            var success = _wishlistManagement.addToWishlist(customerID.Value, productId);
+            var success = _wishlistManagement.addToWishlist(customerId.Value, productId);
 
             if (success)
             {
@@ -1205,8 +1104,8 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult viewWishlist()
         {
             // Retrieve customer ID from the session
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
@@ -1214,10 +1113,12 @@ namespace CleanBrilliantCompany.Controllers
 
 
             // Get customer details to retrieve the name
-            var customer = _customerManagement.getCustomer(customerID.Value);
-            string customerName = customer?.getSession<string>("username") ?? "My";
+            var customer = _customerManagement.getCustomer(customerId.Value);
+            var customerDetails = base.GetCustomerSession();
+            
+            string customerName = customerDetails?.getSession<string>("username") ?? "My";
             // Get wishlist items from wishlist management service
-            var productIds = _wishlistManagement.viewWishlist(customerID.Value);
+            var productIds = _wishlistManagement.viewWishlist(customerId.Value);
 
             // Get detailed product information for each wishlist item
             var wishlistProducts = new Dictionary<int, Dictionary<string, object>>();
@@ -1239,15 +1140,15 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult removeFromWishlist(int productId)
         {
             // Retrieve customer ID from the session
-            int? customerID = HttpContext.Session.GetInt32("LoggedInUserId");
-            if (customerID == null)
+            int? customerId = base.getLoggedInCustomerId();
+            if (customerId == null)
             {
                 TempData["Error"] = "User not logged in.";
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
             // Call the wishlist management service
-            var success = _wishlistManagement.removeFromWishlist(customerID.Value, productId);
+            var success = _wishlistManagement.removeFromWishlist(customerId.Value, productId);
 
             if (success)
             {

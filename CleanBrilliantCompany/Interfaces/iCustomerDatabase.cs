@@ -8,6 +8,7 @@ namespace CleanBrilliantCompany.Interfaces
         bool createCustomer(string username, string password, string email);
         bool verifyCustomerCredentials(string email, string password);
         bool customerExists(string email);
+        bool customerUsernameExists(string username);
 
         // For update
         bool customerEmailExists(int customerId, string email);

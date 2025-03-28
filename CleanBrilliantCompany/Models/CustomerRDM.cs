@@ -102,30 +102,6 @@ namespace CleanBrilliantCompany.Models
                 default:
                     throw new Exception("Unknown property");
             }
-        }
-
-        public bool createCustomer(int customerId, string username, string password, string email)
-        {
-            // Implementation logic here
-            return false;
-        }
-
-        public bool getCustDetailsForOrder(int customerId, string username, string password, string email, string address)
-        {
-            // Implementation logic here
-            return false;
-        }
-
-        public string fetchReviewUsername()
-        {
-            // Implementation logic here
-            return string.Empty;
-        }
-
-        public bool  Address(int customerId, string address)
-        {
-            // Implementation logic here
-            return false;
-        }
+        } 
     }
 }
