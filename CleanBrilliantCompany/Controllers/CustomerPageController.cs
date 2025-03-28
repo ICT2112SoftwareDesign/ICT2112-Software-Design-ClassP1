@@ -946,8 +946,8 @@ namespace CleanBrilliantCompany.Controllers
             // Fetch all orders for the customer
             var orders = _orderManagement.getOrderHistory(customerId.Value);
 
-            // Filter orders with statuses "Refunded" or "Refund Requested"
-            var refundOrders = orders.Where(o => o.RetrieveStatus() == "Refunded" || o.RetrieveStatus() == "RefundRequested").ToList();
+            // Filter orders with statuses "Refunded" or "Refund Requested" or "Rejected"
+          var refundOrders = orders.Where(o =>  o.RetrieveStatus() == "Refunded" || o.RetrieveStatus() == "RefundRequested" || o.RetrieveStatus() == "Rejected").ToList();
 
             // Initialize the shippingDetails dictionary
             var shippingDetails = new Dictionary<int, Dictionary<string, string>>();
