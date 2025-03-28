@@ -82,56 +82,6 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-        // public string insert(string productName, string category, float productCost,
-        // int manufacturerId, float productWeight, int quantity, int volume,
-        // float toxicityPercentage, int carbonFootprint, string productState)
-        // {
-        //     try
-        //     {
-        //         using (SqlConnection connection = new SqlConnection(_connectionString))
-        //         {
-        //             connection.Open();
-
-        //             string query = @"
-        //                 INSERT INTO dbo.Product (productName, productCategory, productCost, manufacturerId, 
-        //                                         productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
-        //                 VALUES (@ProductName, @Category, @ProductCost, @ManufacturerId, 
-        //                         @ProductWeight, @Quantity, @Volume, @ToxicityPercentage, @CarbonFootprint, @ProductState)";
-
-        //             using (SqlCommand command = new SqlCommand(query, connection))
-        //             {
-        //                 command.Parameters.AddWithValue("@ProductName", productName);
-        //                 command.Parameters.AddWithValue("@Category", category);
-        //                 command.Parameters.AddWithValue("@ProductCost", productCost);
-        //                 command.Parameters.AddWithValue("@ManufacturerId", manufacturerId);
-        //                 command.Parameters.AddWithValue("@ProductWeight", productWeight);
-        //                 command.Parameters.AddWithValue("@Quantity", quantity);
-        //                 command.Parameters.AddWithValue("@Volume", volume);
-        //                 command.Parameters.AddWithValue("@ToxicityPercentage", toxicityPercentage);
-        //                 command.Parameters.AddWithValue("@CarbonFootprint", carbonFootprint);
-        //                 command.Parameters.AddWithValue("@ProductState", productState);
-
-        //                 // Execute the insert operation synchronously
-        //                 int rowsAffected = command.ExecuteNonQuery();
-
-        //                 // Check if the insert was successful using getDatabaseQueryStatus
-        //                 if (getDatabaseQueryStatus(null, rowsAffected))
-        //                 {
-        //                     return $"Product '{productName}' inserted successfully.";
-        //                 }
-        //                 else
-        //                 {
-        //                     return "Error inserting product.";
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         Console.WriteLine($"Error inserting product: {ex.Message}");
-        //         return $"Error inserting product: {ex.Message}";
-        //     }
-        // }
 
         public int insert(string productName, string category, float productCost,
         int manufacturerId, float productWeight, int quantity, int volume,
@@ -409,7 +359,7 @@ namespace CleanBrilliantCompany.Mappers
                                         reader.GetDateTime(reader.GetOrdinal("receiveDate")),
                                         reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
                                         reader.GetInt32(reader.GetOrdinal("quantity")),
-                                        (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                                        (float)reader.GetDouble(reader.GetOrdinal("batchCost"))
                                     );
 
                                     // Add the product to the list
@@ -457,7 +407,7 @@ namespace CleanBrilliantCompany.Mappers
                                     reader.GetDateTime(reader.GetOrdinal("receiveDate")),
                                     reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
                                     reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                                    (float)reader.GetDouble(reader.GetOrdinal("batchCost"))
                                 );
                             }
                         }
@@ -468,7 +418,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         public int insert(int productId, DateTime expiryDate,
-    DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+        DateTime receiveDate, DateTime manufactureDate, int quantity, float batchCost)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -628,5 +578,40 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
+        public List<ProductManufacturer> findAllManufacturer()
+        {
+            List<ProductManufacturer> manufacturers = new List<ProductManufacturer>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    SELECT manufacturerId, companyName, manufacturerAddress, email
+                    FROM dbo.ProductManufacturer"; // adjust table name if different
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
+                        string companyName = reader.GetString(reader.GetOrdinal("companyName"));
+                        string manufacturerAddress = reader.GetString(reader.GetOrdinal("manufacturerAddress"));
+                        string email = reader.GetString(reader.GetOrdinal("email"));
+
+                        ProductManufacturer manufacturer = new ProductManufacturer(
+                            manufacturerId,
+                            companyName,
+                            manufacturerAddress,
+                            email
+                        );
+
+                        manufacturers.Add(manufacturer);
+                    }
+                }
+            }
+            return manufacturers;
+        }
     }
 }

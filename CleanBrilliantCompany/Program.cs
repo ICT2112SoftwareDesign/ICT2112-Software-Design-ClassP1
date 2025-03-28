@@ -3,6 +3,8 @@ using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Controllers;
 using CleanBrilliantCompany.Mapper;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models.Factory;
+using CleanBrilliantCompany.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,8 +53,6 @@ builder.Services.AddScoped<iBatch, ProductControl>();
 builder.Services.AddScoped<iReorderRequest, ReorderRequestManagement>();
 builder.Services.AddScoped<iManufacturer, ProductControl>();
 
-// My controller instantiate diff now**
-// builder.Services.AddScoped<ProductControl>();
 
 // Lazy resolver for breaking circular dependency
 builder.Services.AddScoped(provider =>
@@ -65,6 +65,8 @@ builder.Services.AddScoped<ReturnFormController>();
 builder.Services.AddScoped<ItemControl>();
 builder.Services.AddScoped<ProductControl>();
 builder.Services.AddScoped<iProduct, ProductControl>();
+builder.Services.AddScoped<ProductFactory>();
+builder.Services.AddScoped<ProductMapper>();
 
 
 var app = builder.Build();

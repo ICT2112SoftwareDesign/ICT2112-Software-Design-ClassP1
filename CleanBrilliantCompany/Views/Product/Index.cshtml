@@ -424,9 +424,24 @@
                                         <input type="number" step="0.01" class="form-control" id="createProductCost" name="productCost" required />
                                     </div>
 
-                                    <div class="mb-3">
+                                    @* <div class="mb-3">
                                         <label for="createManufacturerId" class="form-label">Manufacturer ID</label>
                                         <input type="number" class="form-control" id="createManufacturerId" name="manufacturerId" required />
+                                    </div> *@
+
+                                    <div class="mb-3">
+                                        <label for="modalManufacturerId" class="form-label">Manufacturer</label>
+                                        <select class="form-control" name="manufacturerId" id="modalManufacturerId" required>
+                                            <option value="">Select Manufacturer</option>
+                                            @foreach (var manufacturer in ((List<Dictionary<string, object>>)ViewBag.Manufacturers).Select(m => new
+                                            {
+                                                Id = m["ManufacturerId"],
+                                                Name = m["CompanyName"]
+                                            }))
+                                            {
+                                                <option value="@manufacturer.Id">@manufacturer.Name</option>
+                                            }
+                                        </select>
                                     </div>
 
                                     <div class="mb-3">
@@ -434,10 +449,10 @@
                                         <input type="number" step="0.01" class="form-control" id="createProductWeight" name="weight" required />
                                     </div>
 
-                                    <div class="mb-3">
+                                    @* <div class="mb-3">
                                         <label for="createQuantity" class="form-label">Quantity</label>
                                         <input type="number" class="form-control" id="createQuantity" name="quantity" required />
-                                    </div>
+                                    </div> *@
 
                                     <div class="mb-3">
                                         <label for="createVolume" class="form-label">Volume</label>
@@ -455,9 +470,17 @@
                                     </div>
 
                                     <div class="mb-3">
+                                        <label for="isLiquid" class="form-label">Product State</label>
+                                        <select class="form-control" name="isLiquid" id="isLiquid" required>
+                                            <option value="true">Liquid</option>
+                                            <option value="false">Solid</option>
+                                        </select>
+                                    </div>
+
+                                    @* <div class="mb-3">
                                         <label for="createProductState" class="form-label">Product State</label>
                                         <input type="text" class="form-control" id="createProductState" name="productState" required />
-                                    </div>
+                                    </div> *@
 
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

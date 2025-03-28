@@ -2,6 +2,7 @@ using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Mappers;
 using System.Globalization;
+using CleanBrilliantCompany.Models.Factory;
 
 namespace CleanBrilliantCompany.Models.Control
 {
@@ -10,18 +11,16 @@ namespace CleanBrilliantCompany.Models.Control
     {
         private readonly ProductMapper _productMapper;
         private readonly iReorderRequest _ireorderRequest;
-        // private readonly IItemCreation _iItemCreation;
         private readonly Lazy<IItemCreation> _lazyItemCreation;
+        private readonly ProductFactory _productFactory;
 
-        // public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, IItemCreation iItemCreation)
-        // public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest)
-        public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, Lazy<IItemCreation> lazyItemCreation)
+        public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, Lazy<IItemCreation> lazyItemCreation, ProductFactory productFactory)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _productMapper = new ProductMapper(connectionString);
             _ireorderRequest = ireorderRequest;
-            // _iItemCreation = iItemCreation;
             _lazyItemCreation = lazyItemCreation;
+            _productFactory = productFactory;
 
             Console.WriteLine("Products loaded from database.");
         }
@@ -41,27 +40,24 @@ namespace CleanBrilliantCompany.Models.Control
         public void createProduct(string productName, string category, float productCost, 
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
-            // Create the product
-            int productId = _productMapper.insert(productName, category, productCost, 
+            _productMapper.insert(productName, category, productCost, 
                                     manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
+        }
 
-            Console.WriteLine($"ProductId: '{productId}'");
-            
-            // Create Batch
-            // createProductBatch(int productId, DateTime expiryDate, 
-            // DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+        public void CreateSolidProduct(string productName, string category, float productCost,
+        int manufacturerId, float weight, int quantity, float toxicityPercentage, int carbonFootprint)
+        {
+            _productFactory.CreateProduct(productName, category, productCost,
+                                        manufacturerId, weight, quantity, 0,
+                                        toxicityPercentage, carbonFootprint, isLiquid: false);
+        }
 
-            // int batchCode = createProductBatch(productId, DateTime expiryDate, 
-            // DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
-
-            // Create the amount of items
-            for (int x = 0; x < quantity; x++)
-            {
-                double salePrice = productCost * 1.2;
-                int warehouseId = 1;
-                //createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status); 
-                // _lazyItemCreation.Value.createItem(productId, salePrice, ,warehouseId, ItemStatus.Available);
-            }
+        public void CreateLiquidProduct(string productName, string category, float productCost,
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint)
+        {
+            _productFactory.CreateProduct(productName, category, productCost,
+                                        manufacturerId, weight, quantity, volume,
+                                        toxicityPercentage, carbonFootprint, isLiquid: true);
         }
 
         public void deleteProduct(int productId)
@@ -98,7 +94,7 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         public int createProductBatch(int productId, DateTime expiryDate, 
-            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+            DateTime receiveDate, DateTime manufactureDate, int quantity, float batchCost)
         {
             return _productMapper.insert(productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost);
         }
@@ -156,6 +152,12 @@ namespace CleanBrilliantCompany.Models.Control
             return productManufacturer;
         }
 
+        public List<ProductManufacturer> getAllProductManufacturer()
+        {
+            List<ProductManufacturer> productManufacturer = _productMapper.findAllManufacturer();
+            return productManufacturer;
+        }
+
         // Product Reorder Request
         public void processReorderRequest()
         {
@@ -183,18 +185,18 @@ namespace CleanBrilliantCompany.Models.Control
                 Console.WriteLine($"Defect Quantity: {request.DefectQuantity}");
                 Console.WriteLine();
 
-                
-                /// Hardcoded random variables ///
-                string expiryDateSample = "05/06/2025"; // in the format of the db, mm/dd/yyyy
-                DateTime expiryDate = DateTime.ParseExact(expiryDateSample, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                Console.WriteLine($"Expirey Date Formatted: {expiryDate}");
+                /// Dynamically generated dates based on ExpectedDeliveryDate ///
+                DateTime expiryDate = request.ExpectedDeliveryDate.AddMonths(1);
+                DateTime manufactureDate = request.ExpectedDeliveryDate.AddMonths(-1);
+  
+                List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+                Product product = getProductDetails(request.ProductId);
+                productInfo.Add(product.retrieveProductInfo());
+                float costPrice = Convert.ToSingle(productInfo[0]["ProductCost"]);
 
-                string manufactureDateSample = "03/06/2025"; // in the format of the db, mm/dd/yyyy
-                DateTime manufactureDate = DateTime.ParseExact(manufactureDateSample, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                Console.WriteLine($"Manufactured Date Formatted: {manufactureDate}");
 
-                int batchCost = 300;
-                int salePrice = 15;
+                float batchCost = costPrice * request.Quantity; // Total qty * productCost
+                Console.WriteLine($"Batch COst: {batchCost}");
                 int warehouseId = 1;
                 //////////////////////////////////
 
@@ -212,8 +214,6 @@ namespace CleanBrilliantCompany.Models.Control
                 // Add the amount of items into the db.
                 for (int i = 0; i < request.Quantity; i++)
                 {
-                    // _iItemCreation.createItem(request.ProductId, salePrice, batchCode, warehouseId, ItemStatus.Available);
-                    // _lazyItemCreation.Value.createItem(request.ProductId, salePrice, batchCode, warehouseId, ItemStatus.Available);
                     _lazyItemCreation.Value.createItem(request.ProductId, batchCode, warehouseId, ItemStatus.Available);
                     Console.WriteLine($"Added Item");
                 }

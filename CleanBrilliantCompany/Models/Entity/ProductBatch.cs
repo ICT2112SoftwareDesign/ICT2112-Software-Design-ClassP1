@@ -27,10 +27,10 @@ namespace CleanBrilliantCompany.Models.Entity
         private DateTime ReceiveDate; // Change to date
         private DateTime ManufactureDate; // Change to date for me
         private int Quantity;
-        private int BatchCost; // Change name to SalesPrice
+        private float BatchCost; // Change name to SalesPrice
         
         public ProductBatch(int batchCode, int productId, DateTime expiryDate, DateTime receiveDate, DateTime manufactureDate, 
-        int quantity, int batchCost)
+        int quantity, float batchCost)
         {
             BatchCode = batchCode;
             ProductId = productId;
@@ -62,7 +62,7 @@ namespace CleanBrilliantCompany.Models.Entity
         private DateTime GetReceiveDate() => ReceiveDate;
         private DateTime GetManufactureDate() => ManufactureDate;
         private int GetQuantity() => Quantity;
-        private int GetBatchCost() => BatchCost;
+        private float GetBatchCost() => BatchCost;
 
         // Setters
         private void SetBatchCode(int value) => BatchCode = value;
@@ -71,7 +71,7 @@ namespace CleanBrilliantCompany.Models.Entity
         private void SetReceiveDate(DateTime value) => ReceiveDate = value;
         private void SetManufactureDate(DateTime value) => ManufactureDate = value;
         private void SetQuantity(int value) => Quantity = value;
-        private void SetBatchCost(int value) => BatchCost = value;
+        private void SetBatchCost(float value) => BatchCost = value;
 
 
         public ProductBatch() { }

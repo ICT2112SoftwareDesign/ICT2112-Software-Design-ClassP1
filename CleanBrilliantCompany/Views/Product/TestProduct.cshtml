@@ -54,10 +54,34 @@
                         <input type="number" step="0.01" class="form-control" id="createProductCost" name="productCost" required />
                     </div>
 
-                    <div class="mb-3">
+                    @* <div class="mb-3">
                         <label for="createManufacturerId" class="form-label">Manufacturer ID</label>
                         <input type="number" class="form-control" id="createManufacturerId" name="manufacturerId" required />
-                    </div>
+                    </div> *@
+
+                    @* <div class="mb-3">
+                        <label for="modalManufacturerId" class="form-label">Manufacturer</label>
+                        <select class="form-select" id="modalManufacturerId" name="manufacturerId" required>
+                            <option value="">-- Select Manufacturer --</option>
+                            @foreach (var m in ViewBag.Manufacturers)
+                            {
+                                var dict = (IDictionary<string, object>)m;
+                                <option value="@dict["ManufacturerId"]">@dict["CompanyName"]</option>
+                            }
+                        </select>
+                    </div> *@
+
+                    @* <div class="mb-3">
+                        <label for="modalManufacturerId" class="form-label">Manufacturer</label>
+                        <select class="form-select" name="manufacturerId" id="modalManufacturerId" required>
+                            <option value="">Select Manufacturer</option>
+                            @foreach (var m in ViewBag.Manufacturers)
+                            {
+                                var dict = (IDictionary<string, object>)m;
+                                <option value="@dict["ManufacturerId"]">@dict["CompanyName"]</option>
+                            }
+                        </select>
+                    </div> *@
 
                     <div class="mb-3">
                         <label for="createProductWeight" class="form-label">Weight (kg)</label>
