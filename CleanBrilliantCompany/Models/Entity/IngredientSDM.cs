@@ -55,6 +55,7 @@ namespace CleanBrilliantCompany.Models.Entity
             set { _thresholdQuantity = value; }
         }
 
+        [NotMapped]
         public int Quantity
         {
             get { return _quantity; }

@@ -1,11 +1,27 @@
 @model CleanBrilliantCompany.DTO.ToxicityReport
-
 @{
     ViewData["Title"] = "Ingredient Toxicity Analysis";
+    var currentProduct = ViewBag.CurrentProduct ?? Model?.ProductName ?? "Eco-Friendly Shampoo";
 }
 
 <div class="container">
     <h2 class="my-4">Ingredient Toxicity Analysis</h2>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
     <div class="row mb-4">
         <div class="col-md-12">
@@ -20,67 +36,23 @@
                                 <div class="form-group">
                                     <label for="productName">Select Product:</label>
                                     <select id="productName" name="productName" class="form-control">
-                                        <option value="Eco-Friendly Shampoo">Eco-Friendly Shampoo</option>
-                                        <option value="sp1o0">sp1o0</option>
-                                        <option value="Bleach">Bleach</option>
-                                        <option value="Organic Surface Spray">Organic Surface Spray</option>
-                                        <option value="All-Purpose Cleaner">All-Purpose Cleaner</option>
+                                        @foreach (var product in ViewBag.Products ?? new string[] { "Eco-Friendly Shampoo", "sp1o0", "Bleach", "Organic Surface Spray", "All-Purpose Cleaner" })
+                                        {
+                                            if (product == currentProduct)
+                                            {
+                                                <option value="@product" selected>@product</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@product">@product</option>
+                                            }
+                                        }
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6 d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary">View Toxicity Analysis</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Add New Ingredient</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Create" asp-controller="Toxicity" method="post">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label for="IngredientName">Ingredient Name</label>
-                                    <input name="IngredientName" id="IngredientName" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label for="IngredientToxicity">Toxicity Level (0.0-1.0)</label>
-                                    <input type="number" step="0.1" min="0" max="1" name="IngredientToxicity" id="IngredientToxicity" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label for="ProductId">Product ID</label>
-                                    <input type="number" name="ProductId" id="ProductId" class="form-control" value="2" required />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label for="ThresholdQuantity">Threshold Quantity</label>
-                                    <input type="number" name="ThresholdQuantity" id="ThresholdQuantity" class="form-control" value="50" required />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label for="MeasurementUnit">Measurement Unit</label>
-                                    <input type="text" name="MeasurementUnit" id="MeasurementUnit" class="form-control" value="ml" required />
-                                </div>
-                            </div>
-                            <div class="col-md-4 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary">Analyze</button>
+                                <a href="@Url.Action("AddIngredient", "Toxicity", new { productName = currentProduct })" class="btn btn-success ms-2">Add New Ingredient</a>
                             </div>
                         </div>
                     </form>

@@ -1,0 +1,88 @@
+@model CleanBrilliantCompany.Models.Entity.IngredientSDM
+
+@{
+    ViewData["Title"] = "Add New Ingredient";
+    var selectedProductId = ViewBag.SelectedProductId ?? 2; // Default to Eco-Friendly Shampoo ID if not specified
+}
+
+<div class="container">
+    <h2 class="my-4">Add New Ingredient for Toxicity Analysis</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Add New Ingredient</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" asp-controller="Toxicity" method="post">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="IngredientName">Ingredient Name</label>
+                                    <input name="IngredientName" id="IngredientName" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="IngredientToxicity">Toxicity Level (0.0-1.0)</label>
+                                    <input type="number" step="0.1" min="0" max="1" name="IngredientToxicity" id="IngredientToxicity" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="ProductId">Product</label>
+                                    <select name="ProductId" id="ProductId" class="form-control" required>
+                                        @foreach (var product in ViewBag.ProductList ?? new[] { 
+                                            new { ProductId = 2, ProductName = "Eco-Friendly Shampoo" },
+                                            new { ProductId = 14, ProductName = "sp1o0" },
+                                            new { ProductId = 23, ProductName = "Bleach" },
+                                            new { ProductId = 167, ProductName = "Organic Surface Spray" },
+                                            new { ProductId = 203, ProductName = "All-Purpose Cleaner" }
+                                        })
+                                        {
+                                            if (product.ProductId == selectedProductId)
+                                            {
+                                                <option value="@product.ProductId" selected>@product.ProductName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@product.ProductId">@product.ProductName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="ThresholdQuantity">Threshold Quantity</label>
+                                    <input type="number" name="ThresholdQuantity" id="ThresholdQuantity" class="form-control" value="50" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="MeasurementUnit">Measurement Unit</label>
+                                    <input type="text" name="MeasurementUnit" id="MeasurementUnit" class="form-control" value="ml" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary">Add & Analyze</button>
+                                <a href="@Url.Action("Index", "Toxicity")" class="btn btn-secondary ms-2">Back to Analysis</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
