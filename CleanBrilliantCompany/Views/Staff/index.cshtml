@@ -1,10 +1,7 @@
-@model CleanBrilliantCompany.Models.DashboardSummary
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="error">
-        <p>⚠️ Unable to generate dashboard summary. Please try again later.</p>
-    </div>
+@{
+    ViewData["Title"] = "Order Dashboard";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -101,167 +98,205 @@
 
                 </nav>
                 <!-- End of Topbar -->
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Order Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                            id="generateReportBtn">
-                            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
-                        </a>
-                    </div>
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Order Dashboard</h1>
+                </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
-                        <!-- Total Orders Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Total Orders</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                @Model?.TotalOrders ?? 0
+                <!-- Metrics Cards Row -->
+                <div class="row">
+                    <!-- Total Orders Card -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Total Orders</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            @ViewBag.Metrics.TotalOrders
+                                        </div>
+                                        @if (ViewBag.Metrics.LatestOrderId != null)
+                                        {
+                                            <div class="mt-1">
+                                                <small class="text-muted">Latest: #@ViewBag.Metrics.LatestOrderId</small>
                                             </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
-                                        </div>
+                                        }
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Total Refunds Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                Total Refunds</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalRefundsCard">
-                                                @Model?.TotalRefunds ?? 0
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-undo fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Net Revenue Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Net Revenue</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="netRevenueCard">
-                                                $@(Model?.NetRevenue.ToString("N2") ?? "0.00")
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Refunds Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pending Refunds</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendingRefundsCard">
-                                                @Model?.PendingRefunds ?? 0
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                        </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    
+                    <!-- Total Refunds Card -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Total Refunds</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            @ViewBag.Metrics.TotalRefunds
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-undo fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!-- Rest of your content -->
+                    <!-- Net Revenue Card -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Net Revenue</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            @ViewBag.Metrics.NetRevenue
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Refunds Card -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            Pending Refunds</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            @ViewBag.Metrics.PendingRefunds
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- /.container-fluid -->
+
+                @* <!-- Recent Orders Table -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Recent Orders</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer ID</th>
+                                        <th>Order Date</th>
+                                        <th>Status</th>
+                                        <th>Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in _dashboard.getAllOrders()?.OrderByDescending(o =>
+                                                                        o.GetOrderDate()).Take(5) ?? new List<OrderRDM>())
+                                    {
+                                        <tr>
+                                            <td>@order.GetOrderID()</td>
+                                            <td>@order.GetCustomerID()</td>
+                                            <td>@order.GetOrderDate().ToString("MM/dd/yyyy")</td>
+                                            <td>@order.GetStatus()</td>
+                                            <td>@order.GetOrderTotal().ToString("C")</td>
+                                        </tr>
+                                    }
+                                    @if (!(_dashboard.getAllOrders()?.Any() ?? false))
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-center">No orders found</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div> *@
+
+
+                <script>
+                    // Optional: Add auto-refresh every 60 seconds
+                    $(document).ready(function () {
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 60000);
+                    });
+                </script>
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Your Website 2023</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
             </div>
-            <!-- End of Main Content -->
+            <!-- End of Content Wrapper -->
+
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- End of Page Wrapper -->
 
-    </div>
-    <!-- End of Main Content -->
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
 
-    <!-- Footer -->
-    <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-            <div class="copyright text-center my-auto">
-                <span>Copyright &copy; Your Website 2023</span>
-            </div>
-        </div>
-    </footer>
-    <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
-
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-primary" href="login.html">Logout</a>
+                    </div>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap core JavaScript-->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+        <!-- Core plugin JavaScript-->
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-    <script>console.log('TotalOrders:', '@Model?.TotalOrders');</script>
-    <script>console.log('TotalRefunds:', '@Model?.TotalRefunds');</script>
-    <script>console.log('NetRevenue:', '@Model?.NetRevenue');</script>
-    <script>console.log('PendingRefunds:', '@Model?.PendingRefunds');</script>
+        <!-- Custom scripts for all pages-->
+        <script src="js/sb-admin-2.min.js"></script>
+        <script>console.log('TotalOrders:', '@Model?.TotalOrders');</script>
+        <script>console.log('TotalRefunds:', '@Model?.TotalRefunds');</script>
+        <script>console.log('NetRevenue:', '@Model?.NetRevenue');</script>
+        <script>console.log('PendingRefunds:', '@Model?.PendingRefunds');</script>
 
 
 </body>
