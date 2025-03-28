@@ -5,6 +5,10 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
     var stockLevels = Model?.GetAllStockLevels() ?? new Dictionary<int, int>();
     var productLookup = ViewBag.ProductLookup as Dictionary<int, CleanBrilliantCompany.DTO.InventoryDTO>;
+    var lowStock = ViewBag.LowStock as List<int>;
+    var overStock = ViewBag.OverStock as List<int>;
+    var replenish = ViewBag.Replenish as List<int>;
+    // var lookup = ViewBag.ProductLookup as Dictionary<int, InventoryDTO>;
 }
 
 <!-- Page Heading -->
@@ -84,7 +88,7 @@ else
     <!-- Alerts Section (Bottom) -->
     <div class="alerts mb-4">
         <div class="row">
-            @if (Model.LowStockProducts.Any())
+            @if (lowStock.Any())
             {
                 <div class="col-md-6">
                     <div class="card border-left-danger shadow h-100 py-2">
@@ -93,7 +97,7 @@ else
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
-                                @foreach (var id in Model.LowStockProducts)
+                                @foreach (var id in lowStock)
                                 {
                                     if (productLookup.ContainsKey(id))
                                     {
@@ -115,7 +119,7 @@ else
                 </div>
             }
 
-            @if (Model.OverStockProducts.Any())
+            @if (overStock.Any())
             {
                 <div class="col-md-6">
                     <div class="card border-left-warning shadow h-100 py-2">
@@ -124,7 +128,7 @@ else
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
-                                @foreach (var id in Model.OverStockProducts)
+                                @foreach (var id in overStock)
                                 {
                                     if (productLookup.ContainsKey(id))
                                     {
@@ -148,13 +152,7 @@ else
         </div>
     </div>
 
-    <!-- Replenishment Actions Section -->
-    var productsToReplenish = Model.GetAllReplenishmentStatuses()
-        .Where(kvp => kvp.Value == true)
-        .Select(kvp => kvp.Key)
-        .ToList();
-
-    @if (productsToReplenish.Any())
+    @if (replenish.Any())
     {
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -162,14 +160,17 @@ else
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
-                    @foreach (var productId in productsToReplenish)
+                    @foreach (var productId in replenish
+                   .OrderBy(id => productLookup.ContainsKey(id) ? productLookup[id].StockLevel : int.MinValue)
+                   .ThenBy(id => id))
                     {
-                        @* <li class="list-group-item"> *@
-                        @*     Product @productId: @Model.GetStockLevel(productId) units *@
-                        @* </li> *@
-                        <li class="list-group-item">
-                            <strong>Product @productId:</strong> @Model.GetStockLevel(productId) units
-                        </li>
+                        if (productLookup.ContainsKey(productId))
+                        {
+                            var product = productLookup[productId];
+                            <li class="list-group-item">
+                                <strong>Product @product.ProductId:</strong> @product.StockLevel units
+                            </li>
+                        }
                     }
                 </ul>
             </div>
@@ -182,7 +183,6 @@ else
         </div>
     }
 
-    @* <h2>Consecutive Weekly Alerts (Historical)</h2> *@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Consecutive Weekly Alerts (Historical)</h6>

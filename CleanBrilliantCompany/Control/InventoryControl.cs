@@ -109,39 +109,49 @@ namespace CleanBrilliantCompany.Control
             return report.ToString();
         }
 
-        private Dictionary<int, int> FetchLatestStockLevels()
+        public List<int> CheckLowStock(string category = null)
         {
             var dashboard = FetchDashboard();
-            return new Dictionary<int, int>(dashboard.GetAllStockLevels());
-        }
+            var allStockLevels = dashboard.GetAllStockLevels();
+            var thresholds = dashboard.GetAllThresholds();
+            var products = _productService.getAllProducts();
 
-        private Dictionary<int, int> FetchLatestThresholds()
-        {
-            var dashboard = FetchDashboard();
-            return new Dictionary<int, int>(dashboard.GetAllThresholds());
-        }
+            if (!string.IsNullOrEmpty(category))
+                products = products.Where(p => p.productCategory == category).ToList();
 
-        public List<int> CheckLowStock()
-        {
-            var dashboard = FetchDashboard();
-            return dashboard.GetAllStockLevels()
-                .Where(stock => stock.Value < dashboard.GetThreshold(stock.Key) * 0.35)
-                .Select(stock => stock.Key)
+            var productIds = products.Select(p => p.productId).ToHashSet();
+
+            return allStockLevels
+                .Where(kvp => productIds.Contains(kvp.Key) && kvp.Value < thresholds[kvp.Key] * 0.35)
+                .Select(kvp => kvp.Key)
                 .ToList();
         }
 
-        public List<int> CheckOverStock()
+        public List<int> CheckOverStock(string category = null)
         {
             var dashboard = FetchDashboard();
-            return dashboard.GetAllStockLevels()
-                .Where(stock => stock.Value > dashboard.GetThreshold(stock.Key) * 1.6)
-                .Select(stock => stock.Key)
+            var allStockLevels = dashboard.GetAllStockLevels();
+            var thresholds = dashboard.GetAllThresholds();
+            var products = _productService.getAllProducts();
+
+            if (!string.IsNullOrEmpty(category))
+                products = products.Where(p => p.productCategory == category).ToList();
+
+            var productIds = products.Select(p => p.productId).ToHashSet();
+
+            return allStockLevels
+                .Where(kvp => productIds.Contains(kvp.Key) && kvp.Value > thresholds[kvp.Key] * 1.6)
+                .Select(kvp => kvp.Key)
                 .ToList();
         }
 
-        public List<int> GenerateReplenishmentActions()
+        //public List<int> GenerateReplenishmentActions()
+        //{
+        //    return CheckLowStock();
+        //}
+        public List<int> GenerateReplenishmentActions(string category = null)
         {
-            return CheckLowStock();
+            return CheckLowStock(category);
         }
 
         public List<int> PrioritiseReplenishment()
@@ -232,16 +242,17 @@ namespace CleanBrilliantCompany.Control
 
         public Dictionary<int, InventoryDTO> GetProductLookup()
         {
+            var stockLevels = FetchDashboard().GetAllStockLevels();
             return _productService.getAllProducts()
                 .ToDictionary(p => p.productId, p => new InventoryDTO
                 {
                     ProductId = p.productId,
                     ProductName = p.productName,
-                    ProductCategory = p.productCategory
+                    ProductCategory = p.productCategory,
+                    StockLevel = stockLevels.ContainsKey(p.productId) ? stockLevels[p.productId] : 0
                 });
         }
 
-        // CHECK THIS METHOD
         public List<ProductTable> GetAllProducts()
         {
             return _productService.getAllProducts();

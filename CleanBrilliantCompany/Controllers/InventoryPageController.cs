@@ -13,40 +13,16 @@ namespace CleanBrilliantCompany.Controllers
             _inventoryControl = inventoryControl;
         }
 
-        // Show the latest dashboard generated
-        //public IActionResult ViewDashboard()
-        //{
-        //    try
-        //    {
-        //        var inventoryDashboard = _inventoryControl.FetchDashboard();
-        //        var chartData = _inventoryControl.GenerateStockLevelChartData();
-        //        var alertStreaks = _inventoryControl.GetWeeklyConsecutiveAlertCounts();
-
-        //        // Debug: Log the alert streaks to confirm data
-        //        Console.WriteLine("Alert Streaks:");
-        //        foreach (var streak in alertStreaks)
-        //        {
-        //            Console.WriteLine($"Product {streak.Key}: LS={streak.Value.LowStockWeeks}, OS={streak.Value.OverStockWeeks}");
-        //        }
-
-        //        ViewBag.ChartData = chartData;
-        //        ViewBag.AlertStreaks = alertStreaks;
-        //        return View("ViewInventoryDashboard", inventoryDashboard);
-        //    }
-        //    catch (InvalidOperationException ex)
-        //    {
-        //        //return RedirectToAction("CreateDashboard");
-        //        ViewData["ErrorMessage"] = ex.Message;
-        //        return View("ViewInventoryDashboard");
-        //    }
-        //}
-
         public IActionResult ViewDashboard(string category)
         {
             try
             {
                 var inventoryDashboard = _inventoryControl.FetchDashboard();
                 var chartData = _inventoryControl.GenerateStockLevelChartData(category); // Pass filter
+                var lowStock = _inventoryControl.CheckLowStock(category);
+                var overStock = _inventoryControl.CheckOverStock(category);
+                var toReplenish = _inventoryControl.GenerateReplenishmentActions(category);
+
                 var alertStreaks = _inventoryControl.GetWeeklyConsecutiveAlertCounts();
 
                 // Send categories to dropdown
@@ -64,6 +40,9 @@ namespace CleanBrilliantCompany.Controllers
                 ViewBag.AlertStreaks = alertStreaks;
                 //ViewBag.Products = products;
                 ViewBag.ProductLookup = productLookup;
+                ViewBag.LowStock = lowStock;
+                ViewBag.OverStock = overStock;
+                ViewBag.Replenish = toReplenish;
 
                 return View("ViewInventoryDashboard", inventoryDashboard);
             }
