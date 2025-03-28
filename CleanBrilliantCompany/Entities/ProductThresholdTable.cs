@@ -8,8 +8,6 @@ namespace CleanBrilliantCompany.Entities
         [Key] // Primary Key
         [ForeignKey("Product")]
         public int ProductId { get; set; }
-        //public int Threshold { get; set; }
-        //public DateTime LastUpdated { get; set; }
         public int? Threshold { get; set; }
         public DateTime? LastUpdated { get; set; }
     }

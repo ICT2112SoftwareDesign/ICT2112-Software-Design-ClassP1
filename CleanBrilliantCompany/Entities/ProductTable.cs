@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace CleanBrilliantCompany.Entities
+﻿namespace CleanBrilliantCompany.Entities
 {
     public class ProductTable
     {

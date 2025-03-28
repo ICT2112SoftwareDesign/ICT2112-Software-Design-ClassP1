@@ -1,7 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using CleanBrilliantCompany.Entities;
-using CleanBrilliantCompany.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanBrilliantCompany.Data
 {
@@ -27,18 +25,15 @@ namespace CleanBrilliantCompany.Data
 
             modelBuilder.Entity<DashboardTypeTable>()
                 .HasKey(t => t.TypeId);
-            
+
             modelBuilder.Entity<AlertTypeTable>()
                 .HasKey(a => a.AlertType);
-            
+
             modelBuilder.Entity<InventoryLevelTable>()
                 .HasKey(i => i.InventoryId);
-            
+
             modelBuilder.Entity<InventoryAlertsTable>()
                 .HasKey(a => a.AlertId);
-
-            //modelBuilder.Entity<ProductThresholdTable>()
-            //     .HasKey(pt => pt.ProductId);
 
             modelBuilder.Entity<ProductTable>()
                 .HasKey(p => p.productId);

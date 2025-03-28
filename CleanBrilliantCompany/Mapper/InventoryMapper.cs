@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Entities;
+using CleanBrilliantCompany.Interface;
+using CleanBrilliantCompany.Models;
 using Microsoft.CodeAnalysis;
 
 namespace CleanBrilliantCompany.Mapper
@@ -44,7 +40,6 @@ namespace CleanBrilliantCompany.Mapper
                     // Save stock levels and thresholds to InventoryLevel
                     var stockLevels = dashboard.GetAllStockLevels();
                     var replenishmentStatuses = dashboard.GetAllReplenishmentStatuses();
-                    //var thresholds = dashboard.GetAllThresholds();
 
                     // Dictionary to map ProductId to InventoryId
                     var productToInventoryIdMap = new Dictionary<int, int>();
@@ -56,8 +51,6 @@ namespace CleanBrilliantCompany.Mapper
                             DashboardId = dashboardEntity.DashboardId,
                             ProductId = productId,
                             StockLevel = stockLevels[productId],
-                            //Threshold = thresholds.ContainsKey(productId) ? thresholds[productId] : 100,
-                            //ReplenishmentStatus = stockLevels[productId] < (thresholds.ContainsKey(productId) ? thresholds[productId] : 100) * 0.35
                             ReplenishmentStatus = replenishmentStatuses[productId]
                         };
                         _context.InventoryLevelTable.Add(inventoryLevel);

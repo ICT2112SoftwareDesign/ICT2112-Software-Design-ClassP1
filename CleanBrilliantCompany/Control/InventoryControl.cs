@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.DTO;
 using CleanBrilliantCompany.Entities;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
-using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace CleanBrilliantCompany.Control
 {
@@ -125,12 +121,13 @@ namespace CleanBrilliantCompany.Control
             var productIds = products.Select(p => p.productId).ToHashSet();
 
             return products
-        .Where(p =>
-            allStockLevels.ContainsKey(p.productId) &&
-            thresholds.ContainsKey(p.productId) &&
-            allStockLevels[p.productId] < (thresholds[p.productId] * 0.35)) // 35% of threshold
-        .Select(p => p.productId)
-        .ToList();
+                .Where(p =>
+                    allStockLevels.ContainsKey(p.productId) &&
+                    thresholds.ContainsKey(p.productId) &&
+                    allStockLevels[p.productId] < (thresholds[p.productId] * 0.35)) // 35% of threshold
+                .Select(p => p.productId)
+                .ToList();
+
         }
 
         public List<int> CheckOverStock(string category = null)
@@ -145,17 +142,13 @@ namespace CleanBrilliantCompany.Control
 
             var productIds = products.Select(p => p.productId).ToHashSet();
 
-            //return allStockLevels
-            //    .Where(kvp => productIds.Contains(kvp.Key) && kvp.Value > thresholds[kvp.Key] * 1.6)
-            //    .Select(kvp => kvp.Key)
-            //    .ToList();
             return products
-        .Where(p => 
-            allStockLevels.ContainsKey(p.productId) && 
-            thresholds.ContainsKey(p.productId) &&
-            allStockLevels[p.productId] > (thresholds[p.productId] * 1.6)) // 160% of threshold
-        .Select(p => p.productId)
-        .ToList();
+                .Where(p =>
+                    allStockLevels.ContainsKey(p.productId) &&
+                    thresholds.ContainsKey(p.productId) &&
+                    allStockLevels[p.productId] > (thresholds[p.productId] * 1.6)) // 160% of threshold
+                .Select(p => p.productId)
+                .ToList();
         }
 
 
@@ -185,17 +178,17 @@ namespace CleanBrilliantCompany.Control
             {
                 labels = products.Select(p => p.productId).ToList(),
                 datasets = new[] {
-        new {
-            label = "Stock Levels",
-            data = products.Select(p => stockLevels[p.productId]).ToList()
-        },
-        new {
-            label = "Thresholds",
-            //data = products.Select(p => thresholds.TryGetValue(p.productId, out var t) ? t : 100).ToList(),
-            data = products.Select(p => thresholds[p.productId]).ToList()
-        }
-    },
-                products = products.Select(p => new {
+                    new {
+                        label = "Stock Levels",
+                        data = products.Select(p => stockLevels[p.productId]).ToList()
+                    },
+                    new {
+                        label = "Thresholds",
+                        data = products.Select(p => thresholds[p.productId]).ToList()
+                    }
+                },
+                products = products.Select(p => new
+                {
                     id = p.productId,
                     name = p.productName,
                     category = p.productCategory,
@@ -206,9 +199,6 @@ namespace CleanBrilliantCompany.Control
 
             return System.Text.Json.JsonSerializer.Serialize(chartData);
         }
-
-
-
 
         public Dictionary<int, (int LowStockWeeks, int OverStockWeeks)> GetWeeklyConsecutiveAlertCounts()
         {
@@ -238,11 +228,6 @@ namespace CleanBrilliantCompany.Control
         {
             return _productService.getAllProducts();
         }
-
-        //public ProductThresholdTable GetThresholdById(int id)
-        //{
-        //    return _context.ProductThresholdTable.FirstOrDefault(t => t.ProductId == id);
-        //}
 
         public InventoryDTO GetThresholdById(int id)
         {
@@ -276,47 +261,6 @@ namespace CleanBrilliantCompany.Control
 
             _context.SaveChanges();
         }
-
-        //public List<(int ProductId, string ProductName, int? Threshold, DateTime? LastUpdated)> GetThresholdsWithProductNames()
-        //{
-        //    var allProducts = _productService.getAllProducts();
-        //    var thresholdMap = _context.ProductThresholdTable.ToDictionary(t => t.ProductId);
-
-        //    var result = allProducts.Select(p =>
-        //    {
-        //        thresholdMap.TryGetValue(p.productId, out var entry);
-
-        //        return (
-        //            ProductId: p.productId,
-        //            ProductName: p.productName,
-        //            Threshold: entry?.Threshold,
-        //            LastUpdatedThreshold: entry?.LastUpdated
-        //        );
-        //    }).ToList();
-
-        //    return result;
-        //}
-        //public List<InventoryDTO> GetProductThresholdsWithInfo()
-        //{
-        //    var allProducts = _productService.getAllProducts();
-        //    var thresholdMap = _context.ProductThresholdTable.ToDictionary(t => t.ProductId);
-
-        //    var result = allProducts.Select(p =>
-        //    {
-        //        thresholdMap.TryGetValue(p.productId, out var entry);
-
-        //        return new InventoryDTO
-        //        {
-        //            ProductId = p.productId,
-        //            ProductName = p.productName,
-        //            ProductCategory = p.productCategory,
-        //            Threshold = entry?.Threshold ?? 100,
-        //            LastUpdated = entry?.LastUpdated
-        //        };
-        //    }).ToList();
-
-        //    return result;
-        //}
 
         public List<InventoryDTO> GetProductThresholdsWithInfo()
         {

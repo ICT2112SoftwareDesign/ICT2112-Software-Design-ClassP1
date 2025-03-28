@@ -1,5 +1,4 @@
 ﻿using CleanBrilliantCompany.Entities;
-using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Interface
 {

@@ -1,6 +1,4 @@
-﻿using Humanizer;
-
-namespace CleanBrilliantCompany.Entities
+﻿namespace CleanBrilliantCompany.Entities
 {
     public class InventoryAlertsTable
     {

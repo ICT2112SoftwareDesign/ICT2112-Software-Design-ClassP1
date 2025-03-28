@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Control;
-using CleanBrilliantCompany.Interface;
-using CleanBrilliantCompany.Entities;
-using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
 {

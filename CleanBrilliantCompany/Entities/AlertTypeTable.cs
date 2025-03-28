@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CleanBrilliantCompany.Entities
+﻿namespace CleanBrilliantCompany.Entities
 {
     public class AlertTypeTable
     {
