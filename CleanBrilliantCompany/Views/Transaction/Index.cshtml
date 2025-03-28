@@ -167,6 +167,18 @@
         </table>
     </div>
 
+    <div style="justify-self: center;">
+    <a>Page</a>
+    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+    {
+        <a href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">@i</a>
+        @if (i < ViewBag.TotalPages)
+        {
+            <span> | </span>
+        }
+    }
+    </div>
+
     <!-- Full View for All Transactions (hidden by default) -->
     <div id="fullView" style="display: none;">
         @foreach (var TransactionInfo in ViewData["AllTransactions"] as List<Dictionary<string, object>>)

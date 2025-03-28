@@ -95,6 +95,11 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         //This method will replace getTransactions() in class diagram --> update afterwards
+        public List<Transaction> getAllTransactions(int pageNumber, int pageSize)
+        {
+            return _transactionMapper.getAllTransactions(pageNumber, pageSize);
+        }
+
         public List<Transaction> getAllTransactions()
         {
             return _transactionMapper.getAllTransactions();
@@ -103,6 +108,10 @@ namespace CleanBrilliantCompany.Models.Control
         public List<Transaction> getTransactionByDateTime(DateTime dateTime)
         {
             return _transactionMapper.getTransactionByDateTime(dateTime);
+        }
+
+        public int getTransactionCount() {
+            return _transactionMapper.getTransactionCount();
         }
 
         //Missing Method 1: getTransactionByItem(itemId): List<Transaction>
