@@ -408,10 +408,10 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 string query = @"
-                    SELECT stockId, batchCode, stockCheckDate, quantity, timeRecorded
+                    SELECT stockId, batchCode, stockTakeDate, quantity, recordedDate
                     FROM dbo.StockHistory
                     WHERE batchCode = @BatchCode
-                    ORDER BY stockCheckDate DESC";  // Orders by most recent stock check
+                    ORDER BY stockTakeDate DESC";  // Orders by most recent stock check
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -424,12 +424,12 @@ namespace CleanBrilliantCompany.Mappers
                             while (reader.Read())
                             {
                                 // If timeRecorded is of type TIME, we convert it to DateTime
-                                DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("timeRecorded")));
+                                DateTime timeRecorded = DateTime.MinValue.Add(reader.GetTimeSpan(reader.GetOrdinal("recordedDate")));
                                 stockHistoryList.Add(new StockHistory
                                 {
                                     StockId = reader.GetInt32(reader.GetOrdinal("stockId")),
                                     BatchCode = reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                    StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockCheckDate")),
+                                    StockCheckDate = reader.GetDateTime(reader.GetOrdinal("stockTakeDate")),
                                     Quantity = reader.GetInt32(reader.GetOrdinal("quantity")),
                                     // TimeRecorded = reader.GetDateTime(reader.GetOrdinal("timeRecorded"))
                                     TimeRecorded = timeRecorded

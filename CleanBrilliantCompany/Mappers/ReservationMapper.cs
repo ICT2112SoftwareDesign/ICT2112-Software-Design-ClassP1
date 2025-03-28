@@ -14,46 +14,7 @@ namespace CleanBrilliantCompany.Mappers
             _connectionString = connectionString;
         }
 
-        public async Task<Reservation> findByReservationId(int reservationId)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string query = @"
-                    SELECT reservationId, productId, warehouseId, reservationDate, reservationPurpose, 
-                        reservedQuantity, staffId
-                    FROM dbo.Reservation
-                    WHERE reservationId = @ReservationId";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@ReservationId", reservationId);
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new Reservation
-                            {
-                                ReservationId = reader.GetInt32(reader.GetOrdinal("reservationId")),
-                                ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                WarehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                ReservationDate = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("reservationDate"))),
-                                ReservationPurpose = reader.GetString(reader.GetOrdinal("reservationPurpose")),
-                                ReservedQuantity = reader.GetInt32(reader.GetOrdinal("reservedQuantity")),
-                                StaffId = reader.GetInt32(reader.GetOrdinal("staffId"))
-                                //ReservedItems = reader.GetFieldValue(reader.GetOrdinal("reservedItems"))
-                            };
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public async Task<int> getNextId()
+        public async Task<int> GetNextId()
         {
             try
             {
@@ -157,7 +118,6 @@ namespace CleanBrilliantCompany.Mappers
                         command.Parameters.AddWithValue("@ReservationPurpose", reservationPurpose);
                         command.Parameters.AddWithValue("@ReservedQuantity", reservedQuantity);
                         command.Parameters.AddWithValue("@StaffId", staffId);
-                        //command.Parameters.AddWithValue("@ReservedItems", reservedItems);
 
                         int result = await command.ExecuteNonQueryAsync();
                         if (result > 0)
@@ -206,10 +166,47 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-
-        public async Task<List<Reservation>> findAllReservationss()
+        public Reservation findByReservationId(int reservationId)
         {
-            List<Reservation> products = new List<Reservation>();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    SELECT reservationId, productId, warehouseId, reservationDate, reservationPurpose, 
+                        reservedQuantity, staffId
+                    FROM dbo.Reservation
+                    WHERE reservationId = @ReservationId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ReservationId", reservationId);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Reservation(
+                                reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                reader.GetInt32(reader.GetOrdinal("productId")),
+                                reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("reservationDate"))),
+                                reader.GetString(reader.GetOrdinal("reservationPurpose")),
+                                reader.GetInt32(reader.GetOrdinal("reservedQuantity")),
+                                reader.GetInt32(reader.GetOrdinal("staffId")),
+                                null
+                            );
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public List<Reservation> findAllReservations()
+        {
+            List<Reservation> reservation = new List<Reservation>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -226,22 +223,21 @@ namespace CleanBrilliantCompany.Mappers
                     {
                         while (reader.Read())
                         {
-                            products.Add(new Reservation
-                            {
-                                ReservationId = reader.GetInt32(reader.GetOrdinal("reservationId")),
-                                ProductId = reader.GetInt32(reader.GetOrdinal("productId")),
-                                WarehouseId = reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                ReservationDate = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("reservationDate"))),
-                                ReservationPurpose = reader.GetString(reader.GetOrdinal("reservationPurpose")),
-                                ReservedQuantity = reader.GetInt32(reader.GetOrdinal("reservedQuantity")),
-                                StaffId = reader.GetInt32(reader.GetOrdinal("staffId"))
-                                //ReservedItems = reader.GetFieldValue(reader.GetOrdinal("reservedItems"))
-                            });
+                            reservation.Add(new Reservation(
+                                reader.GetInt32(reader.GetOrdinal("reservationId")),
+                                reader.GetInt32(reader.GetOrdinal("productId")),
+                                reader.GetInt32(reader.GetOrdinal("warehouseId")),
+                                DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("reservationDate"))),
+                                reader.GetString(reader.GetOrdinal("reservationPurpose")),
+                                reader.GetInt32(reader.GetOrdinal("reservedQuantity")),
+                                reader.GetInt32(reader.GetOrdinal("staffId")),
+                                null //ReservedItems = reader.GetFieldValue(reader.GetOrdinal("reservedItems"))
+                            ));
                         }
                     }
                 }
             }
-            return products;
+            return reservation;
         }
 
         // Interface Methods
