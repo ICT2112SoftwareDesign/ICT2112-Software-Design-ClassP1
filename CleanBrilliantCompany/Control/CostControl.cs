@@ -6,18 +6,19 @@ public class CostControl
     private ILogger<CostDashboardRdm>? logger;
     private IVisualizationService? visualizationService;
     private IAlertService? alertService;
+    public ApplicationDbContext DbContext => dbContext;
 
     public CostControl(
         CostMapper costMapper,
         ILogger<CostDashboardRdm> logger,
-        IVisualizationService visualizationService,
+        // IVisualizationService visualizationService,
         IAlertService alertService,
         ApplicationDbContext dbContext)
     {
         this.dbContext = dbContext;
         this.costMapper = costMapper;
         this.logger = logger;
-        this.visualizationService = visualizationService;
+        // this.visualizationService = visualizationService;
         this.alertService = alertService;
         this.dashboards = new List<CostDashboardRdm>();
 
@@ -59,7 +60,7 @@ public class CostControl
                 throw new InvalidOperationException("DashboardFactory.createDashboard returned null.");
             }
             costDashboard = (CostDashboardRdm)dashboard;
-            costDashboard.InitializeServices(logger!, visualizationService!, alertService!);
+            costDashboard.InitializeServices(logger!, alertService!);
         }
         else
         {
@@ -70,7 +71,7 @@ public class CostControl
                 throw new InvalidOperationException("DashboardFactory.createDashboard returned null.");
             }
             costDashboard = (CostDashboardRdm)dashboard;
-            costDashboard.InitializeServices(logger!, visualizationService!, alertService!);
+            costDashboard.InitializeServices(logger!, alertService!);
         }
 
         var manufacturers = costMapper.GetAllManufacturers();
@@ -102,7 +103,7 @@ public class CostControl
             logger!.LogError("❌ Failed to create CostDashboardRdm from factory.");
             return;
         }
-        costdashboard.InitializeServices(logger!, visualizationService!, alertService!);
+        costdashboard.InitializeServices(logger!, alertService!);
         
 
         var manufacturers = costMapper.GetAllManufacturers();
@@ -161,7 +162,7 @@ public class CostControl
                 return;
             }
 
-            costDashboard.InitializeServices(logger!, visualizationService!, alertService!);
+            costDashboard.InitializeServices(logger!, alertService!);
 
             var manufacturers = costMapper.GetAllManufacturers();
             var productBatches = costMapper.GetAllProductBatches();
@@ -192,7 +193,7 @@ public class CostControl
                 return;
             }
 
-            costDashboard.InitializeServices(logger!, visualizationService!, alertService!);
+            costDashboard.InitializeServices(logger!, alertService!);
 
             var manufacturers = costMapper.GetAllManufacturers();
             var productBatches = costMapper.GetAllProductBatches();

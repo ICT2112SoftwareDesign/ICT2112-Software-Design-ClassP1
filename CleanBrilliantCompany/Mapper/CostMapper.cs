@@ -26,31 +26,31 @@ public class CostMapper
 
     // 🔹 Fetch Product Batches DTOs
     public List<ProductBatchDTO> GetAllProductBatches()
-{
-    var productBatches = _db.ProductBatch.ToList();    
-    var products = _db.Product.Select(p => new { p.ProductId, p.ManufacturerId }).ToList();  // Only fetch ProductId and ManufacturerId for the join
-
-    var enrichedBatches = productBatches.Select(batch =>
     {
-        var product = products.FirstOrDefault(p => p.ProductId == batch.ProductId);
+        var productBatches = _db.ProductBatch.ToList();    
+        var products = _db.Product.Select(p => new { p.ProductId, p.ManufacturerId }).ToList();  // Only fetch ProductId and ManufacturerId for the join
 
-        var productBatchDTO = new ProductBatchDTO
+        var enrichedBatches = productBatches.Select(batch =>
         {
-            BatchCode = batch.BatchCode,
-            ProductId = batch.ProductId,
-            ExpiryDate = batch.ExpiryDate,
-            ReceiveDate = batch.ReceiveDate,
-            ManufactureDate = batch.ManufactureDate,
-            BatchQuantity = batch.Quantity,
-            BatchPrice = Convert.ToDecimal(batch.BatchCost),  // Explicitly convert BatchCost to Decimal
-            ManufacturerId = product?.ManufacturerId ?? -1 // If no product found, set ManufacturerId to -1
-        };
+            var product = products.FirstOrDefault(p => p.ProductId == batch.ProductId);
 
-        return productBatchDTO;
-    }).ToList();
+            var productBatchDTO = new ProductBatchDTO
+            {
+                BatchCode = batch.BatchCode,
+                ProductId = batch.ProductId,
+                ExpiryDate = batch.ExpiryDate,
+                ReceiveDate = batch.ReceiveDate,
+                ManufactureDate = batch.ManufactureDate,
+                BatchQuantity = batch.Quantity,
+                BatchPrice = Convert.ToDecimal(batch.BatchCost),  // Explicitly convert BatchCost to Decimal
+                ManufacturerId = product?.ManufacturerId ?? -1 // If no product found, set ManufacturerId to -1
+            };
 
-    return enrichedBatches;
-}
+            return productBatchDTO;
+        }).ToList();
+
+        return enrichedBatches;
+    }
   public List<ItemDTO> GetAllItems()
     {
         return _db.Items

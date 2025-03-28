@@ -607,7 +607,7 @@ document.getElementById("generateDashboardBtn").addEventListener("click", () => 
     initManufacturerDropdown();
     fetchAvgBatchPriceChart();
     fetchOverviewChart();
-    fetchCostVisualization();
+    @* fetchCostVisualization(); *@
     fetchSupplierComparison();
     fetchAlerts();
 
@@ -1026,60 +1026,59 @@ function renderCheapestExpensiveProductChart(data) {
   let cheapestExpensiveChartInstance = null;
 
   function renderCheapestExpensiveChart(data) {
-    console.log("[DEBUG] Rendering cheapest & most expensive product chart...");
+      console.log("[DEBUG] Rendering cheapest & most expensive product chart...");
 
-    const canvas = document.getElementById("cheapestExpensiveChart");
-    if (!canvas) {
-        console.log("[DEBUG] Canvas element not found!");
-        return;
-    }
+      const canvas = document.getElementById("cheapestExpensiveChart");
+      if (!canvas) {
+          console.log("[DEBUG] Canvas element not found!");
+          return;
+      }
 
-    const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext("2d");
 
-    // ✅ Ensure the previous chart instance is destroyed before creating a new one
-    if (cheapestExpensiveChartInstance !== null) {
-        console.log("[DEBUG] Destroying previous chart instance...");
-        cheapestExpensiveChartInstance.destroy();
-        cheapestExpensiveChartInstance = null; // ✅ Reset instance reference
-    }
+      // ✅ Ensure the previous chart instance is destroyed before creating a new one
+      if (cheapestExpensiveChartInstance !== null) {
+          console.log("[DEBUG] Destroying previous chart instance...");
+          cheapestExpensiveChartInstance.destroy();
+          cheapestExpensiveChartInstance = null;
+      }
 
-    const labels = [
-        `📉 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
-        `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
-    ];
-    const values = [
-        data.cheapestBatch?.batchPrice || 0,
-        data.mostExpensiveBatch?.batchPrice || 0
-    ];
-    const backgroundColors = [
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(255, 99, 132, 0.6)"
-    ];
+      const labels = [
+          `📉 Cheapest Batch (Code: ${data.cheapestBatchCode})`,
+          `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatchCode})`
+      ];
+      const values = [
+          data.cheapestBatchPrice || 0,
+          data.mostExpensiveBatchPrice || 0
+      ];
+      const backgroundColors = [
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 99, 132, 0.6)"
+      ];
 
-    // ✅ Create a new chart instance
-    cheapestExpensiveChartInstance = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Batch Price ($)",
-                data: values,
-                backgroundColor: backgroundColors,
-                borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
-                borderWidth: 1
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
-            }
-        }
-    });
+      cheapestExpensiveChartInstance = new Chart(ctx, {
+          type: "bar",
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: "Batch Price ($)",
+                  data: values,
+                  backgroundColor: backgroundColors,
+                  borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
+              }
+          }
+      });
 
-    console.log("[DEBUG] New chart instance created.");
+      console.log("[DEBUG] New chart instance created.");
   }
 
   function fetchRecentBatchesManufacturer(manufacturerId) {
@@ -1133,8 +1132,8 @@ function renderCheapestExpensiveProductChart(data) {
 
   function renderAvgBatchPriceChart(data) {
     const ctx = document.getElementById("avgBatchPriceChart").getContext("2d");
-    const labels = data.map(item => item.companyName);
-    const avgPrices = data.map(item => item.avgBatchPrice);
+    const labels = data.map(item => item.manufacturerName);
+    const avgPrices = data.map(item => item.avgBatchCost);
     new Chart(ctx, {
       type: "bar",
       data: {
@@ -1166,47 +1165,47 @@ function renderCheapestExpensiveProductChart(data) {
       .catch(error => console.error("Error fetching supplier & batch overview:", error));
   }
 
-  function renderOverviewChart(data) {
-    const ctx = document.getElementById("overviewChart").getContext("2d");
-    const labels = [
-      `💰 Cheapest Supplier (${data.cheapestSupplier.companyName})`,
-      `💲 Most Expensive Supplier (${data.mostExpensiveSupplier.companyName})`,
-      `📦 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
-      `🚀 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
-    ];
-    const values = [
-      data.cheapestSupplier?.avgBatchPrice || 0,
-      data.mostExpensiveSupplier?.avgBatchPrice || 0,
-      data.cheapestBatch?.batchPrice || 0,
-      data.mostExpensiveBatch?.batchPrice || 0
-    ];
-    const backgroundColors = [
-      "rgba(75, 192, 192, 0.6)",
-      "rgba(255, 99, 132, 0.6)",
-      "rgba(54, 162, 235, 0.6)",
-      "rgba(255, 206, 86, 0.6)"
-    ];
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Cost ($)",
-          data: values,
-          backgroundColor: backgroundColors,
-          borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
-          borderWidth: 1
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: { x: { beginAtZero: true, title: { display: true, text: "Price ($)" } } },
-        plugins: { tooltip: { enabled: true } }
-      }
-    });
-  }
+ function renderOverviewChart(data) {
+   const ctx = document.getElementById("overviewChart").getContext("2d");
+   const labels = [
+     `💰 Cheapest Supplier (${data.cheapestManufacturer?.manufacturerName})`,
+     `💲 Most Expensive Supplier (${data.mostExpensiveManufacturer?.manufacturerName})`,
+     `📦 Cheapest Batch (Code: ${data.cheapestBatch?.batchCode})`,
+     `🚀 Most Expensive Batch (Code: ${data.mostExpensiveBatch?.batchCode})`
+   ];
+   const values = [
+     data.cheapestManufacturer?.avgBatchCost || 0,
+     data.mostExpensiveManufacturer?.avgBatchCost || 0,
+     data.cheapestBatch?.batchPrice || 0,
+     data.mostExpensiveBatch?.batchPrice || 0
+   ];
+   const backgroundColors = [
+     "rgba(75, 192, 192, 0.6)",
+     "rgba(255, 99, 132, 0.6)",
+     "rgba(54, 162, 235, 0.6)",
+     "rgba(255, 206, 86, 0.6)"
+   ];
+   new Chart(ctx, {
+     type: "bar",
+     data: {
+       labels: labels,
+       datasets: [{
+         label: "Cost ($)",
+         data: values,
+         backgroundColor: backgroundColors,
+         borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+         borderWidth: 1
+       }]
+     },
+     options: {
+       indexAxis: 'y',
+       responsive: true,
+       maintainAspectRatio: false,
+       scales: { x: { beginAtZero: true, title: { display: true, text: "Price ($)" } } },
+       plugins: { tooltip: { enabled: true } }
+     }
+   });
+ }
 
   function fetchCostVisualization() {
     fetch("/CostPage/GetCostVisualization")

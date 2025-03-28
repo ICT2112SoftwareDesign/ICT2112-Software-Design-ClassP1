@@ -20,7 +20,7 @@ builder.Services.AddScoped<CostControl>();
 
 builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>();  // ✅ Added Logger
 // ✅ Register Visualization Service
-builder.Services.AddScoped<IVisualizationService, VisualizationService>();
+// builder.Services.AddScoped<IVisualizationService, VisualizationService>();
 
 builder.Services.AddScoped<IAlertService, InAppAlert>();
 

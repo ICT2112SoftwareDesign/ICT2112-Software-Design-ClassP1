@@ -73,8 +73,9 @@ public class CostPageController : Controller
         {
             return NotFound("No dashboard data available.");
         }
-        return Json(dashboard.GenerateSupplierComparison());
-    }
+        // return Json(dashboard.GenerateSupplierComparison());
+        return Json(dashboard.GetSupplierComparison(costControl.DbContext));    // ✅ Call method to get Supplier Comparison
+}
 
     [HttpGet("GetAlerts")]
     public IActionResult GetAlerts()
@@ -141,6 +142,7 @@ public class CostPageController : Controller
         return Json(manufacturer);
     }
 
+
     [HttpGet("GetAvgBatchPriceByManufacturer")]
     public IActionResult GetAvgBatchPriceByManufacturer()
     {
@@ -150,17 +152,8 @@ public class CostPageController : Controller
             return NotFound("No dashboard data available.");
         }
 
-        var avgBatchPrices = dashboard.GetAllManufacturers()
-            .Select(manufacturer => new
-            {
-                manufacturer.ManufacturerId,
-                manufacturer.CompanyName,
-                AvgBatchPrice = dashboard.GetBatchesByManufacturer(manufacturer.ManufacturerId)
-                                    .Any() ? dashboard.GetBatchesByManufacturer(manufacturer.ManufacturerId)
-                                    .Average(b => b.BatchPrice) : 0
-            }).ToList();
-
-        return Json(avgBatchPrices);
+        var result = dashboard.GetAvgBatchCost(costControl.DbContext);
+        return Json(result);
     }
 
     [HttpGet("GetManufacturerBatchCount")]
@@ -221,6 +214,66 @@ public class CostPageController : Controller
         return Json(batch);
     }
 
+    // [HttpGet("GetCheapestAndMostExpensiveOverview")]
+    // public IActionResult GetCheapestAndMostExpensiveOverview()
+    // {
+    //     var dashboard = costControl.GetLatestDashboard();
+    //     if (dashboard == null)
+    //     {
+    //         return NotFound("No dashboard data available.");
+    //     }
+
+    //     // Get suppliers sorted by avg batch price
+    //     var suppliers = dashboard.GetAllManufacturers()
+    //         .Select(manufacturer => new
+    //         {
+    //             ManufacturerId = manufacturer.ManufacturerId,
+    //             CompanyName = manufacturer.CompanyName,
+    //             AvgBatchPrice = dashboard.GetBatchesByManufacturer(manufacturer.ManufacturerId)
+    //                                     .Any() ? dashboard.GetBatchesByManufacturer(manufacturer.ManufacturerId)
+    //                                     .Average(b => b.BatchPrice) : 0
+    //         })
+    //         .OrderBy(m => m.AvgBatchPrice)
+    //         .ToList();
+
+    //     var cheapestSupplier = suppliers.FirstOrDefault();
+    //     var mostExpensiveSupplier = suppliers.LastOrDefault();
+
+    //     // Get batches sorted by batch price
+    //     var batches = dashboard.GetAllProductBatches()
+    //         .OrderBy(b => b.BatchPrice)
+    //         .ToList();
+
+    //     var cheapestBatch = batches.FirstOrDefault();
+    //     var mostExpensiveBatch = batches.LastOrDefault();
+
+    //     return Json(new
+    //     {
+    //         CheapestSupplier = cheapestSupplier,
+    //         MostExpensiveSupplier = mostExpensiveSupplier,
+    //         CheapestBatch = cheapestBatch,
+    //         MostExpensiveBatch = mostExpensiveBatch
+    //     });
+    // }
+
+
+    // This one returns only the DashboardBatchSummaryDTO
+    // [HttpGet("GetCheapestAndMostExpensiveOverview")]
+    // public IActionResult GetCheapestAndMostExpensiveOverview()
+    // {
+    //     var dashboard = costControl.GetLatestDashboard();
+    //     if (dashboard == null)
+    //     {
+    //         return NotFound("No dashboard data available.");
+    //     }
+
+    //     // Call the method in the dashboard that checks the DB,
+    //     // generates a new overview if necessary, and returns a DTO.
+    //     var overview = dashboard.GetCheapestAndMostExpensiveOverviewDetailed(costControl.DbContext);
+    //     return Json(overview);
+    // }
+
+
     [HttpGet("GetCheapestAndMostExpensiveOverview")]
     public IActionResult GetCheapestAndMostExpensiveOverview()
     {
@@ -230,40 +283,12 @@ public class CostPageController : Controller
             return NotFound("No dashboard data available.");
         }
 
-        // Get suppliers sorted by avg batch price
-        var suppliers = dashboard.GetAllManufacturers()
-            .Select(manufacturer => new
-            {
-                ManufacturerId = manufacturer.ManufacturerId,
-                CompanyName = manufacturer.CompanyName,
-                AvgBatchPrice = dashboard.GetBatchesByManufacturer(manufacturer.ManufacturerId)
-                                        .Any() ? dashboard.GetBatchesByManufacturer(manufacturer.ManufacturerId)
-                                        .Average(b => b.BatchPrice) : 0
-            })
-            .OrderBy(m => m.AvgBatchPrice)
-            .ToList();
-
-        var cheapestSupplier = suppliers.FirstOrDefault();
-        var mostExpensiveSupplier = suppliers.LastOrDefault();
-
-        // Get batches sorted by batch price
-        var batches = dashboard.GetAllProductBatches()
-            .OrderBy(b => b.BatchPrice)
-            .ToList();
-
-        var cheapestBatch = batches.FirstOrDefault();
-        var mostExpensiveBatch = batches.LastOrDefault();
-
-        return Json(new
-        {
-            CheapestSupplier = cheapestSupplier,
-            MostExpensiveSupplier = mostExpensiveSupplier,
-            CheapestBatch = cheapestBatch,
-            MostExpensiveBatch = mostExpensiveBatch
-        });
+        var overview = dashboard.GetCheapestAndMostExpensiveOverviewDetailed(costControl.DbContext);
+        return Json(overview);
     }
 
-    [HttpGet("GetCheapestAndMostExpensiveByManufacturer")]
+
+ [HttpGet("GetCheapestAndMostExpensiveByManufacturer")]
     public IActionResult GetCheapestAndMostExpensiveByManufacturer(int manufacturerId)
     {
         var dashboard = costControl.GetLatestDashboard();
@@ -272,21 +297,52 @@ public class CostPageController : Controller
             return NotFound("No dashboard data available.");
         }
 
-        var batches = dashboard.GetBatchesByManufacturer(manufacturerId);
-        if (!batches.Any())
+        // Cast the result to dynamic list so LINQ can be used
+        var batches = (dashboard.GenerateCostVisualizationByManufacturer(manufacturerId) as IEnumerable<dynamic>)?.ToList();
+
+        if (batches == null || !batches.Any())
         {
             return NotFound("No batches found for this manufacturer.");
         }
 
-        var cheapestBatch = batches.OrderBy(b => b.BatchPrice).First();
-        var mostExpensiveBatch = batches.OrderByDescending(b => b.BatchPrice).First();
+        var cheapestBatch = batches.OrderBy(b => (decimal)b.BatchPrice).First();
+        var mostExpensiveBatch = batches.OrderByDescending(b => (decimal)b.BatchPrice).First();
 
         return Json(new
         {
-            cheapestBatch,
-            mostExpensiveBatch
+            CheapestBatchCode = cheapestBatch.BatchCode,
+            CheapestBatchPrice = cheapestBatch.BatchPrice,
+            MostExpensiveBatchCode = mostExpensiveBatch.BatchCode,
+            MostExpensiveBatchPrice = mostExpensiveBatch.BatchPrice
         });
     }
+
+    // [HttpGet("GetCheapestAndMostExpensiveByManufacturer")]
+    // public IActionResult GetCheapestAndMostExpensiveByManufacturer(int manufacturerId)
+    // {
+    //     var dashboard = costControl.GetLatestDashboard();
+    //     if (dashboard == null)
+    //     {
+    //         return NotFound("No dashboard data available.");
+    //     }
+
+    //     var batches = dashboard.GetBatchesByManufacturer(manufacturerId);
+    //     if (!batches.Any())
+    //     {
+    //         return NotFound("No batches found for this manufacturer.");
+    //     }
+
+    //     var cheapestBatch = batches.OrderBy(b => b.BatchPrice).First();
+    //     var mostExpensiveBatch = batches.OrderByDescending(b => b.BatchPrice).First();
+
+    //     return Json(new
+    //     {
+    //         cheapestBatch,
+    //         mostExpensiveBatch
+    //     });
+    // }
+
+    
 
     [HttpGet("GetRecentBatchesByManufacturer")]
     public IActionResult GetRecentBatchesByManufacturer(int manufacturerId)

@@ -3,7 +3,7 @@ public class DashboardFactory {
         switch(dTO.Type) {
             case 4:
                 return new CostDashboardRdm(
-                    id: 0,
+                    id: dTO.DashboardId,
                     name: dTO.Name,
                     requestedStartDate: dTO.RequestedStartDate,
                     requestedEndDate: dTO.RequestedEndDate,
