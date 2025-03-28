@@ -343,7 +343,7 @@
                     </div> -->
 
                                                     <!-- You can add a chart or table here -->
-                    @model Dashboard
+                    @model ManufacturerDashboardRdm
 
                     <h2>Manufacturer Dashboard</h2>
 
@@ -353,8 +353,39 @@
                         <p><strong>Requested End Date:</strong> @(Model.RequestedEndDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
                         <p><strong>Generated Date:</strong> @(Model.GeneratedDate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
                         <p><strong>Validity Duration:</strong> @Model.ValidityDuration</p>
-
                     </div>
+
+                    @if (Model.Metrics != null && Model.Metrics.Any())
+                    {
+                        <h3>Metrics:</h3>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Manufacturer ID</th>
+                                    <th>Delivery Rate</th>
+                                    <th>Defect Rate</th>
+                                    <th>Dependency Rate</th>
+                                    <th>Risk Flag</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var metric in Model.Metrics)
+                            {
+                                <tr>
+                                    <td>@metric.ManufacturerId</td>
+                                    <td>@metric.DeliveryRate</td>
+                                    <td>@metric.DefectRate</td>
+                                    <td>@metric.DependencyRate</td>
+                                    <td>@(metric.RiskFlag ? "Yes" : "No")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No metrics available.</p>
+                    }
 
 
                 </div>

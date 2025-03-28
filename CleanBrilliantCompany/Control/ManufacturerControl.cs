@@ -11,30 +11,35 @@ public class ManufacturerControl
 
     // Load the latest manufacturer dashboard
     private void LoadDashboard()
-{
-    var dashboardDto = ManufacturerMapper.GetLatestManufacturerDashboard();
-    if (dashboardDto == null)
     {
-        Console.WriteLine("⚠ No manufacturer dashboard found.");
-        return;
+        var dashboardDto = ManufacturerMapper.GetLatestManufacturerDashboard();
+        if (dashboardDto == null)
+        {
+            Console.WriteLine("⚠ No manufacturer dashboard found.");
+            return;
+        }
+        Console.WriteLine($"📊 Manufacturer dashboard found: {dashboardDto.Name} generated on: {dashboardDto.GeneratedDate}");
+
+        // Check if the dates are null, and provide default values if needed
+        DateTime requestedStartDate = dashboardDto.RequestedStartDate ?? DateTime.MinValue;  // Default to MinValue if null
+        DateTime requestedEndDate = dashboardDto.RequestedEndDate ?? DateTime.MinValue;      // Default to MinValue if null
+
+        // Create the dashboard object using the factory method
+        manufacturerDashboard = DashboardFactory.createDashboard(dashboardDto) as ManufacturerDashboardRdm;
+
+        // Fetch the manufacturer metrics and assign it to the dashboard
+        var metricsList = ManufacturerMapper.GetManufacturerMetrics(dashboardDto.DashboardId); 
+        
+        if (manufacturerDashboard is ManufacturerDashboardRdm manufacturerDashboardRdm) 
+        {
+            manufacturerDashboardRdm.Metrics = metricsList;
+            Console.WriteLine($"📊 {metricsList.Count} Manufacturer Metrics found.");
+        } 
+        else 
+        {
+            Console.WriteLine("⚠ Manufacturer dashboard could not be created.");
+        }
     }
-    Console.WriteLine($"📊 Manufacturer dashboard found: {dashboardDto.Name} generated on: {dashboardDto.GeneratedDate}");
-
-    // Check if the dates are null, and provide default values if needed
-    DateTime requestedStartDate = dashboardDto.RequestedStartDate ?? DateTime.MinValue;  // Default to MinValue if null
-    DateTime requestedEndDate = dashboardDto.RequestedEndDate ?? DateTime.MinValue;      // Default to MinValue if null
-
-    // Create the dashboard object (Pass the required arguments to the constructor)
-    manufacturerDashboard = new ManufacturerDashboardRdm(
-        dashboardDto.DashboardId,                  // id
-        dashboardDto.Name,                         // name
-        requestedStartDate,           // requestedStartDate
-        requestedEndDate,             // requestedEndDate
-        dashboardDto.ValidityDuration,             // validityDuration
-        dashboardDto.TypeId,                       // type
-        dashboardDto.GeneratedDate                 // generatedDate (optional)
-    );
-}
 
 
     // Method to retrieve the latest dashboard

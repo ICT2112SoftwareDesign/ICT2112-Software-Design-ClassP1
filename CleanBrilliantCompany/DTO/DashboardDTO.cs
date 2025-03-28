@@ -12,5 +12,5 @@ public class DashboardDTO
     public DateTime? GeneratedDate { get; set; }
     [Required]
     public int ValidityDuration { get; set; }
-    public int TypeId { get; set; }
+    public int Type { get; set; }
 }

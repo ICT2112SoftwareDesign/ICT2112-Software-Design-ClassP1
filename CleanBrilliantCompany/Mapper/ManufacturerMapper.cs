@@ -23,12 +23,9 @@ public class ManufacturerMapper : ManufacturerRepo
                 RequestedEndDate = d.RequestedEndDate,
                 GeneratedDate = d.GeneratedDate,
                 ValidityDuration = d.ValidityDuration,
-                TypeId = d.TypeId
+                Type = d.TypeId
             })
             .FirstOrDefault();
-
-        Console.WriteLine("DAHHBOARDID WE ARE IN MAPPER---------------------------------");
-        Console.WriteLine(dashboard.DashboardId);
 
         if (dashboard == null)
         {
@@ -39,5 +36,34 @@ public class ManufacturerMapper : ManufacturerRepo
             Console.WriteLine($"✅ Manufacturer dashboard found: {dashboard.Name}");
         }
         return dashboard;
+    }
+
+    // Fetch ManufacturerMetrics from the corresponding table as a list
+    public List<ManufacturerMetricsDTO> GetManufacturerMetrics(int dashboardId)
+    {
+        var metricsList = _dbContext.ManufacturerMetrics
+            .Where(m => m.DashboardId == dashboardId)  // Filter by DashboardId
+            .Select(m => new ManufacturerMetricsDTO
+            {
+                MetricId = m.MetricId,
+                DashboardId = m.DashboardId,
+                ManufacturerId = m.ManufacturerId,
+                DeliveryRate = m.DeliveryRate,
+                DefectRate = m.DefectRate,
+                DependencyRate = m.DependencyRate,
+                RiskFlag = m.RiskFlag
+            })
+            .ToList();
+
+        if (metricsList.Count == 0)
+        {
+            Console.WriteLine("⚠ No manufacturer metrics found for this dashboard.");
+        }
+        else
+        {
+            Console.WriteLine($"✅ Found {metricsList.Count} manufacturer metrics.");
+        }
+
+        return metricsList;
     }
 }

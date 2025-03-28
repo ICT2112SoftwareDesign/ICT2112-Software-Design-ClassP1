@@ -1,11 +1,15 @@
 public class ManufacturerDashboardRdm : Dashboard
 {
-    // Your implementation of ManufacturerDashboardRdm here
+    // Constructor that passes values to the base class (Dashboard)
     public ManufacturerDashboardRdm(int id, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type, DateTime? generatedDate = null)
-        : base(id ,name, requestedStartDate, requestedEndDate, validityDuration, type, generatedDate)
+        : base(id, name, requestedStartDate, requestedEndDate, validityDuration, type, generatedDate)
     {
-        // Initialization code
+        // Initialization code, if needed
+        Metrics = new List<ManufacturerMetricsDTO>();  // Initialize the Metrics list
     }
 
-    // Any methods specific to the manufacturer dashboard
+    // Property to store the manufacturer metrics
+    public List<ManufacturerMetricsDTO> Metrics { get; set; }  // List of metrics specific to the manufacturer dashboard
+
+    // Any methods specific to the manufacturer dashboard can go here
 }

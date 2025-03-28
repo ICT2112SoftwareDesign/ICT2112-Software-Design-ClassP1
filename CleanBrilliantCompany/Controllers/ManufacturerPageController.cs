@@ -12,15 +12,12 @@ public class ManufacturerPageController : Controller
         ManufacturerControl manufacturerControl
     ) 
     {
-        Console.WriteLine("HomeController initialized!");
         this.logger = logger;
         this.manufacturerControl = manufacturerControl;
     }
 
     public IActionResult Index()
     {
-
-        Console.WriteLine("Index action called!");
         var latestDashboard = manufacturerControl.GetLatestDashboard(); 
         if (latestDashboard == null) 
         {
