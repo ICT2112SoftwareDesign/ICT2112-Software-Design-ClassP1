@@ -15,10 +15,22 @@ namespace CleanBrilliantCompany.Controllers
 
         public IActionResult Index() => View();
 
-        public async Task<IActionResult> GenerateReport()
+
+        // For preview (returns a View with an iframe)
+        public IActionResult PreviewReport()
+        {
+            return View(); // View will embed PDF
+        }
+
+        // For streaming the PDF
+        public async Task<IActionResult> GetReportPdf()
         {
             var report = await _reportControl.GenerateReportAsync();
-            return File(report.ReportData, "application/pdf", $"{report.ReportName}.pdf");
+
+            Response.Headers.Add("Content-Disposition", "inline; filename=Report.pdf");
+
+            return File(report.ReportData, "application/pdf");
         }
+
     }
 }

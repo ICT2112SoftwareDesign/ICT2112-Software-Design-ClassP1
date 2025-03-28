@@ -3,4 +3,6 @@
 }
 
 <h2>Generate AI Report</h2>
-<a href="/Report/GenerateReport" class="btn btn-primary">Generate Report</a>
+<form asp-controller="Report" asp-action="PreviewReport" method="get">
+    <button type="submit" class="btn btn-primary">Generate Report</button>
+</form>
