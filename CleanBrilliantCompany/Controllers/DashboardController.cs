@@ -76,7 +76,7 @@ namespace CleanBrilliantCompany.Controllers
                 // Add raw data for debugging
                 ViewBag.Debug = new
                 {
-                    OrderDatabaseType = _orderDatabase.GetType().Name,
+                    OrderDatabaseType = _order.GetType().Name,
                     RefundDatabaseType = _refundQuery.GetType().Name,
                     OrderCount = allOrders?.Count ?? 0,
                     RefundCount = _refundQuery.GetAllRefunds()?.Count ?? 0
