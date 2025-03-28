@@ -16,12 +16,12 @@
 <body id="page-top">
     <div id="wrapper">
         <!-- Sidebar -->
-        @await Html.PartialAsync("~/Views/StaffRefund/staff-sidebar.cshtml")
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <!-- Topbar -->
-                @await Html.PartialAsync("~/Views/StaffRefund/staff-topbar.cshtml")
+                @await Html.PartialAsync("~/Views/Staff/staff-topbar.cshtml")
 
                 <!-- Page Content -->
                 <div class="container-fluid">
@@ -33,7 +33,6 @@
                                 <th>No.</th>
                                 <th>Refund ID</th>
                                 <th>Order ID</th>
-                                @* <th>Customer ID</th> *@
                                 <th>Refund Amount</th>
                                 <th>Request Date</th>
                                 <th>Processed Date</th>
@@ -51,7 +50,6 @@
                                         <th class="align-middle" scope="row">@index</th>
                                         <td class="align-middle">@refund.RefundId</td>
                                         <td class="align-middle">@refund.OrderId</td>
-                                        @* <td class="align-middle">@refund.CustomerId</td> *@
                                         <td class="align-middle">$@refund.RefundAmount</td>
                                         <td class="align-middle">@refund.RefundRequestDate.ToShortDateString()</td>
                                         <td class="align-middle">
@@ -80,9 +78,9 @@
                     <hr>
 
                     <!-- Insert Test Refund -->
-                    <form method="post" action="@Url.Action("CreateRefund", "Refund")">                        
+                    @* <form method="post" action="@Url.Action("CreateRefund", "Refund")">                        
                         <button type="submit" class="btn btn-primary mt-3">Create Test Refund</button>
-                    </form>
+                    </form> *@
    
                 </div>
                 <!-- End of Page Content -->

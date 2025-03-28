@@ -11,16 +11,17 @@ namespace CleanBrilliantCompany.Models
         private readonly ICartManagement _cartManagement;
         private readonly IShippingAgent _shippingAgent;
         private readonly ISubmitRefund _submitRefund;
-        private readonly IOrderFulfilment _orderFulfilment;
+        // private readonly IOrderFulfilment _orderFulfilment;
 
 
-        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, ISubmitRefund submitRefund, IShippingAgent shippingAgent, IOrderFulfilment orderFulfilment)
+        // public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, ISubmitRefund submitRefund, IShippingAgent shippingAgent, IOrderFulfilment orderFulfilment)
+        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, ISubmitRefund submitRefund, IShippingAgent shippingAgent)
         {
             _orderDatabase = orderDatabase;
             _cartManagement = cartManagement;
             _submitRefund = submitRefund;
             _shippingAgent = shippingAgent;
-            _orderFulfilment = orderFulfilment;
+            // _orderFulfilment = orderFulfilment;
         }
     
         public int createOrder(

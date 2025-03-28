@@ -12,8 +12,6 @@ namespace CleanBrilliantCompany.Models
         public float RefundAmount { get; set; }
         public DateTime RefundRequestDate { get; set; }
         public DateTime? RefundProcessedDate { get; set; }
-        public List<string> Images { get; set; } = new List<string>();
-        public List<string> Videos { get; set; } = new List<string>();
         public string Status { get; set; } = "Pending";
     }
 }

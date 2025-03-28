@@ -35,7 +35,7 @@
     <div id="wrapper">
 
         <!-- Include the sidebar -->
-        @await Html.PartialAsync("staff-sidebar")
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -257,8 +257,7 @@
                             <h6 class="m-0 font-weight-bold text-primary">Shipping Agent Details</h6>
                         </div>
                         <div class="card-body">
-                            <form asp-controller="ShippingAgent" asp-action="UpdateShippingAgent"
-                                asp-route-id="@Model.ShippingAgentId" method="post">
+                            <form method="post" action="@Url.Action("Update", "ShippingAgent", new { id = Model.ShippingAgentId })">
                                 <input type="hidden" asp-for="ShippingAgentId" />
                                 <div class="form-group">
                                     <label asp-for="ShippingAgentCompany">Company Name</label>
@@ -290,7 +289,7 @@
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save mr-1"></i> Save Changes
                                     </button>
-                                    <a href="/shippingagent" class="btn btn-secondary ml-2">
+                                    <a href="/staff/shippingagent" class="btn btn-secondary ml-2">
                                         <i class="fas fa-times mr-1"></i> Cancel
                                     </a>
                                 </div>

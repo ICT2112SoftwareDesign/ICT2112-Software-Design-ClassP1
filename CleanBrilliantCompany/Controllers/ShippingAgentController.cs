@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    [Route("shippingagent")]
+    [Route("staff/shippingagent")]
     public class ShippingAgentController : Controller
     {
         private readonly IShippingAgentDB _shippingAgentDB;

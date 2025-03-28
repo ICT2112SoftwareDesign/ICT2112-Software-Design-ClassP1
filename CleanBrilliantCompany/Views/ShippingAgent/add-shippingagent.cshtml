@@ -31,7 +31,7 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Include the sidebar -->
-        @await Html.PartialAsync("staff-sidebar")
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -93,7 +93,7 @@
                             <h6 class="m-0 font-weight-bold text-primary">Shipping Agent Details</h6>
                         </div>
                         <div class="card-body">
-                            <form asp-controller="ShippingAgent" asp-action="AddShippingAgent" method="post">
+                            <form method="post" action="@Url.Action("Add", "ShippingAgent")">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="form-group">
                                     <label asp-for="ShippingAgentCompany">Company Name</label>
@@ -130,7 +130,7 @@
                                     <button type="submit" class="btn btn-success">
                                         <i class="fas fa-plus mr-1"></i> Add Shipping Agent
                                     </button>
-                                    <a href="/shippingagent" class="btn btn-secondary ml-2">
+                                    <a href="/staff/shippingagent" class="btn btn-secondary ml-2">
                                         <i class="fas fa-times mr-1"></i> Cancel
                                     </a>
                                 </div>

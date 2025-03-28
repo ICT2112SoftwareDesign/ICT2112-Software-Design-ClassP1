@@ -15,11 +15,11 @@
 
 <body id="page-top">
     <div id="wrapper">
-        @await Html.PartialAsync("~/Views/StaffRefund/staff-sidebar.cshtml")
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
 
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Topbar -->
-            @await Html.PartialAsync("~/Views/StaffRefund/staff-topbar.cshtml")
+            @await Html.PartialAsync("~/Views/Staff/staff-topbar.cshtml")
             <div id="content">
                 <div class="container-fluid">
                     <h1 class="h3 mb-4 text-gray-800">Refund Details</h1>
@@ -31,7 +31,6 @@
                         <div class="card-body">
                             <p><strong>Refund ID:</strong> @Model.RefundId</p>
                             <p><strong>Order ID:</strong> @Model.OrderId</p>
-                            @* <p><strong>Customer ID:</strong> @Model.CustomerId</p> *@
                             <p><strong>Refund Amount:</strong> $@Model.RefundAmount</p>
                             <p><strong>Request Date:</strong> @Model.RefundRequestDate.ToShortDateString()</p>
                             <p><strong>Processed Date:</strong> @(Model.RefundProcessedDate?.ToShortDateString() ?? "Not Processed")</p>

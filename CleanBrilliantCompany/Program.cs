@@ -100,7 +100,6 @@ builder.Services.AddScoped<IStaffDatabase>(sp => new StaffMapper(connectionStrin
 builder.Services.AddScoped<IRefundDatabase>(provider => new RefundMapper(connectionString));
 builder.Services.AddScoped<IRefundQuery, RefundManagement>();
 builder.Services.AddScoped<IRefundDetails, RefundDetails>();
-//builder.Services.AddScoped<IOrder, MockOrderService>(); // change later when team5 is done
 builder.Services.AddScoped<ISubmitRefund, RefundManagement>();
 builder.Services.AddScoped<Func<IOrder>>(sp => () => sp.GetRequiredService<IOrder>());
 builder.Services.AddScoped<ISubmitRefund, RefundManagement>();

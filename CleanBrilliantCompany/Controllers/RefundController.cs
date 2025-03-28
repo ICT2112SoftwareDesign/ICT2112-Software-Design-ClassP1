@@ -38,65 +38,18 @@ namespace CleanBrilliantCompany.Controllers.Refund
             if (refund == null || refund.Status == "Not Found")
             {
                 return NotFound("Refund record not found.");
-            }
+            } 
 
             return View("~/Views/StaffRefund/refund-details.cshtml", refund);
         }
 
         [HttpPost("update-status")]
-        public IActionResult UpdateRefundStatus(int refundId, string status, [FromServices] IRefundDetails refundDetails)
+        public IActionResult UpdateRefundStatus(int refundId, string status)
         {
-            var refund = _refundManagement.GetRefundDetails(refundId);
-            if (refund == null)
-            {
-                return NotFound();
-            }
-
-            if (refund.Status == "Approved" || refund.Status == "Rejected")
-            {
-                TempData["ErrorMessage"] = "This refund has already been processed.";
-                return RedirectToAction("RefundDetails", new { id = refundId });
-            }
-
-            if (status == "Approved")
-            {
-                List<int> itemIds = new List<int>(refund.RefundedProducts.Keys);
-                refundDetails.ReturnItemToInventory(itemIds, refund.RefundReason);
-                Console.WriteLine($"{refund.RefundAmount} has been refunded to the customer in Order {refund.OrderId}.");
-            }
-
             _refundManagement.UpdateRefund(refundId, status);
 
             TempData["SuccessMessage"] = "Refund status updated successfully.";
             return RedirectToAction("Refund");
-        }
-
-        [HttpPost("CreateRefund")]
-        public IActionResult CreateRefund([FromServices] ISubmitRefund submitRefund)
-        {
-            
-
-            Refund_RDM newRefund = submitRefund.SubmitRefund(
-                28,
-                "Wrong Items Sent",
-                3.00f,
-                new Dictionary<int, int>()
-                {
-                    { 1, 1 },
-                    { 2, 1 }
-                }
-            );
-
-            if (newRefund != null)
-            {
-                TempData["SuccessMessage"] = "Refund request submitted successfully!";
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Failed to process refund request.";
-            }
-
-            return RedirectToAction("Refund");
-        }
+        }        
     }
 }
