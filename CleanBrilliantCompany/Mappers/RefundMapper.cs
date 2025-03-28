@@ -194,46 +194,5 @@ namespace CleanBrilliantCompany.Data
                 }
             }
         }
-
-        public int GetTotalRefundCount()
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                string query = "SELECT COUNT(*) FROM dbo.Refund";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    return (int)cmd.ExecuteScalar();
-                }
-            }
-        }
-
-        public int GetPendingRefundCount()
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                string query = "SELECT COUNT(*) FROM dbo.Refund WHERE status = 'Pending'";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    return (int)cmd.ExecuteScalar();
-                }
-            }
-        }
-
-        // In RefundMapper.cs
-        public decimal GetTotalRefundAmount()
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                string query = "SELECT SUM(CAST(refundAmount AS DECIMAL(18,2))) FROM dbo.Refund WHERE status = 'Approved'";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    var result = cmd.ExecuteScalar();
-                    return result != DBNull.Value ? Convert.ToDecimal(result) : 0;
-                }
-            }
-        }
     }
 }

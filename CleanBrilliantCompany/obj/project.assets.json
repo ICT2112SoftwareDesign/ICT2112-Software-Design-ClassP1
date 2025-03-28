@@ -3899,11 +3899,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectUniqueName": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "projectName": "CleanBrilliantCompany",
-      "projectPath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectPath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "packagesPath": "C:\\Users\\jarre\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+      "outputPath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\jarre\\AppData\\Roaming\\NuGet\\NuGet.Config"

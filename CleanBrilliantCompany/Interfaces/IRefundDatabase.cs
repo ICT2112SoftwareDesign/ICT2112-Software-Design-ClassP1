@@ -10,8 +10,5 @@ namespace CleanBrilliantCompany.Interfaces
         Refund_RDM ViewRefund(int refundId);
         List<Refund_RDM> GetAllRefunds();
         void UpdateRefundStatus(int refundId, string status, DateTime processedDate);
-        public int GetTotalRefundCount();
-        public int GetPendingRefundCount();
-        public decimal GetTotalRefundAmount();
     }
 }
