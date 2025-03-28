@@ -35,18 +35,18 @@ namespace CleanBrilliantCompany.Control
             var stockLevels = allProducts.ToDictionary(p => p.productId, p => p.quantity);
 
             var dbThresholds = _inventoryRepository.GetAllProductThresholds();
-            var thresholds = allProducts.ToDictionary(p => p.productId, p =>
-    dbThresholds.ContainsKey(p.productId) ? dbThresholds[p.productId] : 100
-);
+            var thresholds = allProducts.ToDictionary(
+                p => p.productId,
+                p => dbThresholds.ContainsKey(p.productId) ? dbThresholds[p.productId] : 100
+            );
 
 
 
-            // Update dashboard with stock levels and thresholds
-            //newDashboard.UpdateStockThreshold(stockLevels, thresholds);
+            // Update dashboard with current data
             newDashboard.UpdateStockThreshold(
-    stockLevels,
-    thresholds.ToDictionary(kvp => kvp.Key, kvp => kvp.Value ?? 100)
-);
+                stockLevels,
+                thresholds.ToDictionary(kvp => kvp.Key, kvp => kvp.Value ?? 100)
+            );
             newDashboard.UpdateReplenishmentStatus();
             newDashboard.GenerateAlerts(); // Generate alerts after updating data
 
@@ -167,57 +167,41 @@ namespace CleanBrilliantCompany.Control
         public string GenerateStockLevelChartData(string category = null)
         {
             var dashboard = FetchDashboard();
-            var allStockLevels = dashboard.GetAllStockLevels();
+            var stockLevels = dashboard.GetAllStockLevels();
+            var thresholds = _context.ProductThresholdTable
+                .ToDictionary(t => t.ProductId, t => t.Threshold ?? 100);
+            var productIds = stockLevels.Keys.ToList();
 
-            var products = _productService.getAllProducts();
+            var products = _productService.getAllProducts()
+                .Where(p => productIds.Contains(p.productId))
+                .ToList();
 
             if (!string.IsNullOrEmpty(category))
             {
                 products = products.Where(p => p.productCategory == category).ToList();
             }
 
-            // Get thresholds DIRECTLY from ProductThresholdTable (no defaults)
-            var thresholds = _context.ProductThresholdTable
-        .Where(pt => products.Select(p => p.productId).Contains(pt.ProductId))
-        .ToDictionary(pt => pt.ProductId, pt => pt.Threshold ?? 100);
-
-            var productIds = products.Select(p => p.productId).ToList();
-
-            //var stockLevels = allStockLevels.Where(kvp => productIds.Contains(kvp.Key)).ToDictionary(k => k.Key, v => v.Value);
-            //var thresholds = allThresholds.Where(kvp => productIds.Contains(kvp.Key)).ToDictionary(k => k.Key, v => v.Value);
-
-            //var labels = productIds.Select(id => $"Product {id}").ToList();
-            //var stockData = productIds.Select(id => stockLevels.ContainsKey(id) ? stockLevels[id] : 0).ToList();
-            //var thresholdData = productIds.Select(id => thresholds.ContainsKey(id) ? thresholds[id] : 0).ToList();
-
             var chartData = new
             {
-                labels = productIds.Select(id => $"Product {id}").ToList(),
-                products = productIds.Select(id =>
-                {
-                    var p = products.First(prod => prod.productId == id);
-                    return new
-                    {
-                        id = p.productId,
-                        name = p.productName,
-                        category = p.productCategory,
-                        stock = allStockLevels.ContainsKey(id) ? allStockLevels[id] : 0,
-                        threshold = thresholds[id] // Guaranteed to exist
-                    };
-                }).ToList(),
-                datasets = new[]
-                {
-        new
-        {
+                labels = products.Select(p => p.productId).ToList(),
+                datasets = new[] {
+        new {
             label = "Stock Levels",
-            data = productIds.Select(id => allStockLevels.ContainsKey(id) ? allStockLevels[id] : 0)
+            data = products.Select(p => stockLevels[p.productId]).ToList()
         },
-        new
-        {
+        new {
             label = "Thresholds",
-            data = productIds.Select(id => thresholds[id])
+            //data = products.Select(p => thresholds.TryGetValue(p.productId, out var t) ? t : 100).ToList(),
+            data = products.Select(p => thresholds[p.productId]).ToList()
         }
-    }
+    },
+                products = products.Select(p => new {
+                    id = p.productId,
+                    name = p.productName,
+                    category = p.productCategory,
+                    stock = stockLevels[p.productId],
+                    threshold = thresholds[p.productId]
+                }).ToList()
             };
 
             return System.Text.Json.JsonSerializer.Serialize(chartData);

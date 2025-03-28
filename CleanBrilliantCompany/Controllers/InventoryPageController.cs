@@ -44,7 +44,6 @@ namespace CleanBrilliantCompany.Controllers
                 ViewBag.OverStock = overStock;
                 ViewBag.Replenish = toReplenish;
 
-                _inventoryControl.InitializeMissingThresholds();
                 return View("ViewInventoryDashboard", inventoryDashboard);
             }
             catch (InvalidOperationException ex)
@@ -57,9 +56,22 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult CreateDashboard()
         {
-            _inventoryControl.CreateDashboard("Inventory Dashboard", 7);
-            Console.WriteLine("Inventory Dashboard created.");
-            return RedirectToAction("ViewDashboard");
+            try
+            {
+                // Initialize thresholds first to ensure all products have them
+                _inventoryControl.InitializeMissingThresholds();
+
+                // Create new dashboard with current data
+                _inventoryControl.CreateDashboard("Inventory Dashboard", 7);
+
+                // Redirect to view the newly created dashboard
+                return RedirectToAction("ViewDashboard");
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = $"Failed to create dashboard: {ex.Message}";
+                return View("ViewInventoryDashboard");
+            }
         }
 
         [HttpPost]
