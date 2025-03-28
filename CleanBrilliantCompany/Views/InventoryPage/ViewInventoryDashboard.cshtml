@@ -4,6 +4,7 @@
     ViewData["Title"] = "Inventory Dashboard";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
     var stockLevels = Model?.GetAllStockLevels() ?? new Dictionary<int, int>();
+    var productLookup = ViewBag.ProductLookup as Dictionary<int, CleanBrilliantCompany.DTO.InventoryDTO>;
 }
 
 <!-- Page Heading -->
@@ -58,6 +59,19 @@ else
         </div>
     </div>
 
+    <form method="get" asp-action="ViewDashboard">
+        <label for="category">Filter by Category:</label>
+        <select name="category" id="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            @foreach (var category in ViewBag.Categories as List<string>)
+            {
+                <option value="@category" selected="@(ViewBag.SelectedCategory == category ? "selected" : null)">
+                    @category
+                </option>
+            }
+        </select>
+    </form>
+
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Stock Levels Chart</h6>
@@ -69,33 +83,69 @@ else
 
     <!-- Alerts Section (Bottom) -->
     <div class="alerts mb-4">
-        @if (Model.LowStockProducts.Count > 0)
-        {
-            @* <div class="card shadow mb-4"> *@
-            @*     <div class="card-header py-3"> *@
-            @*         <h6 class="m-0 font-weight-bold text-primary">Low Stock Products</h6> *@
-            @*     </div> *@
-            @*     <div class="card-body"> *@
-            @*         <ul class="list-group list-group-flush"> *@
-            @*             @foreach (var productId in LowStockAlert) *@
-            @*             { *@
-            @*                 <li class="list-group-item"> *@
-            @*                     Product @productId *@
-            @*                 </li> *@
-            @*             } *@
-            @*         </ul> *@
-            @*     </div> *@
-            @* </div> *@
-            <div class="alert alert-danger"> 
-                <strong>Low Stock Alert:</strong> @Model.LowStockAlert 
-            </div>
-        }
-        @if (Model.OverStockProducts.Count > 0)
-        {
-            <div class="alert alert-warning">
-                <strong>Overstock Alert:</strong> @Model.OverStockAlert
-            </div>
-        }
+        <div class="row">
+            @if (Model.LowStockProducts.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card border-left-danger shadow h-100 py-2">
+                        <div class="card-header bg-danger text-white">
+                            <h6 class="m-0 font-weight-bold">Low Stock Products</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                @foreach (var id in Model.LowStockProducts)
+                                {
+                                    if (productLookup.ContainsKey(id))
+                                    {
+                                        var product = productLookup[id];
+                                        <li class="list-group-item">
+                                            <strong>Product @product.ProductId:</strong> @product.ProductName
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item">
+                                            <strong>ID:</strong> @id — <em>(not found)</em>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.OverStockProducts.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="m-0 font-weight-bold">Overstock Products</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                @foreach (var id in Model.OverStockProducts)
+                                {
+                                    if (productLookup.ContainsKey(id))
+                                    {
+                                        var product = productLookup[id];
+                                        <li class="list-group-item">
+                                            <strong>Product @product.ProductId:</strong> @product.ProductName
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item">
+                                            <strong>ID:</strong> @id — <em>(not found)</em>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 
     <!-- Replenishment Actions Section -->
@@ -114,8 +164,11 @@ else
                 <ul class="list-group list-group-flush">
                     @foreach (var productId in productsToReplenish)
                     {
+                        @* <li class="list-group-item"> *@
+                        @*     Product @productId: @Model.GetStockLevel(productId) units *@
+                        @* </li> *@
                         <li class="list-group-item">
-                            Product @productId: @Model.GetStockLevel(productId) units (Threshold: @Model.GetThreshold(productId))
+                            <strong>Product @productId:</strong> @Model.GetStockLevel(productId) units
                         </li>
                     }
                 </ul>
@@ -129,44 +182,50 @@ else
         </div>
     }
 
-    <h2>Consecutive Weekly Alerts (Historical)</h2>
-    <ul>
-        @{
-            var streaks = ViewBag.AlertStreaks as Dictionary<int, (int LowStockWeeks, int OverStockWeeks)>;
+    @* <h2>Consecutive Weekly Alerts (Historical)</h2> *@
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Consecutive Weekly Alerts (Historical)</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @{
+                        var streaks = ViewBag.AlertStreaks as Dictionary<int, (int LowStockWeeks, int OverStockWeeks)>;
 
-            if (streaks != null && streaks.Any())
-            {
-                foreach (var product in streaks)
-                {
-                    var productId = product.Key;
-                    var lowWeeks = product.Value.LowStockWeeks;
-                    var overWeeks = product.Value.OverStockWeeks;
+                        if (streaks != null && streaks.Any())
+                        {
+                            foreach (var product in streaks)
+                            {
+                                var productId = product.Key;
+                                var lowWeeks = product.Value.LowStockWeeks;
+                                var overWeeks = product.Value.OverStockWeeks;
 
-                    if (lowWeeks > 1 || overWeeks > 1)
-                    {
-                        <li>
-                            Product @productId:
-                            @if (lowWeeks > 1)
-                            {
-                                <text>Low Stock for @lowWeeks consecutive week@(lowWeeks > 1 ? "s" : "")</text>
+                                if (lowWeeks > 1 || overWeeks > 1)
+                                {
+                                <li class="list-group-item">
+                                    <strong>Product @productId:</strong>
+                                        @if (lowWeeks > 1)
+                                        {
+                                            <text>Low Stock for @lowWeeks consecutive week@(lowWeeks > 1 ? "(s)" : "")</text>
+                                        }
+                                        @if (overWeeks > 0)
+                                        {
+                                            <text>Over Stock for @overWeeks consecutive week@(overWeeks > 1 ? "(s)" : "")</text>
+                                        }
+                                    </li>
+                                }
                             }
-                            @if (lowWeeks > 0 && overWeeks > 1)
-                            {
-                                <text>, </text>
-                            }
-                            @if (overWeeks > 0)
-                            {
-                                <text>Over Stock for @overWeeks consecutive week@(overWeeks > 1 ? "s" : "")</text>
-                            }
-                        </li>
+                        }
+                        else
+                        {
+                            <li>No historical alert streaks to show.</li>
+                        }
                     }
-                }
-            }
-            else
-            {
-                <li>No historical alert streaks to show.</li>
-            }
-        }
+                </ul>
+            </div>
+        </div>
+    <ul>
+        
     </ul>
 }
 
@@ -215,26 +274,18 @@ else
                             position: 'top'
                         },
                         tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const datasetLabel = context.dataset.label || '';
-                                    const value = context.parsed.y;
-                                    const index = context.dataIndex;
-                                    const lowStockFlag = chartData.lowStockFlags[index];
-                                    const overStockFlag = chartData.overStockFlags[index];
-                                    const lowStockCount = chartData.lowStockCounts[index];
-                                    const overStockCount = chartData.overStockCounts[index];
-
-                                    let label = `${datasetLabel}: ${value} units`;
-                                    if (lowStockFlag) {
-                                        label += ` (Low Stock, ${lowStockCount} times)`;
-                                    } else if (overStockFlag) {
-                                        label += ` (Over Stock, ${overStockCount} times)`;
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
+            callbacks: {
+                label: function(context) {
+                    const productInfo = chartData.products[context.dataIndex];
+                    return [
+                        `Product ID: ${productInfo.id}`,
+                        `Name: ${productInfo.name}`,
+                        `Category: ${productInfo.category}`,
+                        `Stock: ${productInfo.stock}`
+                    ];
+                }
+            }
+        }
                     }
                 }
             });

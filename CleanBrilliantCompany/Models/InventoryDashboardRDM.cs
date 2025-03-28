@@ -35,13 +35,13 @@ namespace CleanBrilliantCompany.Models
         public List<int> OverStockProducts => new List<int>(_overStockProducts);
 
         // Computed properties to provide string representations for the view
-        public string LowStockAlert => LowStockProducts.Count > 0
-            ? $"Low stock alert for products: {string.Join(", ", LowStockProducts)}"
-            : "No low stock alerts.";
+        //public string LowStockAlert => LowStockProducts.Count > 0
+        //    ? $"Low stock alert for products: {string.Join(", ", LowStockProducts)}"
+        //    : "No low stock alerts.";
 
-        public string OverStockAlert => OverStockProducts.Count > 0
-            ? $"Overstock alert for products: {string.Join(", ", OverStockProducts)}"
-            : "No overstock alerts.";
+        //public string OverStockAlert => OverStockProducts.Count > 0
+        //    ? $"Overstock alert for products: {string.Join(", ", OverStockProducts)}"
+        //    : "No overstock alerts.";
 
         public InventoryDashboardRDM(string name, int validityDuration)
             : base(0, name, DateTime.Now, DateTime.Now, validityDuration, 2)

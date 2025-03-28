@@ -158,24 +158,6 @@ namespace CleanBrilliantCompany.Mapper
             return dashboard;
         }
 
-        //public Dictionary<int, (int LowStockCount, int OverStockCount)> GetAlertCounts()
-        //{
-        //    var alertCounts = _context.InventoryAlertsTable
-        //.Join(_context.InventoryLevelTable,
-        //      alert => alert.InventoryId,
-        //      level => level.InventoryId,
-        //      (alert, level) => new { alert, level })
-        //.GroupBy(x => x.level.ProductId)
-        //.ToDictionary(
-        //    g => g.Key,
-        //    g => (
-        //        LowStockCount: g.Count(x => x.alert.AlertType == "LS"),
-        //        OverStockCount: g.Count(x => x.alert.AlertType == "OS")
-        //    ));
-
-        //    return alertCounts;
-        //}
-
         public Dictionary<int, (int LowStockWeeks, int OverStockWeeks)> GetConsecutiveWeeklyAlerts()
         {
             var result = new Dictionary<int, (int LowStockWeeks, int OverStockWeeks)>();

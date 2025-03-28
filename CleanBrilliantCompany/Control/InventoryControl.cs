@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.Entities;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace CleanBrilliantCompany.Control
 {
@@ -23,18 +26,17 @@ namespace CleanBrilliantCompany.Control
             var newDashboard = new InventoryDashboardRDM(name, validityDuration);
 
             // Fetch stock levels from IProduct
-            var stockLevels = _productService.GetProductStockLevels();
+            // var stockLevels = _productService.GetProductStockLevels();
 
-            // Get existing thresholds or set defaults
-            var thresholds = new Dictionary<int, int>();
-            foreach(var productId in stockLevels.Keys)
-            {
-                if (!thresholds.ContainsKey(productId))
-                {
-                    // Set a default threshold (e.g., 100) for new products
-                    thresholds[productId] = 100;
-                }
-            }
+            // Get all products
+            var allProducts = _productService.getAllProducts();
+            // Extract productId and quantity
+            var stockLevels = allProducts.ToDictionary(p => p.productId, p => p.quantity);
+
+            // Set default thresholds (e.g., 100) — you can customize this logic
+            var thresholds = allProducts.ToDictionary(p => p.productId, p => 100);
+
+
 
             // Update dashboard with stock levels and thresholds
             newDashboard.UpdateDashboardData(stockLevels, thresholds);
@@ -86,8 +88,8 @@ namespace CleanBrilliantCompany.Control
             }
             report.AppendLine("</ul>");
             report.AppendLine("<h2>Alerts</h2>");
-            report.AppendLine($"<p>{dashboard.LowStockAlert}</p>");
-            report.AppendLine($"<p>{dashboard.OverStockAlert}</p>");
+            //report.AppendLine($"<p>{dashboard.LowStockAlert}</p>");
+            //report.AppendLine($"<p>{dashboard.OverStockAlert}</p>");
             report.AppendLine("<h2>Consecutive Weekly Alerts</h2><ul>");
             foreach (var productId in alertStreaks.Keys)
             {
@@ -166,94 +168,83 @@ namespace CleanBrilliantCompany.Control
                 : "No overstock alerts.";
         }
 
-        public string GenerateStockLevelChartData()
+        public string GenerateStockLevelChartData(string category = null)
         {
-            try
+            var dashboard = FetchDashboard();
+            var allStockLevels = dashboard.GetAllStockLevels();
+            var allThresholds = dashboard.GetAllThresholds();
+
+            var products = _productService.getAllProducts();
+
+            if (!string.IsNullOrEmpty(category))
             {
-                var dashboard = FetchDashboard();
-                var stockLevels = dashboard.GetAllStockLevels();
-                if (stockLevels == null || !stockLevels.Any())
-                {
-                    throw new InvalidOperationException("No stock level data available.");
-                }
-
-                var thresholds = dashboard.GetAllThresholds();
-                //var alertCounts = _inventoryRepository.GetAlertCounts();
-
-                var labels = stockLevels.Keys.Select(id => $"Product {id}").ToList();
-                var stockData = stockLevels.Values.ToList();
-                var thresholdData = stockLevels.Keys.Select(id => thresholds.ContainsKey(id) ? thresholds[id] : 0).ToList();
-                var lowStockFlags = stockLevels.Keys
-                    .Select(id => stockLevels[id] < thresholds[id] * 0.3 ? "Low" : null)
-                    .ToList();
-                var overStockFlags = stockLevels.Keys
-                    .Select(id => stockLevels[id] > thresholds[id] * 1.6 ? "Over" : null)
-                    .ToList();
-                //var lowStockCounts = stockLevels.Keys
-                //    .Select(id => alertCounts.ContainsKey(id) ? alertCounts[id].LowStockCount : 0)
-                //    .ToList();
-                //var overStockCounts = stockLevels.Keys
-                //    .Select(id => alertCounts.ContainsKey(id) ? alertCounts[id].OverStockCount : 0)
-                //    .ToList();
-
-                var chartData = new
-                {
-                    labels = labels,
-                    datasets = new[]
-                    {
-                        new
-                        {
-                            label = "Stock Levels",
-                            data = stockData,
-                            backgroundColor = "rgba(75, 192, 192, 0.2)",
-                            borderColor = "rgba(75, 192, 192, 1)",
-                            borderWidth = 1
-                        },
-                        new
-                        {
-                            label = "Thresholds",
-                            data = thresholdData,
-                            backgroundColor = "rgba(255, 99, 132, 0.2)",
-                            borderColor = "rgba(255, 99, 132, 1)",
-                            borderWidth = 1
-                        }
-                    },
-                    lowStockFlags = lowStockFlags,
-                    overStockFlags = overStockFlags,
-                    //lowStockCounts = lowStockCounts,
-                    //overStockCounts = overStockCounts
-                };
-
-                return System.Text.Json.JsonSerializer.Serialize(chartData);
+                products = products.Where(p => p.productCategory == category).ToList();
             }
-            catch (Exception ex)
+
+            var productIds = products.Select(p => p.productId).ToList();
+
+            var stockLevels = allStockLevels.Where(kvp => productIds.Contains(kvp.Key)).ToDictionary(k => k.Key, v => v.Value);
+            var thresholds = allThresholds.Where(kvp => productIds.Contains(kvp.Key)).ToDictionary(k => k.Key, v => v.Value);
+
+            var labels = productIds.Select(id => $"Product {id}").ToList();
+            var stockData = productIds.Select(id => stockLevels.ContainsKey(id) ? stockLevels[id] : 0).ToList();
+            var thresholdData = productIds.Select(id => thresholds.ContainsKey(id) ? thresholds[id] : 0).ToList();
+
+            var chartData = new
             {
-                var errorChartData = new
+                labels = productIds.Select(id => $"Product {id}").ToList(),
+                products = productIds.Select(id =>
                 {
-                    labels = new string[] { },
-                    datasets = new[]
+                    var p = products.First(prod => prod.productId == id);
+                    return new
                     {
-                        new
-                        {
-                            label = "Stock Levels",
-                            data = new int[] { },
-                            backgroundColor = "rgba(75, 192, 192, 0.2)",
-                            borderColor = "rgba(75, 192, 192, 1)",
-                            borderWidth = 1
-                        }
-                    },
-                    lowStockFlags = new string[] { },
-                    overStockFlags = new string[] { },
-                    lowStockCounts = new int[] { },
-                    overStockCounts = new int[] { }
-                };
-                return System.Text.Json.JsonSerializer.Serialize(errorChartData);
-            }
+                        id = p.productId,
+                        name = p.productName,
+                        category = p.productCategory,
+                        stock = stockLevels.ContainsKey(p.productId) ? stockLevels[p.productId] : 0
+                    };
+                }).ToList(),
+                datasets = new[]
+                {
+        new
+        {
+            label = "Stock Levels",
+            data = stockData
+        },
+        new
+        {
+            label = "Thresholds",
+            data = thresholdData
         }
+    }
+            };
+
+            return System.Text.Json.JsonSerializer.Serialize(chartData);
+        }
+
+
+
 
         public Dictionary<int, (int LowStockWeeks, int OverStockWeeks)> GetWeeklyConsecutiveAlertCounts()
         {
             return _inventoryRepository.GetConsecutiveWeeklyAlerts();
+        }
+
+        public Dictionary<int, InventoryDTO> GetProductLookup()
+        {
+            return _productService.getAllProducts()
+                .ToDictionary(p => p.productId, p => new InventoryDTO
+                {
+                    ProductId = p.productId,
+                    ProductName = p.productName,
+                    ProductCategory = p.productCategory
+                });
+        }
+
+        // CHECK THIS METHOD
+        public List<ProductTable> GetAllProducts()
+        {
+            return _productService.getAllProducts();
         }
     }
 }

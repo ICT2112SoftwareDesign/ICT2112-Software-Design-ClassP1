@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Control;
+using CleanBrilliantCompany.Interface;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -13,48 +14,70 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // Show the latest dashboard generated
-        public IActionResult ViewDashboard()
+        //public IActionResult ViewDashboard()
+        //{
+        //    try
+        //    {
+        //        var inventoryDashboard = _inventoryControl.FetchDashboard();
+        //        var chartData = _inventoryControl.GenerateStockLevelChartData();
+        //        var alertStreaks = _inventoryControl.GetWeeklyConsecutiveAlertCounts();
+
+        //        // Debug: Log the alert streaks to confirm data
+        //        Console.WriteLine("Alert Streaks:");
+        //        foreach (var streak in alertStreaks)
+        //        {
+        //            Console.WriteLine($"Product {streak.Key}: LS={streak.Value.LowStockWeeks}, OS={streak.Value.OverStockWeeks}");
+        //        }
+
+        //        ViewBag.ChartData = chartData;
+        //        ViewBag.AlertStreaks = alertStreaks;
+        //        return View("ViewInventoryDashboard", inventoryDashboard);
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        //return RedirectToAction("CreateDashboard");
+        //        ViewData["ErrorMessage"] = ex.Message;
+        //        return View("ViewInventoryDashboard");
+        //    }
+        //}
+
+        public IActionResult ViewDashboard(string category)
         {
             try
             {
                 var inventoryDashboard = _inventoryControl.FetchDashboard();
-                var chartData = _inventoryControl.GenerateStockLevelChartData();
+                var chartData = _inventoryControl.GenerateStockLevelChartData(category); // Pass filter
                 var alertStreaks = _inventoryControl.GetWeeklyConsecutiveAlertCounts();
 
-                // Debug: Log the alert streaks to confirm data
-                Console.WriteLine("Alert Streaks:");
-                foreach (var streak in alertStreaks)
-                {
-                    Console.WriteLine($"Product {streak.Key}: LS={streak.Value.LowStockWeeks}, OS={streak.Value.OverStockWeeks}");
-                }
+                // Send categories to dropdown
+                var categories = _inventoryControl.GetAllProducts()
+                                    .Select(p => p.productCategory)
+                                    .Distinct()
+                                    .ToList();
+                //var products = _inventoryControl.GetAllProducts();
 
+                var productLookup = _inventoryControl.GetProductLookup();
+
+                ViewBag.Categories = categories;
+                ViewBag.SelectedCategory = category;
                 ViewBag.ChartData = chartData;
                 ViewBag.AlertStreaks = alertStreaks;
+                //ViewBag.Products = products;
+                ViewBag.ProductLookup = productLookup;
+
                 return View("ViewInventoryDashboard", inventoryDashboard);
             }
             catch (InvalidOperationException ex)
             {
-                //return RedirectToAction("CreateDashboard");
                 ViewData["ErrorMessage"] = ex.Message;
                 return View("ViewInventoryDashboard");
             }
         }
 
-        //[HttpGet]
-        //public IActionResult CreateDashboard()
-        //{
-        //    //ViewData["StartDate"] = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
-        //    //ViewData["EndDate"] = DateTime.Now.ToString("yyyy-MM-dd");
-        //    //ViewData["LevelOfDetail"] = 1;
-        //    _inventoryControl.CreateDashboard("Inventory Dashboard", 30);
-        //    Console.WriteLine("Inventory Dashboard created.");
-        //    return View("ViewDashboard");
-        //}
-
         [HttpPost]
         public IActionResult CreateDashboard()
         {
-            _inventoryControl.CreateDashboard("Inventory Dashboard", 30);
+            _inventoryControl.CreateDashboard("Inventory Dashboard", 7);
             Console.WriteLine("Inventory Dashboard created.");
             return RedirectToAction("ViewDashboard");
         }
@@ -65,5 +88,15 @@ namespace CleanBrilliantCompany.Controllers
             var report = _inventoryControl.GenerateReport();
             return Content(report, "text/html");
         }
+
+        // TEST: View all products
+        [HttpGet]
+        public IActionResult ViewAllProducts()
+        {
+            var products = _inventoryControl.GetAllProducts();
+            return View("ViewAllProducts", products);
+
+        }
+
     }
 }
