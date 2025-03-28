@@ -157,15 +157,15 @@
                 background: #3071e8;
             }
 
-
-
 </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 <div class="dashboard-container">
-    <h4 class="mb-3 d-flex align-items-center">
-        <i class="fas fa-chart-area me-2"></i> Forecast Metrics
-    </h4>
-    <p><strong>Metrics Count:</strong> @Model.GetMetrics().Count</p>
+    <pre id="debugMetrics" style="display:none;">
+        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GetMetrics()))
+    </pre>
+   
     <!-- Price Adjustment Slider (outside the form) -->
     @{
         var metrics = Model.GetMetrics() ?? new List<CleanBrilliantCompany.Models.Forecast.ForecastMetrics>();
@@ -454,6 +454,8 @@
             fetch(url, { method: "POST" }).then(response => response.text())
             .then(html => {
                 document.getElementById("metrics-container").innerHTML = html;
+                initForecastChart();
+
             })
             .catch(error => console.error("Error updating price:", error));
         }
@@ -530,4 +532,58 @@
         generateDashboardFromSlider(slider); // Reuse your existing function
     }
         
+
+    @* // Serialize the model's metrics collection. *@
+    @* // Ensure that Model.GetMetrics() returns the properties "productName", "productId", and "forecastedStock" *@
+    @* const metrics = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GetMetrics())); *@
+    @* console.log("Metrics:", metrics); *@
+
+    @* // Build arrays for labels and data. *@
+    @* const labels = metrics.map(m => m.productName ? m.productName : "Product " + m.productId); *@
+    @* const forecastValues = metrics.map(m => m.forecastedStock); *@
+    @* console.log("Labels:", labels, "Forecast Values:", forecastValues); *@
+
+    @* // Get the chart canvas context. *@
+    @* const canvasElem = document.getElementById('forecastGraph'); *@
+    @* if (!canvasElem) { *@
+    @*     console.error("Canvas with id 'forecastGraph' not found."); *@
+    @* } *@
+    @* const ctx2 = canvasElem.getContext('2d'); *@
+
+    @* // Initialize a Chart.js bar chart. *@
+    @* let forecastChart = new Chart(ctx2, { *@
+    @*     type: 'bar', *@
+    @*     data: { *@
+    @*         labels: labels, *@
+    @*         datasets: [{ *@
+    @*             label: 'Forecasted Stock', *@
+    @*             data: forecastValues, *@
+    @*             backgroundColor: 'rgba(75, 192, 192, 0.6)' *@
+    @*         }] *@
+    @*     }, *@
+    @*     options: { *@
+    @*         responsive: true, *@
+    @*         scales: { *@
+    @*             y: { *@
+    @*                 beginAtZero: true, *@
+    @*                 title: { *@
+    @*                     display: true, *@
+    @*                     text: 'Stock' *@
+    @*                 } *@
+    @*             }, *@
+    @*             x: { *@
+    @*                 title: { *@
+    @*                     display: true, *@
+    @*                     text: 'Products' *@
+    @*                 } *@
+    @*             } *@
+    @*         }, *@
+    @*         plugins: { *@
+    @*             title: { *@
+    @*                 display: true, *@
+    @*                 text: 'Forecast for @Model.GetStartDate().ToString("yyyy-MM")' *@
+    @*             } *@
+    @*         } *@
+    @*     } *@
+    @* }); *@
 </script>

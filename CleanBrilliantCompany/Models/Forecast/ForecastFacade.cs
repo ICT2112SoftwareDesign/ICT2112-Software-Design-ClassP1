@@ -63,8 +63,13 @@ namespace CleanBrilliantCompany.Models.Forecast
                     dashboard.AddMetric(metric);
 
                 }
-                _forecastRepository.saveDashboard(dashboard);
-               
+                if (adjustmentFactor == 0)
+                {
+                    _forecastRepository.saveDashboard(dashboard);
+
+                }
+
+
                 //Save to repo
                 //List<ForecastMetrics> metrics = _stockPredictionService.generateStockPrediction(aggregatedSales, productList);
             }
@@ -116,6 +121,40 @@ namespace CleanBrilliantCompany.Models.Forecast
             return dashboard;
 
         }
+
+        // 1) Make sure your method signature matches the return type:
+        public Dictionary<string, Dictionary<int, object>> GenerateForecastTrendData(DateTime startMonth, int months)
+        {
+            var trendData = new Dictionary<string, Dictionary<int, object>>();
+
+            for (int i = 0; i < months; i++)
+            {
+                var date = startMonth.AddMonths(i);
+                var forecast = generateDashboard(date, 0);
+                var metrics = forecast.GetMetrics();
+
+                // Create a dictionary mapping productId to an anonymous object
+                // with both the product name and forecasted stock.
+                var productMap = metrics
+                    .GroupBy(m => m.getProductId())
+                    .ToDictionary(
+                        grp => grp.Key,
+                        grp => (object)new
+                        {
+                            ProductName = grp.First().getProductName(),
+                            ForecastedStock = grp.Sum(m => (decimal)m.getForecastedStock())
+                        }
+                    );
+
+                trendData[date.ToString("yyyy-MM")] = productMap;
+            }
+
+            return trendData;
+        }
+
+
+
+
 
 
         //private List<ForecastMetrics> SortMetrics(List<ForecastMetrics> metrics, String sortType)

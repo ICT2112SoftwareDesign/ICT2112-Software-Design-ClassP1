@@ -1,4 +1,5 @@
-﻿@model CleanBrilliantCompany.Models.Forecast.ForecastDashboard
+﻿@using System.Text.Json
+@model CleanBrilliantCompany.Models.Forecast.ForecastDashboard
 
 @{
     ViewData["Title"] = "Forecast Dashboard";
@@ -457,7 +458,123 @@
                     @*     <i class="fas fa-download fa-sm text-white-50"></i> Generate Report *@
                     @* </a> *@
                 </div>
-               <div class="container-fluid p-4"> 
+               <div class="container-fluid p-4">
+                    
+
+                    <div class="p-4 bg-white rounded shadow-sm mb-4">
+                        <!-- Forecast Trend Header -->
+                        <h4 class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-chart-line me-2"></i> Forecast Trend (Next 12 Months)
+                        </h4>
+
+                        <!-- Product Selection Dropdown (initially only "All Products") -->
+                        <div class="mb-3">
+                            <label for="productSelect" class="form-label">Select Product:</label>
+                            <select id="productSelect" class="form-select">
+                                @* <option value="0">All Products</option> *@
+                            </select>
+                        </div>
+
+                        <!-- Chart Canvas -->
+                        <canvas id="forecastTrendChart" width="800" height="400" class="mb-4"></canvas>
+
+                        <!-- Include Chart.js and jQuery (if not already included in your layout) -->
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                        <script>
+                            
+                            const trendData = @Html.Raw(JsonSerializer.Serialize(ViewBag.TrendData));
+
+                            // Compute aggregated data for "All Products" on the frontend
+                            const aggregatedLabels = [];
+                            const aggregatedValues = [];
+                            for (const month in trendData) {
+                                aggregatedLabels.push(month);
+                                let total = 0;
+                                for (const prodId in trendData[month]) {
+                                    total += trendData[month][prodId].ForecastedStock;
+                                }
+                                aggregatedValues.push(total);
+                            }
+
+                            // Initialize the Chart.js line chart with the aggregated data
+                            const ctx = document.getElementById('forecastTrendChart').getContext('2d');
+                            let trendChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: aggregatedLabels,
+                                    datasets: [{
+                                        label: 'Forecast Value (All Products)',
+                                        data: aggregatedValues,
+                                        fill: false,
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        tension: 0.2
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: { y: { beginAtZero: true } }
+                                }
+                            });
+
+                            // Build a mapping of product IDs to product names from trendData
+                            const productNames = {};
+                            for (const month in trendData) {
+                                for (const prodId in trendData[month]) {
+                                    if (!productNames[prodId]) {
+                                        productNames[prodId] = trendData[month][prodId].ProductName;
+                                    }
+                                }
+                            }
+
+                            // Populate the dropdown with product names (with an "All Products" option first)
+                            const dropdown = document.getElementById('productSelect');
+                            const allOption = document.createElement('option');
+                            allOption.value = "0";
+                            allOption.text = "All Products";
+                            dropdown.appendChild(allOption);
+
+                            const productList = Object.keys(productNames).sort();
+                            productList.forEach(prodId => {
+                                const option = document.createElement('option');
+                                option.value = prodId;
+                                option.text = productNames[prodId];
+                                dropdown.appendChild(option);
+                            });
+
+                            // Function to update the chart based on the selected product
+                            function updateChartForProduct(productId) {
+                                if (parseInt(productId) === 0) {
+                                    // "All Products": use aggregated data
+                                    trendChart.data.labels = aggregatedLabels;
+                                    trendChart.data.datasets[0].data = aggregatedValues;
+                                    trendChart.data.datasets[0].label = "Forecast Value (All Products)";
+                                } else {
+                                    const newLabels = [];
+                                    const newValues = [];
+                                    // For each month, pick the forecast for the selected product (or 0 if missing)
+                                    for (const month in trendData) {
+                                        newLabels.push(month);
+                                        const productMap = trendData[month];
+                                        newValues.push(productMap[productId] ? productMap[productId].ForecastedStock : 0);
+                                    }
+                                    trendChart.data.labels = newLabels;
+                                    trendChart.data.datasets[0].data = newValues;
+                                    trendChart.data.datasets[0].label = "Forecast Value (" + productNames[productId] + ")";
+                                }
+                                trendChart.update();
+                            }
+
+                            // Listen for changes in the dropdown to update the chart
+                            document.getElementById('productSelect').addEventListener('change', function() {
+                                updateChartForProduct(this.value);
+                            });
+                        </script>
+
+
+                        <!-- Additional forecast controls can be added below -->
+                    </div>
 
                 <div class="p-4 bg-white rounded shadow-sm mb-4">
                     <h4 class="mb-3 d-flex align-items-center">
@@ -505,20 +622,42 @@
                
               
                     <hr />
+                    
 
 
                     <div class="p-4 bg-white rounded shadow-sm mb-4">
 
 
-                        <h4 class="mb-3 d-flex align-items-center">
-                            <i class="fas fa-chart-line me-2"></i> Dashboard Info
-                        </h4>
-                        <div class="dashboard-info">
-                            <p><strong>Dashboard ID:</strong> @Model.GetDashBoardID()</p>
-                            <p><strong>Generated Date:</strong> @Model.GetGeneratedDate()</p>
-                        <p><strong>Start Date:</strong> @Model.GetStartDate().ToString("dd MMM yyyy")</p>
-                            <p><strong>End Date:</strong> @Model.GetEndDate().ToString("dd MMM yyyy")</p>
+                        <div class="row">
+                            <!-- Left Column: Dashboard Info -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="dashboard-info">
+                                            <h4 class="mb-0 d-flex align-items-center pb-2">
+                                                <i class="fas fa-chart-line me-2"></i> Dashboard Info
+                                            </h4>
+                                            <p><strong>Dashboard ID:</strong> @Model.GetDashBoardID()</p>
+                                            <p><strong>Generated Date:</strong> @Model.GetGeneratedDate()</p>
+                                            <p><strong>Start Date:</strong> @Model.GetStartDate().ToString("dd MMM yyyy")</p>
+                                            <p><strong>End Date:</strong> @Model.GetEndDate().ToString("dd MMM yyyy")</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Right Column: Chart -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                      
+                                        <!-- Canvas for the Bar Chart -->
+                                        <canvas id="forecastGraph" width="800" height="400"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+
                     @* <h4>💲 Apply Price Adjustment</h4> *@
                
 
@@ -610,7 +749,9 @@
         //     document.getElementById("slider-value-" + productId).textContent = value + "%";
         // }
 
-
+            document.addEventListener("DOMContentLoaded", function () {
+                initForecastChart();
+            });
 
 
         document.addEventListener("click", function(e) {
@@ -655,6 +796,64 @@
                 });
             });
 
+                // A global function to initialize (or re-initialize) the chart
+                // uses a hidden pre in the partial view to get the required data
+                function initForecastChart() {
+                    // 1) Locate the hidden metrics JSON
+                    const debugElem = document.getElementById("debugMetrics");
+                    if (!debugElem) {
+                        console.warn("debugMetrics element not found. No chart data available.");
+                        return;
+                    }
+
+                    // 2) Parse the JSON
+                    const metrics = JSON.parse(debugElem.textContent || "[]");
+                    console.log("Metrics:", metrics);
+                        metrics.sort((a, b) => b.forecastedStock - a.forecastedStock);
+
+                    // 3) Map out labels and forecast values
+                    //    Adjust property names if your model uses PascalCase
+                    const labels = metrics.map(m => m.productName ? m.productName : "Product " + m.productId);
+                    const values = metrics.map(m => m.forecastedStock);
+
+                    // 4) Get the canvas element
+                    const canvasElem = document.getElementById("forecastGraph");
+                        canvasElem.height = 400;
+
+                    if (!canvasElem) {
+                        console.warn("Canvas #forecastGraph not found.");
+                        return;
+                    }
+
+                    // 5) If a chart instance exists from before, destroy it
+                    if (window.forecastChart) {
+                        window.forecastChart.destroy();
+                    }
+
+                    // 6) Create a new Chart.js bar chart
+                    window.forecastChart = new Chart(canvasElem, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Forecasted Stock',
+                                data: values,
+                                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                            }]
+                        },
+                        options: {
+                            indexAxis:'y',
+
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                            // etc.
+                        }
+                    });
+                }
 
 
     </script>

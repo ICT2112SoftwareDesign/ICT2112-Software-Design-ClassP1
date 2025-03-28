@@ -42,6 +42,14 @@ namespace CleanBrilliantCompany.Controllers
 
             // 2) Serialize
             string serialized = JsonSerializer.Serialize(dashboard);
+            // Generate the trend data map: "yyyy-MM" -> (productId -> forecast value)
+            Dictionary<string, Dictionary<int, object>> trendData =
+                _forecastFacade.GenerateForecastTrendData(DateTime.Now.AddMonths(1), 12);
+
+  
+            // Pass the data via ViewBag
+            ViewBag.TrendData = trendData;
+
 
             // 3) Store in Session
             HttpContext.Session.SetString("ForecastDashboard", serialized);
@@ -64,6 +72,11 @@ namespace CleanBrilliantCompany.Controllers
             ForecastDashboard dashboard= _forecastFacade.generateDashboard(
                  forecastMonth, priceAdjustment
             );
+            // Generate the trend data map: "yyyy-MM" -> (productId -> forecast value)
+            Dictionary<string, Dictionary<int, object>> trendData =
+                _forecastFacade.GenerateForecastTrendData(DateTime.Now.AddMonths(1), 12);
+            // Pass the data via ViewBag
+            ViewBag.TrendData = trendData;
 
             // 2) Serialize
             string serialized = JsonSerializer.Serialize(dashboard);
