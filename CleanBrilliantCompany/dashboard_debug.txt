@@ -1,0 +1,454 @@
+[29/3/2025 2:27:39 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:27:39 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:27:39 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:27:39 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:27:39 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:27:39 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:27:39 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:32:27 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:32:27 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:32:27 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:32:27 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:32:27 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:32:27 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:32:27 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:34:31 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:34:31 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:34:31 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:34:31 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:34:31 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:34:31 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:34:31 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:34:31 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:35:11 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:35:11 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:35:11 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:35:11 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:35:11 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:35:11 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:35:11 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:35:11 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:35:11 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:35:11 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:35:11 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:35:11 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:35:11 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:35:11 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:35:11 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:35:12 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:35:12 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:35:12 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:35:12 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:35:12 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:35:12 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:35:12 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:35:12 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:37:16 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:37:16 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:37:16 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:37:16 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:37:16 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:37:16 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:37:16 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:37:16 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:38:10 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:10 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:38:10 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:38:10 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:38:10 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:38:10 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:38:10 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:38:10 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:38:10 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:38:10 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:38:10 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:10 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:10 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:10 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:38:11 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:38:11 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:38:11 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:38:11 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:38:11 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:38:11 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:38:11 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:38:11 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:41:29 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:41:29 AM] [DashboardManagement] Dashboard initialized with order and refund databases
+[29/3/2025 2:41:29 AM] [DashboardManagement] Checking dashboard data availability
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:41:29 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Orders retrieved: 50
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:41:29 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:41:29 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:41:29 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Refunds retrieved: 13
+[29/3/2025 2:41:29 AM] [DashboardManagement] Data available: True
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieving all dashboard metrics
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Total order count: 50
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Total refund count: 13
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Pending refund count: 4
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Calculated total revenue: 2572.5
+[29/3/2025 2:41:29 AM] [DashboardManagement] Calculated total refunded: 238.99
+[29/3/2025 2:41:29 AM] [DashboardManagement] Net revenue calculation: Total Revenue = 2572.5, Total Refunded = 238.99, Net = 2333.51
+[29/3/2025 2:41:29 AM] [DashboardManagement] Dashboard metrics: Orders=50, Refunds=13, Pending=4, Revenue=$2333.51
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all orders
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 50 orders from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample order IDs: 77, 76, 75, 74, 73...
+[29/3/2025 2:41:29 AM] [DashboardManagement] Attempting to retrieve all refunds
+[29/3/2025 2:41:29 AM] [DashboardManagement] Retrieved 13 refunds from database
+[29/3/2025 2:41:29 AM] [DashboardManagement] Sample refund IDs: 20, 21, 25, 26, 27...

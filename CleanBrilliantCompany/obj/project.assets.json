@@ -3894,24 +3894,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jarre\\.nuget\\packages\\": {}
+    "/Users/regine/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectUniqueName": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/CleanBrilliantCompany.csproj",
       "projectName": "CleanBrilliantCompany",
-      "projectPath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
-      "packagesPath": "C:\\Users\\jarre\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+      "projectPath": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/CleanBrilliantCompany.csproj",
+      "packagesPath": "/Users/regine/.nuget/packages/",
+      "outputPath": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\jarre\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/regine/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "/usr/local/share/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3972,7 +3973,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
