@@ -13,7 +13,7 @@ public class AgingControl : IStorageDuration
     public AgingControl(
         AgingRepo agingMapper, 
         FakeBatchInterface fakeBatchInterface,
-        FakeProductInterface fakeProductInterface 
+        FakeProductInterface fakeProductInterface
         ) 
         {
             this.agingMapper = agingMapper;
