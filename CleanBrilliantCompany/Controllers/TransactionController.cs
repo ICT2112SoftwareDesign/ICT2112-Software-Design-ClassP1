@@ -21,10 +21,10 @@ namespace CleanBrilliantCompany.Controllers
 
         // Route for the Index action with optional searchDate parameter
         [HttpGet("Index")] // Maps to /Transaction/Index
-        public async Task<IActionResult> Index(DateTime? searchDate, string adjustmentType)
+        public async Task<IActionResult> Index(DateTime? searchDate, string adjustmentType, int page = 1, int pageSize = 15)
         {
             // Get all transactions
-            List<Transaction> transactions = _transactionControl.getAllTransactions();
+            List<Transaction> transactions = _transactionControl.getAllTransactions(page,pageSize);
             List<Dictionary<string, object>> transactionsInfo = new List<Dictionary<string, object>>();
 
 
@@ -46,6 +46,19 @@ namespace CleanBrilliantCompany.Controllers
                 ViewData["TotalTransferredCount"] = transactionsInfo.Count(t => t["AdjustmentType"].ToString() == "Transferred");
                 ViewData["TotalRefundedCount"] = transactionsInfo.Count(t => t["AdjustmentType"].ToString() == "Refunded");
             }
+
+            int transactionsCount = _transactionControl.getTransactionCount();
+
+
+            int totalPages = (int)Math.Ceiling((double)transactionsCount / pageSize);
+            // Pass data to the view
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            Console.WriteLine("TOTAL NUM OF ITEMS: " + transactionsCount);
+
+            Console.WriteLine("TOTAL PAGE NUMBER: " + totalPages);
+            Console.WriteLine("TOTAL PAGE SIZE: " + pageSize);
 
             // Get transactions for a specific date if searchDate is provided
             List<Transaction> transactionsByDate = new List<Transaction>();
