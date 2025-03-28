@@ -3,6 +3,7 @@ using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Controllers;
 using CleanBrilliantCompany.Mapper;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,9 @@ builder.Services.AddScoped<iReturnFormDatabase<ReturnForm>, ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormControl>();
 builder.Services.AddScoped<ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormController>();
+builder.Services.AddScoped<TransferControl>();
+builder.Services.AddScoped<TransferMapper>();
+builder.Services.AddScoped<TransferController>();
 builder.Services.AddScoped<ItemControl>();
 builder.Services.AddScoped<ProductControl>();
 builder.Services.AddScoped<iProduct, ProductControl>();

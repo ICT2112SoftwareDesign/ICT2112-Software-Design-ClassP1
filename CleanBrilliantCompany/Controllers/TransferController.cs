@@ -67,6 +67,7 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
+        [Route("transfers/LowStockProduct")]
         public async Task<IActionResult> LowStockProduct()
         {
             try
