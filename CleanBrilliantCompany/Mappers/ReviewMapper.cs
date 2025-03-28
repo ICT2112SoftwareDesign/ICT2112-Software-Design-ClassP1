@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models; // <-- Add this
 
@@ -137,15 +137,23 @@ namespace CleanBrilliantCompany.Mappers
                 using var reader = command.ExecuteReader();
 
                 while (reader.Read())
-                {
-                    var review = new ReviewRDM();
-                    review.SetReviewId(Convert.ToInt32(reader["ReviewId"]));
-                    review.SetCustomerId(Convert.ToInt32(reader["CustomerId"]));
-                    review.SetReview(reader["review"].ToString());
-                    review.SetRating(Convert.ToInt32(reader["Rating"]));
-                    review.SetProductId(Convert.ToInt32(reader["ProductId"]));
+                {   
+                    int reviewId = Convert.ToInt32(reader["ReviewId"]);
+                    int customerId = Convert.ToInt32(reader["CustomerId"]);
+                    string reviewText = reader["review"].ToString();
+                    int rating = Convert.ToInt32(reader["Rating"]);
+                    int productId = Convert.ToInt32(reader["ProductId"]);
 
-                    reviews.Add(review);
+                    var review = new ReviewRDM(reviewId, customerId, reviewText, rating, productId);
+                    reviews.Add(review);;
+                    //var review = new ReviewRDM();
+                    //review.SetReviewId(Convert.ToInt32(reader["ReviewId"]));
+                    //review.SetCustomerId(Convert.ToInt32(reader["CustomerId"]));
+                    //review.SetReview(reader["review"].ToString());
+                    //review.SetRating(Convert.ToInt32(reader["Rating"]));
+                    //review.SetProductId(Convert.ToInt32(reader["ProductId"]));
+
+                    //reviews.Add(review);
                 }
             }
             catch (Exception)

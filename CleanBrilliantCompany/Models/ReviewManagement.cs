@@ -24,7 +24,7 @@ namespace CleanBrilliantCompany.Models
             this.productService = productService;
             this._httpContextAccessor = httpContextAccessor;
             this._observer = observer;
-            this.reviewRDM = new ReviewRDM();
+            
         }
 
         //get customer ID directly from session 
@@ -58,7 +58,7 @@ namespace CleanBrilliantCompany.Models
            
 
 
-            bool success = reviewRDM.CreateReview(customerId.Value, reviewText, rating, productId); // 0 as placeholder
+            bool success = reviewDatabase.addReview(customerId.Value, reviewText, rating, productId);
 
 
              if (success)
@@ -84,8 +84,8 @@ namespace CleanBrilliantCompany.Models
             //if (!VerifyReviewOwnership(reviewId, customerId.Value))
             //    return false;
 
-            reviewRDM.SetReview(reviewText);
-            reviewRDM.SetRating(rating);
+            //reviewRDM.SetReview(reviewText);
+            //reviewRDM.SetRating(rating);
 
             bool success = reviewDatabase.updateReview(customerId.Value, reviewText, rating, reviewId);
 
@@ -140,13 +140,13 @@ namespace CleanBrilliantCompany.Models
         public List<ReviewRDM> ViewReviewsByCustomer(int customerId)
         { 
              var allReviews = reviewDatabase.GetAllReviews();
-            return allReviews.Where(r => r.GetCustomerId() == customerId).ToList();
+            return allReviews.Where(r => r.RetrieveCustomerId() == customerId).ToList();
         }
 
         public List<ReviewRDM> ViewReviewsByProduct(int productId)
         {
             var allReviews = reviewDatabase.GetAllReviews();
-            return allReviews.Where(r => r.GetProductId() == productId).ToList();
+            return allReviews.Where(r => r.RetrieveProductId() == productId).ToList();
         }
 
 

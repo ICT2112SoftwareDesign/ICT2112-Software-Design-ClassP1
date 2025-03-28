@@ -731,7 +731,7 @@ namespace CleanBrilliantCompany.Controllers
             // Get all reviewed product IDs by this customer
             var reviewedProductIds = _reviewManagement
                 .ViewReviewsByCustomer(customerId.Value)
-                .Select(r => r.GetProductId())
+                .Select(r => r.RetrieveProductId())
                 .ToHashSet(); // Efficient lookup
 
             ViewBag.ReviewedProductIds = reviewedProductIds;
@@ -951,7 +951,7 @@ namespace CleanBrilliantCompany.Controllers
 
             var review = _reviewManagement
                 .ViewReviewsByCustomer(customerId.Value)
-                .FirstOrDefault(r => r.GetProductId() == productId);
+                .FirstOrDefault(r => r.RetrieveProductId() == productId);
 
             if (review == null)
             {
@@ -963,9 +963,9 @@ namespace CleanBrilliantCompany.Controllers
 
             ViewBag.ProductId = productId;
             ViewBag.ProductName = product?.GetProductDetails()["ProductName"];
-            ViewBag.ReviewText = review.GetReview();
-            ViewBag.Rating = review.GetRating();
-            ViewBag.ReviewId = review.GetReviewId();
+            ViewBag.ReviewText = review.RetrieveReviewText();
+            ViewBag.Rating = review.RetrieveRating();
+            ViewBag.ReviewId = review.RetrieveReviewId();
 
             return View("~/Views/Review/RateProduct.cshtml");
         }
