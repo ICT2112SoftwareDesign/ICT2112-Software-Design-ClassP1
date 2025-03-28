@@ -1,8 +1,8 @@
-﻿using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface IProduct
+    public interface iProduct
     {
         // Product
         Product getProductDetails(int productId);
