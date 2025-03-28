@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
+    "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
   },
   "projects": {
-    "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {
+    "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "projectUniqueName": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
         "projectName": "CleanBrilliantCompany",
-        "projectPath": "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
-        "packagesPath": "C:\\Users\\imman\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\imman\\Github\\ICT2112-Software-Design\\CleanBrilliantCompany\\obj\\",
+        "projectPath": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "packagesPath": "C:\\Users\\Xinji\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Xinji\\OneDrive\\Documents\\SIT\\Y2S2\\SD\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\imman\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Xinji\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -43,6 +43,12 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
