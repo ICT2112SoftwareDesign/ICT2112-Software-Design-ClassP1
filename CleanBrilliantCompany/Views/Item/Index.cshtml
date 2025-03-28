@@ -1,256 +1,708 @@
-@model List<Dictionary<string, object>>
+<!DOCTYPE html>
+<html lang="en">
 
-<h2>Item List</h2>
-<div class="row mb-3">
-    @* Search ITEM ID *@
-    <div class="col-md-auto">
-        <form method="post" asp-action="searchById" class="row g-2">
-            <div class="col">
-                <input class="form-control" id="itemId" type="number" name="searchedItemId"
-                       placeholder="Search Item by Id" required>
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Dashboard</title>
+
+    @* <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet"> *@
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Interface
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">
-                    Search
-                </button>
-            </div>
-            <div class="col-auto">
-                <a asp-action="Index" class="btn btn-secondary">
-                    Clear
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Components</span>
                 </a>
-            </div>
-        </form>
-    </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Custom Components:</h6>
+                        <a class="collapse-item" href="buttons.html">Buttons</a>
+                        <a class="collapse-item" href="cards.html">Cards</a>
+                    </div>
+                </div>
+            </li>
 
-    @* SEARCH PRODUCT NAME *@
-    <div class="col-md-auto">
-        <form method="post" asp-action="searchByName" class="row g-2">
-            <div class="col">
-                <input class="form-control" id="productName" type="text" name="searchedProductName"
-                       placeholder="Search Product by Name" required>
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">
-                    Search
-                </button>
-            </div>
-            <div class="col-auto">
-                <a asp-action="Index" class="btn btn-secondary">
-                    Clear
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Utilities</span>
                 </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Custom Utilities:</h6>
+                        <a class="collapse-item" href="utilities-color.html">Colors</a>
+                        <a class="collapse-item" href="utilities-border.html">Borders</a>
+                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
+                        <a class="collapse-item" href="utilities-other.html">Other</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Addons
             </div>
-        </form>
-    </div>
-</div>
 
-<div class="row mb-3">
-    @* Refund Button *@
-    <div class="col-auto">
-        <form method="post" asp-action="refundedItems">
-            <button type="submit" class="btn btn-primary">
-                Refund Items
-            </button>
-        </form>
-    </div>
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Pages</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Login Screens:</h6>
+                        <a class="collapse-item" href="login.html">Login</a>
+                        <a class="collapse-item" href="register.html">Register</a>
+                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Other Pages:</h6>
+                        <a class="collapse-item" href="404.html">404 Page</a>
+                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                    </div>
+                </div>
+            </li>
 
-    <div class="col-auto">
-        <form method="post" asp-action="adjustInventory">
-            <button type="submit" class="btn btn-primary">
-                Order Items
-            </button>
-        </form>
-    </div>
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Transaction")">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Transactions</span></a>
+            </li>
 
-    <div class="col-auto">
-        <form method="post" asp-action="processCancelledOrder">
-            <button type="submit" class="btn btn-primary">
-                Cancel Order
-            </button>
-        </form>
-    </div>
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Item")">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Item</span></a>
+            </li>
 
-    @* iProduct Test Button *@
-    <div class="col-auto">
-        <form method="post" asp-action="retrieveProductDetails">
-            <button type="submit" class="btn btn-primary">
-                Show Products
-            </button>
-        </form>
-    </div>
-</div>
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Product")">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Product</span></a>
+            </li>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Item ID</th>
-            <th>Product ID</th>
-            <th>Product Name</th>
-            <th>Sale Price</th>
-            <th>Batch Code</th>
-            <th>Warehouse ID</th>
-            <th>Status</th>
-            <th>Expiry Date</th>
-            <th>Reservation ID</th>
-            <th>Order ID</th>
-            <th>Transfer ID</th>
-            <th>Return ID</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var itemInfo in Model)
-        {
-            <tr>
-                <td>@itemInfo["ItemId"]</td>
-                <td>@itemInfo["ProductId"]</td>
-                <td>@itemInfo["ProductName"]</td>
-                <td>@itemInfo["SalePrice"]</td>
-                <td>@itemInfo["BatchCode"]</td>
-                <td>@itemInfo["WarehouseId"]</td>
-                <td>@itemInfo["ItemStatus"]</td>
-                <td>@itemInfo["ExpiryDate"]</td>
-                <td>@(itemInfo.ContainsKey("ReservationId") ? itemInfo["ReservationId"] ?? "NULL" : "NULL")</td>
-                <td>@(itemInfo.ContainsKey("OrderId") ? itemInfo["OrderId"] ?? "NULL" : "NULL")</td>
-                <td>@(itemInfo.ContainsKey("TransferId") ? itemInfo["TransferId"] ?? "NULL" : "NULL")</td>
-                <td>@(itemInfo.ContainsKey("ReturnId") ? itemInfo["ReturnId"] ?? "NULL" : "NULL")</td>
-                <td>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateItemModal"
-                            data-item-id="@itemInfo["ItemId"]">
-                        Update
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            <!-- Sidebar Message -->
+            <div class="sidebar-card d-none d-lg-flex">
+                <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
+                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components,
+                    and more!</p>
+                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to
+                    Pro!</a>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
                     </button>
-                </td>
-                <td>
+
+                    <!-- Topbar Search -->
+                    <form
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Spending Alert: We've noticed unusually high spending for your account.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">7</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div class="font-weight-bold">
+                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
+                                            problem I've been having.</div>
+                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_2.svg" alt="...">
+                                        <div class="status-indicator"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">I have the photos that you ordered last month, how
+                                            would you like them sent to you?</div>
+                                        <div class="small text-gray-500">Jae Chun · 1d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="...">
+                                        <div class="status-indicator bg-warning"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Last month's report looks great, I am very happy with
+                                            the progress so far, keep up the good work!</div>
+                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
+                                            told me that people say this to all dogs, even if they aren't good...</div>
+                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Item List</h1>
+                    </div>
+
+                    <!-- Content Row -->
+                    @* search bars *@
+                    <div class="row mb-3 ml-2">
+                        @* Search ITEM ID *@
+                        <form method="post" asp-action="searchById">
+                            <div class="row">
+                                <div>
+                                    <input class="form-control" id="itemId" type="number" name="searchedItemId"
+                                        placeholder="Search Item by Id" required>
+                                </div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">
+                                        Search
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+
+                        <form method="post" asp-action="ClearSearch">
+                            <button type="submit" class="btn btn-secondary ml-2">
+                                Clear
+                            </button>
+                        </form>
+
+                        @* SEARCH PRODUCT NAME *@
+                        <div class="row ml-5">
+                            <form method="post" asp-action="searchByName">
+                                <div class="row">
+                                    <div>
+                                        <input class="form-control" id="productName" type="text"
+                                            name="searchedProductName" placeholder="Search Product by Name" required>
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-primary">
+                                            Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <form method="post" asp-action="ClearSearch">
+                                <button type="submit" class="btn btn-secondary ml-2">
+                                    Clear
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3 mt-5">
+                        @* Refund Button *@
+                        <div class="col-auto">
+                            <form method="post" asp-action="refundedItems">
+                                <button type="submit" class="btn btn-primary">
+                                    Refund Items
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="col-auto">
+                            <form method="post" asp-action="adjustInventory">
+                                <button type="submit" class="btn btn-primary">
+                                    Order Items
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="col-auto">
+                            <form method="post" asp-action="processCancelledOrder">
+                                <button type="submit" class="btn btn-primary">
+                                    Cancel Order
+                                </button>
+                            </form>
+                        </div>
+
+                        @* iProduct Test Button *@
+                        <div class="col-auto">
+                            <form method="post" asp-action="retrieveProductDetails">
+                                <button type="submit" class="btn btn-primary">
+                                    Show products
+                                </button>
+                            </form>
+                        </div>
+
+                        @* iReturnForm Test Button *@
+                        <div class="col-auto">
+                            <form method="post" asp-action="getToReturnItems">
+                                <button type="submit" class="btn btn-primary">
+                                    Show ToReturn Items
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Product ID</th>
+                                <th>Product Name</th>
+                                <th>Sale Price</th>
+                                <th>Batch Code</th>
+                                <th>Warehouse ID</th>
+                                <th>Status</th>
+                                <th>Expiry Date</th>
+                                <th>Reservation ID</th>
+                                <th>Order ID</th>
+                                <th>Transfer ID</th>
+                                <th>Return ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var itemInfo in Model)
+                            {
+                                <tr>
+                                    <td>@itemInfo["ItemId"]</td>
+                                    <td>@itemInfo["ProductId"]</td>
+                                    <td>@itemInfo["ProductName"]</td>
+                                    <td>@itemInfo["SalePrice"]</td>
+                                    <td>@itemInfo["BatchCode"]</td>
+                                    <td>@itemInfo["WarehouseId"]</td>
+                                    <td>@itemInfo["ItemStatus"]</td>
+                                    <td>@itemInfo["ExpiryDate"]</td>
+                                    <td>@(itemInfo.ContainsKey("ReservationId") ? itemInfo["ReservationId"] ?? "NULL" :
+                                                                            "NULL")</td>
+                                <td>@(itemInfo.ContainsKey("OrderId") ? itemInfo["OrderId"] ?? "NULL" : "NULL")</td>
+                                <td>@(itemInfo.ContainsKey("TransferId") ? itemInfo["TransferId"] ?? "NULL" : "NULL")
+                                </td>
+                                <td>@(itemInfo.ContainsKey("ReturnId") ? itemInfo["ReturnId"] ?? "NULL" : "NULL")</td>
+                                <td class="d-flex">
+                                    <button type="button" class="btn btn-warning flex-fill mr-2 text-black-50" data-bs-toggle="modal"
+                                        data-bs-target="#updateItemModal" data-item-id="@itemInfo["ItemId"]">
+                                        Update
+                                    </button>
+                                    <button type="button" class="btn btn-danger flex-fill mr-2" data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal" data-delete-item-id="@itemInfo["ItemId"]">
+                                        Delete
+                                    </button>
+                                    <button type="button" class="btn btn-warning flex-fill text-black-50" data-bs-toggle="modal"
+                                        data-bs-target="#updateItemStatusModal"
+                                        data-updateitem-id="@itemInfo["ItemId"]">
+                                        Update ID & Status
+                                    </button>
+                                </td>
+
+                                </tr>
+
+                                                        }
+                        </tbody>
+                    </table>
+
+                    <div style="justify-self: center;">
+                        <a>Page</a>
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <a href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">@i</a>
+                            @if (i < ViewBag.TotalPages)
+                            {
+                                <span> | </span>
+                            }
+                        }
+                    </div>
+
+                    @* button to trigger add model *@
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                        Add Item
+                    </button>
+
+                    @* button to trigger get warehouse quantity model *@
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#updateItemStatusModalOld" data-updateitemOld-id="@itemInfo["ItemId"]">
-                        Update Status
+                        data-bs-target="#warehouseModel">
+                        Get Warehouse Quantity
                     </button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#updateItemStatusModal" data-updateitem-id="@itemInfo["ItemId"]">
-                        Update ID & Status
-                    </button>
-                </td>
-            </tr>
 
-        }
-    </tbody>
-</table>
+                    @* add item modal *@
+                    <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addItemModalLabel">Add New Item</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-action="addItem">
+                                        <div class="mb-3">
+                                            <label for="productId" class="form-label">Product ID</label>
+                                            <input type="text" class="form-control" id="productId" name="productId"
+                                                required>
+                                        </div>
+                                        @* <div class="mb-3">
+                                            <label for="salePrice" class="form-label">Sale Price</label>
+                                            <input type="number" class="form-control" id="salePrice" name="salePrice"
+                                                required>
+                                        </div> *@
+                                        <div class="mb-3">
+                                            <label for="batchCode" class="form-label">Batch Code</label>
+                                            <input type="text" class="form-control" id="batchCode" name="batchCode"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="warehouseId" class="form-label">Warehouse ID</label>
+                                            <input type="text" class="form-control" id="warehouseId" name="warehouseId"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="itemStatus" class="form-label">Status</label>
+                                            <select class="form-control" id="itemStatus" name="itemStatus" required>
+                                                <option value="Available">Available</option>
+                                                <option value="Reserved">Reserved</option>
+                                                <option value="Sold">Sold</option>
+                                                <option value="Refunded">Refunded</option>
+                                                <option value="ToReturn">ToReturn</option>
+                                                <option value="Returned">Returned</option>
+                                                <option value="Transferred">Transferred</option>
+                                            </select>
+                                        </div>
 
-@* button to trigger add model *@
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
-    Add Item
-</button>
-
-@* button to trigger get warehouse quantity model *@
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#warehouseModel">
-    Get Warehouse Quantity
-</button>
-
-@* add item modal *@
-<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addItemModalLabel">Add New Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" asp-action="addItem">
-                    <div class="mb-3">
-                        <label for="productId" class="form-label">Product ID</label>
-                        <input type="text" class="form-control" id="productId" name="productId" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="salePrice" class="form-label">Sale Price</label>
-                        <input type="number" class="form-control" id="salePrice" name="salePrice" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="batchCode" class="form-label">Batch Code</label>
-                        <input type="text" class="form-control" id="batchCode" name="batchCode" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="warehouseId" class="form-label">Warehouse ID</label>
-                        <input type="text" class="form-control" id="warehouseId" name="warehouseId" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="itemStatus" class="form-label">Status</label>
-                        <select class="form-control" id="itemStatus" name="itemStatus" required>
-                            <option value="Available">Available</option>
-                            <option value="Reserved">Reserved</option>
-                            <option value="Sold">Sold</option>
-                            <option value="Refunded">Refunded</option>
-                        </select>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+                    @* get warehouse quantity modal *@
+                    <div class="modal fade" id="warehouseModel" tabindex="-1" aria-labelledby="warehouseModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="warehouseModalLabel">Get Warehouse Quantity</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-action="getProductQuantityByWarehouse">
+                                        <input type="hidden" id="warehouseItemId" name="itemId">
+                                        <div class="mb-3">
+                                            <label for="productId" class="form-label">Product ID</label>
+                                            <input type="text" class="form-control" id="productId" name="productId"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="warehouseId" class="form-label">Warehouse ID</label>
+                                            <input type="text" class="form-control" id="warehouseId" name="warehouseId"
+                                                required>
+                                        </div>
 
-@* get warehouse quantity modal *@
-<div class="modal fade" id="warehouseModel" tabindex="-1" aria-labelledby="warehouseModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="warehouseModalLabel">Get Warehouse Quantity</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" asp-action="getProductQuantityByWarehouse">
-                    <input type="hidden" id="warehouseItemId" name="itemId">
-                    <div class="mb-3">
-                        <label for="productId" class="form-label">Product ID</label>
-                        <input type="text" class="form-control" id="productId" name="productId" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="warehouseId" class="form-label">Warehouse ID</label>
-                        <input type="text" class="form-control" id="warehouseId" name="warehouseId" required>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Get Quantity</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-@* update item modal *@
-<div class="modal fade" id="updateItemModal" tabindex="-1" aria-labelledby="updateItemModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateItemModalLabel">Update Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" asp-action="updateItem">
-                    <input type="hidden" id="updateItemId" name="itemId">
-                    <div class="mb-3">
-                        <label for="salePrice" class="form-label">Sale Price</label>
-                        <input type="text" class="form-control" id="salePrice" name="salePrice" required>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Get Quantity</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Item</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+                    @* update item modal *@
+                    <div class="modal fade" id="updateItemModal" tabindex="-1" aria-labelledby="updateItemModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateItemModalLabel">Update Item</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-action="updateItem">
+                                        <input type="hidden" id="updateItemId" name="itemId">
+                                        <div class="mb-3">
+                                            <label for="salePrice" class="form-label">Sale Price</label>
+                                            <input type="text" class="form-control" id="salePrice" name="salePrice"
+                                                required>
+                                        </div>
 
-@* update item status modal (for ryan) *@
-<div class="modal fade" id="updateItemStatusModalOld" tabindex="-1" aria-labelledby="updateItemStatusModalLabelOld"
-     aria-hidden="true">
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save Item</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* delete item model *@
+                    <!-- Bootstrap Delete Confirmation Modal -->
+                    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    Are you sure you want to delete this item?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <form method="post" asp-action="deleteItem">
+                                        <input type="hidden" id="deleteItemId" name="deleteItemId">
+
+                                        <button type="submit" class="btn btn-danger">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* update item status modal (for ryan) *@
+                    @* <div class="modal fade" id="updateItemStatusModalOld" tabindex="-1" aria-labelledby="updateItemStatusModalLabelOld"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -267,6 +719,9 @@
                             <option value="Reserved">Reserved</option>
                             <option value="Sold">Sold</option>
                             <option value="Refunded">Refunded</option>
+                            <option value="ToReturn">ToReturn</option>
+                            <option value="Returned">Returned</option>
+                            <option value="Transferred">Transferred</option>
                         </select>
                     </div>
 
@@ -278,10 +733,10 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@
 
-@* modal to test iProduct method *@
-@* <div class="modal fade" id="retrieveProductDetailsModal" tabindex="-1"
+                    @* modal to test iProduct method *@
+                    @* <div class="modal fade" id="retrieveProductDetailsModal" tabindex="-1"
     aria-labelledby="retrieveProductDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -323,99 +778,229 @@
     </div>
 </div> *@
 
-@* update item id & status model (to test for iItemUpdate) *@
-<div class="modal fade" id="updateItemStatusModal" tabindex="-1" aria-labelledby="updateItemStatusModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateItemStatusModalLabel">Update Item Id & Status</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    @* update item id & status model *@
+                    <div class="modal fade" id="updateItemStatusModal" tabindex="-1"
+                        aria-labelledby="updateItemStatusModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateItemStatusModalLabel">Update Item Id & Status</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-action="updateItemStatus">
+                                        <input type="hidden" id="updateStatusItemId" name="itemId">
+                                        <div class="mb-3">
+                                            <label for="reservationId" class="form-label">Reservation Id</label>
+                                            <input type="text" class="form-control" id="reservationId"
+                                                name="reservationId">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="orderId" class="form-label">Order Id</label>
+                                            <input type="text" class="form-control" id="orderId" name="orderId">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="orderId" class="form-label">Return Id</label>
+                                            <input type="text" class="form-control" id="returnId" name="returnId">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="orderId" class="form-label">Transfer Id</label>
+                                            <input type="text" class="form-control" id="transferId" name="transferId">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="itemStatus" class="form-label">Status</label>
+                                            <select class="form-control" id="itemStatus" name="status" required>
+                                                <option value="Available">Available</option>
+                                                <option value="Reserved">Reserved</option>
+                                                <option value="Sold">Sold</option>
+                                                <option value="Refunded">Refunded</option>
+                                                <option value="ToReturn">ToReturn</option>
+                                                <option value="Returned">Returned</option>
+                                                <option value="Transferred">Transferred</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save Item</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* popup messages *@
+                    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050; right: 20px; top: 20px;">
+                        <!-- Success Toast -->
+                        <div id="successToast" class="toast align-items-center text-white bg-success border-0"
+                            role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    <strong>Success:</strong> <span id="successMessageText"></span>
+                                </div>
+                                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Close"></button>
+                            </div>
+                        </div>
+
+                        <!-- Error Toast -->
+                        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert"
+                            aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    <strong>Error:</strong> <span id="errorMessageText"></span>
+                                </div>
+                                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+
             </div>
-            <div class="modal-body">
-                <form method="post" asp-action="updateItemStatus">
-                    <input type="hidden" id="updateStatusItemId" name="itemId">
-                    <div class="mb-3">
-                        <label for="reservationId" class="form-label">Reservation Id</label>
-                        <input type="text" class="form-control" id="reservationId" name="reservationId">
-                    </div>
+            <!-- End of Main Content -->
 
-                    <div class="mb-3">
-                        <label for="orderId" class="form-label">Order Id</label>
-                        <input type="text" class="form-control" id="orderId" name="orderId">
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
                     </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
 
-                    <div class="mb-3">
-                        <label for="orderId" class="form-label">Return Id</label>
-                        <input type="text" class="form-control" id="returnId" name="returnId">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="orderId" class="form-label">Transfer Id</label>
-                        <input type="text" class="form-control" id="transferId" name="transferId">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="itemStatus" class="form-label">Status</label>
-                        <select class="form-control" id="itemStatus" name="status" required>
-                            <option value="Available">Available</option>
-                            <option value="Reserved">Reserved</option>
-                            <option value="Sold">Sold</option>
-                            <option value="Refunded">Refunded</option>
-                        </select>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Item</button>
-                    </div>
-                </form>
-            </div>
         </div>
+        <!-- End of Content Wrapper -->
+
     </div>
-</div>
+    <!-- End of Page Wrapper -->
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var updateModal = document.getElementById("updateItemModal");
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        updateModal.addEventListener("show.bs.modal", function (event) {
-            var button = event.relatedTarget;
-            var itemId = button.getAttribute("data-item-id");
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-            var hiddenInput = document.getElementById("updateItemId");
-            hiddenInput.value = itemId;
-            console.log(hiddenInput.value);
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Show success toast if success message exists
+            let successMessage = "@TempData["SuccessMessage"]";
+            if (successMessage.trim() !== "") {
+                document.getElementById("successMessageText").innerText = successMessage;
+                let toastElement = new bootstrap.Toast(document.getElementById("successToast"));
+                toastElement.show();
+            }
+
+            // Show error toast if error message exists
+            let errorMessage = "@TempData["ErrorMessage"]";
+            if (errorMessage.trim() !== "") {
+                document.getElementById("errorMessageText").innerText = errorMessage;
+                let toastElement = new bootstrap.Toast(document.getElementById("errorToast"));
+                toastElement.show();
+            }
         });
-    });
+    </script>
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var updateModal = document.getElementById("updateItemStatusModal");
 
-        updateModal.addEventListener("show.bs.modal", function (event) {
-            var button = event.relatedTarget;
-            var itemId = button.getAttribute("data-updateitem-id");
 
-            var hiddenInput = document.getElementById("updateStatusItemId");
-            hiddenInput.value = itemId;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-            console.log(hiddenInput.value);
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var updateModal = document.getElementById("updateItemModal");
+
+            updateModal.addEventListener("show.bs.modal", function (event) {
+                var button = event.relatedTarget;
+                var itemId = button.getAttribute("data-item-id");
+
+                var hiddenInput = document.getElementById("updateItemId");
+                hiddenInput.value = itemId;
+                console.log(hiddenInput.value);
+            });
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var updateModal = document.getElementById("updateItemStatusModalOld");
+        // for delete item 
+        document.addEventListener("DOMContentLoaded", function () {
+            var updateModal = document.getElementById("deleteModal");
 
-        updateModal.addEventListener("show.bs.modal", function (event) {
-            var button = event.relatedTarget;
-            var itemId = button.getAttribute("data-updateitemOld-id");
+            updateModal.addEventListener("show.bs.modal", function (event) {
+                var button = event.relatedTarget;
+                var itemId = button.getAttribute("data-delete-item-id");
 
-            var hiddenInput = document.getElementById("updateStatusItemIdOld");
-            hiddenInput.value = itemId;
-
-            console.log(hiddenInput.value);
+                var hiddenInput = document.getElementById("deleteItemId");
+                hiddenInput.value = itemId;
+                console.log(hiddenInput.value);
+            });
         });
-    });
-</script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var updateModal = document.getElementById("updateItemStatusModal");
+
+            updateModal.addEventListener("show.bs.modal", function (event) {
+                var button = event.relatedTarget;
+                var itemId = button.getAttribute("data-updateitem-id");
+
+                var hiddenInput = document.getElementById("updateStatusItemId");
+                hiddenInput.value = itemId;
+
+                console.log(hiddenInput.value);
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var updateModal = document.getElementById("updateItemStatusModalOld");
+
+            updateModal.addEventListener("show.bs.modal", function (event) {
+                var button = event.relatedTarget;
+                var itemId = button.getAttribute("data-updateitemOld-id");
+
+                var hiddenInput = document.getElementById("updateStatusItemIdOld");
+                hiddenInput.value = itemId;
+
+                console.log(hiddenInput.value);
+            });
+        });
+
+        @* document.addEventListener("DOMContentLoaded", function() {
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget; 
+            var itemId = button.getAttribute('data-delete-item-id');  // Get Item ID
+            
+            console.log()
+        });
+    }); *@
+
+    </script>
+
+
+</body>
+
+</html>  

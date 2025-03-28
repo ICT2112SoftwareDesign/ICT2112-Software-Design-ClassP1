@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "C:\\Users\\song-\\source\\repos\\ICT2112SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
   },
   "projects": {
@@ -12,12 +13,29 @@
         "projectPath": "C:\\Users\\song-\\source\\repos\\ICT2112SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
         "packagesPath": "C:\\Users\\song-\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\song-\\source\\repos\\ICT2112SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+=======
+    "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {}
+  },
+  "projects": {
+    "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "projectName": "CleanBrilliantCompany",
+        "projectPath": "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+        "packagesPath": "C:\\Users\\xuanw\\.nuget\\packages\\",
+        "outputPath": "C:\\GitHub\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+>>>>>>> origin/module2-team3-transactionItemProductExpiry
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
+<<<<<<< HEAD
           "C:\\Users\\song-\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+          "C:\\Users\\xuanw\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> origin/module2-team3-transactionItemProductExpiry
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +44,10 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "C:\\Program Files\\dotnet\\library-packs": {},
+=======
+>>>>>>> origin/module2-team3-transactionItemProductExpiry
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -75,7 +96,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+>>>>>>> origin/module2-team3-transactionItemProductExpiry
         }
       }
     }

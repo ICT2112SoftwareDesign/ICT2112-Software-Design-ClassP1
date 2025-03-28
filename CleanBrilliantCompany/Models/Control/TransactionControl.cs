@@ -10,7 +10,6 @@ using CleanBrilliantCompany.Models.Mapper;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    //public class TransactionControl : iTransactionQuery --> !Comment out first since i have not created the interface for iTQ
     public class TransactionControl : iTransactionQuery, IObserver
 
     {
@@ -63,7 +62,19 @@ namespace CleanBrilliantCompany.Models.Control
                     Console.WriteLine($"Item {itemId}: {productName} is Transferred.");
                     stringStatus = "Transferred";
                     _transactionMapper.createTransaction(transactionDate, stringStatus, productId, itemId, staffId);
-                    break;          
+                    break;
+
+                case ItemStatus.Returned:
+                    Console.WriteLine($"Item {itemId}: {productName} is Returned.");
+                    stringStatus = "Returned";
+                    _transactionMapper.createTransaction(transactionDate, stringStatus, productId, itemId, staffId);
+                    break;      
+
+                // case ItemStatus.ToReturn:
+                //     Console.WriteLine($"Item {itemId}: {productName} is refunded and will be returned to the manufacturer.");
+                //     stringStatus = "ToReturn";
+                //     _transactionMapper.createTransaction(transactionDate, stringStatus, productId, itemId, staffId);
+                //     break;         
 
                 default:
                     Console.WriteLine($"Item {itemId}: {productName} status is unknown.");
@@ -103,7 +114,6 @@ namespace CleanBrilliantCompany.Models.Control
         // public List<Transaction> getTransactionByItem(itemId) {
         //     return _transactionMapper.getTransactionByItem();
         // }
-
         //Missing Method 2: getTransactionByDateTime(dateTime): List<Transaction>
         //Similarly --> pass in the dateTime var --> return a list of all transactions for that day itself
 

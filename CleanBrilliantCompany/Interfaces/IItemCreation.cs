@@ -4,6 +4,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IItemCreation
     {
-        Task<bool> createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status); 
+        Task<bool> createItem(int productId, int batchCode, int warehouseId, ItemStatus status); 
     }
 }

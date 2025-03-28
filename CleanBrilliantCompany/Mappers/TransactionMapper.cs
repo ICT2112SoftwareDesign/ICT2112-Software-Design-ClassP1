@@ -123,7 +123,8 @@ namespace CleanBrilliantCompany.Models.Mapper
             {
                 connection.Open();
 
-                string query = "SELECT transactionId, transactionDateTime, adjustmentType, productId, itemId, staffId FROM ItemTransaction";
+                string query = @"SELECT transactionId, transactionDateTime, adjustmentType, ItemTransaction.productId, Product.productName, itemId, staffId FROM ItemTransaction"
+                + " INNER JOIN Product ON ItemTransaction.productId = Product.productId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -141,6 +142,7 @@ namespace CleanBrilliantCompany.Models.Mapper
                                     reader.GetInt32(reader.GetOrdinal("transactionId")),
                                     reader.GetDateTime(reader.GetOrdinal("transactionDateTime")),
                                     reader.GetString(reader.GetOrdinal("adjustmentType")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
                                     reader.GetInt32(reader.GetOrdinal("productId")),
                                     reader.GetInt32(reader.GetOrdinal("itemId")),
                                     reader.GetInt32(reader.GetOrdinal("staffId"))
