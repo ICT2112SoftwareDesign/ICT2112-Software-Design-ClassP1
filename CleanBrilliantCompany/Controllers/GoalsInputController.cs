@@ -11,80 +11,49 @@ namespace CleanBrilliantCompany.Controllers
 {
     public class GoalsInputController : Controller
     {
-        private readonly IGoalsDB _goalDb;
+        private readonly GoalManagement _goalManager;
         private readonly ILogger<GoalsInputController> _logger;
 
-        // Constructor Injection of IGoalsDB
-        public GoalsInputController(IGoalsDB goalDb, ILogger<GoalsInputController> logger)
+        public GoalsInputController(GoalManagement goalManager, ILogger<GoalsInputController> logger)
         {
-            _goalDb = goalDb;
+            _goalManager = goalManager;
             _logger = logger;
-        }
-
-        public ActionResult Create()
-        {
-            return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(GoalsSDM goal, string goalDate)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && await _goalManager.CreateGoal(goal, goalDate))
             {
-                // Parse the goalDate to extract Year and Month
-                if (DateTime.TryParseExact(goalDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
-                {
-                    goal.UpdateGoalDate(parsedDate.Year, parsedDate.Month);  // Use the UpdateGoalDate method to set the year and month
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Invalid date format.");
-                    return View(goal);  // Return the view with an error message
-                }
-
-                // Insert goal into the database
-                await _goalDb.InsertGoal(goal);
-
-                // Redirect to the Goals management page after successful insertion
                 return RedirectToAction("GoalsManagement", "GoalsPage");
             }
 
-            // If the model state is not valid, return the view with the error
+            ModelState.AddModelError("", "Invalid date format or error creating goal.");
             return View(goal);
         }
 
         [HttpPost]
         public async Task<ActionResult> ModifyGoal(string goalDate, double targetEmission)
         {
-            _logger.LogInformation("ModifyGoal action started."); // Log method execution start
-
-            if (DateTime.TryParseExact(goalDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            if (await _goalManager.ModifyGoal(goalDate, targetEmission))
             {
-                int goalYear = parsedDate.Year;
-                int goalMonth = parsedDate.Month;
-
-                _logger.LogInformation($"Searching for goal with Year={goalYear} and Month={goalMonth}.");
-
-                var existingGoal = await _goalDb.FindGoalByDate(goalYear, goalMonth);
-
-                if (existingGoal == null)
-                {
-                    _logger.LogWarning($"Goal not found for Year={goalYear}, Month={goalMonth}");
-                    ModelState.AddModelError("", "Goal not found.");
-                    return View();
-                }
-
-                _logger.LogInformation($"Updating Goal: Year={goalYear}, Month={goalMonth}, TargetEmission={targetEmission}");
-
-                existingGoal.UpdateTargetEmission(targetEmission);
-                await _goalDb.UpdateGoal(existingGoal);
-
                 return RedirectToAction("GoalsManagement", "GoalsPage");
             }
 
-            _logger.LogError("Invalid date format received.");
-            ModelState.AddModelError("", "Invalid date format.");
+            ModelState.AddModelError("", "Goal not found or invalid date format.");
             return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteGoal(string goalDate)
+        {
+            if (await _goalManager.DeleteGoal(goalDate))
+            {
+                return RedirectToAction("GoalsManagement", "GoalsPage");
+            }
+
+            ModelState.AddModelError("", "Goal not found for deletion.");
+            return View("Error");
         }
     }
 }

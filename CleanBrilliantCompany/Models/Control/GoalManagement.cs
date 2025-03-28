@@ -1,40 +1,84 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CleanBrilliantCompany.Data;
-using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models.Control;
+using CleanBrilliantCompany.Data;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using System.Globalization;
 
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class GoalsManagement
+    public class GoalManagement : IGoals
     {
         private readonly IGoalsDB _goalDb;
+        private readonly ILogger<GoalManagement> _logger;
 
-        public GoalsManagement(IGoalsDB goalsDb)
+        public GoalManagement(IGoalsDB goalDb, ILogger<GoalManagement> logger)
         {
-            _goalDb = goalsDb;
+            _goalDb = goalDb;
+            _logger = logger;
         }
 
-        public async Task AddGoal(int goalId, double targetEmission, int goalYear, int goalMonth)
+        public async Task<bool> CreateGoal(GoalsSDM goal, string goalDate)
         {
-            var goal = new GoalsSDM(goalId, targetEmission, goalYear, goalMonth);
-            await _goalDb.InsertGoal(goal);
-        }
-
-        public async Task UpdateGoal(int goalId, double targetEmission)
-        {
-            var existingGoal = await _goalDb.FindGoal(goalId);
-            if (existingGoal != null)
+            if (DateTime.TryParseExact(goalDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
             {
-                existingGoal.UpdateTargetEmission(targetEmission);
-                await _goalDb.UpdateGoal(existingGoal);
+                goal.UpdateGoalDate(parsedDate.Year, parsedDate.Month);
+                await _goalDb.InsertGoal(goal);
+                return true;
             }
+
+            _logger.LogError("Invalid date format received.");
+            return false;
         }
 
-        public async Task<GoalsSDM> GetGoal(int goalId)
+        public async Task<bool> ModifyGoal(string goalDate, double targetEmission)
         {
-            return await _goalDb.FindGoal(goalId);
+            if (DateTime.TryParseExact(goalDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            {
+                int goalYear = parsedDate.Year;
+                int goalMonth = parsedDate.Month;
+
+                var existingGoal = await _goalDb.FindGoalByDate(goalYear, goalMonth);
+
+                if (existingGoal != null)
+                {
+                    existingGoal.UpdateTargetEmission(targetEmission);
+                    await _goalDb.UpdateGoal(existingGoal);
+                    return true;
+                }
+            }
+
+            _logger.LogWarning($"Goal not found for date: {goalDate}");
+            return false;
         }
+
+        public async Task<bool> DeleteGoal(string goalDate)
+        {
+            if (DateTime.TryParseExact(goalDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            {
+                int goalYear = parsedDate.Year;
+                int goalMonth = parsedDate.Month;
+
+                var existingGoal = await _goalDb.FindGoalByDate(goalYear, goalMonth);
+
+                if (existingGoal != null)
+                {
+                    await _goalDb.DeleteGoal(existingGoal.GetGoalId());
+                    return true;
+                }
+            }
+
+            _logger.LogWarning($"Goal not found for deletion: {goalDate}");
+            return false;
+        }
+
+        public async Task<List<GoalsSDM>> GetAllGoals()
+        {
+            return await _goalDb.GetAllGoals(); // Ensure `IGoalsDB` has `GetAllGoals` method
+        }
+
     }
 }

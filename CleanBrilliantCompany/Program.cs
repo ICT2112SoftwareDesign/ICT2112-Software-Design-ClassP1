@@ -24,7 +24,14 @@ builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
 builder.Services.AddScoped<ICarbonNotification, CarbonNotification>();
 
+
 builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
+builder.Services.AddScoped<GoalManagement>();
+builder.Services.AddScoped<IGoals, GoalManagement>();
+builder.Services.AddScoped<CarbonOrderAnalyticManager>();
+
+builder.Services.AddScoped<CarbonOrderAnalyticManager>();
+builder.Services.AddScoped<CarbonOrderAnalyticManager>();
 
 var app = builder.Build();
 
@@ -73,11 +80,16 @@ app.MapControllerRoute(
     defaults: new { controller = "GoalsPage", action = "GoalsModification" }
 );
 
+app.MapControllerRoute(
+    name: "analyticsGraph",
+    pattern: "analytics/graph",
+    defaults: new { controller = "Analytics", action = "DisplayGraph" });
 
 app.MapControllerRoute(
     name: "alerts",
     pattern: "alerts",
-    defaults: new { controller = "Alert", action = "Index" });
+    defaults: new { controller = "Alert", action = "Index" }
+);
 
 // Sustainable Resource Inventory is Low
 // URL: http://localhost:5258/sustainable-ingredient/resources

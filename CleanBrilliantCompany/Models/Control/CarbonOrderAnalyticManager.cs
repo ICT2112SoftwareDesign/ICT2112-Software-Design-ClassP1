@@ -8,12 +8,20 @@ using CleanBrilliantCompany.DTO;
 
 namespace CleanBrilliantCompany.Models.Control
 {
+    
     public class CarbonOrderAnalyticManager
     {
         private List<CarbonFootprintRecordRDM> orderEmission;
         private List<EmissionPredDTO> orderPredictEmission;
         private IPredictionStrategy _strategy;
         private readonly ICarbonFootprint _carbonFootprintService;
+        private readonly IGoals _goalService;
+
+        //Constructor
+        public CarbonOrderAnalyticManager(IGoals goalService)
+        {
+            _goalService = goalService;
+        }
 
         private void setStrategy(IPredictionStrategy strategy){
             _strategy = strategy;
@@ -46,6 +54,12 @@ namespace CleanBrilliantCompany.Models.Control
         }
         public void checkPredictedGoalThreshold(){
 
+        }
+        
+
+        public async Task<List<GoalsSDM>> RetrieveGoalsForGraph()
+        {
+            return await _goalService.GetAllGoals();
         }
     }
 }

@@ -25,6 +25,10 @@ namespace CleanBrilliantCompany.Controllers
             return View();
         }
 
+        public IActionResult GoalsGraph()
+        {
+            return View();
+        }
 
     }
 }
