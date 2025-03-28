@@ -39,7 +39,7 @@ namespace CleanBrilliantCompany.Control
 
 
             // Update dashboard with stock levels and thresholds
-            newDashboard.UpdateDashboardData(stockLevels, thresholds);
+            newDashboard.UpdateStockThreshold(stockLevels, thresholds);
             newDashboard.UpdateReplenishmentStatus();
             newDashboard.GenerateAlerts(); // Generate alerts after updating data
 
@@ -78,16 +78,15 @@ namespace CleanBrilliantCompany.Control
             report.AppendLine("<h2>Low Stock Products</h2><ul>");
             foreach (var productId in lowStock)
             {
-                report.AppendLine($"<li>Product {productId}: {dashboard.GetStockLevel(productId)} (below threshold {dashboard.GetThreshold(productId)})</li>");
+                report.AppendLine($"<li>Product {productId}: {dashboard.GetStockLevel(productId)}</li>");
             }
             report.AppendLine("</ul>");
             report.AppendLine("<h2>Over Stock Products</h2><ul>");
             foreach (var productId in overStock)
             {
-                report.AppendLine($"<li>Product {productId}: {dashboard.GetStockLevel(productId)} (above threshold {dashboard.GetThreshold(productId)})</li>");
+                report.AppendLine($"<li>Product {productId}: {dashboard.GetStockLevel(productId)}</li>");
             }
             report.AppendLine("</ul>");
-            report.AppendLine("<h2>Alerts</h2>");
             //report.AppendLine($"<p>{dashboard.LowStockAlert}</p>");
             //report.AppendLine($"<p>{dashboard.OverStockAlert}</p>");
             report.AppendLine("<h2>Consecutive Weekly Alerts</h2><ul>");
@@ -242,14 +241,22 @@ namespace CleanBrilliantCompany.Control
 
         public Dictionary<int, InventoryDTO> GetProductLookup()
         {
-            var stockLevels = FetchDashboard().GetAllStockLevels();
+            var dashboard = FetchDashboard();
+            var stockLevels = dashboard.GetAllStockLevels();
+            var thresholds = dashboard.GetAllThresholds();
+            var replenishmentStatuses = dashboard.GetAllReplenishmentStatuses();
+            var statuses = dashboard.GetAllStockStatuses();
+
             return _productService.getAllProducts()
                 .ToDictionary(p => p.productId, p => new InventoryDTO
                 {
                     ProductId = p.productId,
                     ProductName = p.productName,
                     ProductCategory = p.productCategory,
-                    StockLevel = stockLevels.ContainsKey(p.productId) ? stockLevels[p.productId] : 0
+                    StockLevel = stockLevels.ContainsKey(p.productId) ? stockLevels[p.productId] : 0,
+                    Threshold = thresholds.ContainsKey(p.productId) ? thresholds[p.productId] : 100,
+                    ReplenishmentStatus = replenishmentStatuses.ContainsKey(p.productId) && replenishmentStatuses[p.productId],
+                    StockStatus = statuses.ContainsKey(p.productId) ? statuses[p.productId] : "N"
                 });
         }
 

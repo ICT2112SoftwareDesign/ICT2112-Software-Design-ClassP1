@@ -18,11 +18,10 @@ namespace CleanBrilliantCompany.Controllers
             try
             {
                 var inventoryDashboard = _inventoryControl.FetchDashboard();
-                var chartData = _inventoryControl.GenerateStockLevelChartData(category); // Pass filter
+                var chartData = _inventoryControl.GenerateStockLevelChartData(category);
                 var lowStock = _inventoryControl.CheckLowStock(category);
                 var overStock = _inventoryControl.CheckOverStock(category);
                 var toReplenish = _inventoryControl.GenerateReplenishmentActions(category);
-
                 var alertStreaks = _inventoryControl.GetWeeklyConsecutiveAlertCounts();
 
                 // Send categories to dropdown
@@ -30,7 +29,6 @@ namespace CleanBrilliantCompany.Controllers
                                     .Select(p => p.productCategory)
                                     .Distinct()
                                     .ToList();
-                //var products = _inventoryControl.GetAllProducts();
 
                 var productLookup = _inventoryControl.GetProductLookup();
 
@@ -38,7 +36,6 @@ namespace CleanBrilliantCompany.Controllers
                 ViewBag.SelectedCategory = category;
                 ViewBag.ChartData = chartData;
                 ViewBag.AlertStreaks = alertStreaks;
-                //ViewBag.Products = products;
                 ViewBag.ProductLookup = productLookup;
                 ViewBag.LowStock = lowStock;
                 ViewBag.OverStock = overStock;
@@ -66,15 +63,6 @@ namespace CleanBrilliantCompany.Controllers
         {
             var report = _inventoryControl.GenerateReport();
             return Content(report, "text/html");
-        }
-
-        // TEST: View all products
-        [HttpGet]
-        public IActionResult ViewAllProducts()
-        {
-            var products = _inventoryControl.GetAllProducts();
-            return View("ViewAllProducts", products);
-
         }
 
     }

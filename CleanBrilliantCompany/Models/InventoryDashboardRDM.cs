@@ -34,15 +34,6 @@ namespace CleanBrilliantCompany.Models
         public List<int> LowStockProducts => new List<int>(_lowStockProducts);
         public List<int> OverStockProducts => new List<int>(_overStockProducts);
 
-        // Computed properties to provide string representations for the view
-        //public string LowStockAlert => LowStockProducts.Count > 0
-        //    ? $"Low stock alert for products: {string.Join(", ", LowStockProducts)}"
-        //    : "No low stock alerts.";
-
-        //public string OverStockAlert => OverStockProducts.Count > 0
-        //    ? $"Overstock alert for products: {string.Join(", ", OverStockProducts)}"
-        //    : "No overstock alerts.";
-
         public InventoryDashboardRDM(string name, int validityDuration)
             : base(0, name, DateTime.Now, DateTime.Now, validityDuration, 2)
         {
@@ -178,7 +169,7 @@ namespace CleanBrilliantCompany.Models
             return IsLowStock(productId);
         }
 
-        public void UpdateDashboardData(Dictionary<int, int> stockLevels, Dictionary<int, int> thresholds)
+        public void UpdateStockThreshold(Dictionary<int, int> stockLevels, Dictionary<int, int> thresholds)
         {
             foreach (var item in stockLevels)
             {
@@ -207,22 +198,6 @@ namespace CleanBrilliantCompany.Models
 
             _lowStockProducts.AddRange(_stockLevel.Keys.Where(productId => IsLowStock(productId)));
             _overStockProducts.AddRange(_stockLevel.Keys.Where(productId => IsOverStock(productId)));
-
-            //var lowStockProducts = _stockLevel.Keys
-            //    .Where(productId => IsLowStock(productId))
-            //    .ToList();
-
-            //var overStockProducts = _stockLevel.Keys
-            //    .Where(productId => IsOverStock(productId))
-            //    .ToList();
-
-            //LowStockAlert = lowStockProducts.Count > 0
-            //    ? $"Low stock alert for products: {string.Join(", ", lowStockProducts)}"
-            //    : "No low stock alerts.";
-
-            //OverStockAlert = overStockProducts.Count > 0
-            //    ? $"Overstock alert for products: {string.Join(", ", overStockProducts)}"
-            //    : "No overstock alerts.";
         }
 
     }

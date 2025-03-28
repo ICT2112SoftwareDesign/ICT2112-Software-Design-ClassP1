@@ -38,11 +38,6 @@ namespace CleanBrilliantCompany.Mapper
                         TypeId = 2
                     };
 
-                    Console.WriteLine($"Saving dashboard: {dashboardEntity.Name}");
-                    _context.DashboardTable.Add(dashboardEntity);
-                    _context.SaveChanges();
-                    Console.WriteLine($"Dashboard saved with DashboardId: {dashboardEntity.DashboardId}");
-
                     // Save stock levels and thresholds to InventoryLevel
                     var stockLevels = dashboard.GetAllStockLevels();
                     var thresholds = dashboard.GetAllThresholds();
@@ -64,7 +59,6 @@ namespace CleanBrilliantCompany.Mapper
                         _context.SaveChanges(); // Save each entry to get the generated InventoryId
                         productToInventoryIdMap[productId] = inventoryLevel.InventoryId; // Store the mapping
                     }
-                    Console.WriteLine($"Saved {stockLevels.Count} InventoryLevel records");
 
                     // Now generate and save alerts
                     var lowStockProducts = dashboard.LowStockProducts;
@@ -105,7 +99,6 @@ namespace CleanBrilliantCompany.Mapper
                     }
 
                     _context.SaveChanges();
-                    Console.WriteLine("Saved InventoryAlerts records");
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -151,7 +144,7 @@ namespace CleanBrilliantCompany.Mapper
                 replenishmentStatuses[inventoryLevel.ProductId] = inventoryLevel.ReplenishmentStatus;
             }
 
-            dashboard.UpdateDashboardData(stockLevels, thresholds);
+            dashboard.UpdateStockThreshold(stockLevels, thresholds);
             dashboard.UpdateReplenishmentStatus();
             dashboard.GenerateAlerts(); // Ensure alerts are generated
 
@@ -162,9 +155,8 @@ namespace CleanBrilliantCompany.Mapper
         {
             var result = new Dictionary<int, (int LowStockWeeks, int OverStockWeeks)>();
 
-            // Debug: Check the number of records in InventoryAlertsTable
+            // Check the number of records in InventoryAlertsTable
             var alertCount = _context.InventoryAlertsTable.Count();
-            Console.WriteLine($"Total alerts in InventoryAlertsTable: {alertCount}");
 
             // Query only InventoryAlertsTable
             var alerts = _context.InventoryAlertsTable
