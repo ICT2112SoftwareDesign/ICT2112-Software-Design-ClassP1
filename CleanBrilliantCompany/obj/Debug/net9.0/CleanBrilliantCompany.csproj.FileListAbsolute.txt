@@ -7031,3 +7031,4 @@ C:\GitHub\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0
 C:\GitHub\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\CleanBrilliantCompany.genruntimeconfig.cache
 C:\GitHub\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\ref\CleanBrilliantCompany.dll
 >>>>>>> origin/module2-team3-transactionItemProductExpiry
+C:\Users\song-\source\repos\ICT2112SoftwareDesign\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\obj\Debug\net9.0\compressed\d06snfodjj-k30kbl7j7x.gz
