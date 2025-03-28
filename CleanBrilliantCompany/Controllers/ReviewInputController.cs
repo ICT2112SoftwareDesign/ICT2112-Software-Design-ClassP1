@@ -95,7 +95,7 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Completed", "CustomerPage");
         }
 
-
+        /*
         [HttpPost]
         public IActionResult EditReview(int reviewId, string reviewText, int rating)
         {
@@ -109,7 +109,7 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             return RedirectToAction("GetAllProducts");
-        }
+        }*/
         [HttpPost]
         public IActionResult DeleteReview(int reviewId)
         {

@@ -53,6 +53,7 @@ namespace CleanBrilliantCompany.Models
              // Validate review text
             if (string.IsNullOrWhiteSpace(reviewText))
                 return false;
+            
 
 
            
@@ -63,7 +64,7 @@ namespace CleanBrilliantCompany.Models
 
              if (success)
             {
-                success = reviewDatabase.addReview(customerId.Value, reviewText, rating, productId);
+                //success = reviewDatabase.addReview(customerId.Value, reviewText, rating, productId);
                 if (success)
                     _observer.OnReviewSubmitted(customerId.Value, productId, rating);
                 else
@@ -154,6 +155,8 @@ namespace CleanBrilliantCompany.Models
             var product = productService.getProductDetails(productId); 
             return product?.GetProductDetails()["ProductName"] as string ?? "Unknown Product";
         }
+
+
 
 
 
