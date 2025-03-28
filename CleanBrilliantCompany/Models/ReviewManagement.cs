@@ -149,6 +149,12 @@ namespace CleanBrilliantCompany.Models
             return allReviews.Where(r => r.RetrieveProductId() == productId).ToList();
         }
 
+        public string GetProductName(int productId)
+        { 
+            var product = productService.getProductDetails(productId); 
+            return product?.GetProductDetails()["ProductName"] as string ?? "Unknown Product";
+        }
+
 
 
     }

@@ -140,7 +140,7 @@
                                 }
                                 @if (!isReviewed)
                                 {
-                                    <form method="get" asp-action="RateProduct" asp-controller="CustomerPage">
+                                    <form method="get" asp-action="RateProduct" asp-controller="ReviewInput">
                                         <input type="hidden" name="productId" value="@product.Key" />
                                         <button type="submit" class="btn btn-outline-primary btn-sm">Rate</button>
                                     </form>
@@ -148,7 +148,7 @@
                                 else
                                 {
                                     <span class="text-success">✔️ Already Reviewed</span>
-                                    <form method="get" asp-action="EditReview" asp-controller="CustomerPage">
+                                    <form method="get" asp-action="EditReview" asp-controller="ReviewInput">
                                         <input type="hidden" name="productId" value="@product.Key" />
                                         <button type="submit" class="btn btn-outline-warning btn-sm">Edit Review</button>
                                     </form>

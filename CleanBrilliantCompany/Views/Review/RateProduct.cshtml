@@ -26,7 +26,7 @@ else if (!string.IsNullOrEmpty(errorMessage))
 }
 
 <!-- ✅ Review Form -->
-<form method="post" asp-action="@(reviewId != null ? "SubmitEditedReview" : "SubmitReview")" asp-controller="CustomerPage">
+<form method="post" asp-action="@(reviewId != null ? "SubmitEditedReview" : "SubmitReview")" asp-controller="ReviewInput">
     <input type="hidden" name="productId" value="@productId" />
 
     @if (reviewId != null)
@@ -56,7 +56,7 @@ else if (!string.IsNullOrEmpty(errorMessage))
 <!-- ✅ Separate Delete Form (Not Nested!) -->
 @if (reviewId != null)
 {
-    <form method="post" asp-action="DeleteReview" asp-controller="CustomerPage" onsubmit="return confirm('Are you sure you want to delete this review?');" class="mt-2">
+    <form method="post" asp-action="DeleteReview" asp-controller="ReviewInput" onsubmit="return confirm('Are you sure you want to delete this review?');" class="mt-2">
         <input type="hidden" name="reviewId" value="@reviewId" />
         <button type="submit" class="btn btn-danger">Delete Review</button>
     </form>

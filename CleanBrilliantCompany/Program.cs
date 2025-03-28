@@ -35,6 +35,8 @@ builder.Services.AddSingleton<ICustomerDatabase>(provider => {
     return new CustomerMapper(connectionString, observer);
 });
 
+builder.Services.AddSingleton<CustomerManagement>();
+
 // 1. Register the Review Observer
 builder.Services.AddSingleton<IReviewQueryObserver, ReviewActivityLogger>(); // You can change to another implementation later
 

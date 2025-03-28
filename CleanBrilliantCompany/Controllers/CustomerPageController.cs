@@ -927,6 +927,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         //REVIEW INPUT CONTROLLER METHODS 
+        /*
         [HttpGet]
         public IActionResult RateProduct(int productId)
         {
@@ -1070,7 +1071,7 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.ProductId = productId;
 
             return View("~/Views/Review/ProductReviews.cshtml", reviews);
-        }
+        }*/
 
         // part of ProductInputController
         [HttpPost]
