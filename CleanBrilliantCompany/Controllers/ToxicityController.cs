@@ -37,6 +37,14 @@ namespace CleanBrilliantCompany.Controllers
             _dbContext = dbContext;
         }
 
+        public IActionResult Toxicity()
+        {
+            return View(new ToxicityReport {
+                ProductName = "Select an ingredient to analyze",
+                Ingredients = new List<IngredientSDM>()
+            });
+        }
+
         // Helper method to get all products from the database
         private async Task<List<dynamic>> GetAllProductsAsync()
         {

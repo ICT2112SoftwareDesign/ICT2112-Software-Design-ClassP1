@@ -97,12 +97,12 @@ namespace CleanBrilliantCompany.Models.Control
             var highToxicityIngredients = ingredients.Where(i => i.IngredientToxicity >= 0.7).ToList();
             if (highToxicityIngredients.Any())
             {
-                analysis["HighToxicityWarning"] = $"This product contains {highToxicityIngredients.Count} high-toxicity ingredients: {string.Join(", ", highToxicityIngredients.Select(i => i.IngredientName))}.";
+                analysis["High Toxicity Warning"] = $"This product contains {highToxicityIngredients.Count} high-toxicity ingredients: {string.Join(", ", highToxicityIngredients.Select(i => i.IngredientName))}.";
             }
             
             // Environmental impact analysis with more depth
             float avgToxicity = (float)ingredients.Average(i => i.IngredientToxicity);
-            analysis["EnvironmentalImpact"] = avgToxicity switch
+            analysis["Environmental Impact"] = avgToxicity switch
             {
                 < 0.3f => "Low environmental impact. Product is likely biodegradable with minimal aquatic toxicity.",
                 < 0.7f => "Moderate environmental impact. Some ingredients may persist in the environment or affect aquatic life.",
@@ -116,11 +116,11 @@ namespace CleanBrilliantCompany.Models.Control
                 
             if (regulatoryExceedings.Any())
             {
-                analysis["RegulatoryCompliance"] = $"Warning: {regulatoryExceedings.Count} ingredients exceed recommended regulatory limits.";
+                analysis["Regulatory Compliance"] = $"Warning: {regulatoryExceedings.Count} ingredients exceed recommended regulatory limits.";
             }
             else
             {
-                analysis["RegulatoryCompliance"] = "All ingredients appear to be within regulatory guidelines.";
+                analysis["Regulatory Compliance"] = "All ingredients appear to be within regulatory guidelines.";
             }
             
             // Skin sensitivity analysis
@@ -129,19 +129,19 @@ namespace CleanBrilliantCompany.Models.Control
                            i.IngredientName.Contains("Alcohol", StringComparison.OrdinalIgnoreCase) ||
                            i.IngredientName.Contains("Acid", StringComparison.OrdinalIgnoreCase));
                            
-            analysis["SkinSensitivity"] = sensitizingIngredients > 0 
+            analysis["Skin Sensitivity"] = sensitizingIngredients > 0 
                 ? $"Contains {sensitizingIngredients} potentially sensitizing ingredients. May cause reactions in sensitive individuals."
                 : "Low risk of skin sensitization.";
             
             // Safety for special populations with more detail
-            analysis["SpecialPopulations"] = avgToxicity < 0.4f ? 
+            analysis["Special Populations"] = avgToxicity < 0.4f ? 
                 "Generally safe for most users. Suitable for regular consumer use." : 
                 "Use caution with children, during pregnancy, or for those with respiratory conditions or sensitive skin.";
             
             // Cumulative effect analysis - new
             if (ingredients.Count(i => i.IngredientToxicity > 0.5) >= 3)
             {
-                analysis["CumulativeEffects"] = "Multiple moderately toxic ingredients may have amplified effects when combined.";
+                analysis["Cumulative Effects"] = "Multiple moderately toxic ingredients may have amplified effects when combined.";
             }
             
             // Add a small delay to make this method truly async
