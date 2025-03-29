@@ -5,9 +5,6 @@
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -27,10 +24,6 @@ namespace CleanBrilliantCompany.Controllers
         /// <returns>View displaying the sustainable resources.</returns>
         public IActionResult Index()
         {
-            // Retrieve ingredients from database.
-            // var ingredientTest = _context.Ingredients.ToList();
-
-
             // Hardcoded list of products.
             var products = new List<dynamic>
             {
@@ -41,9 +34,38 @@ namespace CleanBrilliantCompany.Controllers
 
             // Send to view.
             ViewBag.Products = products;
-
-
             var ingredients = GetMockSustainableIngredients();
+
+            // Retrieve carbon footprint data from the database and cast it properly.
+            var carbonData = _context.CarbonFootprintRecords.Select(data => new CarbonFootprintRecord
+            {
+                carbonFootprintId = data.carbonFootprintId,
+                EntityId = data.EntityId,
+                EntityType = data.EntityType,
+                CarbonEmission = data.CarbonEmission,
+                EcoStatus = data.EcoStatus,
+                DateCreated = data.DateCreated,
+            }).ToList();
+
+            // Calculate Reduction Percentage and store separately.
+            foreach (var data in carbonData)
+            {
+                double reductionPercentage = 0;
+                // Get baseline emission logic.            
+                double baselineEmissions = GetBaselineEmission(data.EntityId);
+
+                // If there is a baseline emission value, calculate the reduction percentage.
+                if (baselineEmissions > 0)
+                {
+                    reductionPercentage = (baselineEmissions - data.CarbonEmission) / baselineEmissions * 100;
+                }
+
+                // Update the emission value as reduction percentage.
+                data.CarbonEmission = Math.Round(reductionPercentage, 2);
+            }
+
+            // Send carbon data to the view.
+            ViewBag.CarbonData = carbonData;
             return View(ingredients);
         }
 
@@ -133,5 +155,18 @@ namespace CleanBrilliantCompany.Controllers
         //     // TODO: Add to database.
         //     // TODO: Save changes to DB
         // }
+
+        // Fetches the baseline emission for a specific EntityId (Product or Order).
+        private double GetBaselineEmission(int entityId)
+        {
+            // Get the highest "Not Eco-Friendly" carbon emission as the baseline.
+            var baselineRecord = _context.CarbonFootprintRecords
+                .Where(c => c.EntityId == entityId && c.EcoStatus == "Not Eco-Friendly")
+                // Highest emission is the worst case.
+                .OrderByDescending(c => c.CarbonEmission)
+                .FirstOrDefault();
+
+            return (double)(baselineRecord?.CarbonEmission ?? 0);
+        }
     }
 }

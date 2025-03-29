@@ -3,11 +3,11 @@
 <filename> Index.cshtml </filename>
 <author> Yuen Wee Kin, Edwin </author> 
 <created> 2025-03-23 </created>
-<updated> 2025-03-26 </updated>
+<updated> 2025-03-29 </updated>
 <description>
     View displaying sustainable ingredient inventory with alerts for low stock.
 </description>
-<version> 1.1 </version>
+<version> 1.2 </version>
 *@
 
 @model List<CleanBrilliantCompany.Models.Entity.IngredientSDM>
@@ -16,88 +16,180 @@
     ViewData["Title"] = "Sustainable Resource Inventory";
 }
 
-<h2>Sustainable Resource Inventory</h2>
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5>🌱 Sustainable Resource Inventory</h5>
+        using CleanBrilliantCompany.Models.Entity;
+    </div>
 
-<p>The following sustainable resources are currently available:</p>
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Resource Name</th>
+                    <th>Quantity</th>
+                    <th>Measurement Unit</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
 
-<table class="table table-striped table-bordered table-hover">
-    @* Heading *@
-    <thead class="table-dark">
-        <tr>
-            <th>Resource Name</th>
-            <th>Quantity</th>
-            <th>Measurement Unit</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    @* Content *@
-    <tbody>
-        @foreach (var ingredient in Model)
-        {
-            var status = ingredient.ReorderStatus ? "Low" : "Available";
-            var statusClass = ingredient.ReorderStatus ? "text-warning" : "text-success";
+            <tbody id="inventoryTable">
+                @foreach (var ingredient in Model)
+                {
+                    var status = ingredient.ReorderStatus ? "Low" : "Available";
+                    var statusClass = ingredient.ReorderStatus ? "text-warning" : "text-success";
 
-            if (ingredient.Quantity == 0)
-            {
-                status = "Out of Stock";
-                statusClass = "text-danger";
-            }
+                    if (ingredient.Quantity == 0)
+                    {
+                        status = "Out of Stock";
+                        statusClass = "text-danger";
+                    }
+                <tr>
+                    <td>@ingredient.IngredientName</td>
+                    <td>@ingredient.ThresholdQuantity</td>
+                    <td>@ingredient.MeasurementUnit</td>
+                    <td class="@statusClass">
+                        <strong>
+                            @(status == "Available" ? "✅ Available" :
+                                                        status == "Low" ? "⚠️ Low" : "❌ Out of Stock")
+                        </strong>
+                    </td>
+                </tr>
+                                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        <tr>
-            <td>@ingredient.IngredientName</td>
-            <td>@ingredient.ThresholdQuantity</td>
-            <td>@ingredient.MeasurementUnit</td>
-            <td class="@statusClass">
-                <strong>
-                    @(status == "Available" ? "✅ Available" :
-                                        status == "Low" ? "⚠️ Low" : "❌ Out of Stock")
-                </strong>
-            </td>
-        </tr>
+@{
+    decimal totalCarbonBefore = 0;
+    decimal totalCarbonAfter = 0;
+    decimal overallReduction = 0;
+    string overallReductionClass = "";
+}
+<div class="card mt-4">
+    <div class="card-header bg-success text-white">
+        <h5>🌱 Carbon Footprint Reduction</h5>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Category</th>
+                    <th>Before (kg CO₂)</th>
+                    <th>After (kg CO₂)</th>
+                    <th>Reduction (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.CarbonData is List<CleanBrilliantCompany.Models.Entity.CarbonFootprintRecord> carbonData)
+                {
+                    var groupedData = carbonData
+                    .GroupBy(d => d.EntityId)
+                    .Select(group =>
+                    {
+                        // Correctly find "Before" (Not Eco-Friendly) emissions.
+                        var beforeEmission = group
+                                    .Where(x => x.EcoStatus == "Not Eco-Friendly")
+                                    .Select(x => x.CarbonEmission)
+                                    .DefaultIfEmpty(0)
+                                    .Sum();
+
+                        // Correctly find "After" (Eco-Friendly) emissions
+                        var afterEmission = group
+                                    .Where(x => x.EcoStatus == "Eco-Friendly")
+                                    .Select(x => x.CarbonEmission)
+                                    .Sum();
+
+                        decimal reductionPercentage = 0;
+
+                        // Calculate reduction percentage.
+                        if (beforeEmission != 0)
+                        {
+                            // Standard reduction calculation.
+                            reductionPercentage = (decimal)((beforeEmission - afterEmission) / beforeEmission) * 100;
+                        }
+                        else
+                        {
+                            // If emission increased (or stayed the same)
+                            // If after > 0, it's an increase (100% increase) -> -100% reduction.
+                            reductionPercentage = (afterEmission > 0) ? -100 : 0;
+                        }
+
+                        return new
+                        {
+                            EntityID = group.Key,
+                            BeforeEmission = beforeEmission,
+                            AfterEmission = afterEmission,
+                            ReductionPercentage = reductionPercentage,
+                        };
+                    }).ToList();
+
+                    foreach (var item in groupedData)
+                    {
+                        totalCarbonBefore += (decimal)item.BeforeEmission;
+                        totalCarbonAfter += (decimal)item.AfterEmission;
+
+                        string reductionClass =
+                        // Green for good reduction (greater than 50%)
+                        item.ReductionPercentage > 50 ? "bg-success" :
+                        // Gray for no reduction (0%)
+                        item.ReductionPercentage == 0 ? "bg-secondary" :
+                        // Yellow for moderate reduction (20% to 50%)
+                        item.ReductionPercentage > 0 ? "bg-warning" :
+                        // Red for negative reduction (any decrease / increase of CO2)
+                        "bg-danger";
+
+                        <tr>
+                            <td>@item.EntityID</td>
+                            <td>@item.BeforeEmission.ToString("F2") kg CO₂</td>
+                            <td>@item.AfterEmission.ToString("F2") kg CO₂</td>
+                            <td class="@reductionClass text-white"><strong>@item.ReductionPercentage.ToString("F2") %</strong>
+                            </td>
+                        </tr>
+                    }
                 }
-    </tbody>
-</table>
 
-@* Carbon Footprint Reduction Section. *@
-<h3 class="mt-4">🌱 Carbon Footprint Reduction</h3>
-<div class="border p-3 bg-light rounded">
-    <p>This section highlights the impact of sustainable resources management.</p>
+                @{
+                    // Log the values for debugging purposes.
+                    Console.WriteLine($"Total Carbon Before: {totalCarbonBefore}");
+                    Console.WriteLine($"Total Carbon After: {totalCarbonAfter}");
 
-    <table class="table table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>Category</th>
-                <th>Before (kg CO₂)</th>
-                <th>After (kg CO₂)</th>
-                <th>Reduction (%)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @* Example Data (Replace with dynamic values) *@
-            @{
-                decimal baselineEmissions = 1000; // Example: Baseline emissions
-                decimal currentEmissions = 750; // Example: Current emissions
-                decimal reductionPercentage = ((baselineEmissions - currentEmissions) / baselineEmissions) * 100;
-                string reductionClass = reductionPercentage >= 50 ? "text-success" :
-                reductionPercentage >= 20 ? "text-warning" : "text-danger";
-            }
-            <tr>
-                <td>Overall Carbon Footprint</td>
-                <td>@baselineEmissions kg CO₂</td>
-                <td>@currentEmissions kg CO₂</td>
-                <td class="@reductionClass">
-                    <strong>@reductionPercentage.ToString("F2")%</strong>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    if (totalCarbonBefore > 0)
+                    {
+                        // Normal reduction calculation
+                        overallReduction = ((totalCarbonBefore - totalCarbonAfter) / totalCarbonBefore) * 100;
+                    }
+                    else if (totalCarbonBefore == 0 && totalCarbonAfter > 0)
+                    {
+                        // If no emissions before, but there are emissions after, consider a 100% increase.
+                        overallReduction = -100;
+                    }
+                    else if (totalCarbonBefore == 0 && totalCarbonAfter == 0)
+                    {
+                        // If no emissions before and after, no reduction.
+                        overallReduction = 0;
+                    }
 
-    @* Visual Progress Bar *@
-    <div class="progress mt-3">
-        <div class="progress-bar @reductionClass" role="progressbar" style="width: @reductionPercentage%;"
-            aria-valuenow="@reductionPercentage" aria-valuemin="0" aria-valuemax="100">
-            @reductionPercentage.ToString("F2")% Reduction
-        </div>
+                    // Log overall reduction for debugging.
+                    Console.WriteLine($"Overall Reduction: {overallReduction}");
+
+                    // Decide the overall reduction class based on the value.
+                    overallReductionClass = overallReduction >= 50 ? "bg-success" : overallReduction >= 20 ?
+                    "bg-warning" : "bg-danger";
+                }
+            </tbody>
+
+            @* Progrss bar *@
+            <div class="progess mt-3">
+                <div class="progress-bar progress-bar-striped progress-bar-animated @overallReductionClass"
+                    role="progressbar" style="width: @overallReduction%;" aria-valuenow="@overallReduction"
+                    aria-valuemin="0" aria-valuemax="100">
+                    @overallReduction.ToString("F2")% Reduction
+                </div>
+            </div>
+        </table>
     </div>
 </div>
 
@@ -142,6 +234,7 @@
     <button type="submit" class="btn btn-primary">Add Resource</button>
 </form>
 
+
 @* Alert Section *@
 @{
     var lowStockItems = Model.Where(i => i.ReorderStatus || i.ThresholdQuantity == 0).ToList();
@@ -149,22 +242,18 @@
 
 @if (lowStockItems.Any())
 {
-    <div class="alert alert-warning mt-4" role="alert">
+    <div class="alert alert-warning mt-4">
         <h4 class="alert-heading">⚠️ Inventory Alert!</h4>
-        <p>The following items are running low or are out of stock: </p>
+        <p>The following items need attention:</p>
+
         <ul>
             @foreach (var ingredient in lowStockItems)
             {
-                <li><strong>Resource Name: </strong>@ingredient.IngredientName</li>
-                <li><strong>Currently Available Quantity: </strong>@ingredient.Quantity</li>
-                <li><strong>Threshold Value: </strong>@ingredient.ThresholdQuantity</li>
-                <li><strong>Suggested Actions: </strong>
-                    @(ingredient.Quantity == 0 ? "Replenish immediately!" :
-                                ingredient.Quantity < ingredient.ThresholdQuantity
-                                ? "Consider reordering."
-                                : "Stock is sufficient.")
+                <li>
+                    <strong>@ingredient.IngredientName</strong>: @ingredient.Quantity available
+                    (Threshold: @ingredient.ThresholdQuantity) - @(ingredient.Quantity == 0 ? "🚨 Replenish Now!" :
+                                (ingredient.Quantity < ingredient.ThresholdQuantity ? "📌 Consider reordering." : "✅ Stock is sufficient."))
         </li>
-        <hr />
                 }
         </ul>
     </div>
