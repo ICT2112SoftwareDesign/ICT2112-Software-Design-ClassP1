@@ -379,7 +379,7 @@
                     @* search bars *@
                     <div class="row mb-3 ml-2">
                         @* Search ITEM ID *@
-                        <form method="post" asp-action="searchById">
+                        <form method="post" asp-action="searchItemById">
                             <div class="row">
                                 <div>
                                     <input class="form-control" id="itemId" type="number" name="searchedItemId"
@@ -451,22 +451,31 @@
                         </div>
 
                         @* iProduct Test Button *@
-                        <div class="col-auto">
+                        @* <div class="col-auto">
                             <form method="post" asp-action="retrieveProductDetails">
                                 <button type="submit" class="btn btn-primary">
                                     Show products
                                 </button>
                             </form>
-                        </div>
+                        </div> *@
 
                         @* iReturnForm Test Button *@
-                        <div class="col-auto">
+                        @* <div class="col-auto">
                             <form method="post" asp-action="getToReturnItems">
                                 <button type="submit" class="btn btn-primary">
                                     Show ToReturn Items
                                 </button>
                             </form>
-                        </div>
+                        </div> *@
+
+                        @* get all items Test Button *@
+                        @* <div class="col-auto">
+                            <form method="post" asp-action="getItems">
+                                <button type="submit" class="btn btn-primary">
+                                    Get All Items
+                                </button>
+                            </form>
+                        </div> *@
                     </div>
 
                     <table class="table">
@@ -505,20 +514,22 @@
                                 </td>
                                 <td>@(itemInfo.ContainsKey("ReturnId") ? itemInfo["ReturnId"] ?? "NULL" : "NULL")</td>
                                 <td class="d-flex">
-                                    <button type="button" class="btn btn-warning flex-fill mr-2 text-black-50" data-bs-toggle="modal"
-                                        data-bs-target="#updateItemModal" data-item-id="@itemInfo["ItemId"]">
+                                    <button type="button" class="btn btn-warning flex-fill mr-2 text-black-50"
+                                        data-bs-toggle="modal" data-bs-target="#updateItemModal"
+                                        data-item-id="@itemInfo["ItemId"]">
                                         Update
                                     </button>
                                     <button type="button" class="btn btn-danger flex-fill mr-2" data-bs-toggle="modal"
                                         data-bs-target="#deleteModal" data-delete-item-id="@itemInfo["ItemId"]">
                                         Delete
                                     </button>
-                                    <button type="button" class="btn btn-warning flex-fill text-black-50" data-bs-toggle="modal"
+                                    @* FOR TESTING UPDATE STATUS *@
+                                    @* <button type="button" class="btn btn-warning flex-fill text-black-50" data-bs-toggle="modal"
                                         data-bs-target="#updateItemStatusModal"
                                         data-updateitem-id="@itemInfo["ItemId"]">
                                         Update ID & Status
-                                    </button>
-                                </td>
+                                    </button> *@
+                                    </td>
 
                                 </tr>
 
@@ -539,15 +550,15 @@
                     </div>
 
                     @* button to trigger add model *@
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                    @* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
                         Add Item
-                    </button>
+                    </button> *@
 
                     @* button to trigger get warehouse quantity model *@
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    @* <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#warehouseModel">
                         Get Warehouse Quantity
-                    </button>
+                    </button> *@
 
                     @* add item modal *@
                     <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel"
@@ -1003,4 +1014,4 @@
 
 </body>
 
-</html>  
+</html>
