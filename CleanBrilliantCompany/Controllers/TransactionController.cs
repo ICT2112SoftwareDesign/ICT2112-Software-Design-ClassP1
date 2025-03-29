@@ -4,6 +4,7 @@ using CleanBrilliantCompany.Models.Entity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -11,20 +12,43 @@ namespace CleanBrilliantCompany.Controllers
     public class TransactionController : Controller
     {
         private readonly TransactionControl _transactionControl;
+        private readonly IItem _iItem;
         
         // Constructor
-        public TransactionController(IConfiguration configuration)
+        // public TransactionController(IConfiguration configuration)
+        // {
+        //     string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+        //     _transactionControl = new TransactionControl(connectionString);
+        // }
+
+        public TransactionController(IConfiguration configuration, IItem iItem)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-            _transactionControl = new TransactionControl(connectionString);
+            string connectionString = configuration.GetConnectionString("DefaultConnection");
+            _transactionControl = new TransactionControl(connectionString, iItem); 
         }
 
         // Route for the Index action with optional searchDate parameter
-        [HttpGet("Index")] // Maps to /Transaction/Index
-        public async Task<IActionResult> Index(DateTime? searchDate, string adjustmentType, int page = 1, int pageSize = 20)
+        [HttpGet]
+        public async Task<IActionResult> Index(DateTime? searchDate, string adjustmentType, int? itemId, int page = 1, int pageSize = 20)
         {
             // Get all transactions
             List<Transaction> allTransactions = _transactionControl.getAllTransactions();
+
+            // Filter by Item ID if provided
+            if (itemId.HasValue)
+            {
+                // allTransactions = _transactionControl.getTransactionByItem(itemId.Value);
+                // ViewData["ItemFilterActive"] = true;
+                // ViewData["FilteredItemId"] = itemId.Value;
+
+                var txByItem = _transactionControl.getTransactionByItem(itemId.Value);
+                var txByItemInfo = txByItem.Select(t => t.retrieveTransactionInfo()).ToList();
+                ViewData["TransactionsByItem"] = txByItemInfo;
+
+                // optionally skip loading all transactions if itemId is used
+                ViewData["AllTransactions"] = txByItemInfo;
+                return View();
+            }
 
             // Step 2: Count adjustment types from all records (before pagination)
             ViewData["TotalSoldCount"] = allTransactions.Count(t => t.retrieveTransactionInfo()["AdjustmentType"].ToString() == "Sold");
