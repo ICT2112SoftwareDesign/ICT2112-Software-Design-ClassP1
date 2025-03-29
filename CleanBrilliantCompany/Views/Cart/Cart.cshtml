@@ -31,7 +31,7 @@
                                 <td>@product["ProductName"]</td>
                                 <td>@Convert.ToDecimal(product["CostPrice"]).ToString("C")</td> <!-- Explicitly cast to decimal -->
                                 <td>
-                                    <form asp-action="UpdateQuantity" method="post" class="d-inline">
+                                    <form asp-asp-controller="CartInput" asp-action="updateQuantity" method="post" class="d-inline">
                                         <input type="hidden" name="productId" value="@item.Key" />
                                         <input type="number" name="quantity" value="@item.Value" min="1" class="form-control d-inline" style="width: 80px;" />
                                         <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
@@ -39,7 +39,7 @@
                                 </td>
                                 <td>$@(Convert.ToDecimal(product["CostPrice"]) * item.Value)</td> <!-- Explicitly cast to decimal -->
                                 <td>
-                                    <form asp-action="RemoveFromCart" method="post">
+                                    <form asp-asp-controller="CartInput" asp-action="removeFromCart" method="post">
                                         <input type="hidden" name="productId" value="@item.Key" />
                                         <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                                     </form>
@@ -51,7 +51,7 @@
 
                 <div class="text-right mt-4">
                     <h4><strong>Total Product Price:</strong> @ViewBag.Total.ToString("C")</h4>
-                    <a asp-controller="CustomerPage" asp-action="Checkout" class="btn btn-success btn-lg mt-3">Proceed to Checkout</a>
+                    <a asp-controller="CustomerPage" asp-action="redirectToCheckout" class="btn btn-success btn-lg mt-3">Proceed to Checkout</a>
                 </div>
             </div>
         </div>

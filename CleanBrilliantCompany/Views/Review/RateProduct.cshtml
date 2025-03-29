@@ -35,7 +35,7 @@ else if (!string.IsNullOrEmpty(errorMessage))
     }
 
     <div class="form-group">
-        <label for="reviewText">Your Review</label>
+        <label for="reviewText">Your Review</label> 
         <textarea name="reviewText" class="form-control" required>@reviewText</textarea>
     </div>
 
@@ -49,7 +49,7 @@ else if (!string.IsNullOrEmpty(errorMessage))
             @(reviewId != null ? "Update Review" : "Submit Review")
         </button>
 
-        <a href="@Url.Action("Completed", "CustomerPage")" class="btn btn-secondary ml-2">Cancel</a>
+        <a href="@Url.Action("completed", "OrderInput")" class="btn btn-secondary ml-2">Cancel</a>
     </div>
 </form>
 

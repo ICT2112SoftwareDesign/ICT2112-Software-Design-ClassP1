@@ -26,7 +26,7 @@ namespace CleanBrilliantCompany.Controllers
             if (product == null)
             {
                 TempData["Error"] = "Product Not found";
-                return RedirectToAction("Completed");
+                return RedirectToAction("completed");
             }
             ViewBag.ProductId = productId;
             //ViewBag.ProductName = product.GetProductDetails()["ProductName"];
@@ -48,7 +48,7 @@ namespace CleanBrilliantCompany.Controllers
             if (review == null)
             {
                 TempData["Error"] = "Review not found.";
-                return RedirectToAction("Completed");
+                return RedirectToAction("completed");
             }
 
             //var product = _productService.getProductDetails(productId);
@@ -78,7 +78,7 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Success"] = "Review submitted successfully!";
             }
 
-            return RedirectToAction("Completed", "Customerpage"); // gotta check where to go next. 
+            return RedirectToAction("completed", "OrderInput"); // gotta check where to go next. 
         }
         [HttpPost]
         public IActionResult SubmitEditedReview(int reviewId, string reviewText, int rating, int productId)
@@ -92,7 +92,7 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Success"] = "Review updated successfully!";
             }
 
-            return RedirectToAction("Completed", "CustomerPage");
+            return RedirectToAction("completed", "OrderInput");
         }
 
         /*
@@ -124,7 +124,7 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Success"] = "Review deleted successfully.";
             }
 
-            return RedirectToAction("Completed", "CustomerPage");
+            return RedirectToAction("completed", "OrderInput");
         }
 
         //[HttpPost]

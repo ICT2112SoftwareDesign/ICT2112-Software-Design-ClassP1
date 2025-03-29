@@ -10,7 +10,7 @@
     <div class="row mb-4">
         <!-- To Pay -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ViewCart" class="text-decoration-none">
+            <a asp-controller="CartInput" asp-action="viewCart" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-wallet" style="margin-right: 5px;"></i>To Pay</p>
@@ -21,7 +21,7 @@
 
         <!-- To Ship -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ToShip" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="toShip" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-box" style="margin-right: 5px;"></i>To Ship</p>
@@ -32,7 +32,7 @@
 
         <!-- To Receive -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ToReceive" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="toReceive" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-truck" style="margin-right: 5px;"></i>To Receive</p>
@@ -43,7 +43,7 @@
 
         <!-- Completed -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="Completed" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="completed" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-check" style="margin-right: 5px;"></i>Completed</p>
