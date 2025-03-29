@@ -66,8 +66,8 @@ namespace CleanBrilliantCompany.Controllers
             // Populate comparison data
             viewModel.Products = products.Select(p => new ProductComparisonData
             {
-                ProductId = p.getProductId(),
-                ProductName = p.getProductName(),
+                ProductId = p.retrieveProductId(),
+                ProductName = p.retrieveProductName(),
                 CarbonEmission = p.calculateSelfEmission()
             }).ToList();
 
@@ -99,6 +99,29 @@ namespace CleanBrilliantCompany.Controllers
                 .OrderBy(g => g.Key)
                 .ToDictionary(g => g.Key, g => g.Sum(o => (float)o.calculateSelfEmission()));
 
+            var topEcoEfficientProducts = products
+            .OrderBy(p => p.calculateSelfEmission())
+            .Take(5)
+            .Select(p => new
+            {
+                Name = p.retrieveProductName(),
+                Emission = p.calculateSelfEmission()
+            })
+            .ToList();
+
+            viewModel.TopEcoProductLabels = topEcoEfficientProducts.Select(p => p.Name).ToList();
+            viewModel.TopEcoProductValues = topEcoEfficientProducts.Select(p => p.Emission).ToList();
+
+            var categoryEmission = products
+            .GroupBy(p => p.retrieveProductCategory())
+            .ToDictionary(
+                g => g.Key,
+                g => g.Sum(p => p.calculateSelfEmission())
+            );
+
+            viewModel.ProductCategoryLabels = categoryEmission.Keys.ToList();
+            viewModel.ProductCategoryValues = categoryEmission.Values.ToList();
+
             return View(viewModel);
         }
 
@@ -108,7 +131,7 @@ namespace CleanBrilliantCompany.Controllers
             var allItemCF = _itemCFControl.getAllItemCarbonFootprint();
 
             var ecoFriendlyItemEmission = allItemCF
-                .Where(x => x.getEcoStatus().Equals("Eco-Friendly"))
+                .Where(x => x.retrieveEcoStatus().Equals("Eco-Friendly"))
                 .Sum(x => x.calculateSelfEmission());
 
             ecoFriendlyItemEmission = Math.Round(ecoFriendlyItemEmission, 2);
@@ -128,13 +151,13 @@ namespace CleanBrilliantCompany.Controllers
 
             foreach (ProductCarbonFootprintRDM prod in products)
             {
-                var productItems = allItemCF.Where(x => x.getProductId() == prod.getProductId());
+                var productItems = allItemCF.Where(x => x.retrieveProductId() == prod.retrieveProductId());
                 int numOfProductItems = productItems.Count();
                 viewModel.ItemCarbonFootprints.Add(new
                 {
-                    name = prod.getProductName(),
+                    name = prod.retrieveProductName(),
                     baseEmission = prod.calculateSelfEmission(),
-                    ecoStatus = prod.getEcoStatus(),
+                    ecoStatus = prod.retrieveEcoStatus(),
                     numOfProductItems = numOfProductItems,
                     averagePerItemEmission = Math.Round(productItems.Average(x => x.calculateSelfEmission()), 2)
                 });
@@ -145,7 +168,7 @@ namespace CleanBrilliantCompany.Controllers
         {
             if (_productCFControl.getProductCarbonFootprint(productId) == 0) return NotFound("The specified product does not exist");
 
-            List<ItemCarbonFootprintRDM> productItems = _itemCFControl.getAllItemCarbonFootprint().Where(x => x.getProductId() == productId).ToList();
+            List<ItemCarbonFootprintRDM> productItems = _itemCFControl.getAllItemCarbonFootprint().Where(x => x.retrieveProductId() == productId).ToList();
 
             Dictionary<string, float> result = productItems.GroupBy(o => o.retrieveDateCreated().ToString("yyyy-MM-dd"))
                 .OrderBy(g => DateTime.Parse(g.Key))

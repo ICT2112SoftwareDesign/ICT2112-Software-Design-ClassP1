@@ -21,7 +21,7 @@
         }
 
         // Getters and Setters
-        public int getItemCFId()
+        private int getItemCFId()
         {
             return itemCFId;
         }
@@ -31,7 +31,7 @@
             this.itemCFId = itemCFId;
         }
 
-        public int getItemId()
+        private int getItemId()
         {
             return itemId;
         }
@@ -41,7 +41,7 @@
             this.itemId = itemId;
         }
 
-        public int getProductId()
+        private int getProductId()
         {
             return productId;
         }
@@ -61,7 +61,7 @@
             this.carbonEmission = carbonEmission;
         }
 
-        public string getEcoStatus()
+        private string getEcoStatus()
         {
             return ecoStatus;
         }
@@ -89,6 +89,16 @@
         public DateTime retrieveDateCreated()
         {
             return dateCreated;
+        }
+
+        public int retrieveProductId()
+        {
+            return productId;
+        }
+
+        public string retrieveEcoStatus()
+        {
+            return ecoStatus;
         }
     }
 }
