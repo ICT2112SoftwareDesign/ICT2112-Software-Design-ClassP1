@@ -467,6 +467,15 @@
                                 </button>
                             </form>
                         </div> *@
+
+                        @* get all items Test Button *@
+                        @* <div class="col-auto">
+                            <form method="post" asp-action="getItems">
+                                <button type="submit" class="btn btn-primary">
+                                    Get All Items
+                                </button>
+                            </form>
+                        </div> *@
                     </div>
 
                     <table class="table">
@@ -505,8 +514,9 @@
                                 </td>
                                 <td>@(itemInfo.ContainsKey("ReturnId") ? itemInfo["ReturnId"] ?? "NULL" : "NULL")</td>
                                 <td class="d-flex">
-                                    <button type="button" class="btn btn-warning flex-fill mr-2 text-black-50" data-bs-toggle="modal"
-                                        data-bs-target="#updateItemModal" data-item-id="@itemInfo["ItemId"]">
+                                    <button type="button" class="btn btn-warning flex-fill mr-2 text-black-50"
+                                        data-bs-toggle="modal" data-bs-target="#updateItemModal"
+                                        data-item-id="@itemInfo["ItemId"]">
                                         Update
                                     </button>
                                     <button type="button" class="btn btn-danger flex-fill mr-2" data-bs-toggle="modal"
@@ -519,7 +529,7 @@
                                         data-updateitem-id="@itemInfo["ItemId"]">
                                         Update ID & Status
                                     </button> *@
-                                </td>
+                                    </td>
 
                                 </tr>
 
@@ -1004,4 +1014,4 @@
 
 </body>
 
-</html>  
+</html>

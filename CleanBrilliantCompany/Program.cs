@@ -44,6 +44,7 @@ builder.Services.AddScoped<IOrderFufilment, ItemControl>();
 builder.Services.AddScoped<IRefundDetails, ItemControl>();
 builder.Services.AddScoped<IItemCreation, ItemControl>();
 builder.Services.AddScoped<IReturnForm, ItemControl>();
+builder.Services.AddScoped<IItemDetails, ItemControl>();
 
 builder.Services.AddScoped<iProduct, ProductControl>();
 builder.Services.AddScoped<iProductQuantity, ProductControl>();

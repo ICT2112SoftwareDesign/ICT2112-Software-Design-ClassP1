@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse, IReturnForm
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse, IReturnForm, IItemDetails
     {
         private readonly ItemMapper _itemMapper;
         private readonly TransactionControl _transactionObserver; // Added observer
@@ -38,6 +38,11 @@ namespace CleanBrilliantCompany.Models.Control
         public int getItemCount()
         {
             return _itemMapper.getItemCount();
+        }
+
+        // method for IItemDetails for team 6
+        public async Task<List<Item>> getItems() {
+            return await Task.FromResult(_itemMapper.getItems());
         }
 
         public async Task<Item> getItemById(int itemId)

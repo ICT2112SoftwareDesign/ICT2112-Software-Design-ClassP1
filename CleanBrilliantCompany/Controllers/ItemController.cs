@@ -59,6 +59,31 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Index", new { page = page, pageSize = pageSize });
         }
 
+
+        // default get all items
+        [HttpPost]
+        [Route("getItems")]
+
+        public async Task<IActionResult> getItems()
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            List<Item> items = await _itemControl.getItems();
+
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            foreach (var info in itemsInfo)
+            {
+                Console.WriteLine($"ItemId: {info["ItemId"]}");
+            }
+
+
+
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         [Route("searchItemById")]
         public async Task<IActionResult> searchItemById(int searchedItemId)
