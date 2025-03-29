@@ -1,3 +1,7 @@
+namespace CleanBrilliantCompany.DatabaseEntities
+{
+
+
 using System.ComponentModel.DataAnnotations;
 
 public class ProductTable
@@ -14,4 +18,6 @@ public class ProductTable
     public double ToxicityPercentage { get; set; }
     public int CarbonFootprint { get; set; }
     public string ProductState { get; set; }
+}
+
 }

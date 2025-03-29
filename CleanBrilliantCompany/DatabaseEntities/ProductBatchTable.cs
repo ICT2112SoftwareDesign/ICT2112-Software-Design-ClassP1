@@ -1,3 +1,6 @@
+namespace CleanBrilliantCompany.DatabaseEntities
+{
+
 using System.ComponentModel.DataAnnotations;
 
 public class ProductBatchTable
@@ -10,5 +13,7 @@ public class ProductBatchTable
     public DateTime ManufactureDate { get; set; }
     public int Quantity { get; set; }
     public double BatchCost { get; set; }
+
+}
 
 }

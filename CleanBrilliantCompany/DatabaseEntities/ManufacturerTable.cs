@@ -1,3 +1,7 @@
+namespace CleanBrilliantCompany.DatabaseEntities
+{
+
+
 using System.ComponentModel.DataAnnotations;
 public class ManufacturerTable
 {
@@ -6,4 +10,6 @@ public class ManufacturerTable
     public string CompanyName { get; set; } = string.Empty;
     public string ManufacturerAddress { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+}
+
 }

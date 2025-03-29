@@ -1,6 +1,7 @@
 using CleanBrilliantCompany.DTO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using CleanBrilliantCompany.DatabaseEntities;
 public class ApplicationDbContext : DbContext
 {
     public DbSet<DashboardTable> Dashboards { get; set; }

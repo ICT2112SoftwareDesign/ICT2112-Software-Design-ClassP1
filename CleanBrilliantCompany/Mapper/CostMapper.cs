@@ -1,40 +1,58 @@
 using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.Interface;
 
 public class CostMapper
 {
 
     private readonly ApplicationDbContext _db;
 
-    public CostMapper(ApplicationDbContext dbContext)
-    {
-        _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-}
+    private readonly IItem _itemService;
+    private readonly IBatch _batchService;
+    private readonly IManufacturer _manufacturerService;
 
-    // 🔹 Fetch Product Manufacturers DTOs
-    public List<ProductManufacturerDTO> GetAllManufacturers()
+
+    // public CostMapper(ApplicationDbContext dbContext)
+    // {
+    //  _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    // }
+
+      public CostMapper(IItem itemService, IBatch batchService, IManufacturer manufacturerService,ApplicationDbContext dbContext)
     {
-        return _db.Manufacturers
-            .Select(m => new ProductManufacturerDTO
-            {
-                ManufacturerId = m.ManufacturerId,
-                CompanyName = m.CompanyName,
-                Address = m.ManufacturerAddress,
-                Email = m.Email
-            })
-            .ToList();
+        _itemService = itemService;
+        _batchService = batchService;
+        _manufacturerService = manufacturerService;
+        _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    // 🔹 Fetch Product Batches DTOs
+
+
+    // ----------------------------------------------------------------
+    // Fetching via Retrieval Service from External Interfaces
+
+     // 🔹 Fetch Product Manufacturers DTOs (maps ManufacturerTable → ProductManufacturerDTO)
+    public List<ProductManufacturerDTO> GetAllManufacturers()
+    {
+        var manufacturers = _manufacturerService.GetAllManufacturers();
+
+        return manufacturers.Select(m => new ProductManufacturerDTO
+        {
+            ManufacturerId = m.ManufacturerId,
+            CompanyName = m.CompanyName,
+            Address = m.ManufacturerAddress,
+            Email = m.Email
+        }).ToList();
+    }
+
+    // 🔹 Fetch Product Batches DTOs (maps ProductBatchTable → ProductBatchDTO)
     public List<ProductBatchDTO> GetAllProductBatches()
     {
-        var productBatches = _db.ProductBatch.ToList();    
-        var products = _db.Product.Select(p => new { p.ProductId, p.ManufacturerId }).ToList();  // Only fetch ProductId and ManufacturerId for the join
+        var productBatches = _batchService.GetAllProductBatch();
+        var products = _db.Product.Select(p => new { p.ProductId, p.ManufacturerId }).ToList();
 
-        var enrichedBatches = productBatches.Select(batch =>
+        return productBatches.Select(batch =>
         {
             var product = products.FirstOrDefault(p => p.ProductId == batch.ProductId);
-
-            var productBatchDTO = new ProductBatchDTO
+            return new ProductBatchDTO
             {
                 BatchCode = batch.BatchCode,
                 ProductId = batch.ProductId,
@@ -42,33 +60,35 @@ public class CostMapper
                 ReceiveDate = batch.ReceiveDate,
                 ManufactureDate = batch.ManufactureDate,
                 BatchQuantity = batch.Quantity,
-                BatchPrice = Convert.ToDecimal(batch.BatchCost),  // Explicitly convert BatchCost to Decimal
-                ManufacturerId = product?.ManufacturerId ?? -1 // If no product found, set ManufacturerId to -1
+                BatchPrice = Convert.ToDecimal(batch.BatchCost),
+                ManufacturerId = product?.ManufacturerId ?? -1
             };
-
-            return productBatchDTO;
         }).ToList();
+    }
 
-        return enrichedBatches;
-    }
-  public List<ItemDTO> GetAllItems()
+    // 🔹 Fetch Items DTOs (maps ItemTable → ItemDTO)
+    public List<ItemDTO> GetAllItems()
     {
-        return _db.Items
-            .Select(i => new ItemDTO
-            {
-                ItemId = i.ItemId,
-                ProductId = i.ProductId,
-                SalePrice = (decimal)i.SalePrice,
-                BatchCode = i.BatchCode,
-                WarehouseId = i.WarehouseId,
-                ItemStatus = i.ItemStatus,
-                ReservationId = i.ReservationId,
-                OrderId = i.OrderId,
-                TransferId = i.TransferId,
-                ReturnId = i.ReturnId
-            })
-            .ToList();
+        var items = _itemService.getItems();
+
+        return items.Select(i => new ItemDTO
+        {
+            ItemId = i.ItemId,
+            ProductId = i.ProductId,
+            SalePrice = (decimal)i.SalePrice,
+            BatchCode = i.BatchCode,
+            WarehouseId = i.WarehouseId,
+            ItemStatus = i.ItemStatus,
+            ReservationId = i.ReservationId,
+            OrderId = i.OrderId,
+            TransferId = i.TransferId,
+            ReturnId = i.ReturnId
+        }).ToList();
     }
+
+
+    // ---------------------------------------------------------------
+    // 🔹 Fetch Dashboard DTOs
 
     public DashboardDTO ToDTO(DashboardTable table)
     {

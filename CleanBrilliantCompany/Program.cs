@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-
+using CleanBrilliantCompany.Service;
+using CleanBrilliantCompany.Interface;
 
 DotNetEnv.Env.Load();
 
@@ -19,6 +20,13 @@ builder.Services.AddScoped<CostMapper>();
 builder.Services.AddScoped<CostControl>();
 
 builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>();  // ✅ Added Logger
+
+// ✅ Register data retrieval interfaces
+builder.Services.AddScoped<IItem, CostDataRetrievalService>();
+builder.Services.AddScoped<IBatch, CostDataRetrievalService>();
+builder.Services.AddScoped<IManufacturer, CostDataRetrievalService>();
+
+
 // ✅ Register Visualization Service
 // builder.Services.AddScoped<IVisualizationService, VisualizationService>();
 
