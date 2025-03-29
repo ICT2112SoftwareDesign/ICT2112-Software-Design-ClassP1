@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 public class DashboardDTO
 {
     public int DashboardId { get; set; }
+    
     public string Name { get; set; } = string.Empty; 
 
     [Required]

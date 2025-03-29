@@ -11,35 +11,14 @@
 
     <title>CleanBrilliantCompany Dashboard</title>
 
-    <!-- Custom fonts for this template (optional) -->
+    <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <!-- Bootstrap CSS (using Bootstrap 5 CDN for Cost Dashboard) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom styles for SB Admin 2 template -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.css" rel="stylesheet">
-
-    <style>
-        /* ✅ Put your custom styling here!*/
-    .container,
-    .container-sm,
-    .container-md,
-    .container-lg,
-    .container-xl 
-    {
-        max-width: 100vw !important; /* DO NOT REMOVE AH ._. */
-    }
-        
-    table td,
-    table th {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    }
-
-    .card {
-    border-radius: .5rem;
-    }
-    </style>
 
 </head>
 
@@ -290,6 +269,42 @@
                                         <div class="small text-gray-500">Emily Fowler · 58m</div>
                                     </div>
                                 </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                            alt="...">
+                                        <div class="status-indicator"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">I have the photos that you ordered last month, how
+                                            would you like them sent to you?</div>
+                                        <div class="small text-gray-500">Jae Chun · 1d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
+                                            alt="...">
+                                        <div class="status-indicator bg-warning"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Last month's report looks great, I am very happy with
+                                            the progress so far, keep up the good work!</div>
+                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
+                                            told me that people say this to all dogs, even if they aren't good...</div>
+                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                                    </div>
+                                </a>
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                             </div>
                         </li>
@@ -347,58 +362,6 @@
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                     </div>
 
-                    <div class="container-fluid">
- <section class="intro">
-    <div class="bg-image h-100 w-100" style="height: 100vh;">
-        <div class="mask d-flex align-items-center h-100" style="background-color: rgba(25, 185, 234, 0);">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-12">
-                        <div class="card" style="border-radius: .5rem;">
-                            <div class="card-body">
-                                <div class="table-responsive border-0">
-                                    <table class="table table-borderless table-hover mb-0" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; border-top: none;border-color:none;">
-                                       <thead class="border-0 bg-danger" style="border: none; background-color: white;">
-                                            <tr>
-                                                <th scope="col" class="bg-danger">Product ID</th>
-                                                <th scope="col">Product Name</th>
-                                                <th scope="col">Forecasted Demand</th>
-                                                <th scope="col">Price Adjustment (%)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr style="border-top: 0.2px solid lightgrey;">
-                                                <td>1</td>
-                                                <td>UltraClean Detergent</td>
-                                                <td>7</td>
-                                                <td>
-                                                    <input type="range" min="0" max="10" value="1" style="width: 100px;"> 1%
-                                                </td>
-                                            </tr>
-                                            <tr style="border-top: 0.2px solid lightgrey;">
-                                                <td>2</td>
-                                                <td>Sparkle Window Cleaner</td>
-                                                <td>12</td>
-                                                <td>
-                                                    <input type="range" min="0" max="10" value="1" style="width: 100px;"> 1%
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-
-                    </div>
-
 
 
                 </div>
@@ -452,23 +415,22 @@
         </div>
     </div>
 
-    <!-- jQuery, Bootstrap, and SB Admin 2 scripts -->
+    <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
-
-
-    <!-- Chart.js and Bootstrap 5 scripts for Cost Dashboard -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Your Custom JS Script Here -->
-    <script>
-    
-    </script>
 
 </body>
 

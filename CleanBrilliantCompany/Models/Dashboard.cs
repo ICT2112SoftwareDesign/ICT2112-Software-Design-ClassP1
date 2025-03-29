@@ -1,6 +1,7 @@
 public abstract class Dashboard
 {
     private string _name = string.Empty;
+    private string _name = string.Empty; 
     private DateTime _requestedStartDate;
     private DateTime _requestedEndDate;
     private DateTime? _generatedDate;
@@ -10,6 +11,10 @@ public abstract class Dashboard
 
     // 🔹 DashboardId should be set from the database, so allow protected set
     public int DashboardId { get; protected set; }
+    protected int Type { get; set; } 
+
+    // 🔹 DashboardId should be set from the database, so allow protected set
+    public int DashboardId { get; protected set; } 
 
     // 🔹 Properties with validation
     public string Name
@@ -18,6 +23,7 @@ public abstract class Dashboard
         protected set
         {
             if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value)) 
                 throw new ArgumentException("Name cannot be empty.");
             _name = value;
         }
@@ -71,6 +77,7 @@ public abstract class Dashboard
     protected Dashboard(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type, DateTime? generatedDate = null)
     {
         DashboardId = dashboardId;
+        DashboardId = dashboardId;  
         Name = name;
         RequestedStartDate = requestedStartDate;
         RequestedEndDate = requestedEndDate;
@@ -79,4 +86,5 @@ public abstract class Dashboard
         Type = type;
     }
 
+}
 }
