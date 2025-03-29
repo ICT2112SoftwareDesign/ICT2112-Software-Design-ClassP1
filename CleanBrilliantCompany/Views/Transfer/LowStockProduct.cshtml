@@ -46,7 +46,8 @@ else
                     <td>
                         <button type="button" class="btn btn-primary create-transfer-btn" data-bs-toggle="modal"
                             data-bs-target="#transferModal" data-product-id="@productInfo["ProductId"]"
-                            data-warehouse-id="@productInfo["WarehouseId"]" data-warehouse-name="@productInfo["WarehouseName"]">
+                            data-destination-warehouse-id="@productInfo["WarehouseId"]"
+                            data-destination-warehouse-name="@productInfo["WarehouseName"]">
                             Create Transfer Request
                         </button>
                     </td>
@@ -68,27 +69,31 @@ else
                     <form id="transferForm" method="post" asp-controller="Transfer" asp-action="AddTransfer">
                         <input type="hidden" id="productIdInput" name="productId" value="" />
 
+                        <!-- Source Warehouse -->
                         <div class="mb-3">
-                            <label class="form-label">Source Warehouse</label>
-                            <input type="text" class="form-control" id="warehouseNameDisplay" readonly>
-                            <input type="hidden" name="sourceWarehouse" id="sourceWarehouse" required>
+                            <label for="sourceWarehouse" class="form-label">Source Warehouse</label>
+                            <select class="form-select" name="sourceWarehouse" id="sourceWarehouse" required>
+                                <option value="">Select Source Warehouse</option>
+                            </select>
                         </div>
 
-                        <!-- Display Available Stock -->
+                        
+                        <!-- Available Stock -->
                         <div class="mb-3">
                             <label class="form-label">Available Stock</label>
                             <input type="text" class="form-control" id="availableStock" readonly>
                         </div>
 
+                        <!-- Destination Warehouse (Uneditable) -->
                         <div class="mb-3">
-                            <label for="destinationWarehouse" class="form-label">Destination Warehouse</label>
-                            <select class="form-select" name="destinationWarehouse" id="destinationWarehouse" required>
-                                <option value="">Select Destination Warehouse</option>
-                            </select>
+                            <label class="form-label">Destination Warehouse</label>
+                            <input type="text" class="form-control" id="destinationWarehouseDisplay" readonly>
+                            <input type="hidden" name="destinationWarehouse" id="destinationWarehouse" required>
                         </div>
 
+
                         <div class="mb-3">
-                            <label for="quantity" class="form-label">Quantity</label>
+                            <label for="quantity" class="form-label">Transfer Quantity</label>
                             <input type="number" class="form-control" name="quantity" id="quantity" required>
                         </div>
 
@@ -101,21 +106,21 @@ else
 }
 
 <script>
-    function populateDestinationWarehouses(sourceWarehouseId) {
-        const destinationSelect = document.getElementById('destinationWarehouse');
+    function populateSourceWarehouses(destinationWarehouseId) {
+        const sourceSelect = document.getElementById('sourceWarehouse');
 
         // Clear previous options except the default one
-        while (destinationSelect.options.length > 1) {
-            destinationSelect.remove(1);
+        while (sourceSelect.options.length > 1) {
+            sourceSelect.remove(1);
         }
 
-        // Add all warehouses except the source warehouse
+        // Add all warehouses except the destination warehouse
         allWarehouses.forEach(warehouse => {
-            if (warehouse.id !== sourceWarehouseId) {
+            if (warehouse.id !== destinationWarehouseId) {
                 const option = document.createElement('option');
                 option.value = warehouse.id;
                 option.text = warehouse.name;
-                destinationSelect.add(option);
+                sourceSelect.add(option);
             }
         });
     }
@@ -138,30 +143,42 @@ else
     document.querySelectorAll(".create-transfer-btn").forEach(button => {
         button.addEventListener("click", function () {
             const productId = this.getAttribute('data-product-id');
-            const warehouseId = this.getAttribute('data-warehouse-id');
-            const warehouseName = this.getAttribute('data-warehouse-name');
+            const destinationWarehouseId = this.getAttribute('data-destination-warehouse-id');
+            const destinationWarehouseName = this.getAttribute('data-destination-warehouse-name');
 
-            // Set source warehouse details
-            document.getElementById('productIdInput').value = productId;
-            document.getElementById('sourceWarehouse').value = warehouseId;
-            document.getElementById('warehouseNameDisplay').value = warehouseName;
+            // Set destination warehouse details (Uneditable)
+            document.getElementById('destinationWarehouse').value = destinationWarehouseId;
+            document.getElementById('destinationWarehouseDisplay').value = destinationWarehouseName;
 
-            // Populate destination warehouse dropdown (excluding source)
-            populateDestinationWarehouses(warehouseId);
-
-            // Fetch available stock for the selected warehouse
-            fetchAvailableStock(productId, warehouseId);
+            // Populate source warehouse dropdown (excluding destination warehouse)
+            populateSourceWarehouses(destinationWarehouseId);
 
             // Reset quantity field
             document.getElementById('quantity').value = '';
+
+            // Fetch available stock once a source warehouse is selected
+            document.getElementById('sourceWarehouse').addEventListener("change", function () {
+                let selectedSourceWarehouse = this.value;
+                if (selectedSourceWarehouse) {
+                    fetchAvailableStock(productId, selectedSourceWarehouse);
+                } else {
+                    document.getElementById('availableStock').value = '';
+                }
+            });
         });
     });
 
     document.getElementById("transferForm").addEventListener("submit", function (event) {
         event.preventDefault();
         let quantity = parseInt(document.getElementById("quantity").value, 10);
+        let sourceWarehouse = document.getElementById("sourceWarehouse").value;
         let destinationWarehouse = document.getElementById("destinationWarehouse").value;
         let availableStock = parseInt(document.getElementById("availableStock").value, 10);
+
+        if (!sourceWarehouse) {
+            alert("Please select a source warehouse.");
+            return;
+        }
 
         if (quantity <= 0) {
             alert("Please enter a valid quantity.");
@@ -170,11 +187,6 @@ else
 
         if (quantity > availableStock) {
             alert("Quantity exceeds available stock!");
-            return;
-        }
-
-        if (!destinationWarehouse) {
-            alert("Please select a destination warehouse.");
             return;
         }
 
