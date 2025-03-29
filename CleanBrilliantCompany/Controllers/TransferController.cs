@@ -6,6 +6,7 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Controllers
 {
+    [Route("inventory/management/stockflow/transfer")]
     public class TransferController : Controller
     {
         // private readonly ItemControl _itemControl;
@@ -23,6 +24,7 @@ namespace CleanBrilliantCompany.Controllers
 
         }
 
+        [Route("Test")]
         public async Task<IActionResult> Index()
         {
             try
@@ -45,7 +47,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // [HttpPost]
-        // [Route("ViewTransfer")]
+        [Route("ViewTransfer")]
         public async Task<IActionResult> Transfer()
         {
             try
@@ -67,7 +69,7 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
-        [Route("transfers/LowStockProduct")]
+        [Route("")]
         public async Task<IActionResult> LowStockProduct()
         {
             try
@@ -88,6 +90,23 @@ namespace CleanBrilliantCompany.Controllers
                 return View(new List<Dictionary<string, object>>()); // Return an empty list in case of an error
             }
         }
+
+        [HttpGet]
+        [Route("getStockForWarehouse")]
+        public async Task<IActionResult> GetStockForWarehouse(int productId, int warehouseId)
+        {
+            try
+            {
+                int quantity = await _transferControl.getProductQuantityByWarehouse(productId, warehouseId);
+                return Json(new { success = true, quantity = quantity });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+                return Json(new { success = false, message = "Failed to retrieve stock quantity." });
+            }
+        }
+
 
         [HttpPost]
         [Route("addTransfer")]
@@ -116,14 +135,14 @@ namespace CleanBrilliantCompany.Controllers
             // Validation: Check if adding the quantity exceeds max capacity
             if (quantity > availableCapacity)
             {
-                return BadRequest(new { error = "Quantity exceeds available capacity." });
-                // return Json(new { success = false, error = "Quantity exceeds available capacity." });
+                // return BadRequest(new { error = "Quantity exceeds available capacity." });
+                return Json(new { success = false, message = "Quantity exceeds available capacity." });
             }
 
             if (quantity > sourceWarehouseQuantity)
             {
-                return BadRequest(new { error = "Quantity exceeds available stock in source warehouse." });
-                // return Json(new { success = false, error = "Quantity exceeds available stock in source warehouse." });
+                // return BadRequest(new { error = "Quantity exceeds available stock in source warehouse." });
+                return Json(new { success = false, message = "Quantity exceeds available stock in source warehouse." });
             }
 
 
@@ -156,11 +175,15 @@ namespace CleanBrilliantCompany.Controllers
             {
                 // currentCapacity += quantity;
                 // Console.WriteLine("CURRENT CAPACITY: " + currentCapacity);
-                return RedirectToAction("Transfer");
+
+                return Json(new { success = true, message = "Transfer Request Successfully Submitted" });
+
+
             }
             else
             {
-                return BadRequest(new { error = "Failed to add transfer" });
+                // return BadRequest(new { error = "Failed to add transfer" });
+                return Json(new { success = false, message = "Failed to add transfer!" });
             }
         }
 

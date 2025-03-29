@@ -3,7 +3,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
 <h2>Transfer List</h2>
 
 <a class="btn btn-primary" id="redirectToStockList" asp-controller="Transfer" asp-action="LowStockProduct">
@@ -35,6 +34,8 @@ else
         <tbody>
             @foreach (var transferInfo in Model)
             {
+                bool isCompleted = transferInfo["Status"]?.ToString() == "Completed";
+
                 <tr>
                     <td>@transferInfo["TransferId"]</td>
                     <td>@transferInfo["ProductName"]</td>
@@ -44,10 +45,10 @@ else
                     <td>@transferInfo["StaffId"]</td>
                     <td>
                         <span class="badge @(
-                transferInfo["Status"]?.ToString() == "Completed" ? "bg-success" :
-                transferInfo["Status"]?.ToString() == "Transit" ? "bg-primary" :
-                "bg-warning"
-            )">
+                              isCompleted ? "bg-success" :
+                              transferInfo["Status"]?.ToString() == "Transit" ? "bg-primary" :
+                              "bg-warning"
+                        )">
                         @transferInfo["Status"]
                     </span>
                 </td>
@@ -64,7 +65,10 @@ else
                     </td>
                     <td>
                         <button type="button" class="btn btn-primary update-transfer-btn" data-bs-toggle="modal"
-                            data-bs-target="#updateTransferModal" data-transfer-id="@transferInfo["TransferId"]">
+                            data-bs-target="#updateTransferModal" data-transfer-id="@transferInfo["TransferId"]"
+                            data-destination-id="@transferInfo["DestinationWarehouse"]"
+                            data-destination-name="@transferInfo["DestinationWarehouseName"]"
+                            data-status="@transferInfo["Status"]" @(isCompleted ? "disabled" : "")>
                             Update Transfer Request
                         </button>
                     </td>
@@ -84,49 +88,26 @@ else
                 <div class="modal-body">
                     <form id="updateTransferForm" asp-action="updateTransfer" method="post">
                         <input type="hidden" id="transferIdInput" name="TransferId" value="" />
-                        <div class="mb-3">
-                            @* <div class="mb-3">
-                                <label for="destinationWarehouse" class="form-label">Destination Warehouse</label>
-                                <select class="form-select" name="destinationWarehouse" id="destinationWarehouse" required>
-                                    <option value="">Select Destination Warehouse</option>
-                                    @foreach (var transferInfo in Model.Select(p => new
-                                    {
-                                        Id = p["DestinationWarehouseId"],
-                                        Name =
-                                                                    p["DestinationWarehouseName"]
-                                    }).Distinct())
-                                    {
-                                        <option value="@transferInfo.Id">@transferInfo.Name</option>
-                                    }
-                                </select>
-                            </div> *@
-                            <div class=" mb-3">
-                                <label for=" destinationWarehouse" class="form-label">Destination Warehouse</label>
-                                <select class="form-select" name="DestinationWarehouse" id="destinationWarehouse" required>
-                                    <option value="">Select Destination Warehouse</option>
-                                    @foreach (var transferInfo in Model.Select(p => new
-                                    {
-                                        Id = p["DestinationWarehouse"],
-                                        Name = p["DestinationWarehouseName"]
-                                    }).Distinct())
-                                    {
-                                        <option value="@transferInfo.Id">@transferInfo.Name</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="transferStatus" class="form-label">Transfer Status</label>
-                                <select class="form-select" id="transferStatus" name="Status">
-                                    <option value="Pending">Pending</option>
-                                    <option value="Transit">Transit</option>
-                                    <option value="Completed">Completed</option>
+                        <input type="hidden" id="originalStatusInput" name="OriginalStatus" value="" />
 
-                                </select>
-                            </div>
+                        <div class="mb-3">
+                            <label for="destinationWarehouseDisplay" class="form-label">Destination Warehouse</label>
+                            <input type="text" class="form-control" id="destinationWarehouseDisplay" readonly>
+                            <input type="hidden" name="DestinationWarehouse" id="destinationWarehouseInput" required>
                         </div>
+
+                        <div class="mb-3">
+                            <label for="transferStatus" class="form-label">Transfer Status</label>
+                            <select class="form-select" id="transferStatus" name="Status">
+                                <option value="Pending">Pending</option>
+                                <option value="Transit">Transit</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+
                         <div class="modal-footer p-0 pt-3 border-0">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="submit" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
                         </div>
                     </form>
                 </div>
@@ -136,23 +117,55 @@ else
 }
 
 <script>
-    // Use event delegation to handle all update buttons
-    document.addEventListener('click', function (event) {
-        if (event.target.classList.contains('update-transfer-btn')) {
-            const transferId = event.target.getAttribute('data-transfer-id');
-            document.getElementById('transferIdInput').value = transferId;
-        }
-    });
+    // Handle update button clicks
+    document.addEventListener('DOMContentLoaded', function () {
+        // Use event delegation for dynamically created elements
+        document.body.addEventListener('click', function (event) {
+            if (event.target.classList.contains('update-transfer-btn')) {
+                const transferId = event.target.getAttribute('data-transfer-id');
+                const destinationId = event.target.getAttribute('data-destination-id');
+                const destinationName = event.target.getAttribute('data-destination-name');
+                const status = event.target.getAttribute('data-status');
 
-    // No need for the following code since Bootstrap's modal system handles this automatically
-    // Delete or comment out these lines:
-    // document.querySelector(".close").addEventListener("click", function () {
-    //     document.getElementById("transferModal").style.display = "none";
-    // });
-    //
-    // window.onclick = function (event) {
-    //     if (event.target === document.getElementById("transferModal")) {
-    //         document.getElementById("transferModal").style.display = "none";
-    //     }
-    // };
+                // Set values in the form
+                document.getElementById('transferIdInput').value = transferId;
+                document.getElementById('originalStatusInput').value = status; // Store original status
+                document.getElementById('destinationWarehouseDisplay').value = destinationName;
+                document.getElementById('destinationWarehouseInput').value = destinationId;
+
+                // Set the current status in the dropdown
+                const statusDropdown = document.getElementById('transferStatus');
+                for (let i = 0; i < statusDropdown.options.length; i++) {
+                    if (statusDropdown.options[i].value === status) {
+                        statusDropdown.selectedIndex = i;
+                        break;
+                    }
+                }
+
+                // If status is already Completed, disable the form elements
+                if (status === "Completed") {
+                    statusDropdown.disabled = true;
+                    document.getElementById('saveChangesBtn').disabled = true;
+                } else {
+                    statusDropdown.disabled = false;
+                    document.getElementById('saveChangesBtn').disabled = false;
+                }
+            }
+        });
+
+        // Form validation
+        document.getElementById('updateTransferForm').addEventListener('submit', function (event) {
+            const currentStatus = document.getElementById('transferStatus').value;
+            const originalStatus = document.getElementById('originalStatusInput').value;
+
+            // If original status was Completed, prevent form submission
+            if (originalStatus === "Completed") {
+                alert("Cannot update a transfer that is already completed.");
+                event.preventDefault();
+                return false;
+            }
+
+            // You could add more validation rules here if needed
+        });
+    });
 </script>
