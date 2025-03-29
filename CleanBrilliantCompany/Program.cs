@@ -39,6 +39,7 @@ builder.Services.AddScoped<ManufacturerControl>();
 // builder.Services.AddScoped<FakeBatchInterface>(); 
 // //register the fakeproduct interface     
 // builder.Services.AddScoped<FakeProductInterface>(); 
+builder.Services.AddScoped<FakeReorderInterface>(); 
 
 
 var app = builder.Build();

@@ -345,6 +345,54 @@
                                                     <!-- You can add a chart or table here -->
                     @model ManufacturerDashboardRdm
 
+                    <div class="mb-4">
+                    <!-- <button class="btn btn-outline-primary me-2" id="showBatchView">Batch View</button>
+                    <button class="btn btn-outline-secondary" id="showProductView">Product View</button> -->
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateModal">
+                        Generate Manufacturer Dashboard
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="generateModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form asp-controller="ManufacturerPage" asp-action="GenerateDashboard" method="post">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Generate New Manufacturer Dashboard</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="ValidityDuration" class="form-label">Validity (days)</label>
+                                            <input type="number" class="form-control" name="ValidityDuration" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="RequestedStartDate" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="RequestedStartDate" name="RequestedStartDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                            <div class="invalid-feedback" id="startDateError">
+                                                Start Date must be before End Date and not be future dates
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="RequestedEndDate" class="form-label">End Date</label>
+                                            <input type="date" class="form-control" id="RequestedEndDate" name="RequestedEndDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                            <div class="invalid-feedback" id="endDateError">
+                                                End Date must be after Start Date and not be future dates
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="submit" id="generateDashboardBtn" class="btn btn-primary">Generate</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
                     <h2>Manufacturer Dashboard</h2>
 
                     <div>

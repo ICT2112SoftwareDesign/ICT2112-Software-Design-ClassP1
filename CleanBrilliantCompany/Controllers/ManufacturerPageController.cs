@@ -26,4 +26,20 @@ public class ManufacturerPageController : Controller
         } 
         return View(latestDashboard); 
     }
+
+    [HttpPost]
+    public IActionResult GenerateDashboard(DashboardDTO dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(); // Handle the error gracefully, or return the user to the same form if the model is invalid
+        }
+
+        // Step 1: Generate the new dashboard
+        manufacturerControl.GenerateNewDashboard(dto);
+
+        // Log the dashboard generation and redirect
+        logger.LogInformation("New manufacturer dashboard generated.");
+        return RedirectToAction("Index"); // Redirect back to the dashboard index or another page
+    }
 }
