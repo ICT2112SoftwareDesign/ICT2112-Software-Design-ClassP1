@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics;
+using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
 {
-
-	public class ReturnFormController : Controller
+    [Route("inventory/management/stockflow/returns")]
+    public class ReturnFormController : Controller
     {
 
 		private readonly ReturnFormControl _returnFormControl;
@@ -17,42 +18,47 @@ namespace CleanBrilliantCompany.Controllers
 			_returnFormControl = returnFormControl;
 		}
 
-		public List<ReturnForm> DisplayAllReturnForms()
+        [Route("")]
+        public IActionResult Index()
 		{
-			return _returnFormControl.displayReturnForms();
-		}
+            var returnForms = _returnFormControl.displayReturnForms();
 
+            return View(returnForms);
 
-		[Route("returns/view/{itemId}")]
+        }
+
+        [Route("view/{itemId}")]
 		public IActionResult DisplayReturnForm(int itemId)
 		{
 			ReturnForm? returnForm = _returnFormControl.getReturnFormById(itemId);
 			if (returnForm == null)
 			{
-				RedirectToAction("Error", "StockFlowPage", new { errorType = "General" });
+				RedirectToAction("Error", new { errorType = "General" });
 			}
 
 			return View(returnForm);
 		}
 
 
-		// Handle deleting return forms.
-		[Route("returns/delete")]
-		public IActionResult DeleteReturnForm(int productId, int itemId)
+        // Handle deleting return forms.
+        [HttpGet]
+        [Route("delete")]
+        public IActionResult DeleteReturnForm(int productId, int itemId)
 		{
 			bool result = _returnFormControl.deleteReturnForm(productId, itemId);
 
 			if (result)
 			{
-				return RedirectToAction("Returns", "StockFlowPage");
+				return RedirectToAction("Index");
 			}
-			return RedirectToAction("Error", "StockFlowPage", new { errorType = "DeleteError" });
+			return RedirectToAction("Error", new { errorType = "DeleteError" });
 		}
 
 
-		// Handle confirm sending return forms.
-		[Route("returns/confirm")]
-		public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, string manufacturerName, string manufacturerEmail, int productId, string productName, int itemId, string returnReason, int staffId)
+        // Handle confirm sending return forms.
+        [HttpPost]
+        [Route("confirm-create")]
+        public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, string manufacturerName, string manufacturerEmail, int productId, string productName, int itemId, string returnReason, int staffId)
 		{
 
 			// Example staff ID set to 1.
@@ -63,14 +69,14 @@ namespace CleanBrilliantCompany.Controllers
 
 			if (result == null)
 			{
-				return RedirectToAction("Error", "StockFlowPage", new { errorType = "InputError" });
+				return RedirectToAction("Error", new { errorType = "InputError" });
 			}
 			
-			return RedirectToAction("Returns", "StockFlowPage");
+			return RedirectToAction("Index");
 		}
 
-		// Generate new return forms for sending (not sent yet)
-		[Route("returns/create")]
+        // Generate new return forms for sending (not sent yet)
+        [Route("create")]
         public IActionResult Create(int productId, int itemId) {
 
             ReturnForm model = _returnFormControl.generateReturnForm(productId, itemId);
@@ -78,7 +84,7 @@ namespace CleanBrilliantCompany.Controllers
 			return View(model);
 		}
 
-        [Route("returns/toReturn")]
+        [Route("to-return")]
         public ActionResult ShowAllToReturn()
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
@@ -91,6 +97,13 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             return View(itemsInfo);
+        }
+
+        [Route("error")]
+        public IActionResult Error(string errorType)
+        {
+            ViewBag.ErrorType = errorType ?? "General";
+            return View();
         }
 
     }
