@@ -6,6 +6,7 @@ namespace CleanBrilliantCompany.Models
         OrderRDM getOrderById(int orderId); // Retrieves an order by its ID
         List<OrderRDM> getOrdersByCustomerId(int customerId); // Retrieves all orders by a customer
         bool updateOrder(OrderRDM order); // Updates an order in the database
+        bool updateOrderStatus(int order, string status);
         bool cancelOrder(int orderId); // Cancels an order
         List<OrderRDM> getAllOrders(); // Retrieves all orders
         List<OrderRDM> getOrdersByMonth(int monthNumber); // Retrieves all orders for a specific month

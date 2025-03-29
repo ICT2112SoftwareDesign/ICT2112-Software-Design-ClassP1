@@ -33,7 +33,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult Index()
+        public IActionResult Index(int? year = null, int? month = null)
         {
             try
             {
@@ -60,6 +60,29 @@ namespace CleanBrilliantCompany.Controllers
                     _logger.LogInformation("Latest order: ID={Id}, Date={Date}, Total={Total}",
                         latestOrder.RetrieveOrderID(), latestOrder.RetrieveOrderDate(), latestOrder.RetrieveOrderTotal());
                 }
+                // Determine selected month (default to current month if not specified)
+                var currentDate = DateTime.Now;
+                var selectedYear = year ?? currentDate.Year;
+                var selectedMonth = month ?? currentDate.Month;
+                var selectedDate = new DateTime(selectedYear, selectedMonth, 1);
+
+                // Generate list of all months for dropdown (last 12 months)
+                var availableMonths = Enumerable.Range(0, 12)
+                    .Select(i => currentDate.AddMonths(-i))
+                    .Select(d => new
+                    {
+                        Year = d.Year,
+                        Month = d.Month,
+                        DisplayName = d.ToString("MMMM yyyy")
+                    })
+                    .OrderByDescending(m => m.Year)
+                    .ThenByDescending(m => m.Month)
+                    .ToList();
+
+                // Get chart data for selected month (will return empty if no data)
+                var dailyOrderCounts = _dashboard.GetDailyOrderCountsForMonth(selectedDate);
+                var dailyRefundCounts = _dashboard.GetDailyRefundCountsForMonth(selectedDate);
+                var profitComponents = _dashboard.GetProfitComponents();
 
                 // Prepare ViewData/ViewBag
                 ViewBag.DataAvailable = dataAvailable;
@@ -72,6 +95,21 @@ namespace CleanBrilliantCompany.Controllers
                     LatestOrderId = latestOrder?.RetrieveOrderID(),
                     LatestOrderDate = latestOrder?.RetrieveOrderDate().ToShortDateString() ?? "No orders found"
                 };
+                ViewBag.ChartData = new
+                {
+                    DailyOrderCounts = dailyOrderCounts ?? new Dictionary<DateTime, int>(),
+                    DailyRefundCounts = dailyRefundCounts ?? new Dictionary<DateTime, int>(),
+                    CurrentMonth = selectedDate.ToString("MMMM yyyy"),
+                    SelectedYear = selectedYear,
+                    SelectedMonth = selectedMonth,
+                    ProfitMetrics = new {
+                    GrossProfit = profitComponents.GrossProfit,
+                    RefundAmount = profitComponents.RefundAmount,
+                    NetProfit = profitComponents.NetProfit
+                    }
+                };
+
+                ViewBag.AvailableMonths = availableMonths;
 
                 // Add raw data for debugging
                 ViewBag.Debug = new
@@ -107,6 +145,59 @@ namespace CleanBrilliantCompany.Controllers
                 ViewBag.ErrorDetails = ex.StackTrace;
                 ModelState.AddModelError("", "Unable to load dashboard data");
                 return View("~/Views/Staff/index.cshtml");
+            }
+        }
+        private List<MonthOption> GetAvailableMonths()
+        {
+            try
+            {
+                var orders = _order.getAllOrders();
+                if (orders == null || !orders.Any())
+                {
+                    return new List<MonthOption>
+            {
+                new MonthOption(DateTime.Now.Year, DateTime.Now.Month)
+            };
+                }
+
+                var minDate = orders.Min(o => o.RetrieveOrderDate());
+                var maxDate = orders.Max(o => o.RetrieveOrderDate());
+
+                var months = new List<MonthOption>();
+
+                for (var date = minDate; date <= maxDate; date = date.AddMonths(1))
+                {
+                    months.Add(new MonthOption(date.Year, date.Month));
+                }
+
+                // Add current month if not already included
+                if (!months.Any(m => m.Year == DateTime.Now.Year && m.Month == DateTime.Now.Month))
+                {
+                    months.Add(new MonthOption(DateTime.Now.Year, DateTime.Now.Month));
+                }
+
+                return months.OrderByDescending(m => m.Year).ThenByDescending(m => m.Month).ToList();
+            }
+            catch
+            {
+                return new List<MonthOption>
+        {
+            new MonthOption(DateTime.Now.Year, DateTime.Now.Month)
+        };
+            }
+        }
+
+        // Helper class for month options
+        public class MonthOption
+        {
+            public int Year { get; }
+            public int Month { get; }
+            public string DisplayName => new DateTime(Year, Month, 1).ToString("MMMM yyyy");
+
+            public MonthOption(int year, int month)
+            {
+                Year = year;
+                Month = month;
             }
         }
     }

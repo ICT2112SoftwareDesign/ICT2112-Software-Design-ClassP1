@@ -219,6 +219,39 @@ namespace CleanBrilliantCompany.Models
                 return rowsAffected > 0;
             }
         }
+        public bool updateOrderStatus(int orderId, string status)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "UPDATE CustOrder SET Status = @Status WHERE orderID = @OrderID";
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@OrderID", orderId);
+                command.Parameters.AddWithValue("@Status", status);
+
+                connection.Open();
+                var rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    // Get customer ID for observer notification
+                    var customerId = 0;
+                    var getCustomerQuery = "SELECT customerID FROM CustOrder WHERE orderID = @OrderID";
+                    using (var getCustomerCmd = new SqlCommand(getCustomerQuery, connection))
+                    {
+                        getCustomerCmd.Parameters.AddWithValue("@OrderID", orderId);
+                        var result = getCustomerCmd.ExecuteScalar();
+                        if (result != null)
+                        {
+                            customerId = Convert.ToInt32(result);
+                        }
+                    }
+
+                    _observer.onOrderUpdated(orderId, customerId, status);
+                }
+
+                return rowsAffected > 0;
+            }
+        }
 
         public bool cancelOrder(int orderId)
         {

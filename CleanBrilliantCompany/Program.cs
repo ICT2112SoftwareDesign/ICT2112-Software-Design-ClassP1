@@ -117,6 +117,12 @@ builder.Services.AddScoped<ShippingAgentMapper>();
 builder.Services.AddScoped<IShippingAgent, ShippingAgentMapper>();
 builder.Services.AddScoped<IShippingAgentDB>();
 
+//Adding services for Orderfulfilment
+builder.Services.AddScoped<OrderFulfilmentManagement>();
+
+//Adding services for Dashboard
+builder.Services.AddScoped<DashboardManagement>();
+
 
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();
