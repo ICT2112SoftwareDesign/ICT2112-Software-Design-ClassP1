@@ -1,5 +1,6 @@
 using CleanBrilliantCompany.DTO;
 using CleanBrilliantCompany.Interface;
+using CleanBrilliantCompany.DatabaseEntities;
 
 public class CostMapper
 {
@@ -47,11 +48,11 @@ public class CostMapper
     public List<ProductBatchDTO> GetAllProductBatches()
     {
         var productBatches = _batchService.GetAllProductBatch();
-        var products = _db.Product.Select(p => new { p.ProductId, p.ManufacturerId }).ToList();
+        var products = _db.Product.Select(p => new { p.productId, p.manufacturerId }).ToList();
 
         return productBatches.Select(batch =>
         {
-            var product = products.FirstOrDefault(p => p.ProductId == batch.ProductId);
+            var product = products.FirstOrDefault(p => p.productId == batch.ProductId);
             return new ProductBatchDTO
             {
                 BatchCode = batch.BatchCode,
@@ -61,7 +62,7 @@ public class CostMapper
                 ManufactureDate = batch.ManufactureDate,
                 BatchQuantity = batch.Quantity,
                 BatchPrice = Convert.ToDecimal(batch.BatchCost),
-                ManufacturerId = product?.ManufacturerId ?? -1
+                ManufacturerId = product?.manufacturerId ?? -1
             };
         }).ToList();
     }

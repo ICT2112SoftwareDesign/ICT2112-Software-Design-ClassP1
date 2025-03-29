@@ -1,3 +1,5 @@
+using CleanBrilliantCompany.DatabaseEntities;
+
 using Microsoft.EntityFrameworkCore;
 
 public class SimulatedDbContext : DbContext

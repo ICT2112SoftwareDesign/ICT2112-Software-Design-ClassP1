@@ -8,7 +8,8 @@ public class DashboardFactory {
                     requestedStartDate: dTO.RequestedStartDate,
                     requestedEndDate: dTO.RequestedEndDate,
                     validityDuration: dTO.ValidityDuration,
-                    type: 1,
+                    type: 1
+                );
             case 4:
                 return new CostDashboardRdm(
                     id: dTO.DashboardId,

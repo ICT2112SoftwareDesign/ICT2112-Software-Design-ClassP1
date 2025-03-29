@@ -1,4 +1,5 @@
 ﻿using CleanBrilliantCompany.Interface;
+using CleanBrilliantCompany.DatabaseEntities;
 
 namespace CleanBrilliantCompany.Dummy
 {

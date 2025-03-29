@@ -1,4 +1,7 @@
-﻿namespace CleanBrilliantCompany.Interface
+﻿using CleanBrilliantCompany.DatabaseEntities;
+
+namespace CleanBrilliantCompany.Interface
+
 {
     public interface IProduct
     {

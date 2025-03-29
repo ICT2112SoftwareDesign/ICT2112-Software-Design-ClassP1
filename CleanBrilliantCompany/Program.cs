@@ -3,9 +3,12 @@ using CleanBrilliantCompany.Dummy;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Mapper;
 using DotNetEnv;
+using CleanBrilliantCompany.Service;
 using Microsoft.EntityFrameworkCore;
 
+DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
+// var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
 
 // load environment variables from .env file 
@@ -40,14 +43,18 @@ builder.Services.AddDbContext<SimulatedDbContext>(options =>
 builder.Services.AddScoped<FakeBatchInterface>();
 //register the fakeproduct interface     
 builder.Services.AddScoped<FakeProductInterface>();
-
-
-// Configure Entity Framework with the connection string from appsettings.json
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IAlertService, InAppAlert>();
+builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<CostMapper>();
+builder.Services.AddScoped<CostControl>();
 builder.Services.AddScoped<IProduct, MockProduct>(); // Simulation
 builder.Services.AddScoped<InventoryControl>();
 builder.Services.AddScoped<IInventoryRepository, InventoryMapper>();
+
+builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>(); 
+builder.Services.AddScoped<IItem, CostDataRetrievalService>();
+builder.Services.AddScoped<IBatch, CostDataRetrievalService>();
+builder.Services.AddScoped<IManufacturer, CostDataRetrievalService>();
 
 var app = builder.Build();
 
