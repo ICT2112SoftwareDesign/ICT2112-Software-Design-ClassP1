@@ -146,6 +146,9 @@ else
             const destinationWarehouseId = this.getAttribute('data-destination-warehouse-id');
             const destinationWarehouseName = this.getAttribute('data-destination-warehouse-name');
 
+            // Set product ID in the form
+            document.getElementById('productIdInput').value = productId;
+
             // Set destination warehouse details (Uneditable)
             document.getElementById('destinationWarehouse').value = destinationWarehouseId;
             document.getElementById('destinationWarehouseDisplay').value = destinationWarehouseName;
@@ -201,7 +204,7 @@ else
             .then(data => {
                 if (data.success) {
                     alert(data.message);
-                    location.reload();
+                    
                 } else {
                     alert("Error: " + (data.message || "An unexpected error occurred."));
                 }
