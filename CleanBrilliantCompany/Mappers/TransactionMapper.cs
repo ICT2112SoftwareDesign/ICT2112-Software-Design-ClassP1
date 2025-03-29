@@ -70,6 +70,65 @@ namespace CleanBrilliantCompany.Models.Mapper
 
         //Add another one for getting transaction by productName after if have time
 
+        // public List<Transaction> getTransactionByItem(int itemId)
+        // {
+        //     List<Transaction> transactions = new List<Transaction>();
+
+        // }
+
+        public List<Transaction> getTransactionByItem(int itemId)
+{
+    List<Transaction> transactions = new List<Transaction>();
+
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        connection.Open();
+
+        string query = @"SELECT transactionId, transactionDateTime, adjustmentType, 
+                         ItemTransaction.productId, Product.productName, 
+                         itemId, staffId 
+                         FROM ItemTransaction
+                         INNER JOIN Product ON ItemTransaction.productId = Product.productId
+                         WHERE itemId = @itemId";
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+            command.Parameters.AddWithValue("@itemId", itemId);
+
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (getDatabaseQueryStatus(reader))
+                {
+                    while (reader.Read())
+                    {
+                        Transaction transaction = new Transaction(
+                            reader.GetInt32(reader.GetOrdinal("transactionId")),
+                            reader.GetDateTime(reader.GetOrdinal("transactionDateTime")),
+                            reader.GetString(reader.GetOrdinal("adjustmentType")),
+                            reader.GetString(reader.GetOrdinal("productName")),
+                            reader.GetInt32(reader.GetOrdinal("productId")),
+                            reader.GetInt32(reader.GetOrdinal("itemId")),
+                            reader.GetInt32(reader.GetOrdinal("staffId"))
+                        );
+
+                        // Optional: Set ProductName if you have a property for it
+                        //transaction.ProductName = reader.GetString(reader.GetOrdinal("productName"));
+
+                        transactions.Add(transaction);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No transactions found for itemId: " + itemId);
+                }
+            }
+        }
+    }
+
+    return transactions;
+}
+
+
         public List<Transaction> getTransactionByDateTime(DateTime dateTime)
         {
             List<Transaction> transactions = new List<Transaction>();
@@ -162,6 +221,84 @@ namespace CleanBrilliantCompany.Models.Mapper
 
             }
             return transactions;
+        }
+
+        public List<Transaction> getAllTransactions(int pageNumber, int pageSize)
+        {
+            List<Transaction> transactions = new List<Transaction>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                int offset = (pageNumber - 1) * pageSize;
+
+                string query = @"SELECT transactionId, transactionDateTime, adjustmentType, ItemTransaction.productId, Product.productName, itemId, staffId FROM ItemTransaction"
+                + " INNER JOIN Product ON ItemTransaction.productId = Product.productId ORDER BY transactionID desc OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Offset", offset);
+                    command.Parameters.AddWithValue("PageSize", pageSize);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (getDatabaseQueryStatus(reader))
+                        {
+                            while (reader.Read())
+                            {
+                                // Create the Transaction object using the constructor
+                                Transaction transaction = new Transaction(
+                                    reader.GetInt32(reader.GetOrdinal("transactionId")),
+                                    reader.GetDateTime(reader.GetOrdinal("transactionDateTime")),
+                                    reader.GetString(reader.GetOrdinal("adjustmentType")),
+                                    reader.GetString(reader.GetOrdinal("productName")),
+                                    reader.GetInt32(reader.GetOrdinal("productId")),
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("staffId"))
+                                );
+
+                                //Add transaction to List
+                                transactions.Add(transaction);
+
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No data found for the query");
+                        }
+                    }
+                }
+
+            }
+            return transactions;
+        }
+
+        public int getTransactionCount()
+        {
+            int count = 0;
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                String query = "SELECT COUNT(*) FROM ItemTransaction ";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    var result = command.ExecuteScalar();
+
+                    if (result != null)
+                    {
+                        count = Convert.ToInt32(result);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No data found for the query.");
+                    }
+                }
+            }
+
+            return count;
         }
 
         // // Find a transaction by ID
