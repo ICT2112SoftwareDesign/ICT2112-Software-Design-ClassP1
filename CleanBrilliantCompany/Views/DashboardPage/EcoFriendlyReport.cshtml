@@ -20,6 +20,15 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet"> *@
+    <style>
+        #itemEmissionTrend {
+            display: none;
+        }
+
+        #carbonTable tbody tr {
+            cursor: pointer;
+        }
+    </style>
 
 </head>
 
@@ -83,16 +92,18 @@
 <!-- Eco-Friendly Item Emissions Table -->
     <div class="card p-4 mt-4 shadow-sm">
         <h4>Eco-Friendly Item Emissions</h4>
+        <p>Click on an item in the table to view its item emissions trend over time</p>
         <div class="mx-4">
-            <input class="form-check-input" id="include_checkbox" type="checkbox" id="includeNonEcoFriendly">
+            <input class="form-check-input" id="include_checkbox" type="checkbox">
             <label class="form-check-label" for="include_checkbox">Include non-eco friendly products</label><br>
         </div>
         <table id="carbonTable" class="display" style="width:100%">
             <thead>
                 <tr>
                     <th>Product Name</th>
+                    <th>Date Created</th>
                     <th>Product Base Emission (kg CO₂)</th>
-                    <th>Eco-friendly Status</th>
+                    <th>Eco-friendly?</th>
                     <th>Item Count</th>
                     <th>Avg Per-Item Emission (kg CO₂)</th>
                 </tr>
@@ -101,14 +112,25 @@
             </tbody>
         </table>
     </div>
+	<div id="itemEmissionTrend" class="card p-4 mt-4 shadow-sm">
+		<h4 id="itemEmissionTitle"></h4>
+        <p>Average emission per item, grouped by date created</p>
+        <div class="row">
+			<canvas id="emissionTrendChart" width="400" height="200"></canvas>
+        </div>
+        
+    </div>
     <script>
+        let emissionChart; // Store chart instance
+
         const data = @Html.Raw(Json.Serialize(Model.ItemCarbonFootprints));
         var table;
-        var tableData = data.filter((data) => data.ecoStatus === "Eco-Friendly");
+        var tableData = data.filter((data) => data.ecoStatus === "Yes");
         function addData() {
             tableData.forEach(item => {
                         table.row.add([
                             item.name,
+                            item.dateCreated,
                             `${item.baseEmission} kg CO₂`,
                             `${item.ecoStatus}`,
                             `${item.numOfProductItems}`,
@@ -120,22 +142,80 @@
             table = $('#carbonTable').DataTable({
                         columnDefs: [
                             { width: "30%", targets: 0 },
-                            { width: "20%", targets: 1 },
-                            { width: "17.5%", targets: 2 },
-                            { width: "12.5%", className: 'dt-head-left dt-body-left', targets: 3 },
-                            { width: "20%", targets: 4 }
-                        ]
+                            { width: "17.5%", targets: 1 },
+                            { width: "15%", targets: 2 },
+                            { width: "10%", targets: 3 },
+                            { width: "7.5%", className: 'dt-head-left dt-body-left', targets: 4 },
+                            { width: "15%", targets: 4 }
+                        ],
+                        createdRow: function (row, data, dataIndex) {
+                            $(row).attr('data-productId', tableData[dataIndex].productId);
+                            $(row).attr('data-productName', tableData[dataIndex].name);
+
+                            $(row).on('click', function () {
+                                let productId = $(this).attr('data-productId');
+                                let productName = $(this).attr('data-productName');
+                                onRowClick(productId, productName);
+                            });
+                        }
                     });
                     addData();
          }
-         
+        function onRowClick(productId, productName) {
+            document.getElementById("itemEmissionTitle").innerText = `Emission Trend for ${productName}`;
+            document.getElementById("itemEmissionTrend").style.display = "block"; // Show section
+
+            // Fetch emission trend data from the API
+            fetch(`/DashboardPage/ProductItemEmissionTrend?productId=${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateEmissionChart(data);
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+
+        function updateEmissionChart(data) {
+            const labels = Object.keys(data); // Dates
+            const values = Object.values(data); // Emission values
+
+            const ctx = document.getElementById("emissionTrendChart").getContext("2d");
+
+            if (emissionChart) {
+                emissionChart.destroy(); // Destroy previous chart instance if exists
+            }
+
+            emissionChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Carbon Emissions (kg CO₂)",
+                        data: values,
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderWidth: 2,
+                        pointRadius: 5,
+                        pointBackgroundColor: "rgba(75, 192, 192, 1)"
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: "Item creation date" } },
+                        y: { title: { display: true, text: "kg CO₂" }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
         document.getElementById("include_checkbox").addEventListener("change", function() {
             table.clear();
             
             if(this.checked) {
                 tableData = data;
             } else {
-                tableData = data.filter((data) => data.ecoStatus === "Eco-Friendly");
+                tableData = data.filter((data) => data.ecoStatus === "Yes");
             }
             addData();
             table.draw();
@@ -147,7 +227,7 @@
     <script>
  
     </script>
-    @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
 
     </script>

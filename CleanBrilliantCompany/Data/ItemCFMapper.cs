@@ -172,6 +172,58 @@ namespace CleanBrilliantCompany.Data
             }
         }
 
+        public List<ItemCarbonFootprintRDM> retrieveItemCarbonFootprintByProductId(int itemProductId)
+        {
+            List<ItemCarbonFootprintRDM> results = new List<ItemCarbonFootprintRDM>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = "SELECT * FROM ItemCarbonFootprint WHERE productId = @productId";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@productId", itemProductId);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                int itemCFId = Convert.ToInt32(reader["itemCFId"]);
+                                int itemId = Convert.ToInt32(reader["itemId"]);
+                                int productId = Convert.ToInt32(reader["productId"]);
+                                double carbonEmission = Convert.ToDouble(reader["carbonEmission"]);
+                                string ecoStatus = reader["ecoStatus"]?.ToString() ?? string.Empty;
+                                DateTime dateCreated = Convert.ToDateTime(reader["dateCreated"]);
+
+                                var rdm = new ItemCarbonFootprintRDM(
+                                    itemCFId,
+                                    itemId,
+                                    productId,
+                                    carbonEmission,
+                                    ecoStatus,
+                                    dateCreated
+                                );
+
+                                results.Add(rdm);
+                            }
+                        }
+                    }
+                }
+
+                _querySuccess = true;
+                return results;
+            }
+            catch (Exception ex)
+            {
+                _querySuccess = false;
+                return new List<ItemCarbonFootprintRDM>();
+            }
+        }
+
         public List<ItemCarbonFootprintRDM> retrieveAllItemCarbonFootprint()
         {
             List<ItemCarbonFootprintRDM> results = new List<ItemCarbonFootprintRDM>();
@@ -228,6 +280,40 @@ namespace CleanBrilliantCompany.Data
                     connection.Open();
 
                     string query = "SELECT SUM(carbonEmission) FROM ItemCarbonFootprint";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            _querySuccess = true;
+                            return Convert.ToSingle(result);
+                        }
+                        else
+                        {
+                            _querySuccess = true;
+                            return 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _querySuccess = false;
+                return 0;
+            }
+        }
+
+        public float retrieveTotalEcoFriendlyCarbonFootprint()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = "SELECT SUM(carbonEmission) FROM ItemCarbonFootprint WHERE ecoStatus = \'Eco-Friendly\'";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {

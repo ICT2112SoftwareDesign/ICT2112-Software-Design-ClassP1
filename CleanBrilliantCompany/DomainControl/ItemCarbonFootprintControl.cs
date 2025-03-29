@@ -71,6 +71,21 @@ namespace CleanBrilliantCompany.DomainControl
             }
         }
 
+        public List<ItemCarbonFootprintRDM> getItemCarbonFootprintByProductId(int itemProductId)
+        {
+            try
+            {
+                var list = _mapper.retrieveItemCarbonFootprintByProductId(itemProductId);
+                _lastQuerySuccess = _mapper.getQueryStatus();
+                return list;
+            }
+            catch
+            {
+                _lastQuerySuccess = false;
+                return new List<ItemCarbonFootprintRDM>();
+            }
+        }
+
         public List<ItemCarbonFootprintRDM> getAllItemCarbonFootprint()
         {
             try
@@ -91,6 +106,21 @@ namespace CleanBrilliantCompany.DomainControl
             try
             {
                 float total = _mapper.retrieveTotalCarbonFootprint();
+                _lastQuerySuccess = _mapper.getQueryStatus();
+                return total;
+            }
+            catch
+            {
+                _lastQuerySuccess = false;
+                return 0;
+            }
+        }
+
+        public float getTotalEcofriendlyCarbonFootprint()
+        {
+            try
+            {
+                float total = _mapper.retrieveTotalEcoFriendlyCarbonFootprint();
                 _lastQuerySuccess = _mapper.getQueryStatus();
                 return total;
             }
