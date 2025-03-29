@@ -53,7 +53,7 @@ builder.Services.AddScoped<IProduct, ProductDBStub>();
 builder.Services.AddScoped<IProductCFCalculator, CalculateProductCFImpl>();
 builder.Services.AddScoped<IItemCFCalculator, CalculateItemCFImpl>();
 builder.Services.AddScoped<IShipmentCFCalculator, CalculateShipmentCFImpl>();
-builder.Services.AddScoped<IOrder, OrderManagementStub>();
+builder.Services.AddScoped<IOrder, MockOrderService>();
 builder.Services.AddScoped<IStorageDuration, StorageDurationStubImpl>();
 
 var app = builder.Build();
