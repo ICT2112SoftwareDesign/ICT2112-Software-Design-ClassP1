@@ -4,7 +4,7 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IProduct
     {
-        Product GetProductDetails(int productId);
-        List<Product> GetAllProducts();
+        Product getProductDetails(int productId);
+        List<Product> getAllProducts();
     }
 }

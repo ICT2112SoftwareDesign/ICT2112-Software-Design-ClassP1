@@ -16,8 +16,7 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
 
         public float CalculateCarbonFootprint(float vol, float tox, int productId)
         {
-            ProductDBStub stub = new ProductDBStub();
-            Product product = stub.GetProductDetails(productId);
+            Product product = _IProduct.getProductDetails(productId);
 
             float carbonEmission = vol * tox;
             string ecoStatus = carbonEmission >= 250 ? "Not Eco-Friendly" : "Eco-Friendly";
@@ -31,6 +30,10 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
                 ecoStatus,
                 DateTime.Now // dateCreated
             );
+
+            Console.WriteLine($"Product CF Created: ProductID = {productId}, Name = {product.ProductName}, " +
+                            $"Category = {product.ProductCategory}, Carbon Emission = {carbonEmission}, " +
+                            $"Eco Status = {ecoStatus}, Date Created = {DateTime.Now}");
 
             return carbonEmission;
         }

@@ -21,6 +21,11 @@
         // New properties for comparison tool
         public List<ProductComparisonData> Products { get; set; } = new();
         public List<ShippingMethodComparisonData> ShippingMethods { get; set; } = new();
+
+        // For product and item mockup purposes
+        public List<Product> RandomProductList { get; set; } = new List<Product>();
+        public string ItemId { get; set; }
+        public Item RandomItemInstance { get; set; }
     }
 
     public class ProductComparisonData

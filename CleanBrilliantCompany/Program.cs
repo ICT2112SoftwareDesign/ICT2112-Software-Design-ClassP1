@@ -22,19 +22,25 @@ builder.Services.AddScoped<IFeedbackSubmission, FeedbackSubmission>();
 builder.Services.AddScoped<IFeedbackRetrieval, FeedbackRetrieval>();
 builder.Services.AddScoped<IFeedbackManagement, FeedbackManagement>();
 
+// Register your services
 builder.Services.AddScoped<ProductCarbonFootprintControl>();
 builder.Services.AddScoped<ItemCarbonFootprintControl>();
 builder.Services.AddScoped<OrderCarbonFootprintControl>();
+builder.Services.AddScoped<ProductControl>();
+builder.Services.AddScoped<ProductMapper>();
 
 // Mappers
 builder.Services.AddScoped<IProductCarbonFootprintDB, ProductCFMapper>();
 builder.Services.AddScoped<IItemCarbonFootprintDB, ItemCFMapper>();
 builder.Services.AddScoped<IOrderCarbonFootprintDB, OrderCFMapper>();
+builder.Services.AddScoped<IProductDatabase, ProductMapper>();
+
 
 // Product CF Controls
 builder.Services.AddScoped<IProductCF, ProductCarbonFootprintControl>();
 builder.Services.AddScoped<IProductCFManagement, ProductCarbonFootprintControl>();
 builder.Services.AddScoped<IProductCFQuery, ProductCarbonFootprintControl>();
+builder.Services.AddScoped<IProduct, ProductControl>();
 
 // Item CF Controls
 builder.Services.AddScoped<IItemCF, ItemCarbonFootprintControl>();
@@ -46,10 +52,9 @@ builder.Services.AddScoped<IOrderCF, OrderCarbonFootprintControl>();
 builder.Services.AddScoped<IOrderCFManagement, OrderCarbonFootprintControl>();
 builder.Services.AddScoped<IOrderCFQuery, OrderCarbonFootprintControl>();
 
-// Calculator CF Controls //commented out first to prevent the program from crashing at startup
+// Calculator CF Controls
 builder.Services.AddScoped<CarbonFootprintCalculatorControl>();
 builder.Services.AddScoped<ICarbonData, CarbonFootprintCalculatorControl>();
-builder.Services.AddScoped<IProduct, ProductDBStub>();
 builder.Services.AddScoped<IProductCFCalculator, CalculateProductCFImpl>();
 builder.Services.AddScoped<IItemCFCalculator, CalculateItemCFImpl>();
 builder.Services.AddScoped<IShipmentCFCalculator, CalculateShipmentCFImpl>();
@@ -72,7 +77,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=DashboardPage}/{action=Dashboard}/{id?}");
 
 app.MapControllerRoute(
     name: "feedback",

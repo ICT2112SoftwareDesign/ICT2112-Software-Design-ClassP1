@@ -33,7 +33,7 @@ namespace CleanBrilliantCompany.Data
                         command.Parameters.AddWithValue("@productId", productId);
                         command.Parameters.AddWithValue("@productName", productName);
                         command.Parameters.AddWithValue("@productCategory", productCategory);
-                        command.Parameters.AddWithValue("@carbonEmission", carbonEmission);
+                        command.Parameters.AddWithValue("@carbonEmission", (float)carbonEmission);
                         command.Parameters.AddWithValue("@ecoStatus", ecoStatus);
                         command.Parameters.AddWithValue("@dateCreated", dateCreated);
 
@@ -46,6 +46,7 @@ namespace CleanBrilliantCompany.Data
             catch (Exception ex)
             {
                 _querySuccess = false;
+                Console.WriteLine(ex.Message);
                 return _querySuccess;
             }
         }
