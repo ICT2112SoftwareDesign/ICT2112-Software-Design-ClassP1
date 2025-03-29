@@ -64,6 +64,10 @@ namespace CleanBrilliantCompany.Models.Entity
             ExpiryDate = expiryDate;
         }
 
+        public Item(int itemId){
+            ItemId = itemId;
+        }
+
         // Public method to create a new item
         public static Item CreateItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
                                       ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId)
@@ -157,6 +161,10 @@ namespace CleanBrilliantCompany.Models.Entity
             Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
             
             Notify();
+        }
+
+        public int getItem(){
+            return ItemId;
         }
 
         public Item() { }

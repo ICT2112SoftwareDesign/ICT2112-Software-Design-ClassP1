@@ -55,6 +55,11 @@ namespace CleanBrilliantCompany.Models.Entity
         private void setMaxCapacity(int maxCapacity) => MaxCapacity = maxCapacity;
         private void setCurrentCapacity(int currentCapacity) => CurrentCapacity = currentCapacity;
 
+
+        public int getAvailableCapacity(){
+            return MaxCapacity - CurrentCapacity;
+        }
+
         public Warehouse() { } // dk if need anot 
     }
 }

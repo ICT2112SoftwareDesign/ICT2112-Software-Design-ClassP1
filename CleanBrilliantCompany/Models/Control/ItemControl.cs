@@ -10,8 +10,9 @@ namespace CleanBrilliantCompany.Models.Control
     public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse, IReturnForm
     {
         private readonly ItemMapper _itemMapper;
+        private readonly TransactionControl _transactionObserver; // Added observer
 
-        private readonly TransactionControl _transactionObserver; //Added observer
+        //private readonly TransactionControl _transactionObserver; //Added observer
 
         private readonly iProduct _iproductInterface;
 
@@ -29,9 +30,14 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // METHODS FOR IITEM
-        public async Task<List<Item>> getAllItems()
+        public async Task<List<Item>> getAllItems(int pageNumber, int pageSize)
         {
-            return await Task.FromResult(_itemMapper.getAllItems()); // mapper uses iItemQuery to interact with control 
+            return await Task.FromResult(_itemMapper.getAllItems(pageNumber, pageSize)); // mapper uses iItemQuery to interact with control 
+        }
+
+        public int getItemCount()
+        {
+            return _itemMapper.getItemCount();
         }
 
         public async Task<Item> getItemById(int itemId)
@@ -45,14 +51,39 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getItemByProductName(productName));
         }
 
-        public async Task<bool> createItem(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus status)
+        public async Task<bool> createItem(int productId, int batchCode, int warehouseId, ItemStatus status)
         {
+            Product product = await retrieveProductDetails(productId);
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+            float salePrice = 0.0f;  
+            status = ItemStatus.Available;
+
+            if (product != null)
+            {
+                productInfo.Add(product.retrieveProductInfo());
+
+                float costPrice = Convert.ToSingle(productInfo[0]["ProductCost"]); // Safe conversion
+
+                Console.WriteLine("==================");
+                Console.WriteLine($"COST PRICE: {costPrice}");
+                Console.WriteLine("==================");
+
+                salePrice = MathF.Ceiling(costPrice * 1.3f * 10) / 10f;
+            }
+
+
             return await Task.FromResult(_itemMapper.createItem(productId, salePrice, batchCode, warehouseId, status));
         }
 
         public async Task<bool> updateItem(int itemId, float salePrice)
         {
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
+        }
+
+        // delete item 
+        public async Task<bool> deleteItem(int itemId)
+        {
+            return await Task.FromResult(_itemMapper.deleteItem(itemId));
         }
 
         public void RegisterObservers(Item item)
@@ -94,10 +125,10 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // for transaction feature, might remove in future
-        public async Task<bool> updateItemStatusOld(int itemId, ItemStatus status)
-        {
-            return await Task.FromResult(_itemMapper.updateItemStatusOld(itemId, status));
-        }
+        // public async Task<bool> updateItemStatusOld(int itemId, ItemStatus status)
+        // {
+        //     return await Task.FromResult(_itemMapper.updateItemStatusOld(itemId, status));
+        // }
 
 
         // METHODS FOR RESERVE FEATURE (IRESERVE)
@@ -124,14 +155,19 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
         }
 
-        public async Task<List<Item>> getItemByProductAndWarehouse(int warehouseId, int productId)
+        public async Task<List<Item>> getItemByProductAndWarehouse(int productId, int quantity, int warehouseId)
         {
-            return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, warehouseId));
+            return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, quantity, warehouseId));
         }
 
         public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId)
         {
             return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
+        }
+        // get all warehouse details
+        public async Task<List<Warehouse>> getAllWarehouseDetails()
+        {
+            return await Task.FromResult(_itemMapper.getAllWarehouseDetails());
         }
 
         // METHOD FOR HANDLING REFUNDED ITEMS 
@@ -176,9 +212,14 @@ namespace CleanBrilliantCompany.Models.Control
 
         public async Task<List<Item>> getToReturnItems()
         {
-           return await Task.FromResult(_itemMapper.getToReturnItems());
+            return await Task.FromResult(_itemMapper.getToReturnItems());
         }
 
+
+        public async Task<List<Item>> getTransferredItems(int transferId)
+        {
+            return await Task.FromResult(_itemMapper.getTransferredItems(transferId));
+        }
 
     }
 }
