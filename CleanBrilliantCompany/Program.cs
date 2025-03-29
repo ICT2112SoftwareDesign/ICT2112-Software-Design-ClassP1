@@ -28,11 +28,18 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 // Register the observer first
 builder.Services.AddSingleton<ICustomerQueryObserver, CustomerSystemLogger>();
+builder.Services.AddSingleton<IWishlistQueryObserver, WishlistSystemLogger>();
 
 // Then the mapper (which depends on the observer)
 builder.Services.AddSingleton<ICustomerDatabase>(provider => {
     var observer = provider.GetRequiredService<ICustomerQueryObserver>();
     return new CustomerMapper(connectionString, observer);
+});
+
+builder.Services.AddSingleton<IWishlistDatabase>(provider =>
+{
+    var observer = provider.GetRequiredService<IWishlistQueryObserver>();
+    return new WishlistMapper(connectionString, observer);
 });
 
 builder.Services.AddSingleton<CustomerManagement>();
@@ -78,7 +85,6 @@ builder.Services.AddScoped<IOrder, OrderManagement>();
 builder.Services.AddTransient<OrderManagement>();
 builder.Services.AddTransient<CartManagement>();
 builder.Services.AddTransient<ICartManagement, CartManagement>();
-builder.Services.AddSingleton<IWishlistDatabase>(new WishlistMapper(connectionString));
 builder.Services.AddTransient<IShippingAgents, ShippingAgents>();
 builder.Services.AddTransient<WishlistManagement>();
 builder.Services.AddTransient<ReviewManagement>();
