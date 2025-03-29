@@ -125,7 +125,7 @@ namespace CleanBrilliantCompany.Controllers
 
             if (destinationWarehouseDetails == null)
             {
-                return BadRequest(new { error = "Invalid destination warehouse." });
+                return Json(new { message = "Invalid destination warehouse." });
                 // return Json(new { success = false, error = "Invalid Destination Warehouse" });
             }
 
@@ -136,13 +136,13 @@ namespace CleanBrilliantCompany.Controllers
             if (quantity > availableCapacity)
             {
                 // return BadRequest(new { error = "Quantity exceeds available capacity." });
-                return Json(new { success = false, message = "Quantity exceeds available capacity." });
+                return Json(new { success = false, message = "Insufficient Capacity in Destination Warehouse" });
             }
 
             if (quantity > sourceWarehouseQuantity)
             {
                 // return BadRequest(new { error = "Quantity exceeds available stock in source warehouse." });
-                return Json(new { success = false, message = "Quantity exceeds available stock in source warehouse." });
+                return Json(new { success = false, message = "Insufficient Stock in Source Warehouse" });
             }
 
 
@@ -215,7 +215,7 @@ namespace CleanBrilliantCompany.Controllers
             }
             else
             {
-                return BadRequest(new { error = "Failed to delete transfer" });
+                return Json(new { error = "Failed to delete transfer" });
             }
 
         }
@@ -252,7 +252,7 @@ namespace CleanBrilliantCompany.Controllers
             }
             else
             {
-                return BadRequest(new { error = "Failed to update transfer" });
+                return Json(new { error = "Failed to update transfer" });
             }
 
         }
