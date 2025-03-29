@@ -21,6 +21,15 @@
         public List<double> TopEcoProductValues { get; set; }
         public List<string> ProductCategoryLabels { get; set; }
         public List<double> ProductCategoryValues { get; set; }
+        public float ProductPastWeekCF { get; set; }
+        public float ProductPastMonthCF { get; set; }
+
+        public float ItemPastWeekCF { get; set; }
+        public float ItemPastMonthCF { get; set; }
+
+        public float OrderPastWeekCF { get; set; }
+        public float OrderPastMonthCF { get; set; }
+
 
         // New properties for comparison tool
         public List<ProductComparisonData> Products { get; set; } = new();

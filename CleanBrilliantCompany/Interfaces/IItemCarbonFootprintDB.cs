@@ -8,8 +8,10 @@ namespace CleanBrilliantCompany.Interfaces
         bool updateAllItemCF();
         double retrieveItemCarbonFootprint(int itemCFId);
         double retrieveItemCarbonFootprintByItemId(int itemId);
+        List<ItemCarbonFootprintRDM> retrieveItemCarbonFootprintByProductId(int itemProductId);
         List<ItemCarbonFootprintRDM> retrieveAllItemCarbonFootprint();
         float retrieveTotalCarbonFootprint();
+        float retrieveTotalEcoFriendlyCarbonFootprint();
         bool getQueryStatus();
     }
 }

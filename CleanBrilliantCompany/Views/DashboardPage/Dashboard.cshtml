@@ -74,35 +74,54 @@
 
     <!-- Summary Cards -->
     <div class="row">
+        <!-- Total Product CF Card -->
         <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
+            <div class="card border-left-success shadow h-100 py-2 summary-card">
+                <div class="card-body" onclick="toggleAllPanels()">
                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                         Total Product Carbon Footprint
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalProductCF kg CO₂</div>
+                    <div id="productDetails" class="embedded-panel" style="display:none; margin-top:10px;">
+                        <hr />
+                        <p><strong>Past Week:</strong> @Model.ProductPastWeekCF kg CO₂</p>
+                        <p><strong>Past Month:</strong> @Model.ProductPastMonthCF kg CO₂</p>
+                    </div>
                 </div>
             </div>
-        </div>
+            </div>
 
+        <!-- Total Item CF Card -->
         <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
+            <div class="card border-left-info shadow h-100 py-2 summary-card">
+                <div class="card-body" onclick="toggleAllPanels()">
                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                         Total Item Carbon Footprint
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalItemCF kg CO₂</div>
+                    <div id="itemDetails" class="embedded-panel" style="display:none; margin-top:10px;">
+                        <hr />
+                        <p><strong>Past Week:</strong> @Model.ItemPastWeekCF kg CO₂</p>
+                        <p><strong>Past Month:</strong> @Model.ItemPastMonthCF kg CO₂</p>
+                    </div>
                 </div>
             </div>
         </div>
 
+
+        <!-- Total Order CF Card -->
         <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
+            <div class="card border-left-warning shadow h-100 py-2 summary-card">
+                <div class="card-body" onclick="toggleAllPanels()">
                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                         Total Order Carbon Footprint
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalOrderCF kg CO₂</div>
+                    <div id="orderDetails" class="embedded-panel" style="display:none; margin-top:10px;">
+                        <hr />
+                        <p><strong>Past Week:</strong> @Model.OrderPastWeekCF kg CO₂</p>
+                        <p><strong>Past Month:</strong> @Model.OrderPastMonthCF kg CO₂</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -648,6 +667,24 @@
             checkboxes.forEach(cb => cb.checked = !allChecked);
         }
     </script>
+    <script>
+        let panelsVisible = false;
+
+        function toggleAllPanels() {
+            const panels = ["productDetails", "itemDetails", "orderDetails"];
+            panels.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = panelsVisible ? "none" : "block";
+            });
+            panelsVisible = !panelsVisible;
+        }
+    </script>
 </body>
 
 </html>
+<style>
+    .embedded-panel p {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+</style>
