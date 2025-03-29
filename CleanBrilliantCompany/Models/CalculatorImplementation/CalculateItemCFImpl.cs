@@ -40,6 +40,7 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
                 return false;
             }
 
+            Console.WriteLine("Item CF of " + itemCF + " stored into DB.");
             return true;
         }
     }

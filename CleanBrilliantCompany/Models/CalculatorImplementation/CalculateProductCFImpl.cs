@@ -35,6 +35,8 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
                             $"Category = {product.ProductCategory}, Carbon Emission = {carbonEmission}, " +
                             $"Eco Status = {ecoStatus}, Date Created = {DateTime.Now}");
 
+            Console.WriteLine("Item CF of " + carbonEmission + " stored into DB.");
+
             return carbonEmission;
         }
     }

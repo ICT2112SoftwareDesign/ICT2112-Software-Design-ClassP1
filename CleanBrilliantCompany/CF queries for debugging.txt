@@ -1,0 +1,9 @@
+-- SELECT TOP 5 *
+-- FROM ProductCarbonFootprint
+-- ORDER BY dateCreated DESC;
+
+-- SELECT TOP 5 *
+-- FROM ItemCarbonFootprint
+-- ORDER BY dateCreated DESC;
+
+use these to check whether there are recently pushed rows in the respective CF tables

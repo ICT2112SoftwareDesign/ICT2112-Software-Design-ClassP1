@@ -13,9 +13,12 @@ namespace CleanBrilliantCompany.Controllers
         private readonly OrderCarbonFootprintControl _orderCFControl;
 
         private readonly CarbonFootprintCalculatorControl _carbonFootprintCalculatorControl;
-        private readonly ProductControl _productControl; // just for mocking purposes
 
-        public DashboardPageController(ProductCarbonFootprintControl productCFControl, ItemCarbonFootprintControl itemCFControl, OrderCarbonFootprintControl orderCFControl, CarbonFootprintCalculatorControl carbonFootprintCalculatorControl, ProductControl productControl)
+        // just for mocking purposes
+        private readonly ProductControl _productControl; 
+        private readonly ItemControl _itemControl;
+
+        public DashboardPageController(ProductCarbonFootprintControl productCFControl, ItemCarbonFootprintControl itemCFControl, OrderCarbonFootprintControl orderCFControl, CarbonFootprintCalculatorControl carbonFootprintCalculatorControl, ProductControl productControl, ItemControl itemControl)
         {
             _productCFControl = productCFControl;
             _itemCFControl = itemCFControl;
@@ -24,6 +27,7 @@ namespace CleanBrilliantCompany.Controllers
             // for product, item creation mockup
             _carbonFootprintCalculatorControl = carbonFootprintCalculatorControl;
             _productControl = productControl ?? throw new ArgumentNullException(nameof(productControl));
+            _itemControl = itemControl ?? throw new ArgumentNullException(nameof(itemControl));
         }
 
         public IActionResult Dashboard()
@@ -59,8 +63,7 @@ namespace CleanBrilliantCompany.Controllers
 
                 // for product and item mockup purposes
                 RandomProductList = _productControl.getAllProducts(),
-                ItemId = "",
-                RandomItemInstance = new Item()
+                RandomItemList = _itemControl.getAllItems().Result
             };
 
             // Populate comparison data
@@ -242,8 +245,30 @@ namespace CleanBrilliantCompany.Controllers
                 productWeight = newProduct.ProductWeight,
                 quantity = newProduct.Quantity,
                 volume = newProduct.Volume,
-                toxicityPercentage = newProduct.ToxicityPercentage
+                toxicityPercentage = newProduct.ToxicityPercentage,
+                carbonEmission = newProduct.CarbonFootprint
             });
+        }
+
+        [HttpPost]
+        public IActionResult CalculateItem(int itemId)
+        {
+            Console.WriteLine("Item ID caught: " + itemId);
+
+            // Use await for async operation rather than blocking with .Result
+            Item i = _itemControl.getItemById(itemId)?.Result;
+            
+            if (i == null)
+            {
+                return Json(new { success = false, message = "Item not found." });
+            }
+
+            int productId = i.getProductId();
+
+            // Assuming the calculation is async, ensure you await it properly
+            bool success = _carbonFootprintCalculatorControl.CalculateItemCF(itemId, productId);
+
+            return Json(new { success });
         }
     }
 }
