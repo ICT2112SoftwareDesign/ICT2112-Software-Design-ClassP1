@@ -60,8 +60,8 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        [Route("searchById")]
-        public async Task<IActionResult> searchById(int searchedItemId)
+        [Route("searchItemById")]
+        public async Task<IActionResult> searchItemById(int searchedItemId)
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
             Item? item = await _itemControl.getItemById(searchedItemId);
