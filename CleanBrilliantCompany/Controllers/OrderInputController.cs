@@ -41,6 +41,8 @@ namespace CleanBrilliantCompany.Controllers
 
             var customerDetails = base.GetCustomerSession();
             string customerAddress = customerDetails?.getSession<string>("customerAddress") ?? string.Empty;
+            string customerEmail = customerDetails?.getSession<string>("email") ?? string.Empty;
+
 
             var cart = _cartManagement.viewCart(customerId.Value);
             if (cart == null || !cart.Any())
@@ -78,6 +80,7 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.Cart = cart;
             ViewBag.CartTotal = cartTotal;
             ViewBag.CustomerAddress = customerAddress;
+            ViewBag.CustomerEmail = customerEmail;
             ViewBag.ServiceTypes = serviceTypes;
             ViewBag.ShippingMethods = shippingMethods;
             ViewBag.ShippingAgents = shippingAgents;
@@ -212,6 +215,9 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
+            var customerDetails = base.GetCustomerSession();
+            string customerEmail = customerDetails?.getSession<string>("email") ?? string.Empty;
+
             var cart = _cartManagement.viewCart(customerId.Value);
             if (cart == null || !cart.Any())
             {
@@ -232,6 +238,7 @@ namespace CleanBrilliantCompany.Controllers
                 serviceType,
                 shippingType,
                 shippingAgent,
+                customerEmail,
                 cart
             );
 

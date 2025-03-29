@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Services;
 
 namespace CleanBrilliantCompany.Models
 {
     public class OrderManagement : IOrder , IOrderRange
     {
+        private readonly EmailService emailService = new EmailService();
         private readonly IOrderDatabase _orderDatabase;
         private readonly ICartManagement _cartManagement;
         private readonly IShippingAgents _shippingAgents;
@@ -27,6 +29,7 @@ namespace CleanBrilliantCompany.Models
             string serviceType,
             string shippingType,
             string shippingAgent,
+            string customerEmail,
             Dictionary<int, int> cart)
         {
             try
@@ -72,8 +75,10 @@ namespace CleanBrilliantCompany.Models
                     orderTotal: cartTotal + shippingFee
                 );
 
+                emailService.SendEmail(customerEmail, "Order Confirmed", "Your payment has been received!");
                 // Save the order to the database
                 return _orderDatabase.insertOrder(order);
+                
             }
             catch (Exception ex)
             {
