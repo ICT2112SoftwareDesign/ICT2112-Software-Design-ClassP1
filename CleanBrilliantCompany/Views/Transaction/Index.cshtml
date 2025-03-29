@@ -529,7 +529,7 @@
     </div>
 
     <!-- Table View for All Transactions (hidden by default) -->
-    <div id="tableView" style="display: block;">
+    <div id="tableView" style="display: block; margin-top: 20px;">
         <table class="table">
             <thead>
                 <tr>
@@ -563,7 +563,7 @@
 <div id="fullView" style="display: none; padding-top:20px;">
     @foreach (var TransactionInfo in ViewData["AllTransactions"] as List<Dictionary<string, object>>)
     {
-        @{
+        
             var adjustmentType = TransactionInfo["AdjustmentType"].ToString();
             var badgeColor = adjustmentType switch
             {
@@ -586,7 +586,7 @@
             };
 
             var date = Convert.ToDateTime(TransactionInfo["TransactionDateTime"]).ToString("yyyy-MM-dd HH:mm");
-        }
+        
 
         <div style="border: 1px solid #ccc; padding: 12px; margin-bottom: 12px; border-radius: 6px; background-color: #f9f9f9;">
             <div style="margin-bottom: 4px;">
