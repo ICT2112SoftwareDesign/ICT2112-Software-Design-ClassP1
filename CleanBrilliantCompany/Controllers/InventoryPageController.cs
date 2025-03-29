@@ -1,6 +1,6 @@
 using CleanBrilliantCompany.Control;
+using CleanBrilliantCompany.DatabaseEntities;
 using CleanBrilliantCompany.DTO;
-using CleanBrilliantCompany.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
@@ -14,6 +14,7 @@ namespace CleanBrilliantCompany.Controllers
             _inventoryControl = inventoryControl;
         }
 
+        [Route("InventoryPage/ViewInventoryDashboard")]
         public IActionResult ViewDashboard(string category)
         {
             try
@@ -63,7 +64,7 @@ namespace CleanBrilliantCompany.Controllers
                 _inventoryControl.CreateDashboard("Inventory Dashboard", 7);
 
                 // Redirect to view the newly created dashboard
-                return RedirectToAction("ViewDashboard");
+                return RedirectToAction("ViewInventoryDashboard");
             }
             catch (Exception ex)
             {

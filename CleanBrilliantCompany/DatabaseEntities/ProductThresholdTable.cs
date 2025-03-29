@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CleanBrilliantCompany.Entities
+namespace CleanBrilliantCompany.DatabaseEntities
 {
     public class ProductThresholdTable
     {

@@ -1,21 +1,19 @@
-﻿using CleanBrilliantCompany.Data;
-using CleanBrilliantCompany.Entities;
-using CleanBrilliantCompany.Interface;
+﻿using CleanBrilliantCompany.Interface;
 
 namespace CleanBrilliantCompany.Dummy
 {
     public class MockProduct : IProduct
     {
-        private readonly AppDbContext _context;
+        private readonly SimulatedDbContext _context;
 
-        public MockProduct(AppDbContext context)
+        public MockProduct(SimulatedDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public List<ProductTable> getAllProducts()
         {
-            return _context.ProductTable
+            return _context.Products
                 .Where(product => product.productId != 909) // Exclude Product 909
                 .ToList();
         }

@@ -1,6 +1,4 @@
-﻿using CleanBrilliantCompany.Entities;
-
-namespace CleanBrilliantCompany.Interface
+﻿namespace CleanBrilliantCompany.Interface
 {
     public interface IProduct
     {

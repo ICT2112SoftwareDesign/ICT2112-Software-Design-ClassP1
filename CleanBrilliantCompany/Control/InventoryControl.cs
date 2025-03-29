@@ -1,6 +1,5 @@
-using CleanBrilliantCompany.Data;
+using CleanBrilliantCompany.DatabaseEntities;
 using CleanBrilliantCompany.DTO;
-using CleanBrilliantCompany.Entities;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
 using System.Text;
@@ -9,15 +8,18 @@ namespace CleanBrilliantCompany.Control
 {
     public class InventoryControl
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
+        private readonly SimulatedDbContext _simulatedContext;
         private readonly IInventoryRepository _inventoryRepository;
         private readonly IProduct _productService;
 
-        public InventoryControl(AppDbContext context, IInventoryRepository inventoryRepository, IProduct productService)
+        public InventoryControl(ApplicationDbContext context, SimulatedDbContext simulatedContext, IInventoryRepository inventoryRepository, IProduct productService)
         {
             _inventoryRepository = inventoryRepository ?? throw new ArgumentNullException(nameof(inventoryRepository));
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _simulatedContext = simulatedContext ?? throw new ArgumentNullException(nameof(simulatedContext));
+
         }
 
         public void CreateDashboard(string name, int validityDuration)
@@ -264,19 +266,39 @@ namespace CleanBrilliantCompany.Control
 
         public List<InventoryDTO> GetProductThresholdsWithInfo()
         {
-            return _context.ProductThresholdTable
+            //return _context.ProductThresholdTable
+            //    .Join(
+            //        _context.ProductTable,
+            //        pt => pt.ProductId,
+            //        p => p.productId,
+            //        (pt, p) => new InventoryDTO
+            //        {
+            //            ProductId = p.productId,
+            //            ProductName = p.productName,
+            //            Threshold = pt.Threshold ?? 100, // Handle NULL if needed
+            //            LastUpdated = pt.LastUpdated,
+            //        })
+            //    .ToList();
+
+
+            var thresholds = _context.ProductThresholdTable.ToList();
+            var products = _simulatedContext.Products.ToList();
+
+            var result = thresholds
                 .Join(
-                    _context.ProductTable,
+                    products,
                     pt => pt.ProductId,
                     p => p.productId,
                     (pt, p) => new InventoryDTO
                     {
                         ProductId = p.productId,
                         ProductName = p.productName,
-                        Threshold = pt.Threshold ?? 100, // Handle NULL if needed
+                        Threshold = pt.Threshold ?? 100,
                         LastUpdated = pt.LastUpdated,
                     })
                 .ToList();
+
+            return result;
         }
 
         public void InitializeMissingThresholds()

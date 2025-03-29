@@ -1,5 +1,4 @@
-using CleanBrilliantCompany.Data;
-using CleanBrilliantCompany.Entities;
+using CleanBrilliantCompany.DatabaseEntities;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
 using Microsoft.CodeAnalysis;
@@ -8,9 +7,9 @@ namespace CleanBrilliantCompany.Mapper
 {
     public class InventoryMapper : IInventoryRepository
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public InventoryMapper(AppDbContext context)
+        public InventoryMapper(ApplicationDbContext context)
         {
             _context = context;
         }

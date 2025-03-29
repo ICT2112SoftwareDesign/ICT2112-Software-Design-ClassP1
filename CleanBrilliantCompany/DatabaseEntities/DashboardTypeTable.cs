@@ -1,4 +1,4 @@
-﻿namespace CleanBrilliantCompany.Entities
+﻿namespace CleanBrilliantCompany.DatabaseEntities
 {
     public class DashboardTypeTable
     {
