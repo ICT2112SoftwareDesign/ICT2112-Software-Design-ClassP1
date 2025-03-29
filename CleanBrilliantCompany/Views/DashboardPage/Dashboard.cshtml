@@ -47,8 +47,9 @@
     <!-- carbon footprint calculator mockups -->
     <div class="button-row">
         <button onclick="createNewProduct()">Create Product (Mockup)</button>
-        <button onclick="updateItemsDaily()">Calculate All Items CF Daily</button>
-        <button onclick="calculateShipmentCF()">Calculate Shipment CF</button>
+        <button type="button" onclick="calculateItemCarbonFootprint()">Calculate Item Carbon Footprint</button>
+        <button onclick="updateItemsDaily()">Calculate All Items CF Daily (TBD)</button>
+        <button onclick="calculateShipmentCF()">Calculate Shipment CF (TBD)</button>
     </div>
 
     <div>
@@ -67,8 +68,6 @@
                     <option value="@item.getItemId()">Item #@item.getItemId() with product ID of @item.getProductId()</option>
                 }
             </select>
-            
-            <button type="button" onclick="calculateItemCarbonFootprint()">Calculate Item Carbon Footprint</button>
         </form>
     </div>
 
