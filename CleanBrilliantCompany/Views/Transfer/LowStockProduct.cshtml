@@ -155,6 +155,36 @@ else
 
         // Proceed with form submission if no errors
         this.submit();
-    });
-</script>
 
+    });
+
+    // Attach event listeners to the "Create Transfer Request" buttons
+    document.querySelectorAll(".create-transfer-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const productId = this.getAttribute('data-product-id'); // Get the product ID from the clicked button
+            document.getElementById('productIdInput').value = productId; // Set the value of the hidden input
+        });
+    });
+
+    // Submit the form manually only if all validations pass
+    document.getElementById("transferForm").addEventListener("submit", function (event) {
+        let quantity = document.getElementById("quantity").value;
+        let sourceWarehouse = document.getElementById("sourceWarehouse").value;
+        let destinationWarehouse = document.getElementById("destinationWarehouse").value;
+
+        if (quantity <= 0) {
+            alert("Please enter a valid quantity.");
+            event.preventDefault(); // Prevent form submission
+            return;
+        }
+
+        if (sourceWarehouse === destinationWarehouse) {
+            alert("Source and Destination warehouse cannot be the same.");
+            event.preventDefault(); // Prevent form submission
+            return;
+        }
+
+        // No validation errors, proceed with form submission
+    });
+
+</script>
