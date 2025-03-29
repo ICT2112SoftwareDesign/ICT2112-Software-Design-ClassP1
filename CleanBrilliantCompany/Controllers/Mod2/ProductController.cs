@@ -32,41 +32,12 @@ namespace CleanBrilliantCompany.Controllers
             foreach (var manufacturer in manufacturers)
             {
                 manufacturersInfo.Add(manufacturer.retrieveProductManufacturerInfo());
-
             }
 
             ViewBag.Manufacturers = manufacturersInfo;
 
             return View("~/Views/Product/Index.cshtml", productInfo);
         }
-
-        // public async Task<IActionResult> displayProducts()
-        // {
-        //     List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
-
-        //     List<Product> products = _productControl.getAllProducts();
-
-        //     foreach (var product in products)
-        //     {
-        //         productInfo.Add(product.retrieveProductInfo());
-        //     }
-
-        //     return View("~/Views/Product/Index.cshtml", productInfo);
-        // }
-
-        // [HttpPost]
-        // public async Task<IActionResult> CreateProduct(string productName, string productCategory, float productCost, 
-        // int manufacturerId, float weight, int volume, float toxicityPercentage, int carbonFootprint, string productState)
-        // {
-        //     // Create the product without quantity, to represent just a new prod into the list
-        //     int quantity = 0; // When creating a product should be default to 0 quantity, no items
-        //     _productControl.createProduct(productName, productCategory, 
-        //                                 productCost, manufacturerId, weight, 
-        //                                 quantity, volume, toxicityPercentage, 
-        //                                 carbonFootprint, productState);
-
-        //     return RedirectToAction("Index");
-        // }
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct(string productName, string productCategory, float productCost, 
@@ -115,12 +86,22 @@ namespace CleanBrilliantCompany.Controllers
 
         [HttpPost]
         public async Task<IActionResult> UpdateProduct(int productId, string productName, string productCategory, float productCost, 
-        int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
+        float productWeight, int quantity, int volumeOrZero, float toxicityPercentage, int carbonFootprint, bool isLiquid)
+        // int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
+            // Collect the manufacturerId
+            Product product = _productControl.getProductDetails(productId);
+            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+            productInfo.Add(product.retrieveProductInfo());
+            int oldManufacturerId = Convert.ToInt32(productInfo[0]["ManufacturerId"]);
+
+            // Based on isLiquid update volume
+            string productState = isLiquid ? "1" : "0";
+            int volume = isLiquid ? volumeOrZero : 0;
             _productControl.updateProduct(productId, productName, productCategory, 
-                                        productCost, manufacturerId, productWeight, 
+                                        productCost, oldManufacturerId, productWeight, 
                                         quantity, volume, toxicityPercentage, 
-                                        carbonFootprint, productState);;
+                                        carbonFootprint, productState);
             return RedirectToAction("Index");
         }
 

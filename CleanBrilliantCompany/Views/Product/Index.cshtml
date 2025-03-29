@@ -414,20 +414,27 @@
                                         <input type="text" class="form-control" id="createProductName" name="productName" required />
                                     </div>
 
-                                    <div class="mb-3">
+                                    @* <div class="mb-3">
                                         <label for="createProductCategory" class="form-label">Category</label>
                                         <input type="text" class="form-control" id="createProductCategory" name="productCategory" required />
+                                    </div> *@
+
+                                    <div class="mb-3">
+                                        <label for="modalProductCategory" class="form-label">Category</label>
+                                        <select class="form-control" id="modalProductCategory" name="productCategory" required>
+                                            <option value=""> Select Category </option>
+                                            <option value="Personal Care">Personal Care</option>
+                                            <option value="Detergent">Detergent</option>
+                                            <option value="Household">Household</option>
+                                            <option value="Packaging">Packaging</option>
+                                            <option value="Kitchen">Kitchen</option>
+                                        </select>
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="createProductCost" class="form-label">Cost Price</label>
                                         <input type="number" step="0.01" class="form-control" id="createProductCost" name="productCost" required />
                                     </div>
-
-                                    @* <div class="mb-3">
-                                        <label for="createManufacturerId" class="form-label">Manufacturer ID</label>
-                                        <input type="number" class="form-control" id="createManufacturerId" name="manufacturerId" required />
-                                    </div> *@
 
                                     <div class="mb-3">
                                         <label for="modalManufacturerId" class="form-label">Manufacturer</label>
@@ -448,11 +455,6 @@
                                         <label for="createProductWeight" class="form-label">Weight (kg)</label>
                                         <input type="number" step="0.01" class="form-control" id="createProductWeight" name="weight" required />
                                     </div>
-
-                                    @* <div class="mb-3">
-                                        <label for="createQuantity" class="form-label">Quantity</label>
-                                        <input type="number" class="form-control" id="createQuantity" name="quantity" required />
-                                    </div> *@
 
                                     <div class="mb-3">
                                         <label for="createVolume" class="form-label">Volume</label>
@@ -476,11 +478,6 @@
                                             <option value="false">Solid</option>
                                         </select>
                                     </div>
-
-                                    @* <div class="mb-3">
-                                        <label for="createProductState" class="form-label">Product State</label>
-                                        <input type="text" class="form-control" id="createProductState" name="productState" required />
-                                    </div> *@
 
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -530,13 +527,22 @@
                                     <td class="product-name">@productInfo["ProductName"]</td>
                                     <td class="product-category">@productInfo["ProductCategory"]</td>
                                     <td>@productInfo["ProductCost"]</td>
-                                    <td>@productInfo["ManufacturerId"]</td>
+                                    @* <td>@productInfo["ManufacturerId"]</td> *@
+                                    <td>
+                                        @{
+                                            var manufacturerId = Convert.ToInt32(productInfo["ManufacturerId"]);
+                                            var manufacturerName = ((List<Dictionary<string, object>>)ViewBag.Manufacturers)
+                                                .FirstOrDefault(m => Convert.ToInt32(m["ManufacturerId"]) == manufacturerId)?["CompanyName"] ?? "Unknown";
+                                        }
+                                        @manufacturerName
+                                    </td>
                                     <td>@productInfo["ProductWeight"]</td>
                                     <td>@productInfo["Quantity"]</td>
                                     <td>@productInfo["Volume"]</td>
                                     <td>@productInfo["ToxicityPercentage"]</td>
                                     <td>@productInfo["CarbonFootprint"]</td>
-                                    <td>@productInfo["ProductState"]</td>
+                                    @* <td>@productInfo["ProductState"]</td> *@
+                                    <td>@(productInfo["ProductState"].ToString() == "0" ? "Solid" : "Liquid")</td>
                                     <td>
                                         <button type="button" class="btn btn-primary"
                                             data-bs-toggle="modal"
@@ -556,10 +562,10 @@
                                         </button>
                                     </td>
                                     <td>
-                                        <form method="post" asp-action="DeleteProduct" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                        @* <form method="post" asp-action="DeleteProduct" onsubmit="return confirm('Are you sure you want to delete this product?');">
                                             <input type="hidden" name="productId" value="@productInfo["ProductId"]" />
                                             <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
+                                        </form> *@
                                     </td>
                                 </tr>
                             }
@@ -593,32 +599,47 @@
 
                                     <div class="mb-3">
                                         <label for="modalProductCategory" class="form-label">Category</label>
-                                        <input type="text" class="form-control" id="modalProductCategory" name="productCategory" required />
+                                        <select class="form-control" id="modalProductCategory" name="productCategory" required>
+                                            <option value=""> Select Category </option>
+                                            <option value="Personal Care">Personal Care</option>
+                                            <option value="Detergent">Detergent</option>
+                                            <option value="Household">Household</option>
+                                            <option value="Packaging">Packaging</option>
+                                            <option value="Kitchen">Kitchen</option>
+                                        </select>
                                     </div>
+
+                                    @* <div class="mb-3">
+                                        <label for="modalProductCategory" class="form-label">Category</label>
+                                        <input type="text" class="form-control" id="modalProductCategory" name="productCategory" required />
+                                    </div> *@
 
                                     <div class="mb-3">
                                         <label for="modalProductCost" class="form-label">Cost Price</label>
                                         <input type="number" step="0.01" class="form-control" id="modalProductCost" name="productCost" required />
                                     </div>
 
-                                    <div class="mb-3">
+                                    @* <div class="mb-3">
                                         <label for="modalManufacturerId" class="form-label">Manufacturer ID</label>
                                         <input type="number" class="form-control" id="modalManufacturerId" name="manufacturerId" required />
-                                    </div>
+                                    </div> *@
 
                                     <div class="mb-3">
                                         <label for="modalProductWeight" class="form-label">Weight (kg)</label>
                                         <input type="number" step="0.01" class="form-control" id="modalProductWeight" name="productWeight" required />
                                     </div>
 
-                                    <div class="mb-3">
+                                    <!-- Hidden field for Manufacturer ID -->
+                                    <input type="hidden" id="modalQuantity" name="quantity" />
+
+                                    @* <div class="mb-3">
                                         <label for="modalQuantity" class="form-label">Quantity</label>
                                         <input type="number" class="form-control" id="modalQuantity" name="quantity" required />
-                                    </div>
+                                    </div> *@
 
                                     <div class="mb-3">
                                         <label for="modalVolume" class="form-label">Volume</label>
-                                        <input type="number" class="form-control" id="modalVolume" name="volume" required />
+                                        <input type="number" class="form-control" id="modalVolume" name="volumeOrZero" required />
                                     </div>
 
                                     <div class="mb-3">
@@ -632,9 +653,17 @@
                                     </div>
 
                                     <div class="mb-3">
+                                        <label for="isLiquid" class="form-label">Product State</label>
+                                        <select class="form-control" name="isLiquid" id="isLiquid" required>
+                                            <option value="true">Liquid</option>
+                                            <option value="false">Solid</option>
+                                        </select>
+                                    </div>
+
+                                    @* <div class="mb-3">
                                         <label for="modalProductState" class="form-label">Product State</label>
                                         <input type="text" class="form-control" id="modalProductState" name="productState" required />
-                                    </div>
+                                    </div> *@
 
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -721,7 +750,7 @@
             document.getElementById('modalProductName').value = button.getAttribute('data-product-name');
             document.getElementById('modalProductCategory').value = button.getAttribute('data-product-category');
             document.getElementById('modalProductCost').value = button.getAttribute('data-product-cost');
-            document.getElementById('modalManufacturerId').value = button.getAttribute('data-manufacturer-id');
+            @* document.getElementById('modalManufacturerId').value = button.getAttribute('data-manufacturer-id'); *@
             document.getElementById('modalProductWeight').value = button.getAttribute('data-product-weight');
             document.getElementById('modalQuantity').value = button.getAttribute('data-quantity');
             document.getElementById('modalVolume').value = button.getAttribute('data-volume');
@@ -730,6 +759,59 @@
             document.getElementById('modalProductState').value = button.getAttribute('data-state');
         });
     </script>
+
+    @* <script>
+        // Target the Update Product Modal
+        const updateProductModal = document.getElementById('updateProductModal');
+
+        // Event listener for showing the modal
+        updateProductModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            const button = event.relatedTarget;
+
+            // Extract product details from data attributes
+            const productId = button.getAttribute('data-product-id');
+            const productName = button.getAttribute('data-product-name');
+            const productCategory = button.getAttribute('data-product-category');
+            const productCost = button.getAttribute('data-product-cost');
+            const manufacturerId = button.getAttribute('data-manufacturer-id');
+            const productWeight = button.getAttribute('data-product-weight');
+            const quantity = button.getAttribute('data-quantity');
+            const volume = button.getAttribute('data-volume');
+            const toxicity = button.getAttribute('data-toxicity');
+            const carbon = button.getAttribute('data-carbon');
+            const productState = button.getAttribute('data-state');
+
+            // Populate modal fields
+            document.getElementById('modalProductId').value = productId;
+            document.getElementById('modalProductName').value = productName;
+            document.getElementById('modalProductCost').value = productCost;
+            document.getElementById('modalManufacturerId').value = manufacturerId;
+            document.getElementById('modalProductWeight').value = productWeight;
+            document.getElementById('modalQuantity').value = quantity;
+            document.getElementById('modalVolume').value = volume;
+            document.getElementById('modalToxicity').value = toxicity;
+            document.getElementById('modalCarbon').value = carbon;
+            document.getElementById('modalProductState').value = productState;
+
+            // Populate category dropdown
+            const categorySelect = document.getElementById('modalProductCategory');
+            if (productCategory) {
+                categorySelect.value = productCategory;
+            } else {
+                categorySelect.selectedIndex = 0; // Default to first option if not available
+            }
+
+            // Populate product state (Liquid or Solid)
+            const stateSelect = document.getElementById('isLiquid');
+            if (productState === "1") {
+                stateSelect.value = "true"; // Liquid
+            } else {
+                stateSelect.value = "false"; // Solid
+            }
+        });
+    </script> *@
+
 
     <!-- JavaScript for filtering products -->
     <script>
