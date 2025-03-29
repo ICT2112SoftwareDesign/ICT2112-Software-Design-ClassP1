@@ -1,3 +1,7 @@
 \obj
 \bin
-
+\.vs
+CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfo.cs
+CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfoInputs.cache
+CleanBrilliantCompany/appsettings.json
+CleanBrilliantCompany/bin
