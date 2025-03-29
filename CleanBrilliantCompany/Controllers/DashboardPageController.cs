@@ -33,10 +33,14 @@ namespace CleanBrilliantCompany.Controllers
             var nonEcoFriendlyCount = products.Count - ecoFriendlyCount;
 
             var orders = _orderCFControl.getAllOrderCarbonFootprint();
+            var itemList = _itemCFControl.getAllItemCarbonFootprint();
 
             var transportModeCounts = orders
             .GroupBy(o => o.retrieveTransportMode().ToUpper())
             .ToDictionary(g => g.Key, g => g.Count());
+
+            var oneWeekAgo = DateTime.Now.AddDays(-7);
+            var oneMonthAgo = DateTime.Now.AddMonths(-1);
 
             var viewModel = new CarbonDashboardViewModel
             {
@@ -56,6 +60,15 @@ namespace CleanBrilliantCompany.Controllers
                 OrderTransportBreakdown = transportModeCounts,
 
                 EmissionTrendOverTime = new Dictionary<string, float>(),
+
+                ProductPastWeekCF = products.Where(p => p.retrieveDateCreated() >= oneWeekAgo).Sum(p => (float)p.calculateSelfEmission()),
+                ProductPastMonthCF = products.Where(p => p.retrieveDateCreated() >= oneMonthAgo).Sum(p => (float)p.calculateSelfEmission()),
+
+                ItemPastWeekCF = itemList.Where(i => i.retrieveDateCreated() >= oneWeekAgo).Sum(i => (float)i.calculateSelfEmission()),
+                ItemPastMonthCF = itemList.Where(i => i.retrieveDateCreated() >= oneMonthAgo).Sum(i => (float)i.calculateSelfEmission()),
+
+                OrderPastWeekCF = orders.Where(o => o.retrieveDateCreated() >= oneWeekAgo).Sum(o => (float)o.calculateSelfEmission()),
+                OrderPastMonthCF = orders.Where(o => o.retrieveDateCreated() >= oneMonthAgo).Sum(o => (float)o.calculateSelfEmission()),
 
                 // for product and item mockup purposes
                 RandomProductList = _productControl.getAllProducts(),
