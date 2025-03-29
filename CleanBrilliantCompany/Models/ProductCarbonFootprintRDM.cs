@@ -23,7 +23,7 @@
         }
 
         // Getters and Setters
-        public int getProductCFId()
+        private int getProductCFId()
         {
             return productCFId;
         }
@@ -33,7 +33,7 @@
             this.productCFId = productCFId;
         }
 
-        public int getProductId()
+        private int getProductId()
         {
             return productId;
         }
@@ -43,7 +43,7 @@
             this.productId = productId;
         }
 
-        public string getProductName()
+        private string getProductName()
         {
             return productName;
         }
@@ -73,7 +73,7 @@
             this.carbonEmission = carbonEmission;
         }
 
-        public string getEcoStatus()
+        private string getEcoStatus()
         {
             return ecoStatus;
         }
@@ -101,6 +101,26 @@
         public DateTime retrieveDateCreated()
         {
             return dateCreated;
+        }
+
+        public string retrieveProductName()
+        {
+            return productName;
+        }
+
+        public string retrieveProductCategory()
+        {
+            return productCategory;
+        }
+
+        public int retrieveProductId()
+        {
+            return productId;
+        }
+
+        public string retrieveEcoStatus()
+        {
+            return ecoStatus;
         }
     }
 }

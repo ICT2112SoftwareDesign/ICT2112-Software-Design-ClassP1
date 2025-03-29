@@ -127,6 +127,28 @@
         </div>
     </div>
 
+    <div class="col-xl-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Top 5 Eco-Efficient Products</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="ecoLeaderboardChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Product Category Emissions</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="categoryBreakdownChart"></canvas>
+            </div>
+        </div>
+    </div>
+
     <!-- Comparison Tool -->
     <div class="row">
         <div class="col-xl-12">
@@ -363,6 +385,48 @@
             });
             document.getElementById(activeId).classList.add("active");
         }
+
+                const leaderboardChart = new Chart(document.getElementById("ecoLeaderboardChart"), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.TopEcoProductLabels)),
+                datasets: [{
+                    label: "Carbon Emission (kg CO₂)",
+                    data: @Html.Raw(Json.Serialize(Model.TopEcoProductValues)),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Lowest Emission Products' },
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { beginAtZero: true }
+                }
+            }
+        });
+
+        const categoryChart = new Chart(document.getElementById("categoryBreakdownChart"), {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.ProductCategoryLabels)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.ProductCategoryValues)),
+                    backgroundColor: [
+                        '#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Emissions by Product Category' }
+                }
+            }
+        });
 
         let productComparisonChart;
         let shippingComparisonChart;

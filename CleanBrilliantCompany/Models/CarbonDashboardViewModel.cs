@@ -17,6 +17,10 @@
         public Dictionary<string, int> ProductEcoBreakdown { get; set; }
         public Dictionary<string, int> OrderTransportBreakdown { get; set; }
         public Dictionary<string, float> EmissionTrendOverTime { get; set; }
+        public List<string> TopEcoProductLabels { get; set; }
+        public List<double> TopEcoProductValues { get; set; }
+        public List<string> ProductCategoryLabels { get; set; }
+        public List<double> ProductCategoryValues { get; set; }
 
         // New properties for comparison tool
         public List<ProductComparisonData> Products { get; set; } = new();
