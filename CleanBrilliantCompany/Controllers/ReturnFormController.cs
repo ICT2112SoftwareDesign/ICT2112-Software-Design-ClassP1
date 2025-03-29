@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
+using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    
+    [Route("inventory/management/stockflow/returns")]
     public class ReturnFormController : Controller
     {
 
@@ -17,20 +18,22 @@ namespace CleanBrilliantCompany.Controllers
 			_returnFormControl = returnFormControl;
 		}
 
-        [HttpPost]
-        [Route("inventory/management/stockflow/returns/display")]
-        public List<ReturnForm> DisplayAllReturnForms()
+        [Route("")]
+        public IActionResult Index()
 		{
-			return _returnFormControl.displayReturnForms();
-		}
+            var returnForms = _returnFormControl.displayReturnForms();
 
-        [Route("inventory/management/stockflow/returns/view/{itemId}")]
+            return View(returnForms);
+
+        }
+
+        [Route("view/{itemId}")]
 		public IActionResult DisplayReturnForm(int itemId)
 		{
 			ReturnForm? returnForm = _returnFormControl.getReturnFormById(itemId);
 			if (returnForm == null)
 			{
-				RedirectToAction("Error", "StockFlowPage", new { errorType = "General" });
+				RedirectToAction("Error", new { errorType = "General" });
 			}
 
 			return View(returnForm);
@@ -39,22 +42,22 @@ namespace CleanBrilliantCompany.Controllers
 
         // Handle deleting return forms.
         [HttpGet]
-        [Route("inventory/management/stockflow/returns/delete")]
+        [Route("delete")]
         public IActionResult DeleteReturnForm(int productId, int itemId)
 		{
 			bool result = _returnFormControl.deleteReturnForm(productId, itemId);
 
 			if (result)
 			{
-				return RedirectToAction("Returns", "StockFlowPage");
+				return RedirectToAction("Index");
 			}
-			return RedirectToAction("Error", "StockFlowPage", new { errorType = "DeleteError" });
+			return RedirectToAction("Error", new { errorType = "DeleteError" });
 		}
 
 
         // Handle confirm sending return forms.
         [HttpPost]
-        [Route("inventory/management/stockflow/returns/confirm-create")]
+        [Route("confirm-create")]
         public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, string manufacturerName, string manufacturerEmail, int productId, string productName, int itemId, string returnReason, int staffId)
 		{
 
@@ -66,14 +69,14 @@ namespace CleanBrilliantCompany.Controllers
 
 			if (result == null)
 			{
-				return RedirectToAction("Error", "StockFlowPage", new { errorType = "InputError" });
+				return RedirectToAction("Error", new { errorType = "InputError" });
 			}
 			
-			return RedirectToAction("Returns", "StockFlowPage");
+			return RedirectToAction("Index");
 		}
 
         // Generate new return forms for sending (not sent yet)
-        [Route("inventory/management/stockflow/returns/create")]
+        [Route("create")]
         public IActionResult Create(int productId, int itemId) {
 
             ReturnForm model = _returnFormControl.generateReturnForm(productId, itemId);
@@ -81,7 +84,7 @@ namespace CleanBrilliantCompany.Controllers
 			return View(model);
 		}
 
-        [Route("inventory/management/stockflow/returns/to-return")]
+        [Route("to-return")]
         public ActionResult ShowAllToReturn()
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
@@ -94,6 +97,13 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             return View(itemsInfo);
+        }
+
+        [Route("error")]
+        public IActionResult Error(string errorType)
+        {
+            ViewBag.ErrorType = errorType ?? "General";
+            return View();
         }
 
     }

@@ -1,12 +1,10 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
-	ViewData["Title"] = "View Return Form";
-}
 
-@using CleanBrilliantCompany.Models.Entity;
-@model ReturnForm
+@{
+    string? errorType = ViewBag.ErrorType as string;
+}
 
 
 <body id="page-top">
@@ -392,55 +390,45 @@
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    <button class="btn btn-secondary" onclick="history.back()">Go Back</button>
-                    @if (Model == null)
+                    <h3>Error</h3>
+
+                    @if (errorType == "NotFound")
                     {
                         <p>Return form not found.</p>
                     }
-
+                    else if (errorType == "DeleteError")
+                    {
+                        <p>Error encountered during deletion.</p>
+                    }
+                    else if (errorType == "InputError")
+                    {
+                        <p>Invalid input. Possible cause of errors:</p>
+                        <p>Manufacturer and/or Item ID doesn't exists.</p>
+                        <p>Item is already refunded.</p>
+                        <p>Item is not marked as Available.</p>
+                    }
                     else
                     {
-                        <h1 class="h1 text-center py-2 fw-bold">Clean Brilliant Company</h1>
-                        <h2 class="text-muted text-center py-2 ">Return form</h2>
-
-                        <h2 class="h2 py-2">Return ID: @Model.GetReturnId()</h2>
-                        <br />
-                        <p>
-                            Manufacturer ID: @Model.GetManufacturerId() <br />
-                            Manufacturer Name: @Model.GetManufacturerName() <br />
-                            Manufacturer Email: @Model.GetManufacturerEmail() <br />
-                        </p>
-                        <hr />
-                        <p>Item ID: @Model.GetItemId()</p>
-                        <p>Product ID: @Model.GetProductId()</p>
-                        <p>Product Name: @Model.GetProductName()</p>
-                        <hr />
-                        <p>
-                            <span class="fw-bold">Return Reason: <br /></span>
-                            @Model.GetReturnReason()
-                        </p>
-                        <p>
-                            <span class="fw-bold">Sent by Staff ID: <br /></span>
-                            @Model.GetStaffId()
-                        </p>
+                        <p>An unknown error occurred.</p>
                     }
+
                 </div>
-            <!-- /.container-fluid -->
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
 
         </div>
-        <!-- End of Main Content -->
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2021</span>
-                </div>
-            </div>
-        </footer>
-        <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
+        <!-- End of Content Wrapper -->
     </div>
     <!-- End of Page Wrapper -->
     <!-- Scroll to Top Button-->
