@@ -47,7 +47,7 @@ namespace CleanBrilliantCompany.Data
             modelBuilder.Entity<GoalsSDM>()
                 .Property<int>("goalMonth");
 
-            // Explicitly map the table name (if needed)
+            // Explicitly map the table name for CarbonFootprintRecord.
             modelBuilder
             .Entity<CarbonFootprintRecord>()
             .ToTable("CarbonFootprintRecord");
@@ -67,5 +67,6 @@ namespace CleanBrilliantCompany.Data
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
+        public double ProductCost { get; set; }
     }
 }

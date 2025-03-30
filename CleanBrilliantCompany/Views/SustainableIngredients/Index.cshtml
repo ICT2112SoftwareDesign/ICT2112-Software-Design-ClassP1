@@ -3,14 +3,15 @@
 <filename> Index.cshtml </filename>
 <author> Yuen Wee Kin, Edwin </author> 
 <created> 2025-03-23 </created>
-<updated> 2025-03-29 </updated>
+<updated> 2025-03-31 </updated>
 <description>
     View displaying sustainable ingredient inventory with alerts for low stock.
 </description>
-<version> 1.2 </version>
+<version> 1.3 </version>
 *@
 
 @model List<CleanBrilliantCompany.Models.Entity.IngredientSDM>
+@using CleanBrilliantCompany.Models
 
 @{
     ViewData["Title"] = "Sustainable Resource Inventory";
@@ -61,76 +62,32 @@
     </div>
 </div>
 
-@{
-    decimal totalCarbonBefore = 0;
-    decimal totalCarbonAfter = 0;
-    decimal overallReduction = 0;
-    string overallReductionClass = "";
-}
 <div class="card mt-4">
     <div class="card-header bg-success text-white">
         <h5>🌱 Carbon Footprint Reduction</h5>
     </div>
 
     <div class="card-body">
-        <table class="table table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>Category</th>
-                    <th>Before (kg CO₂)</th>
-                    <th>After (kg CO₂)</th>
-                    <th>Reduction (%)</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (ViewBag.CarbonData is List<CleanBrilliantCompany.Models.Entity.CarbonFootprintRecord> carbonData)
-                {
-                    var groupedData = carbonData
-                    .GroupBy(d => d.EntityId)
-                    .Select(group =>
+        @{
+            var carbonDataWithSavings = ViewBag.CarbonData as
+            List<CleanBrilliantCompany.Models.CarbonFootprintWithSavings>;
+        }
+
+        @if (carbonDataWithSavings != null && carbonDataWithSavings.Any())
+        {
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Entity ID</th>
+                        <th>Entity Type</th>
+                        <th>Carbon Emission (Before Reduction)</th>
+                        <th>Carbon Footprint Reduction (%)</th>
+                        <th>Cost Savings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in carbonDataWithSavings)
                     {
-                        // Correctly find "Before" (Not Eco-Friendly) emissions.
-                        var beforeEmission = group
-                                    .Where(x => x.EcoStatus == "Not Eco-Friendly")
-                                    .Select(x => x.CarbonEmission)
-                                    .DefaultIfEmpty(0)
-                                    .Sum();
-
-                        // Correctly find "After" (Eco-Friendly) emissions
-                        var afterEmission = group
-                                    .Where(x => x.EcoStatus == "Eco-Friendly")
-                                    .Select(x => x.CarbonEmission)
-                                    .Sum();
-
-                        decimal reductionPercentage = 0;
-
-                        // Calculate reduction percentage.
-                        if (beforeEmission != 0)
-                        {
-                            // Standard reduction calculation.
-                            reductionPercentage = (decimal)((beforeEmission - afterEmission) / beforeEmission) * 100;
-                        }
-                        else
-                        {
-                            // If emission increased (or stayed the same)
-                            // If after > 0, it's an increase (100% increase) -> -100% reduction.
-                            reductionPercentage = (afterEmission > 0) ? -100 : 0;
-                        }
-
-                        return new
-                        {
-                            EntityID = group.Key,
-                            BeforeEmission = beforeEmission,
-                            AfterEmission = afterEmission,
-                            ReductionPercentage = reductionPercentage,
-                        };
-                    }).ToList();
-
-                    foreach (var item in groupedData)
-                    {
-                        totalCarbonBefore += (decimal)item.BeforeEmission;
-                        totalCarbonAfter += (decimal)item.AfterEmission;
-
                         string reductionClass =
                         // Green for good reduction (greater than 50%)
                         item.ReductionPercentage > 50 ? "bg-success" :
@@ -140,56 +97,25 @@
                         item.ReductionPercentage > 0 ? "bg-warning" :
                         // Red for negative reduction (any decrease / increase of CO2)
                         "bg-danger";
-
                         <tr>
-                            <td>@item.EntityID</td>
-                            <td>@item.BeforeEmission.ToString("F2") kg CO₂</td>
-                            <td>@item.AfterEmission.ToString("F2") kg CO₂</td>
-                            <td class="@reductionClass text-white"><strong>@item.ReductionPercentage.ToString("F2") %</strong>
-                            </td>
+                            <td>@item.EntityId</td>
+                            <td>@item.EntityType</td>
+                            <td>@Math.Round(item.CarbonEmission, 2) kg CO₂</td>
+                            <td class="@reductionClass text-white">@Math.Round(item.ReductionPercentage, 2)</td>
+                            <td>$@Math.Round(item.CostSavings, 2) SGD</td>
                         </tr>
                     }
-                }
-
-                @{
-                    // Log the values for debugging purposes.
-                    Console.WriteLine($"Total Carbon Before: {totalCarbonBefore}");
-                    Console.WriteLine($"Total Carbon After: {totalCarbonAfter}");
-
-                    if (totalCarbonBefore > 0)
-                    {
-                        // Normal reduction calculation
-                        overallReduction = ((totalCarbonBefore - totalCarbonAfter) / totalCarbonBefore) * 100;
-                    }
-                    else if (totalCarbonBefore == 0 && totalCarbonAfter > 0)
-                    {
-                        // If no emissions before, but there are emissions after, consider a 100% increase.
-                        overallReduction = -100;
-                    }
-                    else if (totalCarbonBefore == 0 && totalCarbonAfter == 0)
-                    {
-                        // If no emissions before and after, no reduction.
-                        overallReduction = 0;
-                    }
-
-                    // Log overall reduction for debugging.
-                    Console.WriteLine($"Overall Reduction: {overallReduction}");
-
-                    // Decide the overall reduction class based on the value.
-                    overallReductionClass = overallReduction >= 50 ? "bg-success" : overallReduction >= 20 ?
-                    "bg-warning" : "bg-danger";
-                }
-            </tbody>
-
-            @* Progrss bar *@
-            <div class="progess mt-3">
-                <div class="progress-bar progress-bar-striped progress-bar-animated @overallReductionClass"
-                    role="progressbar" style="width: @overallReduction%;" aria-valuenow="@overallReduction"
-                    aria-valuemin="0" aria-valuemax="100">
-                    @overallReduction.ToString("F2")% Reduction
+                </tbody>
+                @* Progrss bar *@
+                <div class="progess mt-3">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated @ViewBag.OverallReductionClass"
+                        role="progressbar" style="width: @ViewBag.OverallReduction%;"
+                        aria-valuenow="@ViewBag.OverallReduction" aria-valuemin="0" aria-valuemax="100">
+                        @ViewBag.OverallReduction.ToString("F2")% Reduction
+                    </div>
                 </div>
-            </div>
-        </table>
+            </table>
+        }
     </div>
 </div>
 

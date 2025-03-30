@@ -4,6 +4,7 @@
 
 using CleanBrilliantCompany.Data;
 using CleanBrilliantCompany.Models.Entity;
+using CleanBrilliantCompany.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Controllers
@@ -36,37 +37,86 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.Products = products;
             var ingredients = GetMockSustainableIngredients();
 
-            // Retrieve carbon footprint data from the database and cast it properly.
-            var carbonData = _context.CarbonFootprintRecords.Select(data => new CarbonFootprintRecord
-            {
-                carbonFootprintId = data.carbonFootprintId,
-                EntityId = data.EntityId,
-                EntityType = data.EntityType,
-                CarbonEmission = data.CarbonEmission,
-                EcoStatus = data.EcoStatus,
-                DateCreated = data.DateCreated,
-            }).ToList();
+            // Retrieve carbon data and join it with product data
+            var carbonDataWithSavings = _context.CarbonFootprintRecords
+                .Join(
+                    // Joining with the Products table (mapped to ProductMapping)
+                    _context.Products,
+                    // Matching EntityId from CarbonFootprintRecord with ProductId from ProductMapping
+                    carbon => carbon.EntityId,
+                    // Matching ProductId in ProductMapping
+                    product => product.ProductId,
+                    (carbon, product) => new CarbonFootprintWithSavings
+                    {
+                        CarbonFootprintId = carbon.carbonFootprintId,
+                        EntityId = carbon.EntityId,
+                        EntityType = carbon.EntityType,
+                        CarbonEmission = carbon.CarbonEmission,
+                        EcoStatus = carbon.EcoStatus,
+                        DateCreated = carbon.DateCreated,
+                        // Accessing product cost from the mapped table.
+                        ProductCost = product.ProductCost,
+                        // Calculate savings.
+                        CostSavings = CalculateCostSavings(carbon.CarbonEmission, product.ProductCost)
+                    }).ToList();
 
             // Calculate Reduction Percentage and store separately.
-            foreach (var data in carbonData)
+            foreach (var data in carbonDataWithSavings)
             {
                 double reductionPercentage = 0;
                 // Get baseline emission logic.            
                 double baselineEmissions = GetBaselineEmission(data.EntityId);
-
                 // If there is a baseline emission value, calculate the reduction percentage.
                 if (baselineEmissions > 0)
                 {
                     reductionPercentage = (baselineEmissions - data.CarbonEmission) / baselineEmissions * 100;
                 }
-
-                // Update the emission value as reduction percentage.
-                data.CarbonEmission = Math.Round(reductionPercentage, 2);
+                // Update the emission value as reduction percentage.                
+                data.ReductionPercentage = Math.Round(reductionPercentage, 2);
             }
 
-            // Send carbon data to the view.
-            ViewBag.CarbonData = carbonData;
+            // Initialize the variables for the total emissions before and after the eco-friendly change.
+            double totalCarbonBefore = carbonDataWithSavings.Where(item => item.EcoStatus == "Not Eco-Friendly").Sum(item => item.CarbonEmission);
+            double totalCarbonAfter = carbonDataWithSavings.Where(item => item.EcoStatus == "Eco-Friendly").Sum(item => item.CarbonEmission);
+
+            // Initialize the overall reduction percentage and the class for styling.
+            double overallReduction = 0;
+            string overallReductionClass = string.Empty;
+
+            // Calculate overall reduction.
+            if (totalCarbonBefore > 0)
+            {
+                // Normal reduction calculation.
+                overallReduction = ((totalCarbonBefore - totalCarbonAfter) / totalCarbonBefore) * 100;
+            }
+            else if (totalCarbonBefore == 0 && totalCarbonAfter > 0)
+            {
+                // If no emissions before, but there are emissions after, consider a 100% increase.
+                overallReduction = -100;
+            }
+            else if (totalCarbonBefore == 0 && totalCarbonAfter == 0)
+            {
+                // If no emissions before and after, no reduction.
+                overallReduction = 0;
+            }
+
+            // Decide the overall reduction class based on the value.
+            overallReductionClass = overallReduction >= 50 ? "bg-success" : overallReduction >= 20 ? "bg-warning" : "bg-danger";
+
+            // Send carbon data with savings and reduction percentage.
+            ViewBag.CarbonData = carbonDataWithSavings;
+            ViewBag.OverallReduction = overallReduction;
+            ViewBag.OverallReductionClass = overallReductionClass;
             return View(ingredients);
+        }
+
+        // Method to calculate cost savings based on the carbon emission and product cost.
+        private static double CalculateCostSavings(double carbonEmission, double productCost)
+        {
+            // We assume that for each kg of CO2 saved, there's a certain percentage cost reduction.
+            // 5% savings for each kg of CO2 reduction.
+            double savingsPercentage = 0.05;
+            return productCost * savingsPercentage * carbonEmission;
         }
 
         /// <summary>
