@@ -12,7 +12,7 @@ namespace CleanBrilliantCompany.Models
 
         public ShipmentControl(IRoutingService routingService, IOrder orderService)
         {
-            _routingService = routingService;
+            _routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
             _orderService = orderService;
         }
 

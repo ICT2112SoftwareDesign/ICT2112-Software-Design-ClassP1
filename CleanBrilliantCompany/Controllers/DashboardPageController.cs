@@ -17,8 +17,9 @@ namespace CleanBrilliantCompany.Controllers
         // just for mocking purposes
         private readonly ProductControl _productControl; 
         private readonly ItemControl _itemControl;
+        private readonly ShipmentControl _shipmentControl;
 
-        public DashboardPageController(ProductCarbonFootprintControl productCFControl, ItemCarbonFootprintControl itemCFControl, OrderCarbonFootprintControl orderCFControl, CarbonFootprintCalculatorControl carbonFootprintCalculatorControl, ProductControl productControl, ItemControl itemControl)
+        public DashboardPageController(ProductCarbonFootprintControl productCFControl, ItemCarbonFootprintControl itemCFControl, OrderCarbonFootprintControl orderCFControl, CarbonFootprintCalculatorControl carbonFootprintCalculatorControl, ProductControl productControl, ItemControl itemControl, ShipmentControl shipmentcontrol)
         {
             _productCFControl = productCFControl;
             _itemCFControl = itemCFControl;
@@ -28,6 +29,7 @@ namespace CleanBrilliantCompany.Controllers
             _carbonFootprintCalculatorControl = carbonFootprintCalculatorControl;
             _productControl = productControl ?? throw new ArgumentNullException(nameof(productControl));
             _itemControl = itemControl ?? throw new ArgumentNullException(nameof(itemControl));
+            _shipmentControl = shipmentcontrol ?? throw new ArgumentNullException(nameof(shipmentcontrol));
         }
 
         public IActionResult Dashboard()
@@ -76,7 +78,8 @@ namespace CleanBrilliantCompany.Controllers
 
                 // for product and item mockup purposes
                 ProductList = _productControl.getAllProducts(),
-                ItemList = _itemControl.getAllItems().Result
+                ItemList = _itemControl.getAllItems().Result,
+                StubOrderList = new MockOrderService().getAllOrders()
             };
 
             // Populate comparison data
@@ -287,6 +290,19 @@ namespace CleanBrilliantCompany.Controllers
             bool success = _carbonFootprintCalculatorControl.CalculateItemCF(itemId, productId);
 
             return Json(new { success });
+        }
+
+        [HttpPost]
+        public IActionResult CalculateOrder(int orderId, string orderAddress)
+        {
+            Console.WriteLine($"[DEBUG] Order ID: {orderId}, Address: {orderAddress}");
+
+            ShipmentSDM s = _shipmentControl.CreateShipmentAsync(orderId, orderAddress).Result;
+
+            // Assuming the calculation is async, ensure you await it properly
+            float total_carbon = _carbonFootprintCalculatorControl.CalculateShipmentCF(s);
+
+            return Json(total_carbon);
         }
 
         [HttpPost]

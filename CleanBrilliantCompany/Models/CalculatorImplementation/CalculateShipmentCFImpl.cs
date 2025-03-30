@@ -21,12 +21,15 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
         public float CalculateCarbonFootprint(ShipmentSDM shipment)
         {
             float totalEmission = 0.0f;
+            float totalDistance = 0.0f;
 
             List<int> orderItemsIdList = _order.getOrderItemIds(shipment.OrderId);
             foreach(int itemId in orderItemsIdList){
                 double itemCF = _itemCF.getItemCarbonFootprintByItemId(itemId);
                 totalEmission += (float)itemCF;
             }
+
+            OrderRDM order = _order.getOrderDetails(shipment.OrderId);
 
             // Iterate over each route segment of the shipment.
             foreach (var segment in shipment.RouteSegments)
@@ -40,9 +43,23 @@ namespace CleanBrilliantCompany.Models.CalculatorImplementation
                     _ => 1.0f,
                 };
 
+                totalDistance += segment.Distance;
+
                 // Calculate emission for the segment and add it to the total.
                 totalEmission += segment.Distance * (float)shipment.TotalWeight * factor;
             }
+
+            string ecoStatus = totalEmission >= 1800 ? "Not Eco-Friendly" : "Eco-Friendly";
+
+            _orderCFManagement.addOrderCF(
+                shipment.OrderId,
+                order.OrderShipping,
+                order.OrderWeight,
+                totalDistance,
+                totalEmission,
+                ecoStatus,
+                DateTime.Now
+            );
 
             return totalEmission;
         }
