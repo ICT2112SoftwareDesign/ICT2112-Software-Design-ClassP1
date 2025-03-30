@@ -123,6 +123,9 @@ builder.Services.AddScoped<OrderFulfilmentManagement>();
 //Adding services for Dashboard
 builder.Services.AddScoped<DashboardManagement>();
 
+// Register the OrderFulfilment service (ItemControl as the implementation of IOrderFulfilment)
+builder.Services.AddScoped<IOrderFulfilment, ItemControl>();
+
 
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();

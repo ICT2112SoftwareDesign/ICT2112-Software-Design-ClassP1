@@ -11,17 +11,17 @@ namespace CleanBrilliantCompany.Models
         private readonly ICartManagement _cartManagement;
         private readonly IShippingAgent _shippingAgent;
         private readonly ISubmitRefund _submitRefund;
-        // private readonly IOrderFulfilment _orderFulfilment;
+        private readonly IOrderFulfilment _orderFulfilment;
 
 
         // public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, ISubmitRefund submitRefund, IShippingAgent shippingAgent, IOrderFulfilment orderFulfilment)
-        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, ISubmitRefund submitRefund, IShippingAgent shippingAgent)
+        public OrderManagement(IOrderDatabase orderDatabase, ICartManagement cartManagement, ISubmitRefund submitRefund, IShippingAgent shippingAgent, IOrderFulfilment orderFulfilment)
         {
             _orderDatabase = orderDatabase;
             _cartManagement = cartManagement;
             _submitRefund = submitRefund;
             _shippingAgent = shippingAgent;
-            // _orderFulfilment = orderFulfilment;
+            _orderFulfilment = orderFulfilment;
         }
     
         public int createOrder(
@@ -71,9 +71,9 @@ namespace CleanBrilliantCompany.Models
                 };
                 string orderShippingJson = System.Text.Json.JsonSerializer.Serialize(shippingDetails);
 
-                 // Call adjustInventory to update inventory and get item IDs
-                //var items = _orderFulfilment.adjustInventory(0, cart); // Pass 0 for orderId initially
-                //var itemIds = items.Select(item => item.itemId).ToList();
+                // Call adjustInventory to update inventory and get item IDs
+                var items = _orderFulfilment.adjustInventory(0, cart); // Pass 0 for orderId initially
+                var itemIds = items.Select(item => item.itemId).ToList();
 
 
                 // Create the order object
