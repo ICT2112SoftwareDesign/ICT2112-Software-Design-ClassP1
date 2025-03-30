@@ -33,7 +33,7 @@
             this.productCFId = productCFId;
         }
 
-        public int getProductId()
+        private int getProductId()
         {
             return productId;
         }
@@ -43,7 +43,7 @@
             this.productId = productId;
         }
 
-        public string getProductName()
+        private string getProductName()
         {
             return productName;
         }
@@ -73,7 +73,7 @@
             this.carbonEmission = carbonEmission;
         }
 
-        public string getEcoStatus()
+        private string getEcoStatus()
         {
             return ecoStatus;
         }

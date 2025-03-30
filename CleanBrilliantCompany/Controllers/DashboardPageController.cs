@@ -164,17 +164,17 @@ namespace CleanBrilliantCompany.Controllers
 
             foreach (ProductCarbonFootprintRDM prod in products)
             {
-                var productItems = _itemCFControl.getItemCarbonFootprintByProductId(prod.getProductId());
+                var productItems = _itemCFControl.getItemCarbonFootprintByProductId(prod.retrieveProductId());
                 int numOfProductItems = productItems.Count();
                 if(numOfProductItems > 0)
                 {
                     viewModel.ItemCarbonFootprints.Add(new
                     {
-                        productId = prod.getProductId(),
-                        name = prod.getProductName(),
+                        productId = prod.retrieveProductId(),
+                        name = prod.retrieveProductName(),
                         dateCreated = prod.retrieveDateCreated().ToString("dd/MM/yyyy"),
                         baseEmission = prod.calculateSelfEmission(),
-                        ecoStatus = prod.getEcoStatus().Equals("Eco-Friendly") ? "Yes" : "No",
+                        ecoStatus = prod.retrieveEcoStatus().Equals("Eco-Friendly") ? "Yes" : "No",
                         numOfProductItems = numOfProductItems,
                         averagePerItemEmission = Math.Round(productItems.Average(x => x.calculateSelfEmission()), 2)
                     });
