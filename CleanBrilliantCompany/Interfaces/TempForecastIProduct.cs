@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public class IProduct
+    public class TempForecastIProduct
     {
         private readonly List<ProductDTO> productList = new List<ProductDTO>()
         {

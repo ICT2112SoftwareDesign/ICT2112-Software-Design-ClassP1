@@ -6,10 +6,10 @@ namespace CleanBrilliantCompany.Models.Forecast
 {
     public class ForecastDataAdapter: IForecastDataAdapter
     {
-        private readonly IProduct _productService;
+        private readonly TempForecastIProduct _productService;
         private readonly ISales _salesService;
 
-        public ForecastDataAdapter(IProduct productService, ISales salesService)
+        public ForecastDataAdapter(TempForecastIProduct productService, ISales salesService)
         {
             _productService = productService;
             _salesService = salesService;

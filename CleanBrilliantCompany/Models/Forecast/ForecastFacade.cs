@@ -21,7 +21,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         public ForecastFacade(
             MetricFactory metricFactory,
             IForecastRepository forecastRepository,
-            IProduct iProduct,
+            TempForecastIProduct iProduct,
             ISales iSale,
             IAlert alertService,
             IForecastDataAdapter forecastDataAdapter
