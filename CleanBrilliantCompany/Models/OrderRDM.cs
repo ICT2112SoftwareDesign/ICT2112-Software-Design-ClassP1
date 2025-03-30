@@ -77,11 +77,20 @@ namespace CleanBrilliantCompany.Models
         public Dictionary<int, Dictionary<string, object>> GetOrderProductsDetails() => _orderProductsDetails;
         public void SetOrderProductsDetails(Dictionary<int, Dictionary<string, object>> orderProductsDetails) => _orderProductsDetails = orderProductsDetails;
 
-        // New public property for OrderWeight.
+        // New public property for OrderWeight and OrderShipping.
         public double OrderWeight
         {
             get { return _orderWeight; }
             set { _orderWeight = value; }
         }
+
+        public string OrderShipping
+        {
+            get { return _orderShipping; }
+            set { _orderShipping = value; }
+        }
+
+        public int OrderID { get; set; }
+        public string OrderAddress { get; set; }
     }
 }

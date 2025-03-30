@@ -65,9 +65,11 @@ namespace CleanBrilliantCompany.Models
 			return order;
 		}
 
+		public string GetOrderAddress {get;set;}
+
 		public List<OrderRDM> getAllOrders()
 		{
-			return new List<OrderRDM>(_orders.Values);
+			return _orders.Values.ToList(); // Convert Dictionary values to a List
 		}
 
 		public List<int> getOrderItemIds(int orderId)

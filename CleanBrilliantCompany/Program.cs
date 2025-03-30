@@ -26,6 +26,7 @@ builder.Services.AddScoped<IFeedbackManagement, FeedbackManagement>();
 builder.Services.AddScoped<ProductCarbonFootprintControl>();
 builder.Services.AddScoped<ItemCarbonFootprintControl>();
 builder.Services.AddScoped<OrderCarbonFootprintControl>();
+builder.Services.AddScoped<ShipmentControl>();
 builder.Services.AddScoped<ProductControl>();
 builder.Services.AddScoped<ProductMapper>();
 builder.Services.AddScoped<ItemControl>();
@@ -37,7 +38,7 @@ builder.Services.AddScoped<IItemCarbonFootprintDB, ItemCFMapper>();
 builder.Services.AddScoped<IOrderCarbonFootprintDB, OrderCFMapper>();
 builder.Services.AddScoped<IProductDatabase, ProductMapper>();
 builder.Services.AddScoped<IItemDatabase, ItemMapper>();
-
+builder.Services.AddScoped<IRoutingService, RoutingAPI>(); 
 
 // Product CF Controls
 builder.Services.AddScoped<IProductCF, ProductCarbonFootprintControl>();

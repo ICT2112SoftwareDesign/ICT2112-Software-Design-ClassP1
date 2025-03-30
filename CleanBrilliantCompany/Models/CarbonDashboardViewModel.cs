@@ -45,6 +45,7 @@
         // For product and item mockup purposes
         public List<Product> ProductList { get; set; } = new List<Product>();
         public List<Item> ItemList { get; set; } = new List<Item>();
+        public List<OrderRDM> StubOrderList { get;set; } = new List<OrderRDM>();
     }
 
     public class ProductComparisonData

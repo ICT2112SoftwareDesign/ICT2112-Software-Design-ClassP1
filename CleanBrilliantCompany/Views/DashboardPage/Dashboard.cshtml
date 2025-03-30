@@ -49,7 +49,7 @@
         <button onclick="createNewProduct()">Create Product (Mockup)</button>
         <button type="button" onclick="calculateItemCarbonFootprint()">Calculate Item Carbon Footprint</button>
         <button onclick="updateItemsCFDaily()">Calculate All Items CF Daily</button>
-        <button onclick="calculateShipmentCF()">Calculate Shipment CF (TBD)</button>
+        <button onclick="calculateShipmentCF()">Calculate Shipment CF</button>
     </div>
 
     <div>
@@ -66,6 +66,13 @@
                 @foreach (var item in Model.ItemList) // Assuming a list of items in the model
                 {
                     <option value="@item.getItemId()">Item #@item.getItemId() with product ID of @item.getProductId()</option>
+                }
+            </select>
+            <label for="StubOrderDropdown">Select Stub Order</label>
+            <select id="StubOrderDropdown">
+                @foreach (var order in Model.StubOrderList) // Assuming a list of items in the model
+                {
+                    <option value="@order.GetOrderID()" data-address="@order.GetOrderAddress()">Order #@order.GetOrderID() with address of @order.GetOrderAddress()</option>
                 }
             </select>
         </form>
@@ -413,7 +420,25 @@
         }
 
         function calculateShipmentCF() {
-            // tbd
+            var dropdown = document.getElementById("StubOrderDropdown");
+            var orderId = parseInt(dropdown.value, 10);
+            var orderAddress = dropdown.options[dropdown.selectedIndex].getAttribute("data-address"); // Get address
+
+            $.ajax({
+                url: '@Url.Action("CalculateOrder", "DashboardPage")',
+                type: 'POST',
+                data: { orderId: orderId, orderAddress: orderAddress }, // Send itemId as JSON
+                success: function(response) {
+                    if (response.success) {
+                        alert("Item carbon footprint has been calculated and stored in Item CF DB.")
+                    } else {
+                        alert("Failed to calculate carbon footprint.");
+                    }
+                },
+                error: function() {
+                    alert("Error calculating carbon footprint.");
+                }
+            });
         }
 
         function updateAllTables() {
