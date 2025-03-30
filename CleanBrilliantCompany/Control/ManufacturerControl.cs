@@ -1,5 +1,3 @@
-// using CleanBrilliantCompany.Models;
-
 public class ManufacturerControl
 {
     private Dashboard manufacturerDashboard;
@@ -75,68 +73,4 @@ public class ManufacturerControl
         // Save the newly generated dashboard and analytics
         ManufacturerMapper.saveDashboardandMetrics(dashboard as ManufacturerDashboardRdm);
     }
-
-    // // Method to calculate the metrics for the dashboard
-    // private List<ManufacturerMetricsTable> CalculateMetrics(List<ReorderData> reorderDetails)
-    // {
-    //     List<ManufacturerMetricsTable> metrics = new List<ManufacturerMetricsTable>();
-
-    //     // Group by manufacturer ID
-    //     var groupedByManufacturer = reorderDetails
-    //         .GroupBy(r => r.ManufacturerId)
-    //         .Select(group => new
-    //         {
-    //             ManufacturerId = group.Key,
-    //             Orders = group.ToList()
-    //         });
-
-    //     foreach (var manufacturerGroup in groupedByManufacturer)
-    //     {
-    //         var manufacturerId = manufacturerGroup.ManufacturerId;
-    //         var orders = manufacturerGroup.Orders;
-
-    //         int totalQuantity = orders.Sum(r => r.Quantity);
-    //         int totalDefectQuantity = orders.Sum(r => r.DefectQuantity);
-    //         int totalOrders = orders.Count(r => r.Status == "Delivered");  // Assuming delivered status represents a successful order
-
-    //         int totalAllOrders = reorderDetails.Count;  // Total number of all orders
-
-    //         // Calculate the metrics for this manufacturer
-    //         double deliveryRate = (double)totalOrders / totalAllOrders;
-    //         double defectRate = (double)totalDefectQuantity / totalQuantity;
-    //         double dependencyRate = (double)orders.Count() / totalAllOrders;
-    //         bool riskFlag = defectRate * dependencyRate > 0.1;
-
-    //         // Add calculated metrics to the list
-    //         metrics.Add(new ManufacturerMetricsTable
-    //         {
-    //             ManufacturerId = manufacturerId,
-    //             MetricName = "Delivery Rate",
-    //             Value = deliveryRate
-    //         });
-
-    //         metrics.Add(new ManufacturerMetricsTable
-    //         {
-    //             ManufacturerId = manufacturerId,
-    //             MetricName = "Defect Rate",
-    //             Value = defectRate
-    //         });
-
-    //         metrics.Add(new ManufacturerMetricsTable
-    //         {
-    //             ManufacturerId = manufacturerId,
-    //             MetricName = "Dependency Rate",
-    //             Value = dependencyRate
-    //         });
-
-    //         metrics.Add(new ManufacturerMetric
-    //         {
-    //             ManufacturerId = manufacturerId,
-    //             MetricName = "Risk Flag",
-    //             Value = riskFlag ? 1 : 0
-    //         });
-    //     }
-
-    //     return metrics;
-    // }
 }
