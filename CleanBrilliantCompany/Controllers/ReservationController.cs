@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace CleanBrilliantCompany.Controllers
 {
+    [Route("inventory/management/reservation")]
     public class ReservationController : Controller
     {
         private readonly ReservationControl _reservationControl;
