@@ -288,5 +288,136 @@ namespace CleanBrilliantCompany.Controllers
 
             return Json(new { success });
         }
+                [HttpPost]
+        public IActionResult GetFilteredProductData([FromBody] FilterRequest request)
+        {
+            try
+            {
+                var startDate = DateTime.Parse(request.StartDate);
+                var endDate = DateTime.Parse(request.EndDate);
+                var productIds = request.ProductIds;
+
+                var products = _productCFControl.getAllProductCarbonFootprint()
+                    .Where(p => productIds.Contains(p.retrieveProductId().ToString()) &&
+                               p.retrieveDateCreated() >= startDate &&
+                               p.retrieveDateCreated() <= endDate)
+                    .ToList();
+
+                var result = new
+                {
+                    labels = products.Select(p => p.retrieveProductName()).ToList(),
+                    values = products.Select(p => p.calculateSelfEmission()).ToList()
+                };
+
+                return Json(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult GetFilteredShippingData([FromBody] FilterRequest request)
+        {
+            try
+            {
+                var startDate = DateTime.Parse(request.StartDate);
+                var endDate = DateTime.Parse(request.EndDate);
+                var shippingMethods = request.ShippingMethods;
+
+                var orders = _orderCFControl.getAllOrderCarbonFootprint()
+                    .Where(o => shippingMethods.Contains(o.retrieveTransportMode().ToUpper()) &&
+                               o.retrieveDateCreated() >= startDate &&
+                               o.retrieveDateCreated() <= endDate)
+                    .ToList();
+
+                var result = new
+                {
+                    labels = shippingMethods,
+                    values = shippingMethods.Select(method =>
+                        orders.Where(o => o.retrieveTransportMode().ToUpper() == method)
+                              .Average(o => o.calculateSelfEmission())
+                    ).ToList()
+                };
+
+                return Json(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult GetFilteredProducts([FromBody] DateRangeRequest request)
+        {
+            try
+            {
+                var startDate = DateTime.Parse(request.StartDate);
+                var endDate = DateTime.Parse(request.EndDate);
+
+                var products = _productCFControl.getAllProductCarbonFootprint()
+                    .Where(p => p.retrieveDateCreated() >= startDate && 
+                               p.retrieveDateCreated() <= endDate)
+                    .Select(p => new
+                    {
+                        ProductId = p.retrieveProductId(),
+                        ProductName = p.retrieveProductName(),
+                        CarbonEmission = p.calculateSelfEmission()
+                    })
+                    .ToList();
+
+                return Json(new { success = true, products = products });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult GetFilteredShippingMethods([FromBody] DateRangeRequest request)
+        {
+            try
+            {
+                var startDate = DateTime.Parse(request.StartDate);
+                var endDate = DateTime.Parse(request.EndDate);
+
+                var orders = _orderCFControl.getAllOrderCarbonFootprint()
+                    .Where(o => o.retrieveDateCreated() >= startDate && 
+                               o.retrieveDateCreated() <= endDate)
+                    .ToList();
+
+                var shippingMethods = orders
+                    .GroupBy(o => o.retrieveTransportMode().ToUpper())
+                    .Select(g => new
+                    {
+                        TransportMode = g.Key,
+                        AverageCarbonEmission = g.Average(o => o.calculateSelfEmission())
+                    })
+                    .ToList();
+
+                return Json(new { success = true, shippingMethods = shippingMethods });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+    }
+
+    public class FilterRequest
+    {
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public List<string> ProductIds { get; set; }
+        public List<string> ShippingMethods { get; set; }
+    }
+
+    public class DateRangeRequest
+    {
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
     }
 }
