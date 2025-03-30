@@ -36,6 +36,13 @@
         public Dictionary<string, float> ItemEmissionBreakdown { get; set; }
         public Dictionary<string, object> EcoVsNonEcoItemTimeline { get; set; }
         public List<string> EcoVsNonEcoMonths { get; set; }
+        public List<string> TransportModeEmissionLabels { get; set; }
+        public List<float> TransportModeEmissionValues { get; set; }
+        public List<Dictionary<string, object>> OrderEmissionWeightPoints { get; set; }
+        public List<string> TransportModeEfficiencyLabels { get; set; }
+        public List<double> TransportModeEfficiencyValues { get; set; }
+        public Dictionary<string, List<object>> EmissionVsDistanceByTransport { get; set; }
+        public Dictionary<string, double> EmissionEfficiencyByTransport { get; set; }
 
 
         // New properties for comparison tool

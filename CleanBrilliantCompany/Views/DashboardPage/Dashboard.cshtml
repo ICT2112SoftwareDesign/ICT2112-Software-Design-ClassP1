@@ -241,6 +241,51 @@
         </div>
     </div>
 
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Carbon Emission by Transport Mode</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="transportEmissionChart" class="shared-chart-size"></canvas>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Emission per km per Transport Mode</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="emissionPerKmChart" class="shared-chart-size"></canvas>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Emission vs Order Weight</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="emissionWeightScatterChart" class="shared-chart-size"></canvas>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Emission vs Distance by Transport Mode</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="emissionDistanceScatterChart" class="shared-chart-size"></canvas>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Emission Efficiency (kg CO₂ / kg shipped)</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="emissionEfficiencyChart" class="shared-chart-size"></canvas>
+        </div>
+    </div>
+
 
     <!-- Comparison Tool -->
     <div class="row">
@@ -1089,9 +1134,6 @@
         const rawEcoData = @Html.Raw(Json.Serialize(Model.EcoVsNonEcoItemTimeline));
         const labels = @Html.Raw(Json.Serialize(Model.EcoVsNonEcoMonths));
 
-        console.log("EcoVsNonEco Raw Data:", rawEcoData);
-        console.log("Labels:", labels);
-
         const ecoVsCounts = [];
         const nonEcoVsCounts = [];
 
@@ -1156,6 +1198,237 @@
             }
         });
     </script>
+    <script>
+        const transportLabels = @Html.Raw(Json.Serialize(Model.TransportModeEmissionLabels));
+        const transportValues = @Html.Raw(Json.Serialize(Model.TransportModeEmissionValues));
+
+        new Chart(document.getElementById('transportEmissionChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: transportLabels,
+                datasets: [{
+                    label: 'Total Carbon Emission (kg CO₂)',
+                    data: transportValues,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Carbon Emission by Transport Mode'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kg CO₂'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transport Mode'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const emissionWeightData = @Html.Raw(Json.Serialize(Model.OrderEmissionWeightPoints));
+
+        new Chart(document.getElementById("emissionWeightScatterChart").getContext("2d"), {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Emission vs Order Weight',
+                    data: emissionWeightData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'CO₂ Emission vs Order Weight'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Order Weight (kg)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Carbon Emission (kg CO₂)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const modeEfficiencyLabels = @Html.Raw(Json.Serialize(Model.TransportModeEfficiencyLabels));
+        const modeEfficiencyValues = @Html.Raw(Json.Serialize(Model.TransportModeEfficiencyValues));
+
+        new Chart(document.getElementById("emissionPerKmChart").getContext("2d"), {
+            type: 'bar',
+            data: {
+                labels: modeEfficiencyLabels,
+                datasets: [{
+                    label: 'kg CO₂ per km',
+                    data: modeEfficiencyValues,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'CO₂ Emission per km by Transport Mode'
+                    },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kg CO₂ per km'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transport Mode'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const emissionDistanceRaw = @Html.Raw(Json.Serialize(Model.EmissionVsDistanceByTransport));
+
+        const transportModeColors = {
+            "AIR": 'rgba(255, 99, 132, 0.7)',
+            "TRUCK": 'rgba(54, 162, 235, 0.7)',
+            "SEA": 'rgba(75, 192, 192, 0.7)'
+        };
+
+        const transportModeBorderColors = {
+            "AIR": 'rgba(255, 99, 132, 1)',
+            "TRUCK": 'rgba(54, 162, 235, 1)',
+            "SEA": 'rgba(75, 192, 192, 1)'
+        };
+
+        const scatterDatasets = Object.entries(emissionDistanceRaw).map(([mode, points]) => ({
+            label: mode,
+            data: points.map(p => ({ x: p.distance, y: p.emission })),
+            backgroundColor: transportModeColors[mode] || 'rgba(150, 150, 150, 0.7)',
+            borderColor: transportModeBorderColors[mode] || 'rgba(150, 150, 150, 1)',
+            pointRadius: 5
+        }));
+
+        new Chart(document.getElementById("emissionDistanceScatterChart").getContext("2d"), {
+            type: 'scatter',
+            data: {
+                datasets: scatterDatasets
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Emission vs Distance by Transport Mode'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Distance (km)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Carbon Emission (kg CO₂)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const efficiencyLabels = @Html.Raw(Json.Serialize(Model.EmissionEfficiencyByTransport.Keys));
+        const efficiencyValues = @Html.Raw(Json.Serialize(Model.EmissionEfficiencyByTransport.Values));
+
+        new Chart(document.getElementById("emissionEfficiencyChart"), {
+            type: 'bar',
+            data: {
+                labels: efficiencyLabels,
+                datasets: [{
+                    label: 'kg CO₂ / kg shipped',
+                    data: efficiencyValues,
+                    backgroundColor: 'orange',
+                    borderColor: 'darkorange',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Emission Efficiency by Transport Mode'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kg CO₂ / kg shipped'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transport Mode'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
 </body>
 
 </html>

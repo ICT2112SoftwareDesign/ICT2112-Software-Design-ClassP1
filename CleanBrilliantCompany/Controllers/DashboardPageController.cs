@@ -255,6 +255,55 @@ namespace CleanBrilliantCompany.Controllers
             viewModel.EcoVsNonEcoItemTimeline = ecoItemCountOverTime.ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
             viewModel.EcoVsNonEcoMonths = ecoItemCountOverTime.Keys.OrderBy(k => k).ToList();
 
+            var transportEmission = orders
+            .GroupBy(o => o.retrieveTransportMode().ToUpper())
+            .ToDictionary(
+                g => g.Key,
+                g => g.Sum(o => (float)o.calculateSelfEmission())
+            );
+
+            viewModel.TransportModeEmissionLabels = transportEmission.Keys.ToList();
+            viewModel.TransportModeEmissionValues = transportEmission.Values.ToList();
+
+            viewModel.OrderEmissionWeightPoints = orders.Select(order => new Dictionary<string, object>
+            {
+                { "x", order.retrieveOrderWeight() },
+                { "y", order.calculateSelfEmission() }
+            }).ToList();
+
+            var transportModeEfficiency = orders
+            .GroupBy(o => o.retrieveTransportMode())
+            .ToDictionary(
+                g => g.Key,
+                g => g.Sum(o => o.calculateSelfEmission()) / g.Sum(o => o.retrieveDistance() == 0 ? 1 : o.retrieveDistance()) // prevent division by zero
+            );
+
+            viewModel.TransportModeEfficiencyLabels = transportModeEfficiency.Keys.ToList();
+            viewModel.TransportModeEfficiencyValues = transportModeEfficiency.Values.Select(val => Math.Round(val, 2)).ToList();
+
+            viewModel.EmissionVsDistanceByTransport = orders
+            .GroupBy(o => o.retrieveTransportMode())
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(o => new {
+                    Distance = o.retrieveDistance(),
+                    Emission = o.calculateSelfEmission()
+                }).ToList<object>()
+            );
+
+            var efficiencyByTransport = orders
+            .Where(o => o.retrieveOrderWeight() > 0)
+            .GroupBy(o => o.retrieveTransportMode().ToUpper())
+            .ToDictionary(
+                g => g.Key,
+                g => Math.Round(
+                    g.Sum(o => o.calculateSelfEmission()) / g.Sum(o => o.retrieveOrderWeight()),
+                    2
+                )
+            );
+
+            viewModel.EmissionEfficiencyByTransport = efficiencyByTransport;
+
             return View(viewModel);
         }
 

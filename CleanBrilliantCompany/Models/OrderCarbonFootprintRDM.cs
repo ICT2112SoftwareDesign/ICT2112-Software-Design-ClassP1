@@ -119,5 +119,15 @@
         {
             return dateCreated;
         }
+
+        public double retrieveOrderWeight()
+        {
+            return orderWeight;
+        }
+
+        public double retrieveDistance()
+        {
+            return distance;
+        }
     }
 }
