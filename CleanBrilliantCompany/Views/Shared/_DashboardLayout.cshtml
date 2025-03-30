@@ -30,15 +30,6 @@
         .container-xl {
             max-width: 100vw !important; /* DO NOT REMOVE AH ._. */
         }
-
-        .shared-chart-size 
-        {
-            width: 100% !important;
-            max-height: 320px;   /* 👈 restrict how tall it can grow */
-            height: 300px;        /* optional: make height consistent */
-            display: block;
-            margin: 0 auto;
-        }
     </style>
 
 </head>
@@ -70,7 +61,7 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
-            </li> 
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -343,6 +334,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     
+
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         @* <h1 class="h3 mb-0 text-gray-800">Dashboard</h1> *@
@@ -356,6 +348,7 @@
                         <!-- You can choose to place your content here and keep the heading above -->
                         @RenderBody()
                         
+
                     </div>
 
 
@@ -420,7 +413,6 @@
 
     <!-- Chart.js and Bootstrap 5 scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Before closing </body> -->

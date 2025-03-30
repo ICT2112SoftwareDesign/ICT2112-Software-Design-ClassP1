@@ -1,0 +1,589 @@
+﻿@model CleanBrilliantCompany.Models.Forecast.ForecastDashboard
+@{
+    Layout = null;
+    var currentSortType = ViewBag.CurrentSortType as string ?? "";
+    var currentSortOrder = ViewBag.CurrentSortOrder as string ?? "ascending";
+}
+
+
+ <style>
+
+    /* Additional styles for clickable headers with icons */
+    .sortable-header {
+        cursor: pointer;
+    }
+
+        .sortable-header i {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+  
+    /* Dashboard container styling */
+    .dashboard-container {
+        margin: 20px 0;
+        font-family: Arial, sans-serif; /* or your preferred font */
+        color: #333;
+    }
+
+        .dashboard-container h4 {
+            margin-bottom: 10px;
+        }
+
+    /* Forecast table styling */
+    .forecast-table {
+        width: 100%;
+        border-collapse: separate; /* Allows spacing or rounded corners if needed */
+        border-spacing: 0;
+        margin-top: 10px;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden; /* Ensures rounded corners clip children */
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+
+        .forecast-table thead {
+            background-color: #4285f4; /* Matches the slider thumb color for consistency */
+        }
+
+            .forecast-table thead th {
+                padding: 12px;
+                font-weight: 600;
+                text-align: left;
+                border-bottom: 2px solid #3071e8; /* Slightly darker border for the header */
+                color: #fff; /* White text on the blue background */
+            }
+
+        .forecast-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            .forecast-table tbody tr:nth-child(even) {
+                background-color: #f1f7ff; /* Subtle blue/white striping */
+            }
+
+            .forecast-table tbody tr:hover {
+                background-color: #e9f1ff; /* Slightly darker on hover */
+            }
+
+        .forecast-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+    /* Fixed width for the percentage display */
+    .fixed-percentage {
+        display: inline-block;
+        width: 50px; /* Adjust width as needed */
+        text-align: right;
+    }
+
+    /* Global slider container styling */
+    .global-slider-container {
+        background-color: #f1f3f5; /* Slightly different, more neutral background */
+        border: 1px solid #ccc; /* A subtler border */
+        padding: 12px 16px;
+        border-radius: 4px;
+    }
+
+        .global-slider-container label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .global-slider-container #slider-display {
+            font-size: 16px;
+            margin-left: 20px;
+            display: inline-block;
+            white-space: nowrap;
+            vertical-align: middle;
+            width: 200px; /* Adjust this fixed width as needed */
+        }
+
+    /* Unified slider styling for both global and product sliders */
+    input[type="range"].slider-common {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        background: transparent; /* Remove default background */
+        border-radius: 3px;
+        outline: none;
+        margin-right: 10px;
+    }
+
+        /* Webkit track styling (Chrome, Safari) */
+        input[type="range"].slider-common::-webkit-slider-runnable-track {
+            height: 6px;
+            background: #d3d3d3; /* Light gray track color */
+            border-radius: 3px;
+        }
+
+        /* Firefox track styling */
+        input[type="range"].slider-common::-moz-range-track {
+            height: 6px;
+            background: #d3d3d3; /* Light gray track color */
+            border-radius: 3px;
+        }
+
+        /* Webkit thumb styling (Chrome, Safari) */
+        input[type="range"].slider-common::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            margin-top: -5px; /* Centers the thumb vertically */
+            width: 16px;
+            height: 16px;
+            background: #4285f4; /* Standard thumb color */
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+            input[type="range"].slider-common::-webkit-slider-thumb:hover {
+                background: #3071e8; /* Darker on hover */
+            }
+
+        /* Firefox thumb styling */
+        input[type="range"].slider-common::-moz-range-thumb {
+            margin-top: -5px; /* Centers the thumb vertically */
+            width: 16px;
+            height: 16px;
+            background: #4285f4;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+            input[type="range"].slider-common::-moz-range-thumb:hover {
+                background: #3071e8;
+            }
+
+
+</style>
+
+
+<div class="dashboard-container">
+    <pre id="debugMetrics" style="display:none;">
+        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GetMetrics()))
+    </pre>
+   
+    <!-- Price Adjustment Slider (outside the form) -->
+    @{
+        var metrics = Model.GetMetrics() ?? new List<CleanBrilliantCompany.Models.Forecast.ForecastMetrics>();
+        var adjustmentFactors = metrics.Select(metric =>
+        {
+            int adjustmentFactor = 0;
+            if (metric is CleanBrilliantCompany.Models.Forecast.PriceScenarioForecast priceScenario)
+            {
+                adjustmentFactor = priceScenario.getAdjustmentFactor();
+            }
+            return adjustmentFactor;
+        }).ToList();
+
+        bool allSameAndNonZero = adjustmentFactors.Any() &&
+        adjustmentFactors.Distinct().Count() == 1 &&
+        adjustmentFactors.First() != 0;
+        var sliderValue = allSameAndNonZero ? adjustmentFactors.First() : 0;
+
+    }
+    @if (Model != null && Model.GetAlertItemList().Any())
+    {
+        <div class="alert alert-info" role="alert">
+            <strong>Top Demanded Products:</strong>
+            <ul>
+                @foreach (var alert in Model.GetAlertItemList())
+                {
+                    <li>@alert</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <div class="global-slider-container">
+        <!-- Use a flex container so everything is in one row -->
+        <div class="d-flex align-items-center justify-content-between">
+            <!-- Label -->
+            <label for="priceAdjustmentSlider" class="mb-0 me-2">
+                Global Adjustment Factor:
+            </label>
+
+            <!-- Slider -->
+            <input type="range"
+                   class="slider-common mx-3"
+                   style="flex: 1; accent-color: #3071e8;"
+                   id="priceAdjustmentSlider"
+                   name="priceAdjustment"
+                   min="-90"
+                   max="100"
+                   step="1"
+                   value="@sliderValue"
+                   oninput="syncGlobalTextInput(this)"
+                   onchange="generateDashboardFromSlider(this)" />
+
+            <!-- Text input group with "%" appended -->
+            <div class="input-group" style="width: 120px;">
+                <input type="number"
+                       class="form-control"
+                       id="global-text"
+                       value="@sliderValue"
+                       onchange="syncGlobalSliderValue(this)" />
+                <span class="input-group-text">%</span>
+            </div>
+
+            @* Optional display text, only if all products have the same non-zero value *@
+            @{
+                if (allSameAndNonZero)
+                {
+                    <span id="slider-display" style="margin-left: 1rem; white-space: nowrap;">
+                        applied to all products
+                    </span>
+                    ;
+                }
+            }
+
+            <!-- Hidden input for forecast month -->
+            <input type="hidden" id="forecastMonth" value="@Model.GetStartDate().ToString("yyyy-MM")" />
+
+            <!-- Reset form -->
+            <form action="/Forecast/GenerateForecast" method="POST" class="d-inline">
+                <input type="hidden" name="type" value="price" />
+                <input type="hidden" name="priceAdjustment" value="0" />
+                <input type="hidden" name="month" value="@Model.GetStartDate().ToString("yyyy-MM")" />
+                <button type="submit" class="btn btn-secondary ms-3">Reset</button>
+            </form>
+        </div>
+    </div>
+
+
+
+       
+
+
+    <table class="forecast-table">
+        <thead>
+            <tr>
+                <!-- ID Column -->
+                <th class="sortable-header
+                @(currentSortType == "id"
+                    ? (currentSortOrder == "ascending" ? "sorted-asc" : "sorted-desc")
+                    : "")"
+                    data-sort-type="id"
+                    data-sort-order="@(currentSortType == "id" ? currentSortOrder : "ascending")">
+
+                    Product ID
+                    <i class="fas @(
+                    currentSortType == "id"
+                        ? (currentSortOrder == "ascending" ? "fa-sort-up" : "fa-sort-down")
+                        : "fa-sort"
+                )" aria-hidden="true"></i>
+                </th>
+
+                <!-- NAME Column -->
+                <th class="sortable-header
+                @(currentSortType == "name"
+                    ? (currentSortOrder == "ascending" ? "sorted-asc" : "sorted-desc")
+                    : "")"
+                    data-sort-type="name"
+                    data-sort-order="@(currentSortType == "name" ? currentSortOrder : "ascending")">
+
+                    Product Name
+                    <i class="fas @(
+                    currentSortType == "name"
+                        ? (currentSortOrder == "ascending" ? "fa-sort-up" : "fa-sort-down")
+                        : "fa-sort"
+                )" aria-hidden="true"></i>
+                </th>
+
+                <!-- VALUE Column -->
+                <th class="sortable-header
+                @(currentSortType == "value"
+                    ? (currentSortOrder == "ascending" ? "sorted-asc" : "sorted-desc")
+                    : "")"
+                    data-sort-type="value"
+                    data-sort-order="@(currentSortType == "value" ? currentSortOrder : "ascending")">
+
+                    Forecasted Demand
+                    <i class="fas @(
+                    currentSortType == "value"
+                        ? (currentSortOrder == "ascending" ? "fa-sort-up" : "fa-sort-down")
+                        : "fa-sort"
+                )" aria-hidden="true"></i>
+                </th>
+
+                <th>
+                    Price Adjustment (%)
+                </th>
+            </tr>
+
+
+        </thead>
+        <tbody>
+            @foreach (var metric in Model.GetMetrics() ?? new List<CleanBrilliantCompany.Models.Forecast.ForecastMetrics>())
+            {
+                var adjustmentFactor = 0;
+                if (metric is CleanBrilliantCompany.Models.Forecast.PriceScenarioForecast priceScenario)
+                {
+                    adjustmentFactor = priceScenario.getAdjustmentFactor();
+                }
+                <tr>
+                    <td>@metric.getProductId()</td>
+                    <td class="product-name">@metric.getProductName()</td>
+                    <td>@metric.getForecastedStock()</td>
+
+                    <td>
+                        <!-- A flex container so slider & number input are on the same row -->
+                        <div class="d-flex align-items-center">
+                            <!-- Slider (range) -->
+                            <input type="range"
+                                   class="slider-common me-3"
+                                   style="width: 250px;"
+                                   id="slider-@metric.getProductId()"
+                                   data-product-id="@metric.getProductId()"
+                                   data-product-name="@metric.getProductName()"
+                                   min="-90" max="100"
+                                   value="@adjustmentFactor"
+                                   oninput="syncTextInput(this)"
+                                   onchange="updateSliderValue(this)" />
+
+                            <!-- Number input with a "%" addon -->
+                            <div class="input-group" style="width: 120px;">
+                                <!-- Text input for numeric value -->
+                                <input type="number"
+                                       class="form-control"
+                                       id="text-@metric.getProductId()"
+                                       value="@adjustmentFactor"
+                                       data-product-id="@metric.getProductId()"
+                                       data-product-name="@metric.getProductName()"
+                                       onchange="syncSliderValue(this)" />
+                                <!-- Append a % sign as read-only text -->
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    
+
+    @*     document.addEventListener('DOMContentLoaded', function() { *@
+    @*     const headers = document.querySelectorAll('.sortable-header'); *@
+
+    @*     headers.forEach(header => { *@
+    @*         header.addEventListener('click', function() { *@
+    @*             const sortType = header.getAttribute('data-sort-type'); *@
+    @*             let currentOrder = header.getAttribute('data-sort-order'); *@
+    @*             const newOrder = currentOrder === 'ascending' ? 'descending' : 'ascending'; *@
+    @*             header.setAttribute('data-sort-order', newOrder); *@
+
+    @*             // Update sort indicator *@
+    @*             const indicator = header.querySelector('.sort-indicator'); *@
+    @*             indicator.textContent = newOrder === 'ascending' ? '↑' : '↓'; *@
+
+    @*             // Prepare form data *@
+    @*             const formData = new URLSearchParams(); *@
+    @*             formData.append('sortType', sortType); *@
+    @*             formData.append('sortOrder', newOrder); *@
+
+    @*             // Send POST request using Fetch API *@
+    @*             fetch('/Forecast/sortMetrics', { *@
+    @*                 method: 'POST', *@
+    @*                 headers: { *@
+    @*                     'Content-Type': 'application/x-www-form-urlencoded' *@
+    @*                 }, *@
+    @*                 body: formData.toString() *@
+    @*             }) *@
+    @*             .then(response => { *@
+    @*                 if (!response.ok) { *@
+    @*                     throw new Error('Network response was not ok'); *@
+    @*                 } *@
+    @*                 return response.text(); *@
+    @*             }) *@
+    @*             .then(html => { *@
+    @*                 // Replace the metrics container content with the sorted partial view *@
+    @*                 document.getElementById('metrics-container').innerHTML = html; *@
+    @*             }) *@
+    @*             .catch(error => { *@
+    @*                 console.error('Error during sorting:', error); *@
+    @*                 alert("Error sorting metrics."); *@
+    @*             }); *@
+    @*         }); *@
+    @*     }); *@
+    @* }); *@
+    function syncSliderValue(textInput) {
+        const productId = textInput.dataset.productId;
+        const slider = document.getElementById("slider-" + productId);
+        // Convert text to integer or keep as string if you want decimals
+        slider.value = parseInt(textInput.value) || 0;
+        updateSliderValue(slider); // If you want to call the server or refresh
+    }
+
+    function syncTextInput(slider) {
+        const productId = slider.dataset.productId;
+        const textInput = document.getElementById("text-" + productId);
+        textInput.value = slider.value; // Keep them in sync
+    }
+
+    // Update the displayed percentage immediately as the slider moves.
+    function updateSliderDisplay(slider) {
+        var productId = slider.dataset.productId;
+        var value = slider.value;
+        document.getElementById("slider-value-" + productId).textContent = value + "%";
+    }
+
+    // When slider change is complete, update the server and refresh the page.
+    function updateSliderValue(slider) {
+        var productId = slider.dataset.productId;
+        var productName = slider.dataset.productName;
+        var value = slider.value;
+        const sortedHeader = document.querySelector(".sortable-header.sorted-asc, .sortable-header.sorted-desc");
+
+        let sortType, sortOrder;
+        if (sortedHeader) {
+            sortType = sortedHeader.getAttribute("data-sort-type");
+            sortOrder = sortedHeader.getAttribute("data-sort-order");
+        } else {
+            // Fall back to some default if nothing is sorted
+            sortType = "";
+            sortOrder = "ascending";
+        }
+            const url = `/Forecast/UpdatePriceAdjustment?productId=${productId}&productName=${encodeURIComponent(productName)}&priceAdjustment=${value}&sortType=${sortType}&sortOrder=${sortOrder}`;
+            fetch(url, { method: "POST" }).then(response => response.text())
+            .then(html => {
+                document.getElementById("metrics-container").innerHTML = html;
+                initForecastChart();
+
+            })
+            .catch(error => console.error("Error updating price:", error));
+        }
+        function updateGlobalSliderDisplay(slider) {
+            document.getElementById("slider-display").textContent = slider.value + "%";
+        }
+        @* // When slider stops updating (change event), call the server and update the metrics partial view. *@
+        @* function updateSliderValue(slider) { *@
+        @*     var productId = slider.dataset.productId; *@
+        @*     var productName = slider.dataset.productName; *@
+        @*     var value = slider.value; *@
+
+        @*     fetch(`/Forecast/UpdatePriceAdjustment?productId=${productId}&productName=${encodeURIComponent(productName)}&priceAdjustment=${value}`, { *@
+        @*         method: "POST" *@
+        @*     }) *@
+        @*     .then(response => response.text()) *@
+        @*     .then(html => { *@
+        @*         // Replace only the metrics container's HTML with the new partial view HTML. *@
+        @*         document.getElementById("metrics-container").innerHTML = html; *@
+        @*     }) *@
+        @*     .catch(error => console.error("Error updating price:", error)); *@
+        @* } *@
+
+            // When the slider value changes, call the same GenerateForecast endpoint.
+        function generateDashboardFromSlider(slider) {
+            var priceAdjustment = slider.value;
+            var forecastMonthElement = document.getElementById("forecastMonth");
+            if (!forecastMonthElement) {
+                console.error("Forecast month element not found.");
+                return;
+            }
+            var forecastMonth = forecastMonthElement.value;
+            if (!forecastMonth) {
+                console.error("Forecast month is empty.");
+                return;
+            }
+
+            // Dynamically create a form to submit a POST request
+            var form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/Forecast/GenerateForecast"; // This should match your POST route
+
+            // Create hidden input for "type"
+            var typeInput = document.createElement("input");
+            typeInput.type = "hidden";
+            typeInput.name = "type";
+            typeInput.value = "price";
+            form.appendChild(typeInput);
+
+            // Create hidden input for "priceAdjustment"
+            var priceInput = document.createElement("input");
+            priceInput.type = "hidden";
+            priceInput.name = "priceAdjustment";
+            priceInput.value = priceAdjustment;
+            form.appendChild(priceInput);
+
+            // Create hidden input for "month"
+            var monthInput = document.createElement("input");
+            monthInput.type = "hidden";
+            monthInput.name = "month";
+            monthInput.value = forecastMonth;
+            form.appendChild(monthInput);
+
+            // Append the form to the body and submit it.
+            document.body.appendChild(form);
+            form.submit();
+        }
+        
+    function syncGlobalSliderValue(textInput) {
+        const slider = document.getElementById("priceAdjustmentSlider");
+        slider.value = parseInt(textInput.value) || 0; // fallback to 0 if invalid
+        // Optionally update any display label
+        document.getElementById("slider-display").textContent = slider.value + "%";
+        generateDashboardFromSlider(slider); // Reuse your existing function
+    }
+        
+
+    @* // Serialize the model's metrics collection. *@
+    @* // Ensure that Model.GetMetrics() returns the properties "productName", "productId", and "forecastedStock" *@
+    @* const metrics = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GetMetrics())); *@
+    @* console.log("Metrics:", metrics); *@
+
+    @* // Build arrays for labels and data. *@
+    @* const labels = metrics.map(m => m.productName ? m.productName : "Product " + m.productId); *@
+    @* const forecastValues = metrics.map(m => m.forecastedStock); *@
+    @* console.log("Labels:", labels, "Forecast Values:", forecastValues); *@
+
+    @* // Get the chart canvas context. *@
+    @* const canvasElem = document.getElementById('forecastGraph'); *@
+    @* if (!canvasElem) { *@
+    @*     console.error("Canvas with id 'forecastGraph' not found."); *@
+    @* } *@
+    @* const ctx2 = canvasElem.getContext('2d'); *@
+
+    @* // Initialize a Chart.js bar chart. *@
+    @* let forecastChart = new Chart(ctx2, { *@
+    @*     type: 'bar', *@
+    @*     data: { *@
+    @*         labels: labels, *@
+    @*         datasets: [{ *@
+    @*             label: 'Forecasted Stock', *@
+    @*             data: forecastValues, *@
+    @*             backgroundColor: 'rgba(75, 192, 192, 0.6)' *@
+    @*         }] *@
+    @*     }, *@
+    @*     options: { *@
+    @*         responsive: true, *@
+    @*         scales: { *@
+    @*             y: { *@
+    @*                 beginAtZero: true, *@
+    @*                 title: { *@
+    @*                     display: true, *@
+    @*                     text: 'Stock' *@
+    @*                 } *@
+    @*             }, *@
+    @*             x: { *@
+    @*                 title: { *@
+    @*                     display: true, *@
+    @*                     text: 'Products' *@
+    @*                 } *@
+    @*             } *@
+    @*         }, *@
+    @*         plugins: { *@
+    @*             title: { *@
+    @*                 display: true, *@
+    @*                 text: 'Forecast for @Model.GetStartDate().ToString("yyyy-MM")' *@
+    @*             } *@
+    @*         } *@
+    @*     } *@
+    @* }); *@
+</script>

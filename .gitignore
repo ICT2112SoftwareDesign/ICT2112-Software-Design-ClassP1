@@ -10,3 +10,5 @@ CleanBrilliantCompany/.env
 .vscode/
 .idea/
 .env
+/.vs
+/CleanBrilliantCompany/.env
