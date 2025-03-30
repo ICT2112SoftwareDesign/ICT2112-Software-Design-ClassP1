@@ -203,6 +203,15 @@
                 </div>
                 <div class="card-body">
                     <div class="row mb-4">
+                        <!-- Date Range Filter -->
+                        <div class="col-12 mb-4">
+                            <h6 class="font-weight-bold">Date Range:</h6>
+                            <div class="d-flex">
+                                <input type="date" id="startDate" class="form-control mr-2" onchange="updateAllTables()">
+                                <input type="date" id="endDate" class="form-control" onchange="updateAllTables()">
+                            </div>
+                        </div>
+
                         <!-- Product Comparison -->
                         <div class="col-md-6">
                             <h6 class="font-weight-bold">Product Comparison</h6>
@@ -285,6 +294,23 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current date and first day of previous month
+            const today = new Date();
+            const firstDayOfPrevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 2);
+            
+            // Format dates for input fields (YYYY-MM-DD)
+            const todayStr = today.toISOString().split('T')[0];
+            const firstDayOfPrevMonthStr = firstDayOfPrevMonth.toISOString().split('T')[0];
+
+            // Set default values for date inputs
+            document.getElementById('startDate').value = firstDayOfPrevMonthStr;
+            document.getElementById('endDate').value = todayStr;
+
+            // Trigger the initial updates
+            updateAllTables();
+        });
+
         function createNewProduct() {
             $.ajax({
                 url: '@Url.Action("CreateProduct", "DashboardPage")', // ASP.NET MVC URL helper
@@ -347,6 +373,308 @@
 
         function calculateShipmentCF() {
             // tbd
+        }
+
+        function updateAllTables() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert('Start date cannot be after end date');
+                return;
+            }
+
+            // Update both tables
+            updateProductTable(startDate, endDate);
+            updateShippingTable(startDate, endDate);
+        }
+
+        function updateProductTable(startDate, endDate) {
+            $.ajax({
+                url: '@Url.Action("GetFilteredProducts", "DashboardPage")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        const productCheckboxes = document.querySelector('.product-checkboxes');
+                        productCheckboxes.innerHTML = response.products.map(product => `
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input product-checkbox" 
+                                    id="product_${product.productId}" 
+                                    value="${product.productId}"
+                                    data-name="${product.productName}"
+                                    data-emission="${product.carbonEmission}">
+                                <label class="custom-control-label" for="product_${product.productId}">
+                                    ${product.productName} - ${product.carbonEmission.toFixed(2)} kg CO₂
+                                </label>
+                            </div>
+                        `).join('');
+                    } else {
+                        alert('Failed to fetch filtered products: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error fetching filtered products: ' + error);
+                }
+            });
+        }
+
+        function updateShippingTable(startDate, endDate) {
+            $.ajax({
+                url: '@Url.Action("GetFilteredShippingMethods", "DashboardPage")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        const shippingCheckboxes = document.querySelector('.shipping-checkboxes');
+                        shippingCheckboxes.innerHTML = response.shippingMethods.map(method => `
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input shipping-checkbox" 
+                                    id="shipping_${method.transportMode}" 
+                                    value="${method.transportMode}"
+                                    data-name="${method.transportMode}"
+                                    data-emission="${method.averageCarbonEmission}">
+                                <label class="custom-control-label" for="shipping_${method.transportMode}">
+                                    ${method.transportMode} - ${method.averageCarbonEmission.toFixed(2)} kg CO₂
+                                </label>
+                            </div>
+                        `).join('');
+                    } else {
+                        alert('Failed to fetch filtered shipping methods: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error fetching filtered shipping methods: ' + error);
+                }
+            });
+        }
+
+        function compareProducts() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates');
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert('Start date cannot be after end date');
+                return;
+            }
+
+            const selectedProducts = Array.from(document.querySelectorAll('.product-checkbox:checked'))
+                .map(checkbox => ({
+                    name: checkbox.dataset.name,
+                    value: checkbox.value
+                }));
+
+            if (selectedProducts.length === 0) {
+                alert('Please select at least one product to compare');
+                return;
+            }
+
+            // Make AJAX call to get filtered data
+            $.ajax({
+                url: '@Url.Action("GetFilteredProductData", "DashboardPage")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate,
+                    productIds: selectedProducts.map(p => p.value)
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        updateProductComparisonChart(response.data);
+                    } else {
+                        alert('Failed to fetch filtered data: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error fetching filtered data: ' + error);
+                }
+            });
+        }
+
+        function compareShippingMethods() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates');
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert('Start date cannot be after end date');
+                return;
+            }
+
+            const selectedMethods = Array.from(document.querySelectorAll('.shipping-checkbox:checked'))
+                .map(checkbox => ({
+                    name: checkbox.dataset.name,
+                    value: checkbox.value
+                }));
+
+            if (selectedMethods.length === 0) {
+                alert('Please select at least one shipping method to compare');
+                return;
+            }
+
+            // Make AJAX call to get filtered data
+            $.ajax({
+                url: '@Url.Action("GetFilteredShippingData", "DashboardPage")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate,
+                    shippingMethods: selectedMethods.map(m => m.value)
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        updateShippingComparisonChart(response.data);
+                    } else {
+                        alert('Failed to fetch filtered data: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error fetching filtered data: ' + error);
+                }
+            });
+        }
+
+        function updateProductComparisonChart(data) {
+            const ctx = document.getElementById('productComparisonChart').getContext('2d');
+
+            if (productComparisonChart) {
+                productComparisonChart.destroy();
+            }
+
+            productComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Carbon Emission (kg CO₂)',
+                        data: data.values,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Carbon Emission (kg CO₂)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Product Carbon Footprint Comparison'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateShippingComparisonChart(data) {
+            const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
+
+            if (shippingComparisonChart) {
+                shippingComparisonChart.destroy();
+            }
+
+            shippingComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Carbon Emission (kg CO₂)',
+                        data: data.values,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Carbon Emission (kg CO₂)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Shipping Method Carbon Footprint Comparison'
+                        }
+                    }
+                }
+            });
+        }
+
+        function clearProductSelection() {
+            document.querySelectorAll('.product-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Clear chart
+            if (productComparisonChart) {
+                productComparisonChart.destroy();
+            }
+            const ctx = document.getElementById('productComparisonChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+
+        function clearShippingSelection() {
+            document.querySelectorAll('.shipping-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Clear chart
+            if (shippingComparisonChart) {
+                shippingComparisonChart.destroy();
+            }
+            const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+
+        function selectAllProducts() {
+            const checkboxes = document.querySelectorAll('.product-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+        }
+
+        function selectAllShipping() {
+            const checkboxes = document.querySelectorAll('.shipping-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
         }
     </script>
 
@@ -541,148 +869,6 @@
 
         let productComparisonChart;
         let shippingComparisonChart;
-
-        function compareProducts() {
-            const selectedProducts = Array.from(document.querySelectorAll('.product-checkbox:checked'))
-                .map(checkbox => ({
-                    name: checkbox.dataset.name,
-                    value: parseFloat(checkbox.dataset.emission)
-                }));
-
-            if (selectedProducts.length === 0) {
-                alert('Please select at least one product to compare');
-                return;
-            }
-
-            const ctx = document.getElementById('productComparisonChart').getContext('2d');
-
-            if (productComparisonChart) {
-                productComparisonChart.destroy();
-            }
-
-            productComparisonChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: selectedProducts.map(p => p.name),
-                    datasets: [{
-                        label: 'Carbon Emission (kg CO₂)',
-                        data: selectedProducts.map(p => p.value),
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Carbon Emission (kg CO₂)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Product Carbon Footprint Comparison'
-                        }
-                    }
-                }
-            });
-        }
-
-        function compareShippingMethods() {
-            const selectedMethods = Array.from(document.querySelectorAll('.shipping-checkbox:checked'))
-                .map(checkbox => ({
-                    name: checkbox.dataset.name,
-                    value: parseFloat(checkbox.dataset.emission)
-                }));
-
-            if (selectedMethods.length === 0) {
-                alert('Please select at least one shipping method to compare');
-                return;
-            }
-
-            const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
-
-            if (shippingComparisonChart) {
-                shippingComparisonChart.destroy();
-            }
-
-            shippingComparisonChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: selectedMethods.map(m => m.name),
-                    datasets: [{
-                        label: 'Carbon Emission (kg CO₂)',
-                        data: selectedMethods.map(m => m.value),
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Carbon Emission (kg CO₂)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Shipping Method Carbon Footprint Comparison'
-                        }
-                    }
-                }
-            });
-        }
-
-        function clearProductSelection() {
-            document.querySelectorAll('.product-checkbox').forEach(cb => {
-                cb.checked = false;
-            });
-
-            // Clear chart
-            if (productComparisonChart) {
-                productComparisonChart.destroy();
-            }
-            const ctx = document.getElementById('productComparisonChart').getContext('2d');
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        }
-
-        function clearShippingSelection() {
-            document.querySelectorAll('.shipping-checkbox').forEach(cb => {
-                cb.checked = false;
-            });
-
-            // Clear chart
-            if (shippingComparisonChart) {
-                shippingComparisonChart.destroy();
-            }
-            const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        }
-
-        function selectAllProducts() {
-            const checkboxes = document.querySelectorAll('.product-checkbox');
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            
-            checkboxes.forEach(cb => cb.checked = !allChecked);
-        }
-
-        function selectAllShipping() {
-            const checkboxes = document.querySelectorAll('.shipping-checkbox');
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            
-            checkboxes.forEach(cb => cb.checked = !allChecked);
-        }
     </script>
     <script>
         let panelsVisible = false;

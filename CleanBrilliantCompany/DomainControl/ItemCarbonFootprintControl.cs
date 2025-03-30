@@ -116,7 +116,7 @@ namespace CleanBrilliantCompany.DomainControl
             }
         }
 
-        public float getTotalEcofriendlyCarbonFootprint()
+        public float getTotalEcoFriendlyCarbonFootprint()
         {
             try
             {
