@@ -152,6 +152,11 @@ namespace CleanBrilliantCompany.Models.Forecast
             return trendData;
         }
 
+        public ForecastDashboard retrieveUpcomingDashboard()
+        {
+            return generateDashboard(DateTime.Now.AddMonths(1), 0); 
+        }
+
 
 
 
