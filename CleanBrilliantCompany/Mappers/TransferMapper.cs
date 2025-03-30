@@ -207,15 +207,18 @@ namespace CleanBrilliantCompany.Mappers
                     p.productName, 
                     w.warehouseId,
                     w.warehouseName, 
-                    COUNT(i.itemId) AS TotalQuantity
+                    COUNT(i.itemId) AS TotalQuantity,
+                    w.maxCapacity AS MaxCapacity,
+                    w.currentCapacity AS CurrentCapacity,
+                    (w.maxCapacity - w.currentCapacity) AS AvailableCapacity
                 FROM Warehouse w
                 CROSS JOIN Product p  -- Ensures every product is considered for every warehouse
                 LEFT JOIN Item i 
                     ON p.productId = i.productId 
                     AND w.warehouseId = i.warehouseId 
                     AND i.itemStatus = 'Available'  -- Only count available items
-                GROUP BY p.productId, p.productName, w.warehouseId, w.warehouseName
-                HAVING COUNT(i.itemId) < 10;
+                GROUP BY p.productId, p.productName, w.warehouseId, w.warehouseName, w.maxCapacity, w.currentCapacity
+                HAVING COUNT(i.itemId) < 10; -- Adjust this threshold as needed
                 ";
                 // SELECT * FROM dbo.ItemTransfer
 
@@ -233,7 +236,10 @@ namespace CleanBrilliantCompany.Mappers
                                     reader.GetString(reader.GetOrdinal("productName")),
                                     reader.GetString(reader.GetOrdinal("warehouseName")),
                                     reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                    reader.GetInt32(reader.GetOrdinal("TotalQuantity"))
+                                    reader.GetInt32(reader.GetOrdinal("TotalQuantity")),
+                                    reader.GetInt32(reader.GetOrdinal("MaxCapacity")),
+                                    reader.GetInt32(reader.GetOrdinal("CurrentCapacity")),
+                                    reader.GetInt32(reader.GetOrdinal("AvailableCapacity"))
                                 );
                                 products.Add(product);
                             }
@@ -243,6 +249,38 @@ namespace CleanBrilliantCompany.Mappers
             }
             return products;
         }
+
+        public bool updateWarehouseCapacity(int warehouseId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string updateQuery = @"
+                            -- Update inventory count at source warehouse (decrease)
+                                UPDATE dbo.Warehouse
+                                SET currentCapacity = (
+                                    SELECT COUNT(*)
+                                    FROM dbo.Item
+                                    WHERE warehouseId = @warehouseId
+                                    AND itemStatus IN ('Available', 'Reserved', 'ToReturn')
+                                )
+                                WHERE warehouseId = @warehouseId;
+
+                            ;";
+                using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@warehouseId", warehouseId);
+                    //command.Parameters.AddWithValue("@destinationWarehouse", destinationWarehouse);
+                    //command.Parameters.AddWithValue("@quantity", quantity);
+                    //command.Parameters.AddWithValue("@status", status.ToString());
+
+                    int rowsAffected = command.ExecuteNonQuery(); // Get the number of rows affected
+                    return getDatabaseQueryStatus(null, rowsAffected); // Pass affected rows to the method
+                }
+            }
+        }
+
 
 
 

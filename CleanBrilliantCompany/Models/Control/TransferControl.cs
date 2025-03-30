@@ -79,5 +79,10 @@ namespace CleanBrilliantCompany.Models.Control
         {
             return await _iWarehouseInterface.getTransferredItems(transferId);
         }
+
+        public async Task<bool> updateWarehouseCapacity(int warehouseId)
+        {
+            return await Task.FromResult(_transferMapper.updateWarehouseCapacity(warehouseId));
+        }
     }
 }
