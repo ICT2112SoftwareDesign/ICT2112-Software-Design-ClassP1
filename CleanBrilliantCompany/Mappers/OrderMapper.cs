@@ -112,7 +112,8 @@ namespace CleanBrilliantCompany.Models
                             orderItems: orderItems,
                             orderDate: Convert.ToDateTime(reader["orderDate"]),
                             status: reader["Status"].ToString(),
-                            orderTotal: Convert.ToDecimal(reader["orderTotal"])
+                            orderTotal: Convert.ToDecimal(reader["orderTotal"]),
+                            orderWeight: reader["orderWeight"] != DBNull.Value ? Convert.ToInt32(reader["orderWeight"]) : 0
                         ));
                     }
                 }
@@ -167,7 +168,8 @@ namespace CleanBrilliantCompany.Models
                             orderItems: orderItems,
                             orderDate: Convert.ToDateTime(reader["orderDate"]),
                             status: reader["Status"].ToString(),
-                            orderTotal: Convert.ToDecimal(reader["orderTotal"])
+                            orderTotal: Convert.ToDecimal(reader["orderTotal"]),
+                            orderWeight: reader["orderWeight"] != DBNull.Value ? Convert.ToInt32(reader["orderWeight"]) : 0
                         );
                     }
                 }
@@ -311,7 +313,8 @@ namespace CleanBrilliantCompany.Models
                             orderItems: orderItems,
                             orderDate: Convert.ToDateTime(reader["orderDate"]),
                             status: reader["Status"].ToString(),
-                            orderTotal: Convert.ToDecimal(reader["orderTotal"])
+                            orderTotal: Convert.ToDecimal(reader["orderTotal"]),
+                            orderWeight: reader["orderWeight"] != DBNull.Value ? Convert.ToInt32(reader["orderWeight"]) : 0
                         ));
                     }
                 }
@@ -353,7 +356,8 @@ namespace CleanBrilliantCompany.Models
                             orderItems: orderItems,
                             orderDate: Convert.ToDateTime(reader["orderDate"]),
                             status: reader["Status"].ToString(),
-                            orderTotal: Convert.ToDecimal(reader["orderTotal"])
+                            orderTotal: Convert.ToDecimal(reader["orderTotal"]),
+                            orderWeight: reader["orderWeight"] != DBNull.Value ? Convert.ToInt32(reader["orderWeight"]) : 0
                         ));
                     }
                 }

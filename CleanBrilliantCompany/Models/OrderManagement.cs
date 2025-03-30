@@ -104,7 +104,8 @@ namespace CleanBrilliantCompany.Models
                     orderItems: cart.Keys.ToList(), // Use product IDs as serial numbers
                     orderDate: DateTime.Now,
                     status: "Pending",
-                    orderTotal: cartTotal + shippingFee
+                    orderTotal: cartTotal + shippingFee,
+                    orderWeight: 0 // Placeholder for order weight, if needed
                 );
 
                 // Save the order to the database
