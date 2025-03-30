@@ -1,0 +1,221 @@
+@model CleanBrilliantCompany.Models.ReorderRequest_RDM
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Create New Reorder</title>
+
+    <!-- Custom styles -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+
+                <!-- Page Content -->
+                <div class="container-fluid mt-4">
+                    <h1 class="h3 mb-4 text-gray-800">Create New Reorder Request</h1>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+
+                    <form method="post" action="/staff/reorder/submitreorderform">
+                        <!-- Manufacturer Information -->
+                        <div class="form-group">
+                            <label for="ManufacturerId">Manufacturer</label>
+                            <select class="form-control" id="ManufacturerId" name="ManufacturerId" required>
+                                <option value="">-- Select a Manufacturer --</option>
+                                @foreach (var manufacturer in ViewBag.Manufacturers)
+                                {
+                                    var details = manufacturer.GetManufacturerDetails(); 
+                                    <option value="@details["ManufacturerId"]">@details["ManufacturerId"] - @details["CompanyName"]</option>
+                                }
+                            </select>
+                            <span asp-validation-for="ManufacturerId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Status</label>
+                            <input class="form-control" value="Pending" disabled />
+                            <small class="text-muted">New orders will automatically have "Pending" status</small>
+                        </div>
+
+                        <!-- Product Information Section -->
+                        <h3>Product Information</h3>
+
+                        <div id="productSection">
+                            <div class="productItem">
+                                <div class="form-group">
+                                    <label for="ProductId">Product ID</label>
+                                    <select class="form-control" name="Products[0].ProductId" required>
+                                        <option value="">-- Select a Product --</option>
+                                        @foreach (var product in ViewBag.Products)
+                                        {
+                                            var details = product.GetProductDetails();
+                                            <option value="@details["ProductId"]">@details["ProductId"] - @details["ProductName"]</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Quantity">Quantity</label>
+                                    <input type="number" class="form-control" name="Products[0].Quantity" required />
+                                </div>
+
+                                <!-- No input field for Defect Quantity, it will be null by default -->
+                                <input type="hidden" name="Products[0].DefectQuantity" value="" />
+
+                                <hr />
+                            </div>
+                        </div>
+
+                        <button type="button" id="addProduct" class="btn btn-secondary mt-3">Add Another Product</button>
+
+                        <br />
+                        <button type="submit" class="btn btn-primary mt-3">Create Reorder Request</button>
+                    </form>
+
+                    <a href="/staff/reorder" class="btn btn-secondary mt-3">Back to Reorders</a>
+                </div>
+                <!-- End of Page Content -->
+            </div>
+            <!-- End of Main Content -->
+        </div>
+    </div>
+
+    <!-- Bootstrap & JS -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Get product details for JavaScript
+    const products = [];
+    
+    @foreach (var product in ViewBag.Products)
+    {
+        @:products.push(@Html.Raw(Json.Serialize(product.GetProductDetails())));
+    }
+
+    // Function to filter products based on selected manufacturer
+    function filterProducts() {
+        const manufacturerId = document.getElementById('ManufacturerId').value;
+        
+        // Filter products by manufacturer ID
+        const filteredProducts = products.filter(product => product.ManufacturerId == manufacturerId);
+
+        // Track selected product IDs
+        let selectedProductIds = [];
+
+        // Get all product dropdowns and track selected products
+        const productSelects = document.querySelectorAll("select[name^='Products']");
+        productSelects.forEach(select => {
+            if (select.value) {
+                selectedProductIds.push(select.value);
+            }
+        });
+
+        // Loop through all product dropdowns and update them
+        productSelects.forEach(select => {
+            // Store selected value before updating options
+            const selectedValue = select.value;
+
+            let optionsHtml = '<option value="">-- Select a Product --</option>';
+
+            // Add the filtered products to the dropdown
+            filteredProducts.forEach(product => {
+                // Disable the option if it's already selected in any other dropdown
+                const isSelected = selectedProductIds.includes(product.ProductId) ? 'disabled' : '';
+                optionsHtml += `<option value="${product.ProductId}" ${product.ProductId == selectedValue ? 'selected' : ''} ${isSelected}>${product.ProductId} - ${product.ProductName}</option>`;
+            });
+
+            // Update the dropdown options
+            select.innerHTML = optionsHtml;
+        });
+
+        // Check if there are only 2 products for the manufacturer and hide the "Add Product" button if already selected
+        if (filteredProducts.length <= 2 && document.querySelectorAll(".productItem").length >= filteredProducts.length) {
+            document.getElementById("addProduct").style.display = 'none';
+        } else {
+            document.getElementById("addProduct").style.display = 'inline-block';
+        }
+    }
+
+    // Adding a new product form dynamically
+    let productCount = 1;
+    document.getElementById("addProduct").addEventListener("click", function () {
+        const productSection = document.getElementById("productSection");
+        const newProduct = document.createElement("div");
+        newProduct.classList.add("productItem");
+
+        // Build options HTML
+        let optionsHtml = '<option value="">-- Select a Product --</option>';
+        products.forEach(product => {
+            optionsHtml += `<option value="${product.ProductId}">${product.ProductId} - ${product.ProductName}</option>`;
+        });
+
+        newProduct.innerHTML = `
+            <div class="form-group">
+                <label for="ProductId">Product ID</label>
+                <select class="form-control" name="Products[${productCount}].ProductId" required onchange="filterProducts()">
+                    ${optionsHtml}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="Quantity">Quantity</label>
+                <input type="number" class="form-control" name="Products[${productCount}].Quantity" required />
+            </div>
+
+            <input type="hidden" name="Products[${productCount}].DefectQuantity" value="" />
+
+            <div class="form-group">
+                <button type="button" class="btn btn-danger remove-product">Remove Product</button>
+            </div>
+
+            <hr />
+        `;
+        productSection.appendChild(newProduct);
+        
+        // Add event listener to the newly created remove button
+        newProduct.querySelector('.remove-product').addEventListener('click', function() {
+            productSection.removeChild(newProduct);
+            filterProducts();  // Re-filter when a product is removed
+        });
+
+        // Reapply the manufacturer filter to the new product dropdown
+        filterProducts();
+        
+        productCount++;
+    });
+
+    // Call filterProducts initially to populate products based on manufacturer selection
+    document.getElementById('ManufacturerId').addEventListener('change', filterProducts);
+
+    // Call filterProducts initially to populate products when the page loads
+    filterProducts();
+</script>
+
+
+
+</body>
+</html>

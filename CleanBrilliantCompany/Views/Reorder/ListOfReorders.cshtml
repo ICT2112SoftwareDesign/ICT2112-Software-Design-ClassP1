@@ -1,0 +1,79 @@
+@model List<CleanBrilliantCompany.Models.ReorderRequest_RDM>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Manage Reorders</title>
+
+    <!-- Custom styles -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet"> 
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
+
+
+<div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+
+                <!-- Page Content -->
+                <div class="container-fluid mt-4">
+                    <h1 class="h3 mb-4 text-gray-800">Manage Reorders</h1>
+
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th>Reorder ID</th>
+                                <th>Manufacturer ID</th>
+                                <th>Status</th>
+                                <th>Expected Delivery</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reorder in Model)
+                            {
+                                <tr>
+                                    <td>@reorder.ReorderId</td>
+                                    <td>@reorder.ManufacturerId</td>
+                                    <td>@reorder.Status</td>
+                                    <td>@reorder.ExpectedDeliveryDate?.ToString("yyyy-MM-dd")</td>
+                                    <td>
+                                        <a asp-action="ReorderDetails" asp-route-id="@reorder.ReorderId" class="btn btn-info btn-sm">View</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <a href="/staff/reorder/new" class="btn btn-primary">+ New Reorder Request</a>
+                    <hr>
+
+                </div>
+                <!-- End of Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2024</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Bootstrap & JS -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

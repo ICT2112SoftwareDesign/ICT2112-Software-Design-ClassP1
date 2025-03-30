@@ -1,0 +1,183 @@
+@model CleanBrilliantCompany.Models.ReorderRequest_RDM
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Update Reorder Request</title>
+
+    <!-- Custom styles -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+
+                <!-- Page Content -->
+                <div class="container-fluid mt-4">
+                    <h1 class="h3 mb-4 text-gray-800">Update Reorder Request</h1>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+
+                    <form method="post" action="/staff/reorder/update/@Model.ReorderId">
+    @Html.AntiForgeryToken()
+    
+    <!-- Add hidden field for ReorderId -->
+    <input type="hidden" name="ReorderId" value="@Model.ReorderId" />
+
+    <!-- Manufacturer Information -->
+    <div class="form-group">
+        <label for="ManufacturerId">Manufacturer</label>
+        <select class="form-control" id="ManufacturerId" name="ManufacturerId" required>
+            <option value="">-- Select a Manufacturer --</option>
+            @foreach (var manufacturer in ViewBag.Manufacturers)
+            {
+                var details = manufacturer.GetManufacturerDetails();
+                <option value="@details["ManufacturerId"]" selected="@(details["ManufacturerId"].ToString() == Model.ManufacturerId.ToString())">@details["ManufacturerId"] - @details["CompanyName"]</option>
+            }
+        </select>
+        <span asp-validation-for="ManufacturerId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <input class="form-control" value="@Model.Status" disabled />
+        <!-- Add hidden field for Status since the visible field is disabled -->
+        <input type="hidden" name="Status" value="@Model.Status" />
+    </div>
+
+    <!-- Expected Delivery Date -->
+    <div class="form-group">
+        <label for="ExpectedDeliveryDate">Expected Delivery Date</label>
+        <input type="date" class="form-control" id="ExpectedDeliveryDate" name="ExpectedDeliveryDate" value="@Model.ExpectedDeliveryDate?.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <!-- Product Information Section -->
+    <h3>Product Information</h3>
+
+    <div id="productSection">
+        @foreach (var product in Model.Products)
+        {
+            <div class="productItem">
+                <!-- Add hidden field for ReorderProductId -->
+                <input type="hidden" name="Products[@product.ReorderProductId].ReorderProductId" value="@product.ReorderProductId" />
+                
+                <div class="form-group">
+                    <label for="ProductId">Product ID</label>
+                    <select class="form-control" name="Products[@product.ReorderProductId].ProductId" required>
+                        <option value="">-- Select a Product --</option>
+                        @foreach (var productOption in ViewBag.Products)
+                        {
+                            var details = productOption.GetProductDetails();
+                            <option value="@details["ProductId"]" selected="@(details["ProductId"].ToString() == product.ProductId.ToString())">@details["ProductId"] - @details["ProductName"]</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Quantity">Quantity</label>
+                    <input type="number" class="form-control" name="Products[@product.ReorderProductId].Quantity" value="@product.Quantity" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="DefectQuantity">Defect Quantity</label>
+                    <input type="number" class="form-control" name="Products[@product.ReorderProductId].DefectQuantity" value="@product.DefectQuantity" />
+                </div>
+
+                <hr />
+            </div>
+        }
+    </div>
+
+    <button type="button" id="addProduct" class="btn btn-secondary mt-3">Add Another Product</button>
+
+    <br />
+    <button type="submit" class="btn btn-primary mt-3">Update Reorder Request</button>
+</form>
+
+                    <a href="/staff/reorder" class="btn btn-secondary mt-3">Back to Reorders</a>
+                </div>
+                <!-- End of Page Content -->
+            </div>
+            <!-- End of Main Content -->
+        </div>
+    </div>
+
+    <!-- Bootstrap & JS -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+   <script>
+    // Initialize the product count
+    let productCount = @Model.Products.Count;
+
+    // Get the options from the data attribute (passed from Razor)
+    const productOptions = JSON.parse(document.getElementById("product-options").getAttribute("data-options"));
+
+    // Add product event
+    document.getElementById("addProduct").addEventListener("click", function () {
+        const productSection = document.getElementById("productSection");
+        const newProduct = document.createElement("div");
+        newProduct.classList.add("productItem");
+
+        // Build the options HTML dynamically
+        let optionsHtml = '<option value="">-- Select a Product --</option>';
+        productOptions.forEach(function(product) {
+            optionsHtml += `<option value="${product.ProductId}">${product.ProductId} - ${product.ProductName}</option>`;
+        });
+
+        // Add the options HTML to the new product item
+        newProduct.innerHTML = `
+            <div class="form-group">
+                <label for="ProductId">Product ID</label>
+                <select class="form-control" name="Products[${productCount}].ProductId" required>
+                    ${optionsHtml}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Quantity">Quantity</label>
+                <input type="number" class="form-control" name="Products[${productCount}].Quantity" required />
+            </div>
+            <div class="form-group">
+                <label for="DefectQuantity">Defect Quantity</label>
+                <input type="number" class="form-control" name="Products[${productCount}].DefectQuantity" />
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-danger remove-product">Remove Product</button>
+            </div>
+            <hr />
+        `;
+        productSection.appendChild(newProduct);
+
+        // Add event listener to the newly created remove button
+        newProduct.querySelector('.remove-product').addEventListener('click', function() {
+            productSection.removeChild(newProduct);
+        });
+
+        productCount++;
+    });
+</script>
+
+
+</body>
+</html>

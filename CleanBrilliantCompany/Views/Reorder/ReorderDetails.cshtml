@@ -1,0 +1,112 @@
+@model CleanBrilliantCompany.Models.ReorderRequest_RDM
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Reorder Request Details</title>
+
+    <!-- Custom styles -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom numbering style */
+        ol.custom-counter {
+            list-style-type: none;  /* Remove default numbering */
+            padding-left: 0;
+        }
+
+        ol.custom-counter li {
+            counter-increment: item;  /* Increment the counter */
+            margin-bottom: 15px; /* Space between items */
+        }
+
+        ol.custom-counter li::before {
+            content: counter(item) ") ";  /* Display the custom number with closing parenthesis */
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+
+                <!-- Page Content -->
+                <div class="container-fluid mt-4">
+                    <h1 class="h3 mb-4 text-gray-800">Reorder Request Details</h1>
+
+                    <div class="row">
+                        <!-- Reorder Request Information -->
+                        <div class="col-md-6">
+                            <h3>Reorder Information</h3>
+                            <p><strong>Reorder ID:</strong> @Model.ReorderId</p>
+                            <p><strong>Manufacturer ID:</strong> @Model.ManufacturerId</p>
+                            <p><strong>Expected Delivery Date:</strong> @Model.ExpectedDeliveryDate?.ToString("yyyy-MM-dd")</p>
+                            <p><strong>Status:</strong> @Model.Status</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Product Information -->
+                    <h3>Product Information</h3>
+                    @if (Model.Products != null && Model.Products.Count > 0)
+                    {
+                        <ol class="custom-counter">
+                            @foreach (var product in Model.Products)
+                            {
+                                <li>
+                                    <strong>Reorder Product ID:</strong> @product.ReorderProductId <br>
+                                    <strong>Product ID:</strong> @product.ProductId <br>
+                                    <strong>Quantity:</strong> @product.Quantity <br>
+                                    <strong>Defect Quantity:</strong> @(product.DefectQuantity.HasValue ? product.DefectQuantity.ToString() : "")
+                                </li>
+                            }
+                        </ol>
+                    }
+                    else
+                    {
+                        <p>No products found for this reorder.</p>
+                    }
+
+                    <a href="/staff/reorder/edit/@Model.ReorderId" class="btn btn-primary mt-3">Edit Details</a>
+
+                    <!-- Add this at the bottom of your ReorderDetails.cshtml file -->
+                    <div class="mt-4">
+                        <form method="post" action="/staff/reorder/cancel_reorder/@Model.ReorderId" onsubmit="return confirm('Are you sure you want to delete this reorder request? This action cannot be undone.');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">Delete Reorder</button>
+                        </form>
+                    </div>
+
+                    <a href="/staff/reorder" class="btn btn-secondary mt-3">Back to Reorder Requests</a>
+
+                </div>
+                <!-- End of Page Content -->
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2024</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Bootstrap & JS -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -117,6 +117,10 @@ builder.Services.AddScoped<ShippingAgentMapper>();
 builder.Services.AddScoped<IShippingAgent, ShippingAgentMapper>();
 builder.Services.AddScoped<IShippingAgentDB>();
 
+// Adding services for Reorder
+builder.Services.AddScoped<IReorderRequestDB>(provider => new ReorderRequestMapper(connectionString));
+builder.Services.AddScoped<IReorderQuery, ReorderRequestManagement>();
+
 //Adding services for Orderfulfilment
 builder.Services.AddScoped<OrderFulfilmentManagement>();
 
