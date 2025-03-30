@@ -393,11 +393,8 @@
                     </div>
                 </div>
 
-
-                    <h2>Manufacturer Dashboard</h2>
-
                     <div>
-                        <h3>@Model.Name</h3>
+                        <h2>@Model.Name</h2>
                         <p><strong>Requested Start Date:</strong> @(Model.RequestedStartDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
                         <p><strong>Requested End Date:</strong> @(Model.RequestedEndDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
                         <p><strong>Generated Date:</strong> @(Model.GeneratedDate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
@@ -406,7 +403,7 @@
 
                     @if (Model.Metrics != null && Model.Metrics.Any())
                     {
-                        <h3>Metrics:</h3>
+                        <!-- <h3>Metrics:</h3>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -429,7 +426,7 @@
                                 </tr>
                             }
                             </tbody>
-                         </table>
+                         </table> -->
 
                         <div style="display: flex; flex-wrap: wrap; gap: 40px;">
                             <div style="width: 45%; height: 350px; margin-top: 40px; margin-bottom: 40px;">
@@ -538,30 +535,31 @@
         const filteredMetrics = metrics.filter(m => m.deliveryRate !== 0);
 
         // Extract the manufacturer IDs and defect rates from the filtered metrics
-        const manufacturerIds = filteredMetrics.map(m => m.manufacturerId);
-        const defectRates = filteredMetrics.map(m => m.defectRate);
+        const def_manufacturerIds = filteredMetrics.map(m => m.manufacturerId);
+        const def_defectRates = filteredMetrics.map(m => m.defectRate);
 
         //Metrics for Dependency Chart
         // Extract the dependency rates from the metrics
         const dependencyRates = metrics.map(m => m.dependencyRate);
+        // const dep_manufacturers = metrics.map(m => m.manufacturerId);
 
         // Categorize the dependency rates into low, medium, and high
-        const lowCount = dependencyRates.filter(rate => rate <= 0.05).length;
-        const mediumCount = dependencyRates.filter(rate => rate > 0.05 && rate <= 0.2).length;
-        const highCount = dependencyRates.filter(rate => rate > 0.2).length;
+        const lowManufacturers = metrics.filter(m => m.dependencyRate <= 0.05).map(m => m.manufacturerId);
+        const mediumManufacturers = metrics.filter(m => m.dependencyRate > 0.05 && m.dependencyRate <= 0.2).map(m => m.manufacturerId);
+        const highManufacturers = metrics.filter(m => m.dependencyRate > 0.2).map(m => m.manufacturerId);
 
         // Data for the pie chart
         const dependencyLabels = ["Low", "Medium", "High"];
-        const dependencyData = [lowCount, mediumCount, highCount];
+        const dependencyData = [lowManufacturers.length, mediumManufacturers.length, highManufacturers.length];
 
         // Metrics for Risk Chart
-        // Calculate the number of manufacturers with and without risk
-        const riskCount = metrics.filter(m => m.riskFlag).length;
-        const noRiskCount = metrics.length - riskCount;
+        // Filter manufacturers based on the riskFlag value
+        const riskManufacturers = metrics.filter(m => m.riskFlag).map(m => m.manufacturerId);
+        const noRiskManufacturers = metrics.filter(m => !m.riskFlag).map(m => m.manufacturerId);
 
         // Data for the pie chart
         const labels = ["Risk", "No Risk"];
-        const data = [riskCount, noRiskCount];
+        const data = [riskManufacturers.length, noRiskManufacturers.length];
 
         function generateDeliveryRateChart() {
             new Chart(document.getElementById("deliveryRateChart"), {
@@ -602,10 +600,10 @@
             new Chart(document.getElementById("defectChart"), {
                 type: "bar",
                 data: {
-                    labels: manufacturerIds,  // X-axis labels (manufacturer IDs)
+                    labels: def_manufacturerIds,  // X-axis labels (manufacturer IDs)
                     datasets: [{
                         label: "Defect Rate",  // The label that appears on hover
-                        data: defectRates,     // Y-axis data (defect rates)
+                        data: def_defectRates,     // Y-axis data (defect rates)
                         backgroundColor: "#007bff"  // Bar color
                     }]
                 },
@@ -643,13 +641,34 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                // Customizing the tooltip label
+                                label: function(tooltipItem) {
+                                    const index = tooltipItem.dataIndex;
+                                    let manufacturerList = [];
+
+                                    // Display the list of manufacturers based on the dependency rate
+                                    if (index === 0) {
+                                        manufacturerList = lowManufacturers.join(", ");
+                                    } else if (index === 1) {
+                                        manufacturerList = mediumManufacturers.join(", ");
+                                    } else if (index === 2) {
+                                        manufacturerList = highManufacturers.join(", ");
+                                    }
+
+                                    return `Manufacturers: ${manufacturerList}`;
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
 
         function generateRiskPieChart() {
-
             new Chart(document.getElementById("riskPieChart"), {
                 type: "pie",
                 data: {
@@ -661,7 +680,27 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                // Customizing the tooltip label
+                                label: function(tooltipItem) {
+                                    const index = tooltipItem.dataIndex;
+                                    let manufacturerList = [];
+
+                                    // Display the list of manufacturers based on the riskFlag
+                                    if (index === 0) {
+                                        manufacturerList = riskManufacturers.join(", ");
+                                    } else if (index === 1) {
+                                        manufacturerList = noRiskManufacturers.join(", ");
+                                    }
+
+                                    return `Manufacturers: ${manufacturerList}`;
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
