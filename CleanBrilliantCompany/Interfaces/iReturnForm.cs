@@ -6,5 +6,7 @@ namespace CleanBrilliantCompany.Interfaces
     {
         Task<List<Item>> getToReturnItems(); 
         Task<Product> retrieveProductDetails(int productId);
+
+        //added back
     }
 }

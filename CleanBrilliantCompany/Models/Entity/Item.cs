@@ -30,7 +30,7 @@ namespace CleanBrilliantCompany.Models.Entity
         private DateTime ExpiryDate;
 
         private List<IObserver> _observers = new List<IObserver>();
- 
+
         // Constructor to initialize the private fields
         public Item(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
                      ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId)
@@ -64,7 +64,14 @@ namespace CleanBrilliantCompany.Models.Entity
             ExpiryDate = expiryDate;
         }
 
-        public Item(int itemId){
+        public Item(int itemId, int warehouseId)
+        {
+            ItemId = itemId;
+            WarehouseId = warehouseId;
+        }
+
+        public Item(int itemId)
+        {
             ItemId = itemId;
         }
 
@@ -106,6 +113,23 @@ namespace CleanBrilliantCompany.Models.Entity
                 { "ReturnId", ReturnId },
                 { "ExpiryDate", ExpiryDate},
                 { "ProductName", ProductName}
+            };
+        }
+
+        public Dictionary<string, object> retrieveTransferredItemInfo()
+        {
+            return new Dictionary<string, object>
+            {
+                { "ItemId", ItemId },
+                { "WarehouseId", WarehouseId },
+            };
+        }
+
+        public Dictionary<string, object> retrieveTransferId()
+        {
+            return new Dictionary<string, object>
+            {
+                { "ItemId", ItemId },
             };
         }
 
@@ -159,15 +183,11 @@ namespace CleanBrilliantCompany.Models.Entity
 
             ItemStatus = newStatus;
             Console.WriteLine($"Item {ItemId} status updated to {ItemStatus} in Item.cs file");
-            
-            Notify();
-        }
 
-        public int getItem(){
-            return ItemId;
+            Notify();
         }
 
         public Item() { }
 
-}
+    }
 }

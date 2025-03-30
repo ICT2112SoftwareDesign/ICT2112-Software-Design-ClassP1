@@ -2,25 +2,25 @@ using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Mappers;
 using System.Globalization;
+using CleanBrilliantCompany.Models.Factory;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ProductControl : iProductQuery, iProduct, iProductQuantity, iManufacturer
+
+    public class ProductControl : IProductQuery, IProduct, IProductQuantity, IManufacturer, IBatch
     {
         private readonly ProductMapper _productMapper;
         private readonly iReorderRequest _ireorderRequest;
-        // public ProductControl(string connectionString, iReorderRequest ireorderRequest)
-        // {
-        //     _productMapper = new ProductMapper(connectionString);
-        //     _ireorderRequest = ireorderRequest;
-        //     Console.WriteLine("Products loaded from database.");
-        // }
+        private readonly Lazy<IItemCreation> _lazyItemCreation;
+        private readonly ProductFactory _productFactory;
 
-         public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest)
+        public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, Lazy<IItemCreation> lazyItemCreation, ProductFactory productFactory)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _productMapper = new ProductMapper(connectionString);
             _ireorderRequest = ireorderRequest;
+            _lazyItemCreation = lazyItemCreation;
+            _productFactory = productFactory;
 
             Console.WriteLine("Products loaded from database.");
         }
@@ -44,6 +44,22 @@ namespace CleanBrilliantCompany.Models.Control
                                     manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
         }
 
+        public void CreateSolidProduct(string productName, string category, float productCost,
+        int manufacturerId, float weight, int quantity, float toxicityPercentage, int carbonFootprint)
+        {
+            _productFactory.CreateProduct(productName, category, productCost,
+                                        manufacturerId, weight, quantity, 0,
+                                        toxicityPercentage, carbonFootprint, isLiquid: false);
+        }
+
+        public void CreateLiquidProduct(string productName, string category, float productCost,
+        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint)
+        {
+            _productFactory.CreateProduct(productName, category, productCost,
+                                        manufacturerId, weight, quantity, volume,
+                                        toxicityPercentage, carbonFootprint, isLiquid: true);
+        }
+
         public void deleteProduct(int productId)
         {
             _productMapper.delete(productId);
@@ -62,13 +78,11 @@ namespace CleanBrilliantCompany.Models.Control
             List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
             productInfo.Add(product.retrieveProductInfo());
             int oldQty = Convert.ToInt32(productInfo[0]["Quantity"]);
-            Console.WriteLine("OLD QUANTITY IN PRODUCT MAPPER: " + oldQty);
             _productMapper.update(productId, oldQty, quantity, arithmeticOperations);
         }
 
 
         // Product Batch
-
         public List<ProductBatch> getAllProductBatch()
         {
             return _productMapper.findAllProductBatch(); 
@@ -80,37 +94,38 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         public int createProductBatch(int productId, DateTime expiryDate, 
-            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+            DateTime receiveDate, DateTime manufactureDate, int quantity, float batchCost)
         {
             return _productMapper.insert(productId, expiryDate, receiveDate, manufactureDate, quantity, batchCost);
         }
 
         // Product Stock History
-        public Dictionary<string, List<StockHistory>> getStockHistoryByBatch(int batchCode)
+        // public Dictionary<string, List<StockHistory>> getStockHistoryByBatch(int batchCode)
+        public List<StockHistory> getStockHistoryByBatch(int batchCode)
         {
-            List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); // Return this if only want list of batches
-            var stockHistoryDictionary = new Dictionary<string, List<StockHistory>>(); // Return this if dictionary
-            foreach (var stockHistory in stockHistories)
-            {
-                if (stockHistory.GetBatchCode() == batchCode)
-                {
-                    string stockTakeDateKey = stockHistory.GetStockTakeDate().ToString("yyyy-MM-dd");
-                    if (!stockHistoryDictionary.ContainsKey(stockTakeDateKey))
-                    {
-                        stockHistoryDictionary[stockTakeDateKey] = new List<StockHistory>();
-                    }
-                    stockHistoryDictionary[stockTakeDateKey].Add(stockHistory);
-                }
-            }
-            return stockHistoryDictionary;
+            List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); // Return this if only want list of stockHistory
+            // var stockHistoryDictionary = new Dictionary<string, List<StockHistory>>(); // Return this if dictionary, Key = stockDate
+            // foreach (var stockHistory in stockHistories)
+            // {
+            //     if (stockHistory.GetBatchCode() == batchCode)
+            //     {
+            //         string stockTakeDateKey = stockHistory.GetStockTakeDate().ToString("yyyy-MM-dd");
+            //         if (!stockHistoryDictionary.ContainsKey(stockTakeDateKey))
+            //         {
+            //             stockHistoryDictionary[stockTakeDateKey] = new List<StockHistory>();
+            //         }
+            //         stockHistoryDictionary[stockTakeDateKey].Add(stockHistory);
+            //     }
+            // }
+            return stockHistories;
         }
 
         public Dictionary<int, List<StockHistory>> getStockHistoryByDate(DateOnly stockTakeDate) 
         {
-            var stockHistoryDictionary = new Dictionary<int, List<StockHistory>>();
-            List<StockHistory> stockHistories = _productMapper.findAllStockHistory();
+            var stockHistoryDictionary = new Dictionary<int, List<StockHistory>>(); // Return this if dictionary
+            List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); // Return this if only want list of stockHistory, Key = batchCode
 
-            foreach (var stockHistory in stockHistories)
+            foreach (var stockHistory in stockHistories) // Made the attributes here public, stockTakeDate, batchCode.
             {
                 if (stockHistory.GetStockTakeDate() == stockTakeDate)
                 {
@@ -134,6 +149,12 @@ namespace CleanBrilliantCompany.Models.Control
         public ProductManufacturer getManufacturerDetails(int manufacturerId)
         {
             ProductManufacturer productManufacturer = _productMapper.getProductManufacturerById(manufacturerId);
+            return productManufacturer;
+        }
+
+        public List<ProductManufacturer> getAllProductManufacturer()
+        {
+            List<ProductManufacturer> productManufacturer = _productMapper.findAllManufacturer();
             return productManufacturer;
         }
 
@@ -164,17 +185,19 @@ namespace CleanBrilliantCompany.Models.Control
                 Console.WriteLine($"Defect Quantity: {request.DefectQuantity}");
                 Console.WriteLine();
 
-                
-                /// Hardcoded random variables ///
-                string expiryDateSample = "05/06/2025"; // in the format of the db, mm/dd/yyyy
-                DateTime expiryDate = DateTime.ParseExact(expiryDateSample, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                Console.WriteLine($"Expirey Date Formatted: {expiryDate}");
+                /// Dynamically generated dates based on ExpectedDeliveryDate ///
+                DateTime expiryDate = request.ExpectedDeliveryDate.AddMonths(1);
+                DateTime manufactureDate = request.ExpectedDeliveryDate.AddMonths(-1);
+  
+                List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+                Product product = getProductDetails(request.ProductId);
+                productInfo.Add(product.retrieveProductInfo());
+                float costPrice = Convert.ToSingle(productInfo[0]["ProductCost"]);
 
-                string manufactureDateSample = "03/06/2025"; // in the format of the db, mm/dd/yyyy
-                DateTime manufactureDate = DateTime.ParseExact(manufactureDateSample, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                Console.WriteLine($"Manufactured Date Formatted: {manufactureDate}");
 
-                int batchCost = 300;
+                float batchCost = costPrice * request.Quantity; // Total qty * productCost
+                Console.WriteLine($"Batch COst: {batchCost}");
+                int warehouseId = 1;
                 //////////////////////////////////
 
                 // Create a batch object to represent the batch that went in for every approved reorderRequest
@@ -182,28 +205,17 @@ namespace CleanBrilliantCompany.Models.Control
                 request.ExpectedDeliveryDate, manufactureDate, request.Quantity, batchCost);
 
                 // Create stock history, the dates are one to one with batch?
-                // createStockHistory(int batchCode, DateOnly stockTakeDate, int quantity, DateTime recordedDate)
                 DateOnly stockTakeDate = DateOnly.FromDateTime(request.ExpectedDeliveryDate); // Convert from DateTime to DateOnly
                 createStockHistory(batchCode, stockTakeDate, request.Quantity, request.ExpectedDeliveryDate);
 
-                // Grab the OG quantity from product
-                Product product = getProductDetails(request.ProductId);
-                Dictionary<string, object> productInfo = product.retrieveProductInfo();
-
-                // Update Quantity of Product items with added stock
-                if (productInfo != null)
-                {
-                    int productQuantity = (int)productInfo["Quantity"];
-                    int finalQuantity = productQuantity + request.Quantity;
-                    // updateQuantity(request.ProductId, finalQuantity);
-                }
+                // Change quantity
+                updateQuantity(request.ProductId, request.Quantity, "increase");
 
                 // Add the amount of items into the db.
                 for (int i = 0; i < request.Quantity; i++)
                 {
+                    _lazyItemCreation.Value.createItem(request.ProductId, batchCode, warehouseId, ItemStatus.Available);
                     Console.WriteLine($"Added Item");
-                    // Get method from interface for creation
-                    // createItem(itemID?, request.ProductId, salePrice?, batchCode, warehouseId?, status = available)
                 }
             }
                 

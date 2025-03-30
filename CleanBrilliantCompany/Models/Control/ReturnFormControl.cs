@@ -16,10 +16,10 @@ namespace CleanBrilliantCompany.Models.Control
 		private readonly IItemUpdate _iItemUpdate;
         private readonly IItem _iItem;
         private readonly IReturnForm _iReturnForm;
-		private readonly iManufacturer _iManufacturer;
+		private readonly IManufacturer _iManufacturer;
         private readonly IConfiguration _configuration;
 
-        public ReturnFormControl(iReturnFormDatabase<ReturnForm> mapper, IConfiguration configuration, IItemUpdate iItemUpdate, IItem iItem, IReturnForm iReturnForm, iManufacturer iManufacturer)
+        public ReturnFormControl(iReturnFormDatabase<ReturnForm> mapper, IConfiguration configuration, IItemUpdate iItemUpdate, IItem iItem, IReturnForm iReturnForm, IManufacturer iManufacturer)
 		{
             _configuration = configuration;
             _mapper = mapper;

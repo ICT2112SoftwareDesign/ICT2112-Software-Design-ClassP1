@@ -7,19 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse, IReturnForm
+    public class ItemControl : IItemQuery, IItemUpdate, IItem, IReserve, IOrderFufilment, IRefundDetails, IItemCreation, IWarehouse, IReturnForm, IItemDetails
     {
         private readonly ItemMapper _itemMapper;
         private readonly TransactionControl _transactionObserver; // Added observer
 
         //private readonly TransactionControl _transactionObserver; //Added observer
 
-        private readonly iProduct _iproductInterface;
+        private readonly IProduct _iproductInterface;
 
-        private readonly iProductQuantity _iproductquantityInterface;
+        private readonly IProductQuantity _iproductquantityInterface;
 
         // Constructor that takes the connection string
-        public ItemControl(IConfiguration configuration, iProduct iproductInterface, iProductQuantity iproductquantityInterface)
+        public ItemControl(IConfiguration configuration, IProduct iproductInterface, IProductQuantity iproductquantityInterface)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _itemMapper = new ItemMapper(connectionString);
@@ -38,6 +38,11 @@ namespace CleanBrilliantCompany.Models.Control
         public int getItemCount()
         {
             return _itemMapper.getItemCount();
+        }
+
+        // method for IItemDetails for team 6
+        public async Task<List<Item>> getItems() {
+            return await Task.FromResult(_itemMapper.getItems());
         }
 
         public async Task<Item> getItemById(int itemId)

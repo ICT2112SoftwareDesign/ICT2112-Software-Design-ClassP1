@@ -3,6 +3,8 @@ using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Controllers;
 using CleanBrilliantCompany.Mapper;
 using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models.Factory;
+using CleanBrilliantCompany.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,19 +46,31 @@ builder.Services.AddScoped<IOrderFufilment, ItemControl>();
 builder.Services.AddScoped<IRefundDetails, ItemControl>();
 builder.Services.AddScoped<IItemCreation, ItemControl>();
 builder.Services.AddScoped<IReturnForm, ItemControl>();
+builder.Services.AddScoped<IItemDetails, ItemControl>();
 
-builder.Services.AddScoped<iProduct, ProductControl>();
-builder.Services.AddScoped<iProductQuantity, ProductControl>();
+builder.Services.AddScoped<IProduct, ProductControl>();
+builder.Services.AddScoped<IProductQuantity, ProductControl>();
+builder.Services.AddScoped<IBatch, ProductControl>();
 builder.Services.AddScoped<iReorderRequest, ReorderRequestManagement>();
-builder.Services.AddScoped<iManufacturer, ProductControl>();
+builder.Services.AddScoped<IManufacturer, ProductControl>();
+
+
+// Lazy resolver for breaking circular dependency
+builder.Services.AddScoped(provider =>
+    new Lazy<IItemCreation>(() => provider.GetRequiredService<IItemCreation>()));
 
 builder.Services.AddScoped<iReturnFormDatabase<ReturnForm>, ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormControl>();
 builder.Services.AddScoped<ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormController>();
+builder.Services.AddScoped<TransferControl>();
+builder.Services.AddScoped<TransferMapper>();
+builder.Services.AddScoped<TransferController>();
 builder.Services.AddScoped<ItemControl>();
 builder.Services.AddScoped<ProductControl>();
-builder.Services.AddScoped<iProduct, ProductControl>();
+builder.Services.AddScoped<ProductFactory>();
+builder.Services.AddScoped<ProductMapper>();
+
 
 var app = builder.Build();
 
@@ -76,9 +90,11 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+
     
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 
 app.Run();

@@ -2,7 +2,7 @@
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
-using CleanBrilliantCompany.Models.ViewModel;
+// using CleanBrilliantCompany.Models.ViewModel;
 using Microsoft.Extensions.Configuration;
 
 namespace CleanBrilliantCompany.Controllers

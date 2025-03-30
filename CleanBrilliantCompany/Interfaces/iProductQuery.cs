@@ -2,7 +2,7 @@ using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface iProductQuery
+    public interface IProductQuery
     {
         // Product
         Product getProductDetails(int productId);
@@ -17,7 +17,7 @@ namespace CleanBrilliantCompany.Interfaces
         List<ProductBatch> getAllProductBatch();
         ProductBatch getBatchDetails(int batchCode); 
         public int createProductBatch(int productId, DateTime expiryDate, 
-            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost);
+            DateTime receiveDate, DateTime manufactureDate, int quantity, float batchCost);
 
         // Stock History
         // List<StockHistory> getStockHistoryByBatch(int batchCode);

@@ -8,7 +8,7 @@ using Microsoft.Data.SqlClient;
 
 namespace CleanBrilliantCompany.Mappers
 {
-    public class ProductMapper : iProductDatabase
+    public class ProductMapper : IProductDatabase
     {
         private readonly string _connectionString;
 
@@ -82,7 +82,8 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-        public string insert(string productName, string category, float productCost,
+
+        public int insert(string productName, string category, float productCost,
         int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
@@ -95,6 +96,7 @@ namespace CleanBrilliantCompany.Mappers
                     string query = @"
                         INSERT INTO dbo.Product (productName, productCategory, productCost, manufacturerId, 
                                                 productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState)
+                        OUTPUT INSERTED.productId
                         VALUES (@ProductName, @Category, @ProductCost, @ManufacturerId, 
                                 @ProductWeight, @Quantity, @Volume, @ToxicityPercentage, @CarbonFootprint, @ProductState)";
 
@@ -111,27 +113,28 @@ namespace CleanBrilliantCompany.Mappers
                         command.Parameters.AddWithValue("@CarbonFootprint", carbonFootprint);
                         command.Parameters.AddWithValue("@ProductState", productState);
 
-                        // Execute the insert operation synchronously
-                        int rowsAffected = command.ExecuteNonQuery();
+                        object result = command.ExecuteScalar();
+                        int productId = Convert.ToInt32(result);
 
-                        // Check if the insert was successful using getDatabaseQueryStatus
-                        if (getDatabaseQueryStatus(null, rowsAffected))
+                        if (productId == -1)
                         {
-                            return $"Product '{productName}' inserted successfully.";
+                            Console.WriteLine("Error: Product not created");
                         }
                         else
                         {
-                            return "Error inserting product.";
+                            Console.WriteLine($"Product inserted successfully. ProductId: {productId}");
                         }
+                        return productId;
                     }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error inserting product: {ex.Message}");
-                return $"Error inserting product: {ex.Message}";
+                return -1;
             }
         }
+
 
         public void delete(int productId)
         {
@@ -277,42 +280,6 @@ namespace CleanBrilliantCompany.Mappers
             {
                 Console.WriteLine($"Error updating product: {ex.Message}");
             }
-        
-            // try
-            // {
-            //     using (SqlConnection connection = new SqlConnection(_connectionString))
-            //     {
-            //         connection.Open();
-
-            //         string query = @"
-            //             UPDATE dbo.Product
-            //             SET quantity = @Quantity
-            //             WHERE productId = @ProductId";
-
-            //         using (SqlCommand command = new SqlCommand(query, connection))
-            //         {
-            //             command.Parameters.AddWithValue("@ProductId", productId);
-            //             command.Parameters.AddWithValue("@Quantity", quantity);
-
-            //             // Execute the insert operation synchronously
-            //             int rowsAffected = command.ExecuteNonQuery();
-
-            //              // Check if the insert was successful using getDatabaseQueryStatus
-            //             if (getDatabaseQueryStatus(null, rowsAffected))
-            //             {
-            //                 Console.WriteLine($"Product: '{productId}' updated successfully.");
-            //             }
-            //             else
-            //             {
-            //                 Console.WriteLine("Error updating product.");
-            //             }
-            //         }
-            //     }
-            // }
-            // catch (Exception ex)
-            // {
-            //     Console.WriteLine($"Error updating product: {ex.Message}");
-            // }
         }
 
         public List<Product> findAllProducts()
@@ -392,7 +359,7 @@ namespace CleanBrilliantCompany.Mappers
                                         reader.GetDateTime(reader.GetOrdinal("receiveDate")),
                                         reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
                                         reader.GetInt32(reader.GetOrdinal("quantity")),
-                                        (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                                        (float)reader.GetDouble(reader.GetOrdinal("batchCost"))
                                     );
 
                                     // Add the product to the list
@@ -440,7 +407,7 @@ namespace CleanBrilliantCompany.Mappers
                                     reader.GetDateTime(reader.GetOrdinal("receiveDate")),
                                     reader.GetDateTime(reader.GetOrdinal("manufactureDate")),
                                     reader.GetInt32(reader.GetOrdinal("quantity")),
-                                    (int)reader.GetDouble(reader.GetOrdinal("batchCost"))
+                                    (float)reader.GetDouble(reader.GetOrdinal("batchCost"))
                                 );
                             }
                         }
@@ -451,7 +418,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         public int insert(int productId, DateTime expiryDate,
-    DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
+        DateTime receiveDate, DateTime manufactureDate, int quantity, float batchCost)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -611,5 +578,40 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
+        public List<ProductManufacturer> findAllManufacturer()
+        {
+            List<ProductManufacturer> manufacturers = new List<ProductManufacturer>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    SELECT manufacturerId, companyName, manufacturerAddress, email
+                    FROM dbo.ProductManufacturer"; // adjust table name if different
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int manufacturerId = reader.GetInt32(reader.GetOrdinal("manufacturerId"));
+                        string companyName = reader.GetString(reader.GetOrdinal("companyName"));
+                        string manufacturerAddress = reader.GetString(reader.GetOrdinal("manufacturerAddress"));
+                        string email = reader.GetString(reader.GetOrdinal("email"));
+
+                        ProductManufacturer manufacturer = new ProductManufacturer(
+                            manufacturerId,
+                            companyName,
+                            manufacturerAddress,
+                            email
+                        );
+
+                        manufacturers.Add(manufacturer);
+                    }
+                }
+            }
+            return manufacturers;
+        }
     }
 }

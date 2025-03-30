@@ -16,20 +16,6 @@
         <button type="submit">Fetch Product</button>
     </form>
 
-    <form method="post" asp-action="FetchBatchStockHistoryByCode">
-        <h3>Fetch Batch Stock History</h3>
-        <label>Product Batch Code:</label>
-        <input type="number" name="batchCode" required />
-        <button type="submit">Fetch Batch History</button>
-    </form>
-
-    <form method="post" asp-action="FetchBatchStockHistoryByDate">
-        <h3>Fetch Batch Stock History</h3>
-        <label>Product Batch Code:</label>
-        <input type="date" name="stockTakeDate" required />
-        <button type="submit">Fetch Batch History (yyyy-MM-dd)</button>
-    </form>
-
     <!-- Button to trigger Create Product Batch modal -->
     <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createBatchModal">
         + Add Product Batch

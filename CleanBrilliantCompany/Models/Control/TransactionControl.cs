@@ -16,6 +16,9 @@ namespace CleanBrilliantCompany.Models.Control
 
         private readonly TransactionMapper _transactionMapper;
 
+        private readonly IItem _iItem;
+
+
         //When any changes to status are detected here --> the necessary code will run here 
         //TODO: Add record into database
         public void Update(Dictionary<string, object> itemInfo)
@@ -88,6 +91,13 @@ namespace CleanBrilliantCompany.Models.Control
         //For now, getTransactions are set to void returns as they are not used for further processing
         //If needed, will update return type to List<Transaction>
         // Constructor that takes the connection string
+        public TransactionControl(string connectionString, IItem iItem)
+        {
+            _transactionMapper = new TransactionMapper(connectionString);
+            _iItem = iItem;
+            Console.WriteLine("Transactions loaded from database.");
+        }
+
         public TransactionControl(string connectionString)
         {
             _transactionMapper = new TransactionMapper(connectionString);
@@ -112,6 +122,25 @@ namespace CleanBrilliantCompany.Models.Control
 
         public int getTransactionCount() {
             return _transactionMapper.getTransactionCount();
+        }
+
+        public List<Transaction> getTransactionByItem(int itemId) {
+            Item item = _iItem.getItemById(itemId).Result; // Blocking for simplicity, consider using async if needed
+
+            if (item != null)
+            {
+                // You now have access to productId, itemId, etc.
+                Console.WriteLine("Retrieved item using IItem interface:");
+                //Console.WriteLine($"ItemId: {item}, ProductId: {item.ProductId}");
+
+                // You can pass just the itemId to the mapper
+                return _transactionMapper.getTransactionByItem(itemId);
+            }
+            else
+            {
+                Console.WriteLine($"No item found with ID {itemId}");
+                return new List<Transaction>(); // return empty list if item not found
+            }
         }
 
         //Missing Method 1: getTransactionByItem(itemId): List<Transaction>
