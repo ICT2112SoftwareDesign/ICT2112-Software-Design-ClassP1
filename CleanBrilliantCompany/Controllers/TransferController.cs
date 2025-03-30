@@ -48,7 +48,7 @@ namespace CleanBrilliantCompany.Controllers
 
         // [HttpPost]
         [Route("ViewTransfer")]
-        public async Task<IActionResult> Transfer(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Transfer(int page = 1, int pageSize = 10, string transferStatus = "")
         {
             try
             {
@@ -60,7 +60,15 @@ namespace CleanBrilliantCompany.Controllers
                     transfersInfo.Add(transfer.retrieveTransferInfo());
                 }
 
-                // Get total number of records
+                // Apply status filtering if provided
+                if (!string.IsNullOrEmpty(transferStatus))
+                {
+                    transfersInfo = transfersInfo
+                        .Where(t => t["Status"].ToString() == transferStatus)
+                        .ToList();
+                }
+
+                // Get total number of records after filtering
                 int totalRecords = transfersInfo.Count;
 
                 // Apply pagination
@@ -72,6 +80,7 @@ namespace CleanBrilliantCompany.Controllers
                 ViewBag.TotalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
                 ViewBag.CurrentPage = page;
                 ViewBag.PageSize = pageSize;
+                ViewBag.TransferStatus = transferStatus; // Pass the selected status back to the view
 
                 return View(paginatedTransfers);
             }
@@ -93,7 +102,7 @@ namespace CleanBrilliantCompany.Controllers
                 // Fetch all low-stock products
                 List<Product> allProducts = await _transferControl.getLowStockProductInWarehouse();
 
-                // Extract unique warehouse details (ID & Name)
+                // Extract ALL unique warehouse details (ID & Name) regardless of pagination
                 var allWarehouses = allProducts
                     .Select(p => new
                     {
@@ -129,6 +138,7 @@ namespace CleanBrilliantCompany.Controllers
 
                 // Populate ViewBag for dropdown
                 ViewBag.Warehouses = allWarehouses;
+                ViewBag.AllWarehouses = allWarehouses; // Add ALL warehouses for JavaScript
                 ViewBag.SelectedWarehouse = warehouseId;
                 ViewBag.CurrentPage = page;
                 ViewBag.TotalPages = totalPages;
@@ -142,7 +152,6 @@ namespace CleanBrilliantCompany.Controllers
                 return View(new List<Dictionary<string, object>>());
             }
         }
-
 
         [HttpGet]
         [Route("getStockForWarehouse")]
@@ -199,6 +208,8 @@ namespace CleanBrilliantCompany.Controllers
             }
 
 
+            List<Dictionary<string, object>> transferItemInfo = new List<Dictionary<string, object>>();
+
             // Proceed with transfer if capacity check passes
             int newTransferId = await _transferControl.createTransfer(transferId, productId, sourceWarehouse, destinationWarehouse, quantity, status);
             List<Item> transferItems = await _transferControl.getItemByProductAndWarehouse(productId, quantity, sourceWarehouse);
@@ -207,13 +218,18 @@ namespace CleanBrilliantCompany.Controllers
 
             foreach (var item in transferItems)
             {
-                Console.WriteLine("ITEM ID: " + item.getItem());
-                bool updateItemStatus = await _transferControl.updateItemStatus(item.getItem(), null, null, newTransferId, null, ItemStatus.Transferred);
+
+                var itemInfo = item.retrieveTransferId(); // Adjust this if you need a specific method to get the info
+                transferItemInfo.Add(itemInfo);
+
+                // Access item details here using transferItemInfo
+                Console.WriteLine("ITEM ID: " + itemInfo["ItemId"]);  // Assuming itemInfo is a dictionary with "ItemId" as a key
+                bool updateItemStatus = await _transferControl.updateItemStatus(Convert.ToInt32(itemInfo["ItemId"]), null, null, newTransferId, null, ItemStatus.Transferred);
                 Console.WriteLine("TRANSFER ID: " + newTransferId);
                 if (!updateItemStatus)
                 {
                     // Log or handle failed status update
-                    Console.WriteLine($"Failed to update status for item {item.getItem()}");
+                    Console.WriteLine($"Failed to update status for item {itemInfo["ItemId"]}");
                     // Potentially rollback the transfer or take corrective action
                 }
 
@@ -228,7 +244,8 @@ namespace CleanBrilliantCompany.Controllers
             {
                 // currentCapacity += quantity;
                 // Console.WriteLine("CURRENT CAPACITY: " + currentCapacity);
-
+                bool updateSourceWarehouseCapacity = await _transferControl.updateWarehouseCapacity(sourceWarehouse);
+                Console.WriteLine("SOURCE WAREHOUSE CAPACITY UPDATED: " + updateSourceWarehouseCapacity);
                 return Json(new { success = true, message = "Transfer Request Successfully Submitted" });
 
 
@@ -247,31 +264,58 @@ namespace CleanBrilliantCompany.Controllers
         {
             Console.WriteLine("TRANSFER ID: " + transferId);
 
-            bool result = await _transferControl.deleteTransfer(transferId);
+            List<Dictionary<string, object>> transferItemInfo = new List<Dictionary<string, object>>();
             List<Item> transferredItems = await _transferControl.getTransferredItems(transferId);
+
+            // Declare a variable to store the warehouse ID (nullable int)
+            int? warehouseId = null;
 
             foreach (var item in transferredItems)
             {
-                Console.WriteLine("ITEM ID: " + item.getItem());
-                bool updateItemStatus = await _transferControl.updateItemStatus(item.getItem(), null, null, null, null, ItemStatus.Available);
+                var itemInfo = item.retrieveTransferredItemInfo(); // Adjust this if you need a specific method to get the info
+                transferItemInfo.Add(itemInfo);
+
+                // Access item details here using transferItemInfo
+                Console.WriteLine("ITEM ID: " + itemInfo["ItemId"]);  // Assuming itemInfo is a dictionary with "ItemId" as a key
+
+                bool updateItemStatus = await _transferControl.updateItemStatus(Convert.ToInt32(itemInfo["ItemId"]), null, null, null, null, ItemStatus.Available);
+
                 if (!updateItemStatus)
                 {
                     // Log or handle failed status update
-                    Console.WriteLine($"Failed to update status for item {item.getItem()}");
+                    Console.WriteLine($"Failed to update status for item {itemInfo["ItemId"]}");
                     // Potentially rollback the transfer or take corrective action
+                }
+
+                // If warehouseId is not set yet, get it from the first item (assuming all items come from the same warehouse)
+                if (warehouseId == null)
+                {
+                    warehouseId = Convert.ToInt32(itemInfo["WarehouseId"]);
                 }
             }
 
+            // Ensure that warehouseId is not null before proceeding
+            if (warehouseId == null)
+            {
+                return Json(new { error = "Warehouse ID not found" });
+            }
+
+            bool result = await _transferControl.deleteTransfer(transferId);
             if (result)
             {
+                // Use the warehouseId variable after the loop
+                bool updateDestinationWarehouseCapacity = await _transferControl.updateWarehouseCapacity(warehouseId.Value);
+                Console.WriteLine("WAREHOUSE ID: " + warehouseId.Value);
+                Console.WriteLine("SOURCE WAREHOUSE CAPACITY UPDATED: " + updateDestinationWarehouseCapacity);
                 return RedirectToAction("Transfer");
             }
             else
             {
                 return Json(new { error = "Failed to delete transfer" });
             }
-
         }
+
+
 
         [HttpPost]
         [Route("updateTransfer")]
@@ -282,32 +326,47 @@ namespace CleanBrilliantCompany.Controllers
             Console.WriteLine("STATUS: " + status);
 
             bool result = await _transferControl.updateTransfer(transferId, destinationWarehouse, status);
+
+            // Initialize the transfer item info list
+            List<Dictionary<string, object>> transferItemInfo = new List<Dictionary<string, object>>();
+
+            // Get the transferred items
             List<Item> transferredItems = await _transferControl.getTransferredItems(transferId);
-            //Console.WriteLine("TRANSFERRED ITEMS: " + transferredItems);
-            //bool updateItemStatus = await _transferControl.updateItemStatus(transferId, null, null, null, null, ItemStatus.Available);
+
             if (status == TransferStatus.Completed)
             {
+                // Loop through each item in the transferred items list
                 foreach (var item in transferredItems)
                 {
-                    Console.WriteLine("ITEM ID: " + item.getItem());
-                    bool updateItemStatus = await _transferControl.updateItemStatus(item.getItem(), null, null, null, null, ItemStatus.Available);
+                    // Assuming that transferItemInfo corresponds to transferred items and contains relevant info
+                    var itemInfo = item.retrieveTransferredItemInfo(); // Adjust this if you need a specific method to get the info
+                    transferItemInfo.Add(itemInfo);
+
+                    // You can access item details here using transferItemInfo
+                    Console.WriteLine("ITEM ID: " + itemInfo["ItemId"]);  // Assuming itemInfo is a dictionary with "ItemId" as a key
+
+                    // Now, use the itemId from the transferItemInfo to update the item status
+                    bool updateItemStatus = await _transferControl.updateItemStatus(Convert.ToInt32(itemInfo["ItemId"]), null, null, null, null, ItemStatus.Available);
+
                     if (!updateItemStatus)
                     {
                         // Log or handle failed status update
-                        Console.WriteLine($"Failed to update status for item {item.getItem()}");
+                        Console.WriteLine($"Failed to update status for item {itemInfo["ItemId"]}");
                         // Potentially rollback the transfer or take corrective action
                     }
                 }
             }
+
             if (result)
             {
+                bool updateDestinationWarehouseCapacity = await _transferControl.updateWarehouseCapacity(destinationWarehouse);
+                Console.WriteLine("DESTINATION WAREHOUSE CAPACITY UPDATED: " + updateDestinationWarehouseCapacity);
                 return RedirectToAction("Transfer");
             }
             else
             {
                 return Json(new { error = "Failed to update transfer" });
             }
-
         }
 
         // [HttpPost]

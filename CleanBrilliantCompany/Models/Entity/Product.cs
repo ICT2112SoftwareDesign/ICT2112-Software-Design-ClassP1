@@ -69,6 +69,9 @@ namespace CleanBrilliantCompany.Models.Entity
         public int TotalQuantity { get; set; }
         public int WarehouseId { get; set; }
         public string WarehouseName { get; set; }
+        public int MaxCapacity { get; set; } // Max capacity of the warehouse
+        public int CurrentCapacity { get; set; } // Current capacity of the warehouse
+        public int AvailableCapacity { get; set; } // Available capacity of the warehouse
 
         public Dictionary<string, object> retrieveLowStockInfo()
         {
@@ -78,7 +81,10 @@ namespace CleanBrilliantCompany.Models.Entity
                 { "ProductName", ProductName },
                 { "TotalQuantity", TotalQuantity },
                 { "WarehouseId", WarehouseId },
-                { "WarehouseName", WarehouseName }
+                { "WarehouseName", WarehouseName },
+                { "MaxCapacity", MaxCapacity },
+                { "CurrentCapacity", CurrentCapacity },
+                { "AvailableCapacity", AvailableCapacity }
             };
         }
 
@@ -98,13 +104,16 @@ namespace CleanBrilliantCompany.Models.Entity
             ProductState = productState;
         }
 
-        public Product(int productId, string productName, string warehouseName, int warehouseId, int totalQuantity)
+        public Product(int productId, string productName, string warehouseName, int warehouseId, int totalQuantity, int maxCapacity, int currentCapacity, int availableCapacity)
         {
             ProductId = productId;
             ProductName = productName;
             WarehouseName = warehouseName;
             WarehouseId = warehouseId;
             TotalQuantity = totalQuantity;
+            MaxCapacity = maxCapacity;
+            CurrentCapacity = currentCapacity;
+            AvailableCapacity = availableCapacity;
         }
 
         public Dictionary<string, object> retrieveProductInfo()

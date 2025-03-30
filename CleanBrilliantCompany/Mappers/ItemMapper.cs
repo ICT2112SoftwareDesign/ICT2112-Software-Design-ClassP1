@@ -923,7 +923,7 @@ namespace CleanBrilliantCompany.Mappers
                 connection.Open();
 
                 // Define the SQL query to retrieve items
-                string query = @"SELECT itemId FROM Item 
+                string query = @"SELECT itemId, warehouseId FROM Item 
                 WHERE itemStatus = 'Transferred' AND transferId = @transferId;
                 ";
 
@@ -943,7 +943,8 @@ namespace CleanBrilliantCompany.Mappers
 
                                 // Create the Item object using the constructor
                                 Item item = new Item(
-                                    reader.GetInt32(reader.GetOrdinal("itemId"))
+                                    reader.GetInt32(reader.GetOrdinal("itemId")),
+                                    reader.GetInt32(reader.GetOrdinal("warehouseId"))
 
                                 );
                                 // Add the item to the list
