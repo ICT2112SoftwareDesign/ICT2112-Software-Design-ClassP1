@@ -56,7 +56,7 @@
             return carbonEmission;
         }
 
-        public void setCarbonEmission(double carbonEmission)
+        private void setCarbonEmission(double carbonEmission)
         {
             this.carbonEmission = carbonEmission;
         }

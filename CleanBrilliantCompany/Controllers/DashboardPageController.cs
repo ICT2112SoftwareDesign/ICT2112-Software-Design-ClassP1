@@ -1,5 +1,6 @@
 ﻿using CleanBrilliantCompany.Domain;
 using CleanBrilliantCompany.DomainControl;
+using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
@@ -98,22 +99,81 @@ namespace CleanBrilliantCompany.Controllers
 
             viewModel.ShippingMethods = shippingMethodEmissions;
 
-            viewModel.EmissionTrendDaily = orders
+            var dailyProductEmissions = products
+                .GroupBy(p => p.retrieveDateCreated().ToString("yyyy-MM-dd"))
+                .Select(g => new { Date = g.Key, Emission = g.Sum(p => (float)p.calculateSelfEmission()) });
+
+            var dailyItemEmissions = itemList
+                .GroupBy(i => i.retrieveDateCreated().ToString("yyyy-MM-dd"))
+                .Select(g => new { Date = g.Key, Emission = g.Sum(i => (float)i.calculateSelfEmission()) });
+
+            var dailyOrderEmissions = orders
                 .GroupBy(o => o.retrieveDateCreated().ToString("yyyy-MM-dd"))
+                .Select(g => new { Date = g.Key, Emission = g.Sum(o => (float)o.calculateSelfEmission()) });
+
+            // Combine all into one
+            var dailyEmissions = dailyProductEmissions
+                .Concat(dailyItemEmissions)
+                .Concat(dailyOrderEmissions)
+                .GroupBy(x => x.Date)
                 .OrderBy(g => DateTime.Parse(g.Key))
-                .ToDictionary(g => g.Key, g => g.Sum(o => (float)o.calculateSelfEmission()));
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Sum(x => x.Emission)
+                );
 
-            viewModel.EmissionTrendWeekly = orders
-                .GroupBy(o =>
-                    CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
-                        o.retrieveDateCreated(), CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+            viewModel.EmissionTrendDaily = dailyEmissions;
+
+            var weeklyProductEmissions = products
+                .GroupBy(p => CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+                    p.retrieveDateCreated(), CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                .Select(g => new { Week = g.Key, Emission = g.Sum(p => (float)p.calculateSelfEmission()) });
+
+            var weeklyItemEmissions = itemList
+                .GroupBy(i => CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+                    i.retrieveDateCreated(), CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                .Select(g => new { Week = g.Key, Emission = g.Sum(i => (float)i.calculateSelfEmission()) });
+
+            var weeklyOrderEmissions = orders
+                .GroupBy(o => CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+                    o.retrieveDateCreated(), CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                .Select(g => new { Week = g.Key, Emission = g.Sum(o => (float)o.calculateSelfEmission()) });
+
+            var weeklyEmissions = weeklyProductEmissions
+                .Concat(weeklyItemEmissions)
+                .Concat(weeklyOrderEmissions)
+                .GroupBy(x => x.Week)
                 .OrderBy(g => g.Key)
-                .ToDictionary(g => "Week " + g.Key, g => g.Sum(o => (float)o.calculateSelfEmission()));
+                .ToDictionary(
+                    g => "Week " + g.Key,
+                    g => g.Sum(x => x.Emission)
+                );
 
-            viewModel.EmissionTrendMonthly = orders
+            viewModel.EmissionTrendWeekly = weeklyEmissions;
+
+            var monthlyProductEmissions = products
+                .GroupBy(p => p.retrieveDateCreated().ToString("yyyy-MM"))
+                .Select(g => new { Month = g.Key, Emission = g.Sum(p => (float)p.calculateSelfEmission()) });
+
+            var monthlyItemEmissions = itemList
+                .GroupBy(i => i.retrieveDateCreated().ToString("yyyy-MM"))
+                .Select(g => new { Month = g.Key, Emission = g.Sum(i => (float)i.calculateSelfEmission()) });
+
+            var monthlyOrderEmissions = orders
                 .GroupBy(o => o.retrieveDateCreated().ToString("yyyy-MM"))
+                .Select(g => new { Month = g.Key, Emission = g.Sum(o => (float)o.calculateSelfEmission()) });
+
+            var monthlyEmissions = monthlyProductEmissions
+                .Concat(monthlyItemEmissions)
+                .Concat(monthlyOrderEmissions)
+                .GroupBy(x => x.Month)
                 .OrderBy(g => g.Key)
-                .ToDictionary(g => g.Key, g => g.Sum(o => (float)o.calculateSelfEmission()));
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Sum(x => x.Emission)
+                );
+
+            viewModel.EmissionTrendMonthly = monthlyEmissions;
 
             var topEcoEfficientProducts = products
             .OrderBy(p => p.calculateSelfEmission())
@@ -137,6 +197,60 @@ namespace CleanBrilliantCompany.Controllers
 
             viewModel.ProductCategoryLabels = categoryEmission.Keys.ToList();
             viewModel.ProductCategoryValues = categoryEmission.Values.ToList();
+
+            var ecoProductTrend = products
+            .Where(p => p.retrieveEcoStatus() == "Eco-Friendly")
+            .GroupBy(p => p.retrieveDateCreated().ToString("yyyy-MM"))
+            .OrderBy(g => g.Key)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Count()
+            );
+
+            viewModel.EcoProductTrendLabels = ecoProductTrend.Keys.ToList();
+            viewModel.EcoProductTrendCounts = ecoProductTrend.Values.ToList();
+
+            var topEmittingProducts = products
+            .OrderByDescending(p => p.calculateSelfEmission())
+            .Take(5)
+            .Select(p => new
+            {
+                Name = p.retrieveProductName(),
+                Emission = p.calculateSelfEmission()
+            })
+            .ToList();
+
+            viewModel.TopEmitProductLabels = topEmittingProducts.Select(p => p.Name).ToList();
+            viewModel.TopEmitProductValues = topEmittingProducts.Select(p => p.Emission).ToList();
+
+            viewModel.ItemEmissionBreakdown = products
+            .Select(p =>
+            {
+                var relatedItems = itemList.Where(i => i.retrieveProductId() == p.retrieveProductId());
+                float totalItemEmission = relatedItems.Sum(i => (float)i.calculateSelfEmission());
+                return new
+                {
+                    ProductName = p.retrieveProductName(),
+                    TotalItemEmission = totalItemEmission
+                };
+            })
+            .OrderByDescending(x => x.TotalItemEmission)
+            .Take(5)
+            .ToDictionary(x => x.ProductName, x => x.TotalItemEmission);
+
+            var ecoItemCountOverTime = itemList
+            .GroupBy(i => i.retrieveDateCreated().ToString("yyyy-MM"))
+            .ToDictionary(
+                g => g.Key,
+                g => new Dictionary<string, int>
+                {
+                    { "Eco", g.Count(i => i.retrieveEcoStatus() == "Eco-Friendly") },
+                    { "NonEco", g.Count(i => i.retrieveEcoStatus() == "Not Eco-Friendly") }
+                }
+            );
+
+            viewModel.EcoVsNonEcoItemTimeline = ecoItemCountOverTime.ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
+            viewModel.EcoVsNonEcoMonths = ecoItemCountOverTime.Keys.OrderBy(k => k).ToList();
 
             return View(viewModel);
         }

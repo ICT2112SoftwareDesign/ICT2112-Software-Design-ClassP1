@@ -29,6 +29,13 @@
 
         public float OrderPastWeekCF { get; set; }
         public float OrderPastMonthCF { get; set; }
+        public List<string> EcoProductTrendLabels { get; set; }
+        public List<int> EcoProductTrendCounts { get; set; }
+        public List<string> TopEmitProductLabels { get; set; }
+        public List<double> TopEmitProductValues { get; set; }
+        public Dictionary<string, float> ItemEmissionBreakdown { get; set; }
+        public Dictionary<string, object> EcoVsNonEcoItemTimeline { get; set; }
+        public List<string> EcoVsNonEcoMonths { get; set; }
 
 
         // New properties for comparison tool
