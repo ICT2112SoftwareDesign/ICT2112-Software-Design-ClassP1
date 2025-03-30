@@ -145,7 +145,7 @@ namespace CleanBrilliantCompany.Controllers
         {
             var allItemEmission = _itemCFControl.getTotalCarbonFootprint();
 
-            var ecoFriendlyItemEmission = _itemCFControl.getTotalEcofriendlyCarbonFootprint();
+            var ecoFriendlyItemEmission = _itemCFControl.getTotalEcoFriendlyCarbonFootprint();
 
             ecoFriendlyItemEmission = (float)Math.Round(ecoFriendlyItemEmission, 2);
 
