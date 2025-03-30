@@ -16,7 +16,7 @@ namespace CleanBrilliantCompany.Models
         private string _status;
         private decimal _orderTotal;
         private Dictionary<int, Dictionary<string, object>> _orderProductsDetails;
-        private int _orderWeight; // New field for order weight
+        private double _orderWeight; // New field for order weight
 
         // Constructor to initialize the fields
         public OrderRDM(
@@ -29,7 +29,7 @@ namespace CleanBrilliantCompany.Models
             DateTime orderDate,
             string status,
             decimal orderTotal,
-            int orderWeight)
+            double orderWeight)
             
         {
             _orderID = orderID;
@@ -76,7 +76,7 @@ namespace CleanBrilliantCompany.Models
         private Dictionary<int, Dictionary<string, object>> GetOrderProductsDetails() => _orderProductsDetails;
         private void SetOrderProductsDetails(Dictionary<int, Dictionary<string, object>> orderProductsDetails) => _orderProductsDetails = orderProductsDetails;
 
-        private int GetOrderWeight() => _orderWeight; // Getter for orderWeight
+        private double GetOrderWeight() => _orderWeight; // Getter for orderWeight
         private void SetOrderWeight(int orderWeight) => _orderWeight = orderWeight; // Setter for orderWeight
 
         // Public methods to expose necessary functionality
@@ -91,7 +91,7 @@ namespace CleanBrilliantCompany.Models
         public string RetrieveStatus() => GetStatus();
         public decimal RetrieveOrderTotal() => GetOrderTotal();
         public Dictionary<int, Dictionary<string, object>> RetrieveOrderProductsDetails() => GetOrderProductsDetails();
-        public int RetrieveOrderWeight() => GetOrderWeight(); // Getter for orderWeight
+        public double RetrieveOrderWeight() => GetOrderWeight(); // Getter for orderWeight
 
 
         public void UpdateOrderAddress(string newAddress) => SetOrderAddress(newAddress);
