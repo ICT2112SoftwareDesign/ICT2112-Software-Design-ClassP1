@@ -75,8 +75,8 @@ namespace CleanBrilliantCompany.Controllers
                 OrderPastMonthCF = orders.Where(o => o.retrieveDateCreated() >= oneMonthAgo).Sum(o => (float)o.calculateSelfEmission()),
 
                 // for product and item mockup purposes
-                RandomProductList = _productControl.getAllProducts(),
-                RandomItemList = _itemControl.getAllItems().Result
+                ProductList = _productControl.getAllProducts(),
+                ItemList = _itemControl.getAllItems().Result
             };
 
             // Populate comparison data
@@ -250,7 +250,7 @@ namespace CleanBrilliantCompany.Controllers
             // ✅ Update ViewModel before returning JSON
             var mockupCreationVM = new CarbonDashboardViewModel
             {
-                RandomProductList = _productControl.getAllProducts()
+                ProductList = _productControl.getAllProducts()
             };
 
             return Json(new { 
@@ -287,6 +287,28 @@ namespace CleanBrilliantCompany.Controllers
             bool success = _carbonFootprintCalculatorControl.CalculateItemCF(itemId, productId);
 
             return Json(new { success });
+        }
+
+        [HttpPost]
+        public IActionResult UpdateItemsCFDaily()
+        {
+            bool success = _itemCFControl.updateAllItemCF();
+
+            // Create the updated ViewModel
+            var itemList = _itemCFControl.getAllItemCarbonFootprint();
+            var carbonDashboardViewModel = new CarbonDashboardViewModel
+            {
+                TotalProductCF = _productCFControl.getTotalCarbonFootprint(),
+                TotalItemCF = _itemCFControl.getTotalCarbonFootprint(),
+                TotalOrderCF = _orderCFControl.getTotalCarbonFootprint(),
+
+                ItemPastWeekCF = itemList.Where(i => i.retrieveDateCreated() >= DateTime.Now.AddDays(-7))
+                                        .Sum(i => (float)i.calculateSelfEmission()),
+                ItemPastMonthCF = itemList.Where(i => i.retrieveDateCreated() >= DateTime.Now.AddMonths(-1))
+                                        .Sum(i => (float)i.calculateSelfEmission()),
+            };
+
+            return Json(new { success, updatedViewModel = carbonDashboardViewModel });
         }
     }
 }

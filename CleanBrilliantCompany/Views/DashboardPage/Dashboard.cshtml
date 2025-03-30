@@ -48,7 +48,7 @@
     <div class="button-row">
         <button onclick="createNewProduct()">Create Product (Mockup)</button>
         <button type="button" onclick="calculateItemCarbonFootprint()">Calculate Item Carbon Footprint</button>
-        <button onclick="updateItemsDaily()">Calculate All Items CF Daily (TBD)</button>
+        <button onclick="updateItemsCFDaily()">Calculate All Items CF Daily</button>
         <button onclick="calculateShipmentCF()">Calculate Shipment CF (TBD)</button>
     </div>
 
@@ -56,14 +56,14 @@
         <form>
             <label for="ProductDropdown">Select Product</label>
             <select id="ProductDropdown">
-                @foreach (var product in Model.RandomProductList) // Assuming a list of products in the model
+                @foreach (var product in Model.ProductList) // Assuming a list of products in the model
                 {
                     <option value="@product.ProductId">@product.ProductName with product ID of @product.ProductId and carbon emission value: @product.CarbonFootprint</option>
                 }
             </select>
             <label for="ItemDropdown">Select Item</label>
             <select id="ItemDropdown">
-                @foreach (var item in Model.RandomItemList) // Assuming a list of items in the model
+                @foreach (var item in Model.ItemList) // Assuming a list of items in the model
                 {
                     <option value="@item.getItemId()">Item #@item.getItemId() with product ID of @item.getProductId()</option>
                 }
@@ -323,8 +323,26 @@
             });
         }
 
-        function updateItemsDaily(){
-            // tbd
+        function updateItemsCFDaily(){
+            $.ajax({
+                url: '@Url.Action("UpdateItemsCFDaily", "DashboardPage")',
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        alert("Items' carbon footprint has been updated.");
+
+                        // Update UI with new values
+                        document.getElementById("TotalItemCF").innerText = response.updatedViewModel.totalItemCF;
+                        document.getElementById("ItemPastWeekCF").innerText = response.updatedViewModel.itemPastWeekCF;
+                        document.getElementById("ItemPastMonthCF").innerText = response.updatedViewModel.itemPastMonthCF;
+                    } else {
+                        alert("Failed to update item carbon footprints.");
+                    }
+                },
+                error: function() {
+                    alert("Error calculating carbon footprint.");
+                }
+            });
         }
 
         function calculateShipmentCF() {

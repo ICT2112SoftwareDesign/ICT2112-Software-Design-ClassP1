@@ -36,8 +36,8 @@
         public List<ShippingMethodComparisonData> ShippingMethods { get; set; } = new();
 
         // For product and item mockup purposes
-        public List<Product> RandomProductList { get; set; } = new List<Product>();
-        public List<Item> RandomItemList { get; set; } = new List<Item>();
+        public List<Product> ProductList { get; set; } = new List<Product>();
+        public List<Item> ItemList { get; set; } = new List<Item>();
     }
 
     public class ProductComparisonData

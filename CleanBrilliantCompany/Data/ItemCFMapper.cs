@@ -52,8 +52,9 @@ namespace CleanBrilliantCompany.Data
 
         public bool updateAllItemCF()
         {
-            // stub to simulate the age of the items as 3 days old
-            int STORAGE_DAYS_CONSTANT = 3;
+            // stub to simulate the age of the items between 1-21 days old
+            var random = new Random();
+            int STORAGE_DAYS = random.Next(1, 22);
 
             try
             {
@@ -63,18 +64,18 @@ namespace CleanBrilliantCompany.Data
 
                     string query = @"
                         UPDATE icf
-                        SET icf.carbonEmission = CAST(POWER(1.02, @constant) * p.carbonEmission AS INT)
+                        SET icf.carbonEmission = CAST(POWER(1.02, @constant) * p.carbonFootprint AS INT)
                         FROM ItemCarbonFootprint icf
                         INNER JOIN Item i ON icf.productId = i.productId
                         INNER JOIN Product p ON i.productId = p.productId;";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@constant", STORAGE_DAYS_CONSTANT);
+                        command.Parameters.AddWithValue("@constant", STORAGE_DAYS);
 
-                        object result = command.ExecuteScalar();
+                        int rowsAffected = command.ExecuteNonQuery();
 
-                        if (result != null && result != DBNull.Value)
+                        if (rowsAffected > 0)
                         {
                             _querySuccess = true;
                         }
@@ -86,6 +87,13 @@ namespace CleanBrilliantCompany.Data
                 }
 
                 return _querySuccess;
+            }
+            catch (SqlException ex)
+            {
+                // 📝 Log the exact SQL error
+                Console.WriteLine("❌ SQL Error: " + ex.Message);
+                _querySuccess = false;
+                return false;
             }
             catch
             {
