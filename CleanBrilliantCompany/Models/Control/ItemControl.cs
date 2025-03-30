@@ -14,12 +14,12 @@ namespace CleanBrilliantCompany.Models.Control
 
         //private readonly TransactionControl _transactionObserver; //Added observer
 
-        private readonly iProduct _iproductInterface;
+        private readonly IProduct _iproductInterface;
 
-        private readonly iProductQuantity _iproductquantityInterface;
+        private readonly IProductQuantity _iproductquantityInterface;
 
         // Constructor that takes the connection string
-        public ItemControl(IConfiguration configuration, iProduct iproductInterface, iProductQuantity iproductquantityInterface)
+        public ItemControl(IConfiguration configuration, IProduct iproductInterface, IProductQuantity iproductquantityInterface)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _itemMapper = new ItemMapper(connectionString);
