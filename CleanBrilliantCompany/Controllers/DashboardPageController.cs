@@ -404,14 +404,14 @@ namespace CleanBrilliantCompany.Controllers
             _productControl.createProduct(
                 productName, productCategory, (float)Math.Round(productCost, 2),
                 manufacturerId, productWeight, quantity, (int)volume,
-                toxicityPercentage, 0, "Ready");
+                toxicityPercentage, (int)(volume*toxicityPercentage), "Ready");
 
             // Retrieve the last added product
             Product lastProduct = _productControl.getAllProducts().Last();
             int productId = lastProduct.ProductId;
 
             // Calculate Carbon Footprint
-            newProduct.CarbonFootprint = (int)_carbonFootprintCalculatorControl.CalculateProductCF(volume, toxicityPercentage, productId);
+            lastProduct.CarbonFootprint = (int)_carbonFootprintCalculatorControl.CalculateProductCF(volume, toxicityPercentage, productId);
 
             // ✅ Update ViewModel before returning JSON
             var mockupCreationVM = new CarbonDashboardViewModel
@@ -421,16 +421,16 @@ namespace CleanBrilliantCompany.Controllers
 
             return Json(new { 
                 success = true, 
-                productId = newProduct.ProductId,
-                productName = newProduct.ProductName, 
-                productCategory = newProduct.ProductCategory,
-                productCost = newProduct.ProductCost,
-                manufacturerId = newProduct.ManufacturerId,
-                productWeight = newProduct.ProductWeight,
-                quantity = newProduct.Quantity,
-                volume = newProduct.Volume,
-                toxicityPercentage = newProduct.ToxicityPercentage,
-                carbonEmission = newProduct.CarbonFootprint
+                productId = lastProduct.ProductId,
+                productName = lastProduct.ProductName, 
+                productCategory = lastProduct.ProductCategory,
+                productCost = lastProduct.ProductCost,
+                manufacturerId = lastProduct.ManufacturerId,
+                productWeight = lastProduct.ProductWeight,
+                quantity = lastProduct.Quantity,
+                volume = lastProduct.Volume,
+                toxicityPercentage = lastProduct.ToxicityPercentage,
+                carbonFootprint = lastProduct.CarbonFootprint
             });
         }
 
@@ -456,14 +456,12 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult CalculateOrder(int orderId, string orderAddress)
         {
-            Console.WriteLine($"[DEBUG] Order ID: {orderId}, Address: {orderAddress}");
-
             ShipmentSDM s = _shipmentControl.CreateShipmentAsync(orderId, orderAddress).Result;
 
             // Assuming the calculation is async, ensure you await it properly
             float total_carbon = _carbonFootprintCalculatorControl.CalculateShipmentCF(s);
 
-            return Json(total_carbon);
+            return Json(new { success = true, totalCarbon = total_carbon });
         }
 
         [HttpPost]

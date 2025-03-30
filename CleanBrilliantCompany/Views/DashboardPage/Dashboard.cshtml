@@ -29,8 +29,8 @@
             <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
         </a>
     </div> *@
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h2 class="h2 mb-0 text-gray-800">Carbon Footprint Dashboard</h2>
+    <!-- Right-aligned Buttons -->
+    <div class="d-flex flex-column align-items-end">
         <div>
             <a href="/feedback" class="btn btn-sm btn-primary shadow-sm mr-2">
                 <i class="fas fa-comment-dots fa-sm text-white-50"></i> Feedback
@@ -42,40 +42,47 @@
                 <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
             </a>
         </div>
+        <button id="toggleButton" class="btn btn-sm btn-secondary shadow-sm mt-2">
+            <i class="fas fa-cogs fa-sm text-white-50"></i> Show/Hide Backend Mockup Features
+        </button>
     </div>
 
-    <!-- carbon footprint calculator mockups -->
-    <div class="button-row">
-        <button onclick="createNewProduct()">Create Product (Mockup)</button>
-        <button type="button" onclick="calculateItemCarbonFootprint()">Calculate Item Carbon Footprint</button>
-        <button onclick="updateItemsCFDaily()">Calculate All Items CF Daily</button>
-        <button onclick="calculateShipmentCF()">Calculate Shipment CF</button>
-    </div>
+    <!-- Section to be toggled -->
+    <div id="carbonCalculatorSection" style="display: none;">
+        <div class="button-row">
+            <button onclick="createNewProduct()">Create Product (Mockup)</button>
+            <button type="button" onclick="calculateItemCarbonFootprint()">Calculate Item Carbon Footprint</button>
+            <button onclick="updateItemsCFDaily()">Calculate All Items CF Daily</button>
+            <button onclick="calculateShipmentCF()">Calculate Shipment CF</button>
+        </div>
 
-    <div>
-        <form>
-            <label for="ProductDropdown">Select Product</label>
-            <select id="ProductDropdown">
-                @foreach (var product in Model.ProductList) // Assuming a list of products in the model
-                {
-                    <option value="@product.ProductId">@product.ProductName with product ID of @product.ProductId and carbon emission value: @product.CarbonFootprint</option>
-                }
-            </select>
-            <label for="ItemDropdown">Select Item</label>
-            <select id="ItemDropdown">
-                @foreach (var item in Model.ItemList) // Assuming a list of items in the model
-                {
-                    <option value="@item.getItemId()">Item #@item.getItemId() with product ID of @item.getProductId()</option>
-                }
-            </select>
-            <label for="StubOrderDropdown">Select Stub Order</label>
-            <select id="StubOrderDropdown">
-                @foreach (var order in Model.StubOrderList) // Assuming a list of items in the model
-                {
-                    <option value="@order.GetOrderID()" data-address="@order.GetOrderAddress()">Order #@order.GetOrderID() with address of @order.GetOrderAddress()</option>
-                }
-            </select>
-        </form>
+        <div>
+            <form>
+                <label for="ProductDropdown">Select Product</label>
+                <select id="ProductDropdown">
+                    @foreach (var product in Model.ProductList) // Assuming a list of products in the model
+                    {
+                        <option value="@product.ProductId">@product.ProductName with product ID of @product.ProductId and carbon emission value: @product.CarbonFootprint</option>
+                    }
+                </select>
+
+                <label for="ItemDropdown">Select Item</label>
+                <select id="ItemDropdown">
+                    @foreach (var item in Model.ItemList) // Assuming a list of items in the model
+                    {
+                        <option value="@item.getItemId()">Item #@item.getItemId() with product ID of @item.getProductId()</option>
+                    }
+                </select>
+
+                <label for="StubOrderDropdown">Select Stub Order</label>
+                <select id="StubOrderDropdown">
+                    @foreach (var order in Model.StubOrderList) // Assuming a list of items in the model
+                    {
+                        <option value="@order.GetOrderID()" data-address="@order.GetOrderAddress()">Order #@order.GetOrderID() with address of @order.GetOrderAddress()</option>
+                    }
+                </select>
+            </form>
+        </div>
     </div>
 
     <div class="row mt-5">
@@ -447,6 +454,17 @@
             updateAllTables();
         });
 
+        document.getElementById("toggleButton").addEventListener("click", function () {
+            var section = document.getElementById("carbonCalculatorSection");
+            if (section.style.display === "none") {
+                section.style.display = "block";
+                this.textContent = "Hide Mockup Backend Calculator Features";
+            } else {
+                section.style.display = "none";
+                this.textContent = "Show Mockup Backend Calculator Features";
+            }
+        });
+
         function createNewProduct() {
             $.ajax({
                 url: '@Url.Action("CreateProduct", "DashboardPage")', // ASP.NET MVC URL helper
@@ -518,7 +536,7 @@
                 data: { orderId: orderId, orderAddress: orderAddress }, // Send itemId as JSON
                 success: function(response) {
                     if (response.success) {
-                        alert("Item carbon footprint has been calculated and stored in Item CF DB.")
+                        alert("Order carbon footprint = " + response.totalCarbon + "CO2e, and stored in Order CF DB.")
                     } else {
                         alert("Failed to calculate carbon footprint.");
                     }
