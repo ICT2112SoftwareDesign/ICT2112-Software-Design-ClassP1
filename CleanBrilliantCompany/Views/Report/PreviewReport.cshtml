@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Preview Report";
+}
+
+<div id="loading">Generating PDF, please wait...</div>
+
+<h2>Generated Report</h2>
+
+<iframe 
+    id="pdfFrame"
+    src="@Url.Action("GetReportPdf", "Report")"
+    width="100%" 
+    height="800px"
+    style="border: 1px solid #ccc; display:none;"
+></iframe>
+
+<div style="margin-top: 20px;">
+    <a href="@Url.Action("GetReportPdf", "Report")" class="btn btn-primary" download>
+        Download Report
+    </a>
+</div>
+
+<script>
+    const frame = document.getElementById('pdfFrame');
+    const loading = document.getElementById('loading');
+    frame.onload = function () {
+        loading.style.display = "none";
+        frame.style.display = "block";
+    };
+</script>
+
+
