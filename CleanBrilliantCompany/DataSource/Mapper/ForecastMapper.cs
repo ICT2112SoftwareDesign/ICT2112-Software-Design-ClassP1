@@ -42,8 +42,12 @@ namespace CleanBrilliantCompany.DataSource.Mapper
         }
         public ForecastDashboard getDashboard(int month,int year)
         {
+
+          
+
             var dashboardDto = _context.ForecastDashboards
-                    .FirstOrDefault(d => d.StartDate.Month == month && d.StartDate.Year == year);
+                    .FirstOrDefault(d => d.StartDate.Month == month && d.StartDate.Year == year && d.GeneratedDateTime.Year==DateTime.Now.Year);
+            
             if (dashboardDto == null)
             {
                 // No dashboard exists for this month/year.
