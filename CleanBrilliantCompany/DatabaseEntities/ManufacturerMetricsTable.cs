@@ -13,5 +13,5 @@ public class ManufacturerMetricsTable
     public bool RiskFlag { get; set; }
 
     public DashboardTable Dashboard { get; set; }
-    public ProductManufacturerTable Manufacturer { get; set; }
+    public ManufacturerTable Manufacturer { get; set; }
 }

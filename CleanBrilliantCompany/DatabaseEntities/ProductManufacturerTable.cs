@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-public class ProductManufacturerTable
+public class ManufacturerTable
 {
     [Key]
     public int ManufacturerId { get; set; }

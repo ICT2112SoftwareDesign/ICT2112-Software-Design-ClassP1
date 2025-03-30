@@ -4,7 +4,7 @@ public class DashboardFacade : IDashboardFacade
     private readonly ManufacturerControl manufacturerControl;
 
     public DashboardFacade(
-        AgingControl agingControl
+        AgingControl agingControl,
         ManufacturerControl manufacturerControl
         )
     {

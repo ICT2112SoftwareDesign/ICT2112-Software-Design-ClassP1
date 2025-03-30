@@ -15,8 +15,8 @@ public class DashboardFactory {
                 return new ManufacturerDashboardRdm(
                     id: dTO.DashboardId,
                     name: "Manufacturer Dashboard",
-                    requestedStartDate: dTO.RequestedStartDate ?? DateTime.MinValue,
-                    requestedEndDate: dTO.RequestedEndDate ?? DateTime.MinValue,
+                    requestedStartDate: dTO.RequestedStartDate,
+                    requestedEndDate: dTO.RequestedEndDate,
                     validityDuration: dTO.ValidityDuration,
                     type: dTO.Type,
                     generatedDate: dTO.GeneratedDate ?? DateTime.Now

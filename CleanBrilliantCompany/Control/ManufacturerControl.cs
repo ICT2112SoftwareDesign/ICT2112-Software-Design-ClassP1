@@ -23,8 +23,8 @@ public class ManufacturerControl
         Console.WriteLine($"📊 Manufacturer dashboard found: {dashboardDto.Name} generated on: {dashboardDto.GeneratedDate}");
 
         // Check if the dates are null, and provide default values if needed
-        DateTime requestedStartDate = dashboardDto.RequestedStartDate ?? DateTime.MinValue;  // Default to MinValue if null
-        DateTime requestedEndDate = dashboardDto.RequestedEndDate ?? DateTime.MinValue;      // Default to MinValue if null
+        DateTime requestedStartDate = dashboardDto.RequestedStartDate;
+        DateTime requestedEndDate = dashboardDto.RequestedEndDate;
 
         // Create the dashboard object using the factory method
         manufacturerDashboard = DashboardFactory.createDashboard(dashboardDto) as ManufacturerDashboardRdm;

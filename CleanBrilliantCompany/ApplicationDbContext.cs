@@ -32,11 +32,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<DashboardBatchSummaryTable> DashboardBatchSummary { get; set; }
 
     // DbSets for the tables related to the Manufacturer Dashboard
-    public DbSet<DashboardTable> Dashboards { get; set; }
     public DbSet<ManufacturerMetricsTable> ManufacturerMetrics { get; set; }
-    public DbSet<ProductManufacturerTable> ProductManufacturers { get; set; }
 
-    
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -56,7 +53,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ProductThresholdTable>().ToTable("ProductThreshold");
         modelBuilder.Entity<DashboardTable>().ToTable("Dashboard");
         modelBuilder.Entity<ManufacturerMetricsTable>().ToTable("ManufacturerMetrics");
-        modelBuilder.Entity<ProductManufacturerTable>().ToTable("ProductManufacturer");
+        modelBuilder.Entity<ManufacturerTable>().ToTable("ProductManufacturer");
 
         // Configure DashboardTable entity and set the primary key 
         modelBuilder.Entity<DashboardTable>()
@@ -109,11 +106,6 @@ public class ApplicationDbContext : DbContext
         // Configure ManufacturerMetricsTable entity and set the primary key
         modelBuilder.Entity<ManufacturerMetricsTable>()
             .HasKey(m => m.MetricId);  // Set MetricId as the primary key
-
-        // Configure ProductManufacturerTable entity and set the primary key
-        modelBuilder.Entity<ProductManufacturerTable>()
-            .HasKey(p => p.ManufacturerId);  // Set ManufacturerId as the primary key
-
 
         base.OnModelCreating(modelBuilder);
     }
