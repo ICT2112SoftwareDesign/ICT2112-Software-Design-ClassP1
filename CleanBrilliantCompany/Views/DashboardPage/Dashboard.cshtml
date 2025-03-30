@@ -78,6 +78,13 @@
         </form>
     </div>
 
+    <div class="row mt-5">
+        <div class="col">
+            <h4 class="text-primary fw-bold">🧾 Carbon Emission Overview</h4>
+            <hr />
+        </div>
+    </div>
+
     <!-- Summary Cards -->
     <div class="row">
         <!-- Total Product CF Card -->
@@ -136,7 +143,25 @@
         </div>
     </div>
 
-    <!-- Chart Row -->
+    <!-- Trend Line Chart -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Total Carbon Emission Trend</h6>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group mb-3" role="group" aria-label="Trend View Toggle">
+                        <button class="btn btn-outline-primary active" id="toggle-monthly">Monthly</button>
+                        <button class="btn btn-outline-primary" id="toggle-weekly">Weekly</button>
+                        <button class="btn btn-outline-primary" id="toggle-daily">Daily</button>
+                    </div>
+                    <canvas id="carbonTrendChart" class="shared-chart-size"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <!-- Product Eco Breakdown Pie -->
         <div class="col-xl-6 col-lg-6">
@@ -163,25 +188,6 @@
         </div>
     </div>
 
-    <!-- Trend Line Chart -->
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Total Carbon Emission Trend</h6>
-                </div>
-                <div class="card-body">
-                    <div class="btn-group mb-3" role="group" aria-label="Trend View Toggle">
-                        <button class="btn btn-outline-primary active" id="toggle-monthly">Monthly</button>
-                        <button class="btn btn-outline-primary" id="toggle-weekly">Weekly</button>
-                        <button class="btn btn-outline-primary" id="toggle-daily">Daily</button>
-                    </div>
-                    <canvas id="carbonTrendChart" class="shared-chart-size"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col-xl-6">
             <div class="card shadow mb-4">
@@ -193,25 +199,42 @@
                 </div>
             </div>
         </div>
-    <div class="col-xl-6">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Top 5 Eco-Efficient Products</h6>
-            </div>
-            <div class="card-body">
-                    <canvas id="ecoLeaderboardChart" style="height:300px;"></canvas>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h4 class="text-primary fw-bold">🏆 Best & Worst Performing Products</h4>
+            <hr />
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 5 Eco-Efficient Products</h6>
+                </div>
+                <div class="card-body">
+                        <canvas id="ecoLeaderboardChart" style="height:300px;"></canvas>
+                </div>
             </div>
         </div>
     </div>
-    </div>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Top 5 Highest Carbon Footprint Emitting Products</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Top 5 Highest Emission Products</h6>
             </div>
             <div class="card-body">
                 <canvas id="topEmittingProductsChart" style="height:300px;"></canvas>
             </div>
         </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h4 class="text-primary fw-bold">📈 Trends & Eco Adoption</h4>
+            <hr />
+        </div>
+    </div>
 
     <!-- Eco Product Trend Chart -->
     <div class="card shadow mb-4">
@@ -225,6 +248,22 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Eco vs Non-Eco Item Count Over Time</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="ecoNonEcoItemChart"></canvas>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h4 class="text-primary fw-bold">📦 Product-Item Analysis</h4>
+            <hr />
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Items per Product Emission Breakdown</h6>
         </div>
         <div class="card-body">
@@ -232,12 +271,10 @@
         </div>
     </div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Eco vs Non-Eco Item Count Over Time</h6>
-        </div>
-        <div class="card-body">
-            <canvas id="ecoNonEcoItemChart"></canvas>
+    <div class="row mt-5">
+        <div class="col">
+            <h4 class="text-primary fw-bold">🚚 Transport & Logistics Insights</h4>
+            <hr />
         </div>
     </div>
 
@@ -261,19 +298,19 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Emission vs Order Weight</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Emission vs Distance by Transport Mode</h6>
         </div>
         <div class="card-body">
-            <canvas id="emissionWeightScatterChart" class="shared-chart-size"></canvas>
+            <canvas id="emissionDistanceScatterChart" class="shared-chart-size"></canvas>
         </div>
     </div>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Emission vs Distance by Transport Mode</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Emission vs Order Weight</h6>
         </div>
         <div class="card-body">
-            <canvas id="emissionDistanceScatterChart" class="shared-chart-size"></canvas>
+            <canvas id="emissionWeightScatterChart" class="shared-chart-size"></canvas>
         </div>
     </div>
 
@@ -983,7 +1020,7 @@
             options: {
                 responsive: true,
                 plugins: {
-                    title: { display: true, text: 'Emissions by Product Category' }
+                    title: { display: true, text: 'Emissions by Product Category (kg CO₂)' }
                 }
             }
         });
