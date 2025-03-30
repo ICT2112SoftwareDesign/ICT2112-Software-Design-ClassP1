@@ -1,4 +1,10 @@
-interface IDashboardFacade
+using CleanBrilliantCompany.Control;
+public interface IDashboardFacade
 {
-    List<Dashboard> getDashboardsData(); 
-} 
+    List<Dashboard> getDashboardsData();
+
+    AgingControl GetAgingControl();
+    ManufacturerControl GetManufacturerControl();
+    CostControl GetCostControl();
+    InventoryControl GetInventoryControl();
+}

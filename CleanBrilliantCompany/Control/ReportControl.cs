@@ -1,3 +1,4 @@
+using System.Text;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Services;
@@ -9,12 +10,13 @@ namespace CleanBrilliantCompany.Control
         private readonly ReportGenerator _reportGenerator;
         private readonly IAIService _AIService;
         private readonly ReportRepo _repo;
-
-        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, ReportRepo repo)
+        private readonly IDashboardFacade _dashboardFacade;
+        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, ReportRepo repo, IDashboardFacade dashboardFacade)
         {
             _reportGenerator = reportGenerator;
             _AIService = aiService;
             _repo = repo;
+            _dashboardFacade = dashboardFacade;
         }
 
         public async Task<Report> GenerateReportAsync()
@@ -55,6 +57,30 @@ namespace CleanBrilliantCompany.Control
 
             return report;
         }
+
+        public async Task<Report> GenerateCustomReportAsync(List<string> selected)
+        {
+            var sb = new StringBuilder();
+
+            if (selected.Contains("Aging"))
+                sb.AppendLine(_dashboardFacade.GetAgingControl().GenerateReport());
+
+            if (selected.Contains("Manufacturer"))
+                sb.AppendLine(_dashboardFacade.GetManufacturerControl().GenerateReport());
+
+            if (selected.Contains("Cost"))
+                sb.AppendLine(_dashboardFacade.GetCostControl().GenerateReport());
+
+            // if (selected.Contains("Inventory"))
+            //     sb.AppendLine(_dashboardFacade.GetInventoryControl().GenerateReport());
+
+            return new Report
+            {
+                ReportName = "CombinedReport",
+                // ReportData = _reportGenerator.GeneratePDF(sb.ToString())
+            };
+        }
+
 
         public async Task<List<ReportLog>> GetReportLogsAsync(int reportID)
         {

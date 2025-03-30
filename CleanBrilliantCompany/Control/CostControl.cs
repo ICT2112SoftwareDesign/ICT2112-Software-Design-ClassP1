@@ -211,4 +211,57 @@ public class CostControl
             logger!.LogInformation($"✅ New dashboard created with name: {newDashboard.Name}, GeneratedDate: {newDashboard.GeneratedDate}");
         }
     }
+
+    public string GenerateReport()
+{
+    var dashboard = GetLatestDashboard();
+
+    if (dashboard == null)
+    {
+        Console.WriteLine("Cost dashboard is null.");
+        return "<p>No data found for cost dashboard.</p>";
+    }
+
+    var report = new System.Text.StringBuilder();
+
+    report.AppendLine($"<h1>Cost Report - {dashboard.Name}</h1>");
+    report.AppendLine($"<p>Generated: {dashboard.GeneratedDate}</p>");
+    report.AppendLine("<hr/>");
+
+    // Average Batch Cost by Manufacturer
+    report.AppendLine("<h2>Average Batch Cost by Manufacturer</h2>");
+    var avgCosts = dashboard.GetAvgBatchCost(this.DbContext);
+    report.AppendLine("<table border='1' cellpadding='6' cellspacing='0' style='border-collapse: collapse;'>");
+    report.AppendLine("<thead><tr><th>Manufacturer ID</th><th>Name</th><th>Average Cost</th></tr></thead><tbody>");
+    foreach (var entry in avgCosts)
+    {
+        report.AppendLine($"<tr><td>{entry.ManufacturerId}</td><td>{entry.ManufacturerName}</td><td>${entry.AvgBatchCost:F2}</td></tr>");
+    }
+    report.AppendLine("</tbody></table>");
+
+    // Supplier Comparison
+    report.AppendLine("<h2>Supplier Batch Count</h2>");
+    var supplierStats = dashboard.GetSupplierComparison(this.DbContext);
+    report.AppendLine("<table border='1' cellpadding='6' cellspacing='0' style='border-collapse: collapse;'>");
+    report.AppendLine("<thead><tr><th>Manufacturer ID</th><th>Name</th><th>Batch Count</th></tr></thead><tbody>");
+    foreach (var s in supplierStats)
+    {
+        report.AppendLine($"<tr><td>{s.ManufacturerId}</td><td>{s.ManufacturerName}</td><td>{s.BatchCount}</td></tr>");
+    }
+    report.AppendLine("</tbody></table>");
+
+    // Summary
+    report.AppendLine("<h2>Price Extremes Overview</h2>");
+    var summary = dashboard.GetCheapestAndMostExpensiveOverview(this.DbContext);
+    report.AppendLine("<ul>");
+    report.AppendLine($"<li>Cheapest Batch Code: {summary.CheapestBatchCode}</li>");
+    report.AppendLine($"<li>Most Expensive Batch Code: {summary.ExpensiveBatchCode}</li>");
+    report.AppendLine($"<li>Cheapest Manufacturer ID: {summary.CheapestManufacturer}</li>");
+    report.AppendLine($"<li>Most Expensive Manufacturer ID: {summary.ExpensiveManufacturer}</li>");
+    report.AppendLine("</ul>");
+
+    Console.WriteLine("Cost Report generated.");
+    return report.ToString();
+}
+
 }

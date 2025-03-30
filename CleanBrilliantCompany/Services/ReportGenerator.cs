@@ -26,7 +26,7 @@ namespace CleanBrilliantCompany.Services
                 if (!string.IsNullOrWhiteSpace(report.ReportDataText))
                 {
                     col.Item().PaddingTop(20).Text("Summary:").Bold();
-                    col.Item().PaddingTop(5).Text(report.ReportDataText);  // ← 🧠 Make sure this is the AI text
+                    col.Item().PaddingTop(5).Text(report.ReportDataText);  //  Make sure this is the AI text
                 }
                 else
                 {
