@@ -21,29 +21,33 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(GoalsSDM goal, string goalDate)
+        public async Task<JsonResult> Create(GoalsSDM goal, string goalDate)
         {
-            if (ModelState.IsValid && await _goalManager.CreateGoal(goal, goalDate))
+            if (ModelState.IsValid)
             {
-                return RedirectToAction("GoalsManagement", "GoalsPage");
+                bool success = await _goalManager.CreateGoal(goal, goalDate);
+                if (success)
+                {
+                    return Json(new { success = true, message = "Goal created successfully!" });
+                }
+                return Json(new { success = false, message = "A goal for this month and year already exists." });
             }
 
-            ModelState.AddModelError("", "Invalid date format or error creating goal.");
-            return View(goal);
+            return Json(new { success = false, message = "Invalid input. Please check your data." });
         }
 
         [HttpPost]
-        public async Task<ActionResult> ModifyGoal(string goalDate, double targetEmission)
+        public async Task<JsonResult> ModifyGoal(string goalDate, double targetEmission)
         {
-            if (await _goalManager.ModifyGoal(goalDate, targetEmission))
+            bool success = await _goalManager.ModifyGoal(goalDate, targetEmission);
+            
+            if (success)
             {
-                return RedirectToAction("GoalsManagement", "GoalsPage");
+                return Json(new { success = true, message = "Goal updated successfully!" });
             }
-
-            ModelState.AddModelError("", "Goal not found or invalid date format.");
-            return View();
+            
+            return Json(new { success = false, message = "Goal not found for the specified date." });
         }
-
         [HttpPost]
         public async Task<ActionResult> DeleteGoal(string goalDate)
         {

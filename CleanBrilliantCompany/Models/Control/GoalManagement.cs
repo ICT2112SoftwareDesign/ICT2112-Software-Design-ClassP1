@@ -25,7 +25,19 @@ namespace CleanBrilliantCompany.Models.Control
         {
             if (DateTime.TryParseExact(goalDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
             {
-                goal.UpdateGoalDate(parsedDate.Year, parsedDate.Month);
+                int goalYear = parsedDate.Year;
+                int goalMonth = parsedDate.Month;
+
+                // Check if a goal already exists for this year and month
+                var existingGoal = await _goalDb.FindGoalByDate(goalYear, goalMonth);
+                if (existingGoal != null)
+                {
+                    _logger.LogWarning($"A goal for {goalYear}-{goalMonth:D2} already exists.");
+                    return false; // Prevent duplicate creation
+                }
+
+                // Update goal's date and insert
+                goal.UpdateGoalDate(goalYear, goalMonth);
                 await _goalDb.InsertGoal(goal);
                 return true;
             }
