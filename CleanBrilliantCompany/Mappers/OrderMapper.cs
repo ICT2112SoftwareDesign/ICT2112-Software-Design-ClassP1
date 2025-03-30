@@ -22,9 +22,14 @@ namespace CleanBrilliantCompany.Models
         {
             using (var connection = new SqlConnection(_connectionString))
             {
+
+                 // Generate a random orderWeight between 1 and 4
+                var random = new Random();
+                int orderWeight = random.Next(1, 5); // Generates a number between 1 and 4 (inclusive)
+
                 var query = @"
-                    INSERT INTO CustOrder (customerID, orderAddress, orderProducts, orderShipping, orderItems, orderDate, Status, orderTotal)
-                    VALUES (@CustomerID, @OrderAddress, @OrderProducts, @OrderShipping, @OrderItems, @OrderDate, @Status, @OrderTotal);
+                    INSERT INTO CustOrder (customerID, orderAddress, orderProducts, orderShipping, orderItems, orderDate, Status, orderTotal, orderWeight)
+                    VALUES (@CustomerID, @OrderAddress, @OrderProducts, @OrderShipping, @OrderItems, @OrderDate, @Status, @OrderTotal, @OrderWeight);
                     SELECT SCOPE_IDENTITY();";
 
                 var command = new SqlCommand(query, connection);
@@ -46,6 +51,7 @@ namespace CleanBrilliantCompany.Models
                 command.Parameters.AddWithValue("@OrderDate", order.RetrieveOrderDate());
                 command.Parameters.AddWithValue("@Status", order.RetrieveStatus());
                 command.Parameters.AddWithValue("@OrderTotal", order.RetrieveOrderTotal());
+                command.Parameters.AddWithValue("@OrderWeight", orderWeight); // Add the random orderWeight
 
                 connection.Open();
                 var result = command.ExecuteScalar();

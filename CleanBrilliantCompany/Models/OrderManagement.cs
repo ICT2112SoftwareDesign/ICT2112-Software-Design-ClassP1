@@ -50,7 +50,24 @@ namespace CleanBrilliantCompany.Models
                 // Fetch all available shipping agents
                 var availableAgents = _shippingAgent.GetAllShippingAgentsAsync().Result;
 
-                // Validate the provided shipping agent
+               // If no valid shippingAgent, shippingType, or serviceType is provided, select a default
+                if (string.IsNullOrWhiteSpace(shippingAgent) || string.IsNullOrWhiteSpace(shippingType) || string.IsNullOrWhiteSpace(serviceType))
+                {
+                    var defaultAgent = availableAgents.FirstOrDefault();
+                    if (defaultAgent == null)
+                    {
+                        throw new Exception("No available shipping agents found.");
+                    }
+
+                    // Use the default agent's details
+                    shippingAgent = defaultAgent.ShippingAgentCompany;
+                    shippingType = defaultAgent.ShippingMethod;
+                    serviceType = defaultAgent.ServiceType;
+
+                    Console.WriteLine($"Default shipping agent selected: {shippingAgent}, {shippingType}, {serviceType}");
+                }
+
+                // Validate the provided or default shipping agent
                 var selectedAgent = availableAgents.FirstOrDefault(agent =>
                     agent.ShippingAgentCompany.Equals(shippingAgent, StringComparison.OrdinalIgnoreCase) &&
                     agent.ShippingMethod.Equals(shippingType, StringComparison.OrdinalIgnoreCase) &&
@@ -60,6 +77,7 @@ namespace CleanBrilliantCompany.Models
                 {
                     throw new Exception("Invalid shipping agent, method, or service type selected.");
                 }
+
 
                  // Serialize the shipping details into JSON
                 var shippingDetails = new
@@ -216,6 +234,9 @@ namespace CleanBrilliantCompany.Models
             {
                 return false; // Cannot cancel the order
             }
+            
+            // call the processCancelledOrder from MOD 2
+            _orderFulfilment.processCancelledOrder(orderId);
 
             order.UpdateStatus("Cancelled");
             return _orderDatabase.updateOrder(order);
