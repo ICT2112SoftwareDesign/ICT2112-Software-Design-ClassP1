@@ -38,6 +38,11 @@ public class HomeController : Controller
         }
     }
 
+    public IActionResult Dashboards()
+    {
+        return View(); // Will look for Views/Home/Dashboards.cshtml
+    }
+
     public IActionResult Index()
     {
         return View();

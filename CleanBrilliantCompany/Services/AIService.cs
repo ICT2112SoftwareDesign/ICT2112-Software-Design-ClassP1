@@ -48,7 +48,6 @@ namespace CleanBrilliantCompany.Services
             var responseString = await response.Content.ReadAsStringAsync();
             dynamic result = JsonConvert.DeserializeObject(responseString);
             string aiContent = result.choices[0].message.content;
-            Console.WriteLine("🔍 AI content:\n" + aiContent);
 
             return result.choices[0].message.content;
         }

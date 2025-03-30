@@ -13,9 +13,10 @@ using CleanBrilliantCompany.Models.Forecast;
 using CleanBrilliantCompany.Services.Forecast;
 using CleanBrilliantCompany.Services.Notification;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using QuestPDF.Infrastructure;
 
 using CleanBrilliantCompany.Services;
-
+QuestPDF.Settings.License = LicenseType.Community;
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 // var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
@@ -137,21 +138,6 @@ Console.WriteLine($"[Debug] OpenAI Key Length: {apiKey?.Length}");
 // -------------------------------
 var app = builder.Build();
 
-//// Test the database connection
-//using (var scope = app.Services.CreateScope())
-//{
-//    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-//    try
-//    {
-//        dbContext.Database.CanConnect();
-//        Console.WriteLine("Database connection successful!");
-//    }
-//    catch (Exception ex)
-//    {
-//        Console.WriteLine($"Database connection failed: {ex.Message}");
-//    }
-//}
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -165,7 +151,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.MapControllerRoute(name: "default", pattern: "{controller=Forecast}/{action=fetchDashboardData}/{id?}")
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Dashboards}/{id?}")
     .WithStaticAssets();
 
 app.Run();
