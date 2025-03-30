@@ -48,48 +48,101 @@ namespace CleanBrilliantCompany.Controllers
 
         // [HttpPost]
         [Route("ViewTransfer")]
-        public async Task<IActionResult> Transfer()
+        public async Task<IActionResult> Transfer(int page = 1, int pageSize = 10)
         {
             try
             {
                 List<Dictionary<string, object>> transfersInfo = new List<Dictionary<string, object>>();
-                // List<Item> items = await _itemControl.getAllItems();
-                List<Transfer> transfers = await _transferControl.getAllTransfers(); // Fetch warehouse data
+                List<Transfer> transfers = await _transferControl.getAllTransfers();
+
                 foreach (var transfer in transfers)
                 {
                     transfersInfo.Add(transfer.retrieveTransferInfo());
                 }
-                // Console.WriteLine("WAREHOUSES: " + warehouses);
-                return View(transfersInfo); // Pass data to the view
+
+                // Get total number of records
+                int totalRecords = transfersInfo.Count;
+
+                // Apply pagination
+                var paginatedTransfers = transfersInfo
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                ViewBag.TotalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+                ViewBag.CurrentPage = page;
+                ViewBag.PageSize = pageSize;
+
+                return View(paginatedTransfers);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"ERROR: {ex.Message}");
-                return View(new List<Dictionary<string, object>>()); // Return an empty list in case of an error
+                return View(new List<Dictionary<string, object>>());
             }
         }
 
+
         [Route("")]
-        public async Task<IActionResult> LowStockProduct()
+        public async Task<IActionResult> LowStockProduct(int page = 1, int? warehouseId = null)
         {
             try
             {
                 List<Dictionary<string, object>> productsInfo = new List<Dictionary<string, object>>();
-                // List<Item> items = await _itemControl.getAllItems();
-                List<Product> products = await _transferControl.getLowStockProductInWarehouse(); // Fetch warehouse data
-                foreach (var product in products)
+
+                // Fetch all low-stock products
+                List<Product> allProducts = await _transferControl.getLowStockProductInWarehouse();
+
+                // Extract unique warehouse details (ID & Name)
+                var allWarehouses = allProducts
+                    .Select(p => new
+                    {
+                        Id = Convert.ToInt32(p.retrieveLowStockInfo()["WarehouseId"]),
+                        Name = p.retrieveLowStockInfo()["WarehouseName"].ToString()
+                    })
+                    .Distinct()
+                    .OrderBy(w => w.Name) // Sort alphabetically
+                    .ToList();
+
+                // Apply warehouse filter if selected
+                if (warehouseId.HasValue)
+                {
+                    allProducts = allProducts
+                        .Where(p => Convert.ToInt32(p.retrieveLowStockInfo()["WarehouseId"]) == warehouseId.Value)
+                        .ToList();
+                }
+
+                // Pagination logic
+                int pageSize = 15;
+                int totalRecords = allProducts.Count;
+                int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+                List<Product> productsOnPage = allProducts
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                foreach (var product in productsOnPage)
                 {
                     productsInfo.Add(product.retrieveLowStockInfo());
                 }
-                // Console.WriteLine("WAREHOUSES: " + warehouses);
-                return View(productsInfo); // Pass data to the view
+
+                // Populate ViewBag for dropdown
+                ViewBag.Warehouses = allWarehouses;
+                ViewBag.SelectedWarehouse = warehouseId;
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
+                ViewBag.TotalRecords = totalRecords;
+
+                return View(productsInfo);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"ERROR: {ex.Message}");
-                return View(new List<Dictionary<string, object>>()); // Return an empty list in case of an error
+                return View(new List<Dictionary<string, object>>());
             }
         }
+
 
         [HttpGet]
         [Route("getStockForWarehouse")]

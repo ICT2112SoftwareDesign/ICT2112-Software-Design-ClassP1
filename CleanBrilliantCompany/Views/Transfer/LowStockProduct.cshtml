@@ -397,21 +397,45 @@
 
                     <br /><br />
 
-@if (Model == null || !Model.Any())
-{
+                    <form method="get" action="@Url.Action("LowStockProduct", "Transfer")">
+                        <div class="form-group">
+                            <label for="warehouseFilter">Filter by Warehouse:</label>
+                            <select name="warehouseId" id="warehouseFilter" class="form-control"
+                                onchange="this.form.submit()">
+                                <option value="">All Warehouses</option>
+                                @foreach (var warehouse in ViewBag.Warehouses)
+                                {
+                                    int warehouseId = Convert.ToInt32(warehouse.Id); // Ensure it's an integer
+                                                                                     <option value="@warehouseId"
+                                                                                         selected="@(ViewBag.SelectedWarehouse != null && Convert.ToInt32(ViewBag.SelectedWarehouse) == warehouseId ? "selected" : null)">
+                                                                                         @warehouse.Name
+                                                                                     </option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+
+
+
+
+
+
+                    @if (Model == null || !Model.Any())
+                    {
                         <p>No Transfer Record Found.</p>
-}
-else
-{
+                    }
+                    else
+                    {
                         <script>
                             // Store all warehouse details for JavaScript
                             const allWarehouses = [
-                @foreach (var warehouse in Model.Select(p => new { Id = p["WarehouseId"]?.ToString(), Name = p["WarehouseName"]?.ToString() }).Distinct())
+                                                            @foreach (var warehouse in Model.Select(p => new { Id = p["WarehouseId"]?.ToString(), Name = p["WarehouseName"]?.ToString() }).Distinct())
                                 {
                                     <text>{id: "@warehouse.Id", name: "@warehouse.Name" },</text>
-                }
-                ];
+                                                            }
+                                                            ];
                         </script>
+
 
                         <table class="table table-bordered table-striped">
                             <thead class="table-dark">
@@ -497,24 +521,51 @@ else
                                 </div>
                             </div>
                         </div>
-}
-</div>
-            <!-- /.container-fluid -->
+
+
+                        <nav>
+                            <ul class="pagination">
+                                @if (ViewBag.CurrentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)">Previous</a>
+                                    </li>
+                                }
+
+                                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                {
+                                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                        <a class="page-link" href="?page=@i">@i</a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)">Next</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+
+                    }
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
 
         </div>
-        <!-- End of Main Content -->
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2021</span>
-                </div>
-            </div>
-        </footer>
-        <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
+        <!-- End of Content Wrapper -->
     </div>
     <!-- End of Page Wrapper -->
     <!-- Scroll to Top Button-->
@@ -524,7 +575,7 @@ else
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -541,6 +592,131 @@ else
             </div>
         </div>
     </div>
+
+    <script>
+
+        function populateSourceWarehouses(destinationWarehouseId) {
+            const sourceSelect = document.getElementById('sourceWarehouse');
+
+            // Clear previous options except the default one
+            while (sourceSelect.options.length > 1) {
+                sourceSelect.remove(1);
+            }
+
+            // Add all warehouses except the destination warehouse
+            allWarehouses.forEach(warehouse => {
+                if (warehouse.id !== destinationWarehouseId) {
+                    const option = document.createElement('option');
+                    option.value = warehouse.id;
+                    option.text = warehouse.name;
+                    sourceSelect.add(option);
+                }
+            });
+        }
+
+        async function fetchAvailableStock(productId, warehouseId) {
+            try {
+                document.getElementById('availableStock').value = "Loading...";
+                let response = await
+                    fetch(`/inventory/management/stockflow/transfer/getStockForWarehouse?productId=${productId}&warehouseId=${warehouseId}`);
+                let data = await response.json();
+                if (response.ok) {
+                    document.getElementById('availableStock').value = data.quantity;
+                } else {
+                    document.getElementById('availableStock').value = "Error: " + (data.message || "Could not fetch stock");
+                    console.error("API error:", data);
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                document.getElementById('availableStock').value = "Error fetching stock";
+            }
+        }
+
+        // Set up event listeners once the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // Button click event handlers
+            document.querySelectorAll(".create-transfer-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    const productId = this.getAttribute('data-product-id');
+                    const destinationWarehouseId = this.getAttribute('data-destination-warehouse-id');
+                    const destinationWarehouseName = this.getAttribute('data-destination-warehouse-name');
+
+                    // Set product ID in the form
+                    document.getElementById('productIdInput').value = productId;
+
+                    // Set destination warehouse details (Uneditable)
+                    document.getElementById('destinationWarehouse').value = destinationWarehouseId;
+                    document.getElementById('destinationWarehouseDisplay').value = destinationWarehouseName;
+
+                    // Populate source warehouse dropdown (excluding destination warehouse)
+                    populateSourceWarehouses(destinationWarehouseId);
+
+                    // Reset quantity field
+                    document.getElementById('quantity').value = '';
+
+                    // Reset available stock field
+                    document.getElementById('availableStock').value = '';
+                });
+            });
+
+            // Set up the source warehouse change event listener only once
+            document.getElementById('sourceWarehouse').addEventListener("change", function () {
+                let selectedSourceWarehouse = this.value;
+                let productId = document.getElementById('productIdInput').value;
+
+                if (selectedSourceWarehouse && productId) {
+                    fetchAvailableStock(productId, selectedSourceWarehouse);
+                } else {
+                    document.getElementById('availableStock').value = '';
+                }
+            });
+
+            // Form submission handling
+            document.getElementById("transferForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                let quantity = parseInt(document.getElementById("quantity").value, 10);
+                let sourceWarehouse = document.getElementById("sourceWarehouse").value;
+                let destinationWarehouse = document.getElementById("destinationWarehouse").value;
+                let availableStock = parseInt(document.getElementById("availableStock").value, 10) || 0;
+
+                // Client-side validation
+                if (!sourceWarehouse) {
+                    alert("Please select a source warehouse.");
+                    return;
+                }
+
+                if (isNaN(quantity) || quantity <= 0) { alert("Please enter a valid quantity."); return; } @* if (quantity > availableStock) {
+        @* alert("Quantity exceeds available stock!"); 
+        return;
+    } *@
+
+                    let form = this; let formData = new
+                        FormData(form); fetch(form.action, { method: "POST", body: formData }).then(response => {
+                            if (!response.ok) {
+                                // If the server responds with an error status code
+                                return Promise.reject('Server error occurred');
+                                console.log("Nihao")
+                            }
+                            return response.json(); // Continue parsing the JSON if no error
+                        })
+                            .then(data => {
+                                if (data.success) {
+                                    alert(data.message);
+                                    location.href = "transfer/ViewTransfer"; // Redirect to ViewTransfer
+                                } else {
+                                    console.log("Error:", data.message);
+                                    alert("Error: " + (data.message || "An unexpected error occurred.")); // Display message
+                                }
+                            })
+                            .catch(error => {
+                                // Handle unexpected fetch errors (e.g., network issues)
+                                console.error("Fetch error:", error);
+                                alert("An unexpected error occurred. Please try again.");
+                            });
+            });
+        });
+    </script>
 
     <!-- Bootstrap core JavaScript-->
     <script src="~/vendor/jquery/jquery.min.js"></script>
@@ -559,140 +735,6 @@ else
     <script src="~/js/demo/chart-area-demo.js"></script>
     <script src="~/js/demo/chart-pie-demo.js"></script>
 
-    <script>
 
-function populateSourceWarehouses(destinationWarehouseId) {
-    const sourceSelect = document.getElementById('sourceWarehouse');
-
-    // Clear previous options except the default one
-    while (sourceSelect.options.length > 1) {
-        sourceSelect.remove(1);
-    }
-
-    // Add all warehouses except the destination warehouse
-    allWarehouses.forEach(warehouse => {
-        if (warehouse.id !== destinationWarehouseId) {
-            const option = document.createElement('option');
-            option.value = warehouse.id;
-            option.text = warehouse.name;
-            sourceSelect.add(option);
-        }
-    });
-}
-
-async function fetchAvailableStock(productId, warehouseId) {
-    try {
-        document.getElementById('availableStock').value = "Loading...";
-        let response = await fetch(`/inventory/management/stockflow/transfer/getStockForWarehouse?productId=${productId}&warehouseId=${warehouseId}`);
-        let data = await response.json();
-        if (response.ok) {
-            document.getElementById('availableStock').value = data.quantity;
-        } else {
-            document.getElementById('availableStock').value = "Error: " + (data.message || "Could not fetch stock");
-            console.error("API error:", data);
-        }
-    } catch (error) {
-        console.error("Fetch error:", error);
-        document.getElementById('availableStock').value = "Error fetching stock";
-    }
-}
-
-// Set up event listeners once the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Button click event handlers
-    document.querySelectorAll(".create-transfer-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            const productId = this.getAttribute('data-product-id');
-            const destinationWarehouseId = this.getAttribute('data-destination-warehouse-id');
-            const destinationWarehouseName = this.getAttribute('data-destination-warehouse-name');
-
-            // Set product ID in the form
-            document.getElementById('productIdInput').value = productId;
-
-            // Set destination warehouse details (Uneditable)
-            document.getElementById('destinationWarehouse').value = destinationWarehouseId;
-            document.getElementById('destinationWarehouseDisplay').value = destinationWarehouseName;
-
-            // Populate source warehouse dropdown (excluding destination warehouse)
-            populateSourceWarehouses(destinationWarehouseId);
-
-            // Reset quantity field
-            document.getElementById('quantity').value = '';
-            
-            // Reset available stock field
-            document.getElementById('availableStock').value = '';
-        });
-    });
-
-    // Set up the source warehouse change event listener only once
-    document.getElementById('sourceWarehouse').addEventListener("change", function () {
-        let selectedSourceWarehouse = this.value;
-        let productId = document.getElementById('productIdInput').value;
-        
-        if (selectedSourceWarehouse && productId) {
-            fetchAvailableStock(productId, selectedSourceWarehouse);
-        } else {
-            document.getElementById('availableStock').value = '';
-        }
-    });
-
-    // Form submission handling
-    document.getElementById("transferForm").addEventListener("submit", function (event) {
-    event.preventDefault();
-    
-    let quantity = parseInt(document.getElementById("quantity").value, 10);
-    let sourceWarehouse = document.getElementById("sourceWarehouse").value;
-    let destinationWarehouse = document.getElementById("destinationWarehouse").value;
-    let availableStock = parseInt(document.getElementById("availableStock").value, 10) || 0;
-
-    // Client-side validation
-    if (!sourceWarehouse) {
-        alert("Please select a source warehouse.");
-        return;
-    }
-
-    if (isNaN(quantity) || quantity <= 0) {
-        alert("Please enter a valid quantity.");
-        return;
-    }
-
-    @* if (quantity > availableStock) {
-        @* alert("Quantity exceeds available stock!"); 
-        return;
-    } *@
-
-    let form = this;
-let formData = new FormData(form);
-
-fetch(form.action, {
-    method: "POST",
-    body: formData
-})
-    .then(response => {
-        if (!response.ok) {
-            // If the server responds with an error status code
-            return Promise.reject('Server error occurred');
-            console.log("Nihao")
-        }
-        return response.json();  // Continue parsing the JSON if no error
-    })
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            location.href = "transfer/ViewTransfer"; // Redirect to ViewTransfer
-        } else {
-            console.log("Error:", data.message);
-            alert("Error: " + (data.message || "An unexpected error occurred.")); // Display message
-        }
-    })
-    .catch(error => {
-        // Handle unexpected fetch errors (e.g., network issues)
-        console.error("Fetch error:", error);
-        alert("An unexpected error occurred. Please try again.");
-    });
-});
-});
-</script>
 
 </body>
-
