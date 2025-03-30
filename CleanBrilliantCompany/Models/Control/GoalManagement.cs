@@ -92,5 +92,10 @@ namespace CleanBrilliantCompany.Models.Control
             return await _goalDb.GetAllGoals(); // Ensure `IGoalsDB` has `GetAllGoals` method
         }
 
+        public DateTime GetGoalDate(GoalsSDM goal)
+        {
+            return new DateTime(goal.GetGoalYear(), goal.GetGoalMonth() , 1); // Construct the DateTime from GoalYear and GoalMonth
+        }
+
     }
 }

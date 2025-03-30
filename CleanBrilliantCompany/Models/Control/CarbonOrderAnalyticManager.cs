@@ -57,9 +57,22 @@ namespace CleanBrilliantCompany.Models.Control
         }
         
 
-        public async Task<List<GoalsSDM>> RetrieveGoalsForGraph()
+        public async Task<List<GoalsSDM>> RetrieveGoalsForGraph(DateTime? startDate, DateTime? endDate)
         {
-            return await _goalService.GetAllGoals();
+            var goals = await _goalService.GetAllGoals();
+
+            // Apply date filtering using the GetGoalDate method from IGoals
+            if (startDate.HasValue)
+            {
+                goals = goals.Where(g => _goalService.GetGoalDate(g) >= startDate.Value).ToList();
+            }
+
+            if (endDate.HasValue)
+            {
+                goals = goals.Where(g => _goalService.GetGoalDate(g) <= endDate.Value).ToList();
+            }
+
+            return goals;
         }
     }
 }

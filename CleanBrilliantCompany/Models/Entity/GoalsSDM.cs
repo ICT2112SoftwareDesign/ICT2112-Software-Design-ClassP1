@@ -33,5 +33,6 @@ namespace CleanBrilliantCompany.Models.Entity
             goalYear = year;
             goalMonth = month;
         }
+        
     }
 }

@@ -19,12 +19,12 @@ public class AnalyticsController : Controller
         _logger = logger;
     }
 
-    public async Task<IActionResult> DisplayGraph()
+    public async Task<IActionResult> DisplayGraph(DateTime? startDate, DateTime? endDate)
     {
         _logger.LogInformation("DisplayGraph action started.");
 
-        // Fetch goals for the graph
-        var goals = await _analyticManager.RetrieveGoalsForGraph();
+        // Fetch goals for the graph with optional date range filter
+        var goals = await _analyticManager.RetrieveGoalsForGraph(startDate, endDate);
 
         if (!goals.Any())
         {

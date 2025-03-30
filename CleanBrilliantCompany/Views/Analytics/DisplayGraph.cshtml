@@ -4,6 +4,15 @@
 
 <h2>Goal Emissions vs Date</h2>
 
+<!-- Date Range Picker -->
+<div>
+    <label for="startDate">Start Date:</label>
+    <input type="month" id="startDate" />
+    <label for="endDate">End Date:</label>
+    <input type="month" id="endDate" />
+    <button id="applyDateRange">Apply</button>
+</div>
+
 <canvas id="goalEmissionChart" width="400" height="200"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -17,6 +26,7 @@
     console.log("Emissions:", emissions);
 
     var ctx = document.getElementById("goalEmissionChart").getContext("2d");
+
     var goalEmissionChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -47,6 +57,27 @@
                 }
             }
         }
+    });
+
+    // Apply the date range filter
+    document.getElementById("applyDateRange").addEventListener("click", function() {
+        var startDate = document.getElementById("startDate").value;
+        var endDate = document.getElementById("endDate").value;
+
+        // Filter the dates and emissions based on the selected range
+        var filteredDates = [];
+        var filteredEmissions = [];
+        for (var i = 0; i < dates.length; i++) {
+            if (dates[i] >= startDate && dates[i] <= endDate) {
+                filteredDates.push(dates[i]);
+                filteredEmissions.push(emissions[i]);
+            }
+        }
+
+        // Update the chart with the filtered data
+        goalEmissionChart.data.labels = filteredDates;
+        goalEmissionChart.data.datasets[0].data = filteredEmissions;
+        goalEmissionChart.update();
     });
 </script>
 
