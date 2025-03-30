@@ -36,7 +36,10 @@ namespace CleanBrilliantCompany.Services
                 model = "gpt-3.5-turbo",
                 messages = new[]
                 {
-                    new { role = "system", content = "You are a report writer who summarizes business data into a professional report." },
+                    new { role = "system", content =
+                        "You are a professional analyst. Given raw dashboard reports, write a concise business summary. " +
+                        "Do not echo the data. Analyze key trends, identify issues, and summarize insights. " +
+                        "Do not use markdown or HTML. Write in clear professional language using plain text only. Do not use asterisks (*)" },
                     new { role = "user", content = inputData }
                 }
             };

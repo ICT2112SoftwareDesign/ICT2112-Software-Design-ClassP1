@@ -28,16 +28,8 @@ namespace CleanBrilliantCompany.Control
                 ReportType = "Sales"
             };
 
-            // DUMMY INPUT
-            string dummyData = @"
-            Sales increased by 20% in Q1.
-            Inventory levels improved.
-            Manufacturer Y had a 3-day delay in delivery.
-            Costs decreased due to bulk shipping.";
 
-            // Generate AI summary
-            string aiSummary = await _AIService.GenerateAnalysis(dummyData);
-            report.ReportDataText = aiSummary;
+            // report.ReportDataText = aiSummary;
 
             // Generate PDF from report
             report.ReportData = _reportGenerator.GeneratePDF(report);
@@ -63,23 +55,52 @@ namespace CleanBrilliantCompany.Control
             var sb = new StringBuilder();
 
             if (selected.Contains("Aging"))
-                sb.AppendLine(_dashboardFacade.GetAgingControl().GenerateReport());
+                sb.AppendLine("===== AGING DASHBOARD =====");
+            sb.AppendLine(_dashboardFacade.GetAgingControl().GenerateReport());
 
             if (selected.Contains("Manufacturer"))
-                sb.AppendLine(_dashboardFacade.GetManufacturerControl().GenerateReport());
+                sb.AppendLine("===== MANUFACTURER DASHBOARD =====");
+            sb.AppendLine(_dashboardFacade.GetManufacturerControl().GenerateReport());
 
             if (selected.Contains("Cost"))
-                sb.AppendLine(_dashboardFacade.GetCostControl().GenerateReport());
+                sb.AppendLine("===== COST DASHBOARD =====");
+            sb.AppendLine(_dashboardFacade.GetCostControl().GenerateReport());
 
-            // if (selected.Contains("Inventory"))
-            //     sb.AppendLine(_dashboardFacade.GetInventoryControl().GenerateReport());
+            if (selected.Contains("Inventory"))
+                sb.AppendLine("===== INVENTORY DASHBOARD =====");
+            sb.AppendLine(_dashboardFacade.GetInventoryControl().GenerateReport());
 
-            return new Report
+            string combinedDashboardData = sb.ToString();
+
+            // Pass combined data to OpenAI for analysis
+            string aiSummary = await _AIService.GenerateAnalysis(combinedDashboardData);
+
+            var report = new Report
             {
-                ReportName = "CombinedReport",
-                // ReportData = _reportGenerator.GeneratePDF(sb.ToString())
+                ReportName = "Custom Dashboard Report",
+                ReportType = "Multi-Dashboard Summary",
+                ReportDataText = aiSummary,
+                ReportData = _reportGenerator.GeneratePDF(new Report
+                {
+                    ReportName = "Custom Dashboard Report",
+                    ReportType = "Multi-Dashboard Summary",
+                    ReportDataText = aiSummary
+                })
             };
+
+            // Save to db
+            _repo.InsertReport(report);
+            _repo.InsertReportLog(new ReportLog
+            {
+                Report = report,
+                GeneratedDate = DateTime.Now,
+                Status = "Generated"
+            });
+            await _repo.SaveChangesAsync();
+            Console.WriteLine("AI Summary:\n" + aiSummary);
+            return report;
         }
+
 
 
         public async Task<List<ReportLog>> GetReportLogsAsync(int reportID)

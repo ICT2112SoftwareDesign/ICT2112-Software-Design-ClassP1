@@ -137,7 +137,7 @@ builder.Services.AddScoped<CostControl>();
 builder.Services.AddScoped<DashboardFacade>();
 builder.Services.AddScoped<IDashboardFacade, DashboardFacade>();
 Console.WriteLine($"[Debug] OpenAI Key Length: {apiKey?.Length}");
-
+builder.Services.AddSession();
 
 // -------------------------------
 // Build & Run the App

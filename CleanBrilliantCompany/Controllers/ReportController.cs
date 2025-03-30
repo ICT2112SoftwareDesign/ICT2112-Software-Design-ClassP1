@@ -35,14 +35,22 @@ namespace CleanBrilliantCompany.Controllers
             return View(); // View will embed PDF
         }
 
-        // For streaming the PDF
-        public async Task<IActionResult> GetReportPdf()
+        public IActionResult ViewReport()
         {
-            var report = await _reportControl.GenerateReportAsync();
+            return View();
+        }
 
-            Response.Headers.Add("Content-Disposition", "inline; filename=Report.pdf");
+        public IActionResult GetReportPdf()
+        {
+            byte[]? reportData = HttpContext.Session.Get("LatestReport");
 
-            return File(report.ReportData, "application/pdf");
+            if (reportData == null)
+            {
+                return NotFound("No report data available.");
+            }
+
+            Response.Headers.Add("Content-Disposition", "inline; filename=CustomReport.pdf");
+            return File(reportData, "application/pdf");
         }
 
         [HttpGet]
@@ -78,33 +86,17 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public async Task<IActionResult> GenerateSelectedReport(List<string> selectedDashboards)
         {
-            var reportHtmlSections = new List<string>();
-
-            if (selectedDashboards.Contains("Aging"))
-                reportHtmlSections.Add(_dashboardFacade.GetAgingControl().GenerateReport());
-
-            if (selectedDashboards.Contains("Manufacturer"))
-                reportHtmlSections.Add(_dashboardFacade.GetManufacturerControl().GenerateReport());
-
-            if (selectedDashboards.Contains("Cost"))
-                reportHtmlSections.Add(_dashboardFacade.GetCostControl().GenerateReport());
-
-            if (selectedDashboards.Contains("Inventory"))
-                reportHtmlSections.Add(_dashboardFacade.GetInventoryControl().GenerateReport());
-
-            string combinedHtml = string.Join("<hr/>", reportHtmlSections);
-
-            var report = new Report
+            if (selectedDashboards == null || !selectedDashboards.Any())
             {
-                ReportName = "Custom Report",
-                ReportData = _reportGenerator.GeneratePDF(new Report
-                {
-                    ReportName = "Custom Report",
-                    ReportDataText = combinedHtml
-                })
-            };
+                TempData["Error"] = "Please select at least one dashboard to generate the report.";
+                return RedirectToAction("PreviewReport"); // Return to selection page if empty
+            }
 
-            return File(report.ReportData, "application/pdf", "CustomReport.pdf");
+            var report = await _reportControl.GenerateCustomReportAsync(selectedDashboards);
+
+            // Store report data in memory for the next request (Session or TempData or Singleton)
+            HttpContext.Session.Set("LatestReport", report.ReportData); // Needs Session configured
+            return RedirectToAction("ViewReport");
         }
 
     }
