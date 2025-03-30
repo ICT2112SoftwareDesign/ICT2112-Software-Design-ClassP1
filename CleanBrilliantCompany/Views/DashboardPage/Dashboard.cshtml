@@ -30,7 +30,7 @@
         </a>
     </div> *@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Carbon Footprint Dashboard</h1>
+        <h2 class="h2 mb-0 text-gray-800">Carbon Footprint Dashboard</h2>
         <div>
             <a href="/feedback" class="btn btn-sm btn-primary shadow-sm mr-2">
                 <i class="fas fa-comment-dots fa-sm text-white-50"></i> Feedback
@@ -80,7 +80,7 @@
 
     <div class="row mt-5">
         <div class="col">
-            <h4 class="text-primary fw-bold">🧾 Carbon Emission Overview</h4>
+            <h3 class="text-primary fw-bold text-dark">🧾 Carbon Emission Overview</h3>
             <hr />
         </div>
     </div>
@@ -203,7 +203,7 @@
 
     <div class="row mt-5">
         <div class="col">
-            <h4 class="text-primary fw-bold">🏆 Best & Worst Performing Products</h4>
+            <h3 class="text-primary fw-bold text-dark">🏆 Best & Worst Performing Products</h3>
             <hr />
         </div>
     </div>
@@ -231,7 +231,7 @@
 
     <div class="row mt-5">
         <div class="col">
-            <h4 class="text-primary fw-bold">📈 Trends & Eco Adoption</h4>
+            <h3 class="text-primary fw-bold text-dark">📈 Trends & Eco Adoption</h3>
             <hr />
         </div>
     </div>
@@ -257,7 +257,7 @@
 
     <div class="row mt-5">
         <div class="col">
-            <h4 class="text-primary fw-bold">📦 Product-Item Analysis</h4>
+            <h3 class="text-primary fw-bold text-dark">📦 Product-Item Analysis</h3>
             <hr />
         </div>
     </div>
@@ -273,7 +273,7 @@
 
     <div class="row mt-5">
         <div class="col">
-            <h4 class="text-primary fw-bold">🚚 Transport & Logistics Insights</h4>
+            <h3 class="text-primary fw-bold text-dark">🚚 Transport & Logistics Insights</h3>
             <hr />
         </div>
     </div>
@@ -323,6 +323,12 @@
         </div>
     </div>
 
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="text-primary fw-bold text-dark">Carbon Footprint Comparison Tool</h3>
+            <hr />
+        </div>
+    </div>
 
     <!-- Comparison Tool -->
     <div class="row">
@@ -851,7 +857,10 @@
         };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script>
+        Chart.register(ChartDataLabels);
+        Chart.defaults.plugins.datalabels.display = false;
         const ctxProduct = document.getElementById("productEcoPieChart").getContext("2d");
 
         new Chart(ctxProduct, {
@@ -879,9 +888,24 @@
                     title: {
                         display: true,
                         text: 'Product Eco Breakdown'
+                    },
+                        datalabels: {
+                        display: true,
+                        color: '#000000',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: function(value, context) {
+                            const data = context.chart.data.datasets[0].data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const percentage = (value / total * 100).toFixed(1);
+                            return `${percentage}%`;
+                        }
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
         const ctxTransport = document.getElementById("transportModePieChart").getContext("2d");
@@ -913,9 +937,24 @@
                     title: {
                         display: true,
                         text: 'Order Transport Mode Breakdown'
+                    },
+                        datalabels: {
+                        display: true,
+                        color: '#000000',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: function(value, context) {
+                            const data = context.chart.data.datasets[0].data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const percentage = (value / total * 100).toFixed(1);
+                            return `${percentage}%`;
+                        }
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
         let trendChart;
@@ -1007,7 +1046,7 @@
         });
 
         const categoryChart = new Chart(document.getElementById("categoryBreakdownChart"), {
-            type: 'doughnut',
+            type: 'pie',
             data: {
                 labels: @Html.Raw(Json.Serialize(Model.ProductCategoryLabels)),
                 datasets: [{
@@ -1020,9 +1059,24 @@
             options: {
                 responsive: true,
                 plugins: {
-                    title: { display: true, text: 'Emissions by Product Category (kg CO₂)' }
+                    title: { display: true, text: 'Emissions by Product Category (kg CO₂)' },
+                        datalabels: {
+                        display: true,
+                        color: '#000000',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: function(value, context) {
+                            const data = context.chart.data.datasets[0].data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const percentage = (value / total * 100).toFixed(1);
+                            return `${percentage}%`;
+                        }
+                    }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
         let productComparisonChart;
