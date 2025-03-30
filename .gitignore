@@ -1,14 +1,24 @@
-\obj
-CleanBrilliantCompany/.env
-/CleanBrilliantCompany/bin/Debug
-/CleanBrilliantCompany/obj/Debug
-/CleanBrilliantCompany/obj/Debug
-/CleanBrilliantCompany/obj/Debug/net9.0
-/CleanBrilliantCompany/obj
-\bin
+# Build artifacts
+bin/
+obj/
+
+# VS-specific folders
 .vs/
 .vscode/
 .idea/
+
+# User secrets and environment config
 .env
-/.vs
-/CleanBrilliantCompany/.env
+CleanBrilliantCompany/.env
+
+# Ignore all Debug folders and build outputs
+CleanBrilliantCompany/bin/
+CleanBrilliantCompany/obj/
+
+# Cache and temp files
+*.cache
+*.assets
+*.FileListAbsolute.txt
+
+# DLLs and runtime outputs
+*.dll

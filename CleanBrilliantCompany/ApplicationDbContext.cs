@@ -34,12 +34,7 @@ public class ApplicationDbContext : DbContext
     // DbSets for the tables related to the Manufacturer Dashboard
     public DbSet<ManufacturerMetricsTable> ManufacturerMetrics { get; set; }
 
-using CleanBrilliantCompany.DTO;
-using CleanBrilliantCompany.Models.Forecast;
-using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext : DbContext
-{
     //public DbSet<DashboardTable> Dashboards { get; set; }
     //public DbSet<AgingAnalyticsDetailsTable> AgingAnalyticsDetails { get; set; }
     public DbSet<ForecastDashboardDTO>  ForecastDashboards { get; set; }
@@ -99,7 +94,11 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<ManufacturerAnalyticsTable>().ToTable("ManufacturerAnalytics").HasKey(m => m.ManufacturerAnalyticsId);
         modelBuilder.Entity<ManufacturerCostAnalyticsTable>().ToTable("ManufacturerCostAnalytics").HasKey(c => c.CostAnalyticsId);;
-     
+
+        modelBuilder.Entity<ForecastDashboardDTO>().ToTable("ForecastDashboard");
+        modelBuilder.Entity<ForecastDashboardDTO>().HasKey(d => d.DashBoardID);
+        modelBuilder.Entity<MetricDTO>().ToTable("ForecastMetrics");
+        modelBuilder.Entity<MetricDTO>().HasKey(d => d.MetricsID);
 
         var decimalToDoubleConverter = new ValueConverter<decimal, double>(
             v => (double)v,               // Convert decimal to double when saving to the DB.
@@ -130,11 +129,6 @@ public class ApplicationDbContext : DbContext
         //// Configure AgingAnalyticsDetailsTable entity and set the primary key
         //modelBuilder.Entity<AgingAnalyticsDetailsTable>()
         //    .HasKey(a => a.AnalyticsId);  // Set AnalyticsId as the primary key
-        modelBuilder.Entity<ForecastDashboardDTO>().ToTable("ForecastDashboard");
-        modelBuilder.Entity<ForecastDashboardDTO>().HasKey(d => d.DashBoardID);
-        modelBuilder.Entity<MetricDTO>().ToTable("ForecastMetrics");
-        modelBuilder.Entity<MetricDTO>().HasKey(d => d.MetricsID);
-
-        base.OnModelCreating(modelBuilder);
-    }
+        
+    
 }
