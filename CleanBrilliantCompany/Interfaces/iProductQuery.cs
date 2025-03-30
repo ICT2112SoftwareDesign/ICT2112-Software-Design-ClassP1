@@ -2,7 +2,7 @@ using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public interface iProductQuery
+    public interface IProductQuery
     {
         // Product
         Product getProductDetails(int productId);

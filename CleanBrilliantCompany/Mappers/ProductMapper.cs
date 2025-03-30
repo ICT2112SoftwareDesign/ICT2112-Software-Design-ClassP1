@@ -8,7 +8,7 @@ using Microsoft.Data.SqlClient;
 
 namespace CleanBrilliantCompany.Mappers
 {
-    public class ProductMapper : iProductDatabase
+    public class ProductMapper : IProductDatabase
     {
         private readonly string _connectionString;
 

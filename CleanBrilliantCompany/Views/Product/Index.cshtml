@@ -398,34 +398,51 @@
             <!-- Main Content -->
             <div class="container-fluid">
                 <h2>Product List</h2>
-                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px; margin-bottom: 20px;">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 100px; margin-bottom: 20px;">
+
+                    <form method="post" asp-action="FetchProduct" style="display: flex; align-items: center; gap: 10px;">
+                        <label for="searchQuery">Search Product:</label>
+                        <input class="form-control" id="searchInput" type="text" name="searchQuery"
+                            placeholder="Search by Product Name or Category" onkeyup="filterProducts()"
+                            style="padding: 8px; width: 300px;" required>
+                    </form>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <form method="post" style="display: flex; align-items: center;" asp-action="FetchProduct">
+                            <input type="number" name="productId" id="productId" class="form-control"
+                                placeholder="Search Product by ID"
+                                style="margin-right: 10px; padding: 6px 10px;" />
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </form>
+
+                        <form method="post" asp-action="Index">
+                            <button type="submit" class="btn btn-secondary">Clear</button>
+                        </form>
+                    </div>
 
                     
-                    @* search bars *@
-                    <div class="row mb-3 ml-2">
-                        <div class="row-auto">
-                                @* Search PRODUCT ID with Clear button *@
-                            <form method="post" asp-action="FetchProduct" class="input-group mb-2">
-                                <input class="form-control" id="productId" type="number" name="productId"
-                                    placeholder="Search Product by ID" required>
-                                <button type="submit" class="btn btn-primary">Search</button>
-                            </form>
-                        </div>
 
-                        <div class="row-auto">
-                            <form method="post" asp-action="Index" class="input-group mb-2">
-                                <button type="submit" class="btn btn-secondary">Clear</button>
-                            </form>
-                        </div>
+                    <!--
+                    @* Search PRODUCT ID with Clear button *@
+                    <form method="post" asp-action="FetchProduct" class="input-group mb-2" 
+                    style="display: flex; align-items: center; gap: 10px;>
+                        <input class="form-control" id="productId" type="number" name="productId"
+                            placeholder="Search Product by ID" 
+                            style="margin-right: 10px; padding: 6px 10px;" required>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
 
-                        @* Search by Product Name or Category *@
-                        <div class="row-12">
-                            <form method="post" asp-action="FetchProduct" class="input-group mb-2">
-                                <input class="form-control" id="searchInput" type="text" name="searchQuery" style="padding: 8px 12px;"
-                                    placeholder="Search by Product Name or Category" onkeyup="filterProducts()" required>
-                            </form>
-                        </div>
-                    </div>
+                    <form method="post" asp-action="Index" class="input-group mb-2" style="display: flex; align-items: center;">
+                        <button type="submit" class="btn btn-secondary">Clear</button>
+                    </form>
+
+                    @* Search by Product Name or Category *@
+                    <form method="post" asp-action="FetchProduct" class="input-group mb-2">
+                        <label for="searchQuery" style="margin-right: 10px;">Search Product:</label>
+                        <input class="form-control" id="searchInput" type="text" name="searchQuery" style="padding: 6px 10px;"
+                            placeholder="Search by Product Name or Category" onkeyup="filterProducts()" required>
+                    </form>
+                    JS-->
                 </div>
 
                 @* TODO: Button to view manufacturer details *@
@@ -540,10 +557,11 @@
                             </div>
                         </div>
                         
-                        <div class="col-auto">
+                        @* Remove probs dont need *@
+                        @* <div class="col-auto">
                             <!-- Go to Product Batch Listings Link -->
                             <a asp-controller="Product" asp-action="displayProductBatch" class="btn btn-primary">Product Batch Listings</a>
-                        </div>
+                        </div> *@
                         
                         <div class="col-auto">
                             <!-- Simulate Reorder Request -->

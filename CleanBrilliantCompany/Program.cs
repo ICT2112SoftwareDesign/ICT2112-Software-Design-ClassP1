@@ -48,11 +48,11 @@ builder.Services.AddScoped<IItemCreation, ItemControl>();
 builder.Services.AddScoped<IReturnForm, ItemControl>();
 builder.Services.AddScoped<IItemDetails, ItemControl>();
 
-builder.Services.AddScoped<iProduct, ProductControl>();
-builder.Services.AddScoped<iProductQuantity, ProductControl>();
-builder.Services.AddScoped<iBatch, ProductControl>();
+builder.Services.AddScoped<IProduct, ProductControl>();
+builder.Services.AddScoped<IProductQuantity, ProductControl>();
+builder.Services.AddScoped<IBatch, ProductControl>();
 builder.Services.AddScoped<iReorderRequest, ReorderRequestManagement>();
-builder.Services.AddScoped<iManufacturer, ProductControl>();
+builder.Services.AddScoped<IManufacturer, ProductControl>();
 
 
 // Lazy resolver for breaking circular dependency
@@ -65,7 +65,6 @@ builder.Services.AddScoped<ReturnFormMapper>();
 builder.Services.AddScoped<ReturnFormController>();
 builder.Services.AddScoped<ItemControl>();
 builder.Services.AddScoped<ProductControl>();
-builder.Services.AddScoped<iProduct, ProductControl>();
 builder.Services.AddScoped<ProductFactory>();
 builder.Services.AddScoped<ProductMapper>();
 

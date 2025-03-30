@@ -7,7 +7,7 @@ using CleanBrilliantCompany.Models.Factory;
 namespace CleanBrilliantCompany.Models.Control
 {
 
-    public class ProductControl : iProductQuery, iProduct, iProductQuantity, iManufacturer, iBatch
+    public class ProductControl : IProductQuery, IProduct, IProductQuantity, IManufacturer, IBatch
     {
         private readonly ProductMapper _productMapper;
         private readonly iReorderRequest _ireorderRequest;
