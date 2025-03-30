@@ -22,7 +22,6 @@ var connectionString = Env.GetString("CONNECTION_STRING");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -55,6 +54,12 @@ builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>(
 builder.Services.AddScoped<IItem, CostDataRetrievalService>();
 builder.Services.AddScoped<IBatch, CostDataRetrievalService>();
 builder.Services.AddScoped<IManufacturer, CostDataRetrievalService>();
+builder.Services.AddScoped<ManufacturerRepo, ManufacturerMapper>();
+
+// register the manufacturer control 
+builder.Services.AddScoped<ManufacturerControl>(); 
+builder.Services.AddScoped<FakeReorderInterface>(); 
+
 
 var app = builder.Build();
 

@@ -10,6 +10,18 @@ public class DashboardFactory {
                     validityDuration: dTO.ValidityDuration,
                     type: 1
                 );
+
+            case 3:
+                return new ManufacturerDashboardRdm(
+                    id: dTO.DashboardId,
+                    name: "Manufacturer Dashboard",
+                    requestedStartDate: dTO.RequestedStartDate ?? DateTime.MinValue,
+                    requestedEndDate: dTO.RequestedEndDate ?? DateTime.MinValue,
+                    validityDuration: dTO.ValidityDuration,
+                    type: dTO.Type,
+                    generatedDate: dTO.GeneratedDate ?? DateTime.Now
+                );
+
             case 4:
                 return new CostDashboardRdm(
                     id: dTO.DashboardId,

@@ -5,3 +5,8 @@ CleanBrilliantCompany/.env
 /CleanBrilliantCompany/obj/Debug
 /CleanBrilliantCompany/obj/Debug/net9.0
 /CleanBrilliantCompany/obj
+\bin
+.vs/
+.vscode/
+.idea/
+.env
