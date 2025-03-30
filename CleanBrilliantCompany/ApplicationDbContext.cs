@@ -44,6 +44,9 @@ public class ApplicationDbContext : DbContext
     {
     }
 
+    public DbSet<Report> Reports { get; set; }
+    public DbSet<ReportLog> ReportLogs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Map entity classes to actual database tables (if necessary)
