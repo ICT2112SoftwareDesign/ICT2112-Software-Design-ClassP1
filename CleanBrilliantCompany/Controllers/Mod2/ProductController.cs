@@ -70,7 +70,6 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Index");
         }
 
-
         [HttpPost]
         public async Task<IActionResult> FetchProduct(int productId)
         {
@@ -81,8 +80,33 @@ namespace CleanBrilliantCompany.Controllers
             {
                 productInfo.Add(product.retrieveProductInfo());
             }
-            return View("~/Views/Product/TestProduct.cshtml", productInfo);
+
+            List<Dictionary<string, object>> manufacturersInfo = new List<Dictionary<string, object>>();
+            List<ProductManufacturer> manufacturers = _productControl.getAllProductManufacturer();
+
+            foreach (var manufacturer in manufacturers)
+            {
+                manufacturersInfo.Add(manufacturer.retrieveProductManufacturerInfo());
+            }
+
+            ViewBag.Manufacturers = manufacturersInfo;
+
+            return View("~/Views/Product/Index.cshtml", productInfo);
         }
+
+
+        // [HttpPost]
+        // public async Task<IActionResult> FetchProduct(int productId)
+        // {
+        //     List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+        //     Product product = _productControl.getProductDetails(productId);
+
+        //     if (product != null)
+        //     {
+        //         productInfo.Add(product.retrieveProductInfo());
+        //     }
+        //     return View("~/Views/Product/TestProduct.cshtml", productInfo);
+        // }
 
         [HttpPost]
         public async Task<IActionResult> UpdateProduct(int productId, string productName, string productCategory, float productCost, 
