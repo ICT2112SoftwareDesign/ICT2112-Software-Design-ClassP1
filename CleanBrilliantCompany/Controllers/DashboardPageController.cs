@@ -274,8 +274,6 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult CalculateItem(int itemId)
         {
-            Console.WriteLine("Item ID caught: " + itemId);
-
             // Use await for async operation rather than blocking with .Result
             Item i = _itemControl.getItemById(itemId)?.Result;
             

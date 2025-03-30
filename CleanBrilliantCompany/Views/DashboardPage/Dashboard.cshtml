@@ -384,7 +384,7 @@
             var orderAddress = dropdown.options[dropdown.selectedIndex].getAttribute("data-address"); // Get address
 
             $.ajax({
-                url: '@Url.Action("CalculateItem", "DashboardPage")',
+                url: '@Url.Action("CalculateOrder", "DashboardPage")',
                 type: 'POST',
                 data: { orderId: orderId, orderAddress: orderAddress }, // Send itemId as JSON
                 success: function(response) {
