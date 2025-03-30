@@ -5,7 +5,16 @@ using CleanBrilliantCompany.Mapper;
 using DotNetEnv;
 using CleanBrilliantCompany.Service;
 using Microsoft.EntityFrameworkCore;
-using DotNetEnv; 
+using CleanBrilliantCompany.DataSource.Interface;
+using CleanBrilliantCompany.DataSource.Mapper;
+using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Interfaces.Forecast;
+using CleanBrilliantCompany.Models.Forecast;
+using CleanBrilliantCompany.Services.Forecast;
+using CleanBrilliantCompany.Services.Notification;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+using CleanBrilliantCompany.Services;
 
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -13,9 +22,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // load environment variables from .env file 
-Env.Load(); 
+Env.Load();
 // get the connection string from the environment variables 
-var connectionString = Env.GetString("CONNECTION_STRING"); 
+var connectionString = Env.GetString("CONNECTION_STRING");
+
+// get apikey from env
+var apiKey = Env.GetString("OPENAI_API_KEY");
 
 // Configure services and add DbContext
 // builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -72,7 +84,7 @@ builder.Services.AddControllersWithViews();
 
 
 // register fake context as a singleton 
-builder.Services.AddSingleton<FakeDbContext>(); 
+builder.Services.AddSingleton<FakeDbContext>();
 
 
 // register aging mapper to use fakedb context 
@@ -100,15 +112,15 @@ builder.Services.AddScoped<IProduct, MockProduct>(); // Simulation
 builder.Services.AddScoped<InventoryControl>();
 builder.Services.AddScoped<IInventoryRepository, InventoryMapper>();
 
-builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>(); 
+builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>();
 builder.Services.AddScoped<IItem, CostDataRetrievalService>();
 builder.Services.AddScoped<IBatch, CostDataRetrievalService>();
 builder.Services.AddScoped<IManufacturer, CostDataRetrievalService>();
 builder.Services.AddScoped<ManufacturerRepo, ManufacturerMapper>();
 
 // register the manufacturer control 
-builder.Services.AddScoped<ManufacturerControl>(); 
-builder.Services.AddScoped<FakeReorderInterface>(); 
+builder.Services.AddScoped<ManufacturerControl>();
+builder.Services.AddScoped<FakeReorderInterface>();
 
 // -------------------------------
 // OpenAI + Report Generation

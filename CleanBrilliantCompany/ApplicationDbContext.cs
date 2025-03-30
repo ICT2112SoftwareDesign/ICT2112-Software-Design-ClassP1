@@ -2,6 +2,7 @@ using CleanBrilliantCompany.DatabaseEntities;
 using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.DTO;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using CleanBrilliantCompany.Models;
 
 public class ApplicationDbContext : DbContext
 {
@@ -37,7 +38,7 @@ public class ApplicationDbContext : DbContext
 
     //public DbSet<DashboardTable> Dashboards { get; set; }
     //public DbSet<AgingAnalyticsDetailsTable> AgingAnalyticsDetails { get; set; }
-    public DbSet<ForecastDashboardDTO>  ForecastDashboards { get; set; }
+    public DbSet<ForecastDashboardDTO> ForecastDashboards { get; set; }
     public DbSet<MetricDTO> ForecastMetrics { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -96,7 +97,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ProductBatchTable>();
 
         modelBuilder.Entity<ManufacturerAnalyticsTable>().ToTable("ManufacturerAnalytics").HasKey(m => m.ManufacturerAnalyticsId);
-        modelBuilder.Entity<ManufacturerCostAnalyticsTable>().ToTable("ManufacturerCostAnalytics").HasKey(c => c.CostAnalyticsId);;
+        modelBuilder.Entity<ManufacturerCostAnalyticsTable>().ToTable("ManufacturerCostAnalytics").HasKey(c => c.CostAnalyticsId); ;
 
         modelBuilder.Entity<ForecastDashboardDTO>().ToTable("ForecastDashboard");
         modelBuilder.Entity<ForecastDashboardDTO>().HasKey(d => d.DashBoardID);
@@ -113,25 +114,18 @@ public class ApplicationDbContext : DbContext
             .HasConversion(decimalToDoubleConverter);
 
 
-        modelBuilder.Entity<DashboardBatchSummaryTable>().ToTable("DashboardBatchSummary").HasKey(s => s.BatchSummaryId);;
+        modelBuilder.Entity<DashboardBatchSummaryTable>().ToTable("DashboardBatchSummary").HasKey(s => s.BatchSummaryId); ;
 
         // Configure ManufacturerMetricsTable entity and set the primary key
         modelBuilder.Entity<ManufacturerMetricsTable>()
             .HasKey(m => m.MetricId);  // Set MetricId as the primary key
 
+        // For Report and AnalyticsReportLog
+        modelBuilder.Entity<Report>().ToTable("Report");
+        modelBuilder.Entity<ReportLog>()
+        .ToTable("AnalyticsReportLog"); // rename table mapping
+
+
         base.OnModelCreating(modelBuilder);
     }
-    
-        //modelBuilder.Entity<DashboardTable>().ToTable("Dashboard");
-        //modelBuilder.Entity<AgingAnalyticsDetailsTable>().ToTable("AgingAnalyticsDetails");
-
-        //// Configure DashboardTable entity and set the primary key 
-        //modelBuilder.Entity<DashboardTable>()
-        //    .HasKey(d => d.DashboardId);  // Set DashboardId as the primary key 
-
-        //// Configure AgingAnalyticsDetailsTable entity and set the primary key
-        //modelBuilder.Entity<AgingAnalyticsDetailsTable>()
-        //    .HasKey(a => a.AnalyticsId);  // Set AnalyticsId as the primary key
-        
-    
 }
