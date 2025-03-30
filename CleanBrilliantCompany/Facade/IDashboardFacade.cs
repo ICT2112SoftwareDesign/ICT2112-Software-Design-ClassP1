@@ -1,4 +1,5 @@
 using CleanBrilliantCompany.Control;
+using CleanBrilliantCompany.Interfaces.Forecast;
 public interface IDashboardFacade
 {
     List<Dashboard> getDashboardsData();
@@ -7,4 +8,5 @@ public interface IDashboardFacade
     ManufacturerControl GetManufacturerControl();
     CostControl GetCostControl();
     InventoryControl GetInventoryControl();
+    IForecastControl GetForecastControl();
 }

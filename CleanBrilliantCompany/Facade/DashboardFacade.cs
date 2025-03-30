@@ -1,4 +1,6 @@
 using CleanBrilliantCompany.Control;
+using CleanBrilliantCompany.Interfaces.Forecast;
+using CleanBrilliantCompany.Models.Forecast;
 
 public class DashboardFacade : IDashboardFacade
 {
@@ -6,20 +8,22 @@ public class DashboardFacade : IDashboardFacade
     private readonly ManufacturerControl manufacturerControl;
     private readonly CostControl costControl;
     private readonly InventoryControl inventoryControl;
-
+    private readonly IForecastControl forecastControl;
 
 
     public DashboardFacade(
         AgingControl agingControl,
         ManufacturerControl manufacturerControl,
         CostControl costControl,
-        InventoryControl inventoryControl
+        InventoryControl inventoryControl,
+        IForecastControl forecastControl
         )
     {
         this.agingControl = agingControl;
         this.manufacturerControl = manufacturerControl;
         this.costControl = costControl;
         this.inventoryControl = inventoryControl;
+        this.forecastControl = forecastControl;
     }
 
 
@@ -27,6 +31,7 @@ public class DashboardFacade : IDashboardFacade
     public ManufacturerControl GetManufacturerControl() => manufacturerControl;
     public CostControl GetCostControl() => costControl;
     public InventoryControl GetInventoryControl() => inventoryControl;
+    public IForecastControl GetForecastControl() => forecastControl;
     public List<Dashboard> getDashboardsData()
     {
         // this thing just calls every dashboard's getDashboardData method 
@@ -44,8 +49,9 @@ public class DashboardFacade : IDashboardFacade
 
         string inventoryReport = inventoryControl.GenerateReport();
 
-        // lets simulate to run this so i print the dashboard data 
         return dashboards;
     }
+    public string GetForecastReport() => forecastControl.GenerateReport();
+
 
 }

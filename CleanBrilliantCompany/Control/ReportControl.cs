@@ -70,6 +70,11 @@ namespace CleanBrilliantCompany.Control
                 sb.AppendLine("===== INVENTORY DASHBOARD =====");
             sb.AppendLine(_dashboardFacade.GetInventoryControl().GenerateReport());
 
+            if (selected.Contains("Forecast"))
+                sb.AppendLine("===== FORECAST DASHBOARD =====");
+            sb.AppendLine(_dashboardFacade.GetForecastControl().GenerateReport());
+
+
             string combinedDashboardData = sb.ToString();
 
             // Pass combined data to OpenAI for analysis

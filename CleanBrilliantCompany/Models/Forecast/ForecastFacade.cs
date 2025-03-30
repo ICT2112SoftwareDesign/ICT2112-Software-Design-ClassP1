@@ -7,12 +7,13 @@ using CleanBrilliantCompany.Services.Sorting;
 
 namespace CleanBrilliantCompany.Models.Forecast
 {
-    public class ForecastFacade
+    public class ForecastFacade : IForecastingFacade
+
     {
         //private readonly IStockPredictionService _stockPredictionService;
         //private readonly IScenarioPricingService _scenarioPricingService;
         //private readonly INotificationService _notificationService;
-         //simulated interface
+        //simulated interface
         private readonly MetricFactory _metricFactory;
         private readonly IForecastRepository _forecastRepository;
         private readonly IAlert _alertService;
@@ -30,7 +31,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             //_stockPredictionService = stockPredictionService;
             //_scenarioPricingService = scenarioPricingService;
             //_notificationService = notificationService;
-            
+
             _metricFactory = metricFactory;
             _forecastRepository = forecastRepository;
             _alertService = alertService;
@@ -43,18 +44,18 @@ namespace CleanBrilliantCompany.Models.Forecast
         }
         public ForecastDashboard generateDashboard(DateTime selectedMonth, int adjustmentFactor = 0)
         {
-            
+
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
             _forecastDataAdapter.GetForecastInputs(selectedMonth, out productList, out aggregatedSales);
-            ForecastDashboard dashboard=null;
+            ForecastDashboard dashboard = null;
             if (adjustmentFactor == 0)
             {
                 dashboard = _forecastRepository.getDashboard(selectedMonth.Month, selectedMonth.Year);
             }
             if (dashboard == null)
             {
-                 dashboard = new ForecastDashboard(0, selectedMonth, selectedMonth.AddMonths(1).AddDays(-1), DateTime.Now, 0, new List<ForecastMetrics>()
+                dashboard = new ForecastDashboard(0, selectedMonth, selectedMonth.AddMonths(1).AddDays(-1), DateTime.Now, 0, new List<ForecastMetrics>()
 );
 
                 foreach (ProductDTO product in productList)
@@ -79,7 +80,7 @@ namespace CleanBrilliantCompany.Models.Forecast
                 {
                     var product = productList.FirstOrDefault(p => p.ID == metric.getProductId());
                     metric.setProductName(product.Name);
-                    
+
                 }
             }
             //sorting
@@ -89,10 +90,10 @@ namespace CleanBrilliantCompany.Models.Forecast
             List<string> alert = new List<string>();
             if (dashboard.GetMetrics().Count != 0)
             {
-               alert=_alertService.alert(dashboard.GetMetrics());
+                alert = _alertService.alert(dashboard.GetMetrics());
                 dashboard.SetAlertItemList(alert);
             }
-            
+
 
             return dashboard;
 
@@ -154,13 +155,32 @@ namespace CleanBrilliantCompany.Models.Forecast
 
         public ForecastDashboard retrieveUpcomingDashboard()
         {
-            return generateDashboard(DateTime.Now.AddMonths(1), 0); 
+            return generateDashboard(DateTime.Now.AddMonths(1), 0);
         }
 
 
+        public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth, int productId, String productName, int priceAdjustment)
+        {
+            List<ProductDTO> productList;
+            Dictionary<int, int> aggregatedSales;
+            _forecastDataAdapter.GetForecastInputs(selectedMonth, out productList, out aggregatedSales);
 
+            ProductDTO product = productList.FirstOrDefault(p => p.ID == productId);
 
+            ForecastMetrics metric = _metricFactory.GenerateForecastMetric(productId, aggregatedSales, product, priceAdjustment);
+            return metric;
+        }
 
+        public List<ForecastMetrics> generatePriceScenario(DateTime selectedMonth, int adjustmentFactor)
+        {
+            var dashboard = generateDashboard(selectedMonth, adjustmentFactor);
+            return dashboard.GetMetrics();
+        }
+        public List<ForecastMetrics> generateStockForecast(DateTime selectedMonth)
+        {
+            var dashboard = generateDashboard(selectedMonth, 0);
+            return dashboard.GetMetrics();
+        }
 
         //private List<ForecastMetrics> SortMetrics(List<ForecastMetrics> metrics, String sortType)
         //{

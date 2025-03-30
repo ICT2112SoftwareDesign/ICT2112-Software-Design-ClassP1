@@ -9,6 +9,7 @@ namespace CleanBrilliantCompany.Interfaces.Forecast
         List<ForecastMetrics> generateStockForecast(DateTime selectedMonth);
         List<ForecastMetrics> generatePriceScenario(DateTime selectedMonth, int adjustmentFactor);
         ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth, int productId, String productName, int priceAdjustment);
+        ForecastDashboard retrieveUpcomingDashboard();
 
     }
 }
