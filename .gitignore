@@ -1,1 +1,12 @@
 \obj
+\.vs
+CleanBrilliantCompany/obj/*
+CleanBrilliantCompany/obj/Debug/net9.0/*
+CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfo.cs
+CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfoInputs.cache
+CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfo.cs
+CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.AssemblyInfoInputs.cache
+CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.assets.cache
+CleanBrilliantCompany/obj/Debug/net9.0/CleanBrilliantCompany.GeneratedMSBuildEditorConfig.editorconfig
+CleanBrilliantCompany/appsettings.json
+/CleanBrilliantCompany/bin

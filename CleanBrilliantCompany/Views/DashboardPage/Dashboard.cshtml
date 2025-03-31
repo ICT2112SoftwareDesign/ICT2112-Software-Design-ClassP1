@@ -1,0 +1,1929 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @* <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet"> *@
+
+    <!-- Font Awesome -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,400,600,700,800,900" rel="stylesheet">
+
+    <!-- SB Admin CSS -->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">CBC Carbon Footprint</div>
+            </a>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item active">
+                <a class="nav-link" href="/">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">Feedback Tools</div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/feedback">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Feedback</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/manager">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Manager Feedback</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">Reporting</div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/dashboardpage/ecofriendlyreport">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Generate Report</span>
+                </a>
+            </li>
+        </ul>
+        <div id="content-wrapper" style="padding-top: 0;">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <!-- Topbar Search -->
+                <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                               aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                    <li class="nav-item dropdown no-arrow d-sm-none">
+                        <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <!-- Dropdown - Messages -->
+                        <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                             aria-labelledby="searchDropdown">
+                            <form class="form-inline mr-auto w-100 navbar-search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control bg-light border-0 small"
+                                           placeholder="Search for..." aria-label="Search"
+                                           aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="fas fa-search fa-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+
+                    <!-- Nav Item - Alerts -->
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bell fa-fw"></i>
+                            <!-- Counter - Alerts -->
+                            <span class="badge badge-danger badge-counter">3+</span>
+                        </a>
+                        <!-- Dropdown - Alerts -->
+                        <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="alertsDropdown">
+                            <h6 class="dropdown-header">
+                                Alerts Center
+                            </h6>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="fas fa-file-alt text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 12, 2019</div>
+                                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-success">
+                                        <i class="fas fa-donate text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 7, 2019</div>
+                                    $290.29 has been deposited into your account!
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-warning">
+                                        <i class="fas fa-exclamation-triangle text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 2, 2019</div>
+                                    Spending Alert: We've noticed unusually high spending for your account.
+                                </div>
+                            </a>
+                            <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                        </div>
+                    </li>
+
+                    <!-- Nav Item - Messages -->
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-envelope fa-fw"></i>
+                            <!-- Counter - Messages -->
+                            <span class="badge badge-danger badge-counter">7</span>
+                        </a>
+                        <!-- Dropdown - Messages -->
+                        <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="messagesDropdown">
+                            <h6 class="dropdown-header">
+                                Message Center
+                            </h6>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="dropdown-list-image mr-3">
+                                    <img class="rounded-circle" src="img/undraw_profile_1.svg"
+                                         alt="...">
+                                    <div class="status-indicator bg-success"></div>
+                                </div>
+                                <div class="font-weight-bold">
+                                    <div class="text-truncate">
+                                        Hi there! I am wondering if you can help me with a
+                                        problem I've been having.
+                                    </div>
+                                    <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="dropdown-list-image mr-3">
+                                    <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                         alt="...">
+                                    <div class="status-indicator"></div>
+                                </div>
+                                <div>
+                                    <div class="text-truncate">
+                                        I have the photos that you ordered last month, how
+                                        would you like them sent to you?
+                                    </div>
+                                    <div class="small text-gray-500">Jae Chun · 1d</div>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="dropdown-list-image mr-3">
+                                    <img class="rounded-circle" src="img/undraw_profile_3.svg"
+                                         alt="...">
+                                    <div class="status-indicator bg-warning"></div>
+                                </div>
+                                <div>
+                                    <div class="text-truncate">
+                                        Last month's report looks great, I am very happy with
+                                        the progress so far, keep up the good work!
+                                    </div>
+                                    <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="dropdown-list-image mr-3">
+                                    <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
+                                         alt="...">
+                                    <div class="status-indicator bg-success"></div>
+                                </div>
+                                <div>
+                                    <div class="text-truncate">
+                                        Am I a good boy? The reason I ask is because someone
+                                        told me that people say this to all dogs, even if they aren't good...
+                                    </div>
+                                    <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                                </div>
+                            </a>
+                            <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                        </div>
+                    </li>
+
+                    <div class="topbar-divider d-none d-sm-block"></div>
+
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                            <img class="img-profile rounded-circle"
+                                 src="img/undraw_profile.svg">
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Profile
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Settings
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Activity Log
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </nav>
+            <!-- End of Topbar -->
+            <div class="dashboard-content px-4">
+            <div id="content" class="dashboard-container">
+    <!-- Right-aligned Buttons -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h2 class="h2 mb-0 text-gray-800">Carbon Footprint Dashboard</h2>
+        <div class="d-flex flex-column align-items-end">
+            <div>
+                @* <a href="/feedback" class="btn btn-sm btn-primary shadow-sm mr-2"> *@
+                @*     <i class="fas fa-comment-dots fa-sm text-white-50"></i> Feedback *@
+                @* </a> *@
+                @* <a href="/manager" class="btn btn-sm btn-info shadow-sm mr-2"> *@
+                @*     <i class="fas fa-eye fa-sm text-white-50"></i> Manager View Feedback *@
+                @* </a> *@
+                @* <a href="/dashboardpage/ecofriendlyreport" class="btn btn-sm btn-success shadow-sm"> *@
+                @*     <i class="fas fa-download fa-sm text-white-50"></i> Generate Report *@
+                </a>
+            </div>
+            <button id="toggleButton" class="btn btn-sm btn-secondary shadow-sm mt-2">
+                <i class="fas fa-cogs fa-sm text-white-50"></i> Show/Hide Backend Mockup Features
+            </button>
+        </div>
+    </div>
+
+    <!-- Section to be toggled -->
+    <div id="carbonCalculatorSection" style="display: none;">
+        <div class="button-row">
+            <button onclick="createNewProduct()">Create Product (Mockup)</button>
+            <button type="button" onclick="calculateItemCarbonFootprint()">Calculate Item Carbon Footprint</button>
+            <button onclick="updateItemsCFDaily()">Calculate All Items CF Daily</button>
+            <button onclick="calculateShipmentCF()">Calculate Shipment CF</button>
+        </div>
+
+        <div>
+            <form>
+                <label for="ProductDropdown">Select Product</label>
+                <select id="ProductDropdown">
+                    @foreach (var product in Model.ProductList) // Assuming a list of products in the model
+                    {
+                        <option value="@product.ProductId">@product.ProductName with product ID of @product.ProductId and carbon emission value: @product.CarbonFootprint</option>
+                    }
+                </select>
+
+                <label for="ItemDropdown">Select Item</label>
+                <select id="ItemDropdown">
+                    @foreach (var item in Model.ItemList) // Assuming a list of items in the model
+                    {
+                        <option value="@item.getItemId()">Item #@item.getItemId() with product ID of @item.getProductId()</option>
+                    }
+                </select>
+
+                <label for="StubOrderDropdown">Select Stub Order</label>
+                <select id="StubOrderDropdown">
+                    @foreach (var order in Model.StubOrderList) // Assuming a list of items in the model
+                    {
+                        <option value="@order.GetOrderID()" data-address="@order.GetOrderAddress()">Order #@order.GetOrderID() with address of @order.GetOrderAddress()</option>
+                    }
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="text-primary fw-bold text-dark">🧾 Carbon Emission Overview</h3>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row">
+        <!-- Total Product CF Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2 summary-card">
+                <div class="card-body" onclick="toggleAllPanels()">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        Total Product Carbon Footprint
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalProductCF kg CO₂</div>
+                    <div class="text-xs text-muted">Past 1 Year</div>
+                    <div id="productDetails" class="embedded-panel" style="display:none; margin-top:10px;">
+                        <hr />
+                        <p><strong>Past Week:</strong> @Model.ProductPastWeekCF kg CO₂</p>
+                        <p><strong>Past Month:</strong> @Model.ProductPastMonthCF kg CO₂</p>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        <!-- Total Item CF Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2 summary-card">
+                <div class="card-body" onclick="toggleAllPanels()">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                        Total Item Carbon Footprint
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalItemCF kg CO₂</div>
+                    <div class="text-xs text-muted">Past 1 Year</div>
+                    <div id="itemDetails" class="embedded-panel" style="display:none; margin-top:10px;">
+                        <hr />
+                        <p><strong>Past Week:</strong> @Model.ItemPastWeekCF kg CO₂</p>
+                        <p><strong>Past Month:</strong> @Model.ItemPastMonthCF kg CO₂</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Total Order CF Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2 summary-card">
+                <div class="card-body" onclick="toggleAllPanels()">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        Total Order Carbon Footprint
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalOrderCF kg CO₂</div>
+                    <div class="text-xs text-muted">Past 1 Year</div>
+                    <div id="orderDetails" class="embedded-panel" style="display:none; margin-top:10px;">
+                        <hr />
+                        <p><strong>Past Week:</strong> @Model.OrderPastWeekCF kg CO₂</p>
+                        <p><strong>Past Month:</strong> @Model.OrderPastMonthCF kg CO₂</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trend Line Chart -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Total Carbon Emission Trend</h6>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group mb-3" role="group" aria-label="Trend View Toggle">
+                        <button class="btn btn-outline-primary active" id="toggle-monthly">Monthly</button>
+                        <button class="btn btn-outline-primary" id="toggle-weekly">Weekly</button>
+                        <button class="btn btn-outline-primary" id="toggle-daily">Daily</button>
+                    </div>
+                    <div class="chart-container">
+                    <canvas id="carbonTrendChart" class="shared-chart-size"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Product Eco Breakdown Pie -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Product Eco Breakdown</h6>
+                </div>
+                <div class="card-body">
+                     <div class="chart-container">
+                    <canvas id="productEcoPieChart" class="shared-chart-size"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Transport Mode Pie -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Order Transport Mode</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                    <canvas id="transportModePieChart" class="shared-chart-size"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Product Category Emissions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                    <canvas id="categoryBreakdownChart" class="shared-chart-size"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="text-primary fw-bold text-dark">🏆 Best & Worst Performing Products</h3>
+            <hr />
+        </div>
+    </div>
+    
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 5 Eco-Efficient Products</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                    <canvas id="ecoLeaderboardChart" class="shared-chart-size"></canvas>
+                    </div>
+                </div>
+            </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Top 5 Highest Emission Products</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                <canvas id="topEmittingProductsChart" class="shared-chart-size"></canvas>
+                </div>
+            </div>
+        </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="text-primary fw-bold text-dark">📈 Trends & Eco Adoption</h3>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Eco Product Trend Chart -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Eco Product Trend (Adoption Over Time)</h6>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+            <canvas id="ecoProductTrendChart" class="shared-chart-size"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Eco vs Non-Eco Item Count Over Time</h6>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+            <canvas id="ecoNonEcoItemChart" class="shared-chart-size"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="text-primary fw-bold text-dark">📦 Product-Item Analysis</h3>
+            <hr />
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Items per Product Emission Breakdown</h6>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+            <canvas id="itemEmissionBreakdownChart" class="shared-chart-size"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="text-primary fw-bold text-dark">🚚 Transport & Logistics Insights</h3>
+            <hr />
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Carbon Emission by Transport Mode</h6>
+        </div>
+        <div class="card-body">
+             <div class="chart-container">
+            <canvas id="transportEmissionChart" class="shared-chart-size"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Emission per km per Transport Mode</h6>
+        </div>
+        <div class="card-body">
+             <div class="chart-container">
+            <canvas id="emissionPerKmChart" class="shared-chart-size"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Emission vs Distance by Transport Mode</h6>
+        </div>
+        <div class="card-body">
+             <div class="chart-container">
+            <canvas id="emissionDistanceScatterChart" class="shared-chart-size"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Emission vs Order Weight</h6>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+            <canvas id="emissionWeightScatterChart" class="shared-chart-size"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Emission Efficiency (kg CO₂ / kg shipped)</h6>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+            <canvas id="emissionEfficiencyChart" class="shared-chart-size"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="text-primary fw-bold text-dark">Carbon Footprint Comparison Tool</h3>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Comparison Tool -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Carbon Footprint Comparison</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <!-- Date Range Filter -->
+                        <div class="col-12 mb-4">
+                            <h6 class="font-weight-bold">Date Range:</h6>
+                            <div class="d-flex">
+                                <input type="date" id="startDate" class="form-control mr-2" onchange="updateAllTables()">
+                                <input type="date" id="endDate" class="form-control" onchange="updateAllTables()">
+                            </div>
+                        </div>
+
+                        <!-- Product Comparison -->
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">Product Comparison</h6>
+                            <div class="form-group">
+                                <label>Select Products to Compare:</label>
+                                <div class="border p-3 rounded bg-light product-checkboxes" style="height: 200px; overflow-y: auto;">
+                                    @foreach (var product in Model.Products)
+                                    {
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input product-checkbox" 
+                                                id="product_@product.ProductId" 
+                                                value="@product.ProductId"
+                                                data-name="@product.ProductName"
+                                                data-emission="@product.CarbonEmission">
+                                            <label class="custom-control-label" for="product_@product.ProductId">
+                                                @product.ProductName - @product.CarbonEmission kg CO₂
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button class="btn btn-outline-secondary" onclick="selectAllProducts()">Select All</button>
+                                </div>
+                                <div>
+                                    <button class="btn btn-outline-secondary mr-2" onclick="clearProductSelection()">Clear Selection</button>
+                                    <button class="btn btn-primary" onclick="compareProducts()">Compare Products</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping Comparison -->
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">Shipping Method Comparison</h6>
+                            <div class="form-group">
+                                <label>Select Shipping Methods to Compare:</label>
+                                <div class="border p-3 rounded bg-light shipping-checkboxes" style="height: 200px; overflow-y: auto;">
+                                    @foreach (var method in Model.ShippingMethods)
+                                    {
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input shipping-checkbox" 
+                                                id="shipping_@method.TransportMode" 
+                                                value="@method.TransportMode"
+                                                data-name="@method.TransportMode"
+                                                data-emission="@method.AverageCarbonEmission">
+                                            <label class="custom-control-label" for="shipping_@method.TransportMode">
+                                                @method.TransportMode - @method.AverageCarbonEmission.ToString("F2") kg CO₂
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button class="btn btn-outline-secondary" onclick="selectAllShipping()">Select All</button>
+                                </div>
+                                <div>
+                                    <button class="btn btn-outline-secondary mr-2" onclick="clearShippingSelection()">Clear Selection</button>
+                                    <button class="btn btn-primary" onclick="compareShippingMethods()">Compare Shipping</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- Comparison Charts Row -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <canvas id="productComparisonChart" class="shared-chart-size"></canvas>
+                            <div id="productInsights" class="mt-3"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="shippingComparisonChart" class="shared-chart-size"></canvas>
+                            <div id="shippingInsights" class="mt-3"></div>
+                        </div>
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div>
+                </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current date and first day of previous month
+            const today = new Date();
+            const firstDayOfPrevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 2);
+            
+            // Format dates for input fields (YYYY-MM-DD)
+            const todayStr = today.toISOString().split('T')[0];
+            const firstDayOfPrevMonthStr = firstDayOfPrevMonth.toISOString().split('T')[0];
+
+            // Set default values for date inputs
+            document.getElementById('startDate').value = firstDayOfPrevMonthStr;
+            document.getElementById('endDate').value = todayStr;
+
+            // Trigger the initial updates
+            updateAllTables();
+        });
+
+        document.getElementById("toggleButton").addEventListener("click", function () {
+            var section = document.getElementById("carbonCalculatorSection");
+            if (section.style.display === "none") {
+                section.style.display = "block";
+                this.textContent = "Hide Mockup Backend Calculator Features";
+            } else {
+                section.style.display = "none";
+                this.textContent = "Show Mockup Backend Calculator Features";
+            }
+        });
+
+        function createNewProduct() {
+            $.ajax({
+                url: '@Url.Action("CreateProduct", "DashboardPage")', // ASP.NET MVC URL helper
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        // Update the dropdown with the new product's name
+                        $("#ProductDropdown").append(new Option(response.productName, response.productId, response.carbonFootprint));
+                    } else {
+                        alert("Failed to create product.");
+                    }
+                },
+                error: function() {
+                    alert("Error creating product.");
+                }
+            });
+        }
+
+        function calculateItemCarbonFootprint() {
+            var itemId = parseInt(document.getElementById("ItemDropdown").value, 10);
+
+            $.ajax({
+                url: '@Url.Action("CalculateItem", "DashboardPage")',
+                type: 'POST',
+                data: { itemId: itemId }, // Send itemId as JSON
+                success: function(response) {
+                    if (response.success) {
+                        alert("Item carbon footprint has been calculated and stored in Item CF DB.")
+                    } else {
+                        alert("Failed to calculate carbon footprint.");
+                    }
+                },
+                error: function() {
+                    alert("Error calculating carbon footprint.");
+                }
+            });
+        }
+
+        function updateItemsCFDaily(){
+            $.ajax({
+                url: '@Url.Action("UpdateItemsCFDaily", "DashboardPage")',
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        alert("Items' carbon footprint has been updated.");
+
+                        // Update UI with new values
+                        document.getElementById("TotalItemCF").innerText = response.updatedViewModel.totalItemCF;
+                        document.getElementById("ItemPastWeekCF").innerText = response.updatedViewModel.itemPastWeekCF;
+                        document.getElementById("ItemPastMonthCF").innerText = response.updatedViewModel.itemPastMonthCF;
+                    } else {
+                        alert("Failed to update item carbon footprints.");
+                    }
+                },
+                error: function() {
+                    alert("Error calculating carbon footprint.");
+                }
+            });
+        }
+
+        function calculateShipmentCF() {
+            var dropdown = document.getElementById("StubOrderDropdown");
+            var orderId = parseInt(dropdown.value, 10);
+            var orderAddress = dropdown.options[dropdown.selectedIndex].getAttribute("data-address"); // Get address
+
+            $.ajax({
+                url: '@Url.Action("CalculateOrder", "DashboardPage")',
+                type: 'POST',
+                data: { orderId: orderId, orderAddress: orderAddress }, // Send itemId as JSON
+                success: function(response) {
+                    if (response.success) {
+                        alert("Order carbon footprint = " + response.totalCarbon + "CO2e, and stored in Order CF DB.")
+                    } else {
+                        alert("Failed to calculate carbon footprint.");
+                    }
+                },
+                error: function() {
+                    alert("Error calculating carbon footprint.");
+                }
+            });
+        }
+
+        function updateAllTables() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert('Start date cannot be after end date');
+                return;
+            }
+
+            // Update both tables
+            updateProductTable(startDate, endDate);
+            updateShippingTable(startDate, endDate);
+        }
+
+        function updateProductTable(startDate, endDate) {
+            $.ajax({
+                url: '@Url.Action("GetFilteredProducts", "DashboardPage")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        const productCheckboxes = document.querySelector('.product-checkboxes');
+                        productCheckboxes.innerHTML = response.products.map(product => `
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input product-checkbox" 
+                                    id="product_${product.productId}" 
+                                    value="${product.productId}"
+                                    data-name="${product.productName}"
+                                    data-emission="${product.carbonEmission}">
+                                <label class="custom-control-label" for="product_${product.productId}">
+                                    ${product.productName} - ${product.carbonEmission.toFixed(2)} kg CO₂
+                                </label>
+                            </div>
+                        `).join('');
+                    } else {
+                        alert('Failed to fetch filtered products: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error fetching filtered products: ' + error);
+                }
+            });
+        }
+
+        function updateShippingTable(startDate, endDate) {
+            $.ajax({
+                url: '@Url.Action("GetFilteredShippingMethods", "DashboardPage")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        const shippingCheckboxes = document.querySelector('.shipping-checkboxes');
+                        shippingCheckboxes.innerHTML = response.shippingMethods.map(method => `
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input shipping-checkbox" 
+                                    id="shipping_${method.transportMode}" 
+                                    value="${method.transportMode}"
+                                    data-name="${method.transportMode}"
+                                    data-emission="${method.averageCarbonEmission}">
+                                <label class="custom-control-label" for="shipping_${method.transportMode}">
+                                    ${method.transportMode} - ${method.averageCarbonEmission.toFixed(2)} kg CO₂
+                                </label>
+                            </div>
+                        `).join('');
+                    } else {
+                        alert('Failed to fetch filtered shipping methods: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error fetching filtered shipping methods: ' + error);
+                }
+            });
+        }
+
+        function compareProducts() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates');
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert('Start date cannot be after end date');
+                return;
+            }
+
+            const selectedProducts = Array.from(document.querySelectorAll('.product-checkbox:checked'))
+                .map(checkbox => ({
+                    name: checkbox.dataset.name,
+                    value: checkbox.value
+                }));
+
+            if (selectedProducts.length === 0) {
+                alert('Please select at least one product to compare');
+                return;
+            }
+
+            // Make AJAX call to get filtered data
+            $.ajax({
+                url: '@Url.Action("GetFilteredProductData", "DashboardPage")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate,
+                    productIds: selectedProducts.map(p => p.value)
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        updateProductComparisonChart(response.data);
+                    } else {
+                        alert('Failed to fetch filtered data: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error fetching filtered data: ' + error);
+                }
+            });
+        }
+
+        function compareShippingMethods() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates');
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert('Start date cannot be after end date');
+                return;
+            }
+
+            const selectedMethods = Array.from(document.querySelectorAll('.shipping-checkbox:checked'))
+                .map(checkbox => ({
+                    name: checkbox.dataset.name,
+                    value: checkbox.value
+                }));
+
+            if (selectedMethods.length === 0) {
+                alert('Please select at least one shipping method to compare');
+                return;
+            }
+
+            // Make AJAX call to get filtered data
+            $.ajax({
+                url: '@Url.Action("GetFilteredShippingData", "DashboardPage")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate,
+                    shippingMethods: selectedMethods.map(m => m.value)
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        updateShippingComparisonChart(response.data);
+                    } else {
+                        alert('Failed to fetch filtered data: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error fetching filtered data: ' + error);
+                }
+            });
+        }
+
+        function updateProductComparisonChart(data) {
+            const ctx = document.getElementById('productComparisonChart').getContext('2d');
+
+            if (productComparisonChart) {
+                productComparisonChart.destroy();
+            }
+
+            productComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Carbon Emission (kg CO₂)',
+                        data: data.values,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Carbon Emission (kg CO₂)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Product Carbon Footprint Comparison'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateShippingComparisonChart(data) {
+            const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
+
+            if (shippingComparisonChart) {
+                shippingComparisonChart.destroy();
+            }
+
+            shippingComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Carbon Emission (kg CO₂)',
+                        data: data.values,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Carbon Emission (kg CO₂)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Shipping Method Carbon Footprint Comparison'
+                        }
+                    }
+                }
+            });
+        }
+
+        function clearProductSelection() {
+            document.querySelectorAll('.product-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Clear chart
+            if (productComparisonChart) {
+                productComparisonChart.destroy();
+            }
+            const ctx = document.getElementById('productComparisonChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+
+        function clearShippingSelection() {
+            document.querySelectorAll('.shipping-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Clear chart
+            if (shippingComparisonChart) {
+                shippingComparisonChart.destroy();
+            }
+            const ctx = document.getElementById('shippingComparisonChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+
+        function selectAllProducts() {
+            const checkboxes = document.querySelectorAll('.product-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+        }
+
+        function selectAllShipping() {
+            const checkboxes = document.querySelectorAll('.shipping-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+        }
+    </script>
+
+    <script>
+        const ecoProductData = {
+            labels: ["Eco-Friendly", "Not Eco-Friendly"],
+            values: [@Model.EcoFriendlyProductCount, @Model.NonEcoFriendlyProductCount]
+        };
+
+        const transportModeData = {
+            labels: @Html.Raw(Json.Serialize(Model.OrderTransportBreakdown.Keys)),
+            values: @Html.Raw(Json.Serialize(Model.OrderTransportBreakdown.Values))
+        };
+
+        const trendDataDaily = {
+            labels: @Html.Raw(Json.Serialize(Model.EmissionTrendDaily.Keys)),
+            values: @Html.Raw(Json.Serialize(Model.EmissionTrendDaily.Values))
+        };
+        const trendDataWeekly = {
+            labels: @Html.Raw(Json.Serialize(Model.EmissionTrendWeekly.Keys)),
+            values: @Html.Raw(Json.Serialize(Model.EmissionTrendWeekly.Values))
+        };
+        const trendDataMonthly = {
+            labels: @Html.Raw(Json.Serialize(Model.EmissionTrendMonthly.Keys)),
+            values: @Html.Raw(Json.Serialize(Model.EmissionTrendMonthly.Values))
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <script>
+        Chart.register(ChartDataLabels);
+        Chart.defaults.plugins.datalabels.display = false;
+        const ctxProduct = document.getElementById("productEcoPieChart").getContext("2d");
+
+        new Chart(ctxProduct, {
+            type: 'pie',
+            data: {
+                labels: ecoProductData.labels,
+                datasets: [{
+                    label: "Product Eco Status",
+                    data: ecoProductData.values,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: {
+                        display: true,
+                        text: 'Product Eco Breakdown'
+                    },
+                        datalabels: {
+                        display: true,
+                        color: '#000000',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: function(value, context) {
+                            const data = context.chart.data.datasets[0].data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const percentage = (value / total * 100).toFixed(1);
+                            return `${percentage}%`;
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        const ctxTransport = document.getElementById("transportModePieChart").getContext("2d");
+
+        new Chart(ctxTransport, {
+            type: 'pie',
+            data: {
+                labels: transportModeData.labels,
+                datasets: [{
+                    label: "Transport Mode",
+                    data: transportModeData.values,
+                    backgroundColor: [
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(153, 102, 255, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: {
+                        display: true,
+                        text: 'Order Transport Mode Breakdown'
+                    },
+                        datalabels: {
+                        display: true,
+                        color: '#000000',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: function(value, context) {
+                            const data = context.chart.data.datasets[0].data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const percentage = (value / total * 100).toFixed(1);
+                            return `${percentage}%`;
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        let trendChart;
+
+        function renderTrendChart(labels, values) {
+            const ctx = document.getElementById("carbonTrendChart").getContext("2d");
+
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Carbon Emission (kg CO₂)',
+                        data: values,
+                        backgroundColor: 'rgba(75, 192, 192, 0.3)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        renderTrendChart(trendDataMonthly.labels, trendDataMonthly.values);
+
+        document.getElementById("toggle-daily").addEventListener("click", () => {
+            setActiveButton("toggle-daily");
+            renderTrendChart(trendDataDaily.labels, trendDataDaily.values);
+        });
+        document.getElementById("toggle-weekly").addEventListener("click", () => {
+            setActiveButton("toggle-weekly");
+            renderTrendChart(trendDataWeekly.labels, trendDataWeekly.values);
+        });
+        document.getElementById("toggle-monthly").addEventListener("click", () => {
+            setActiveButton("toggle-monthly");
+            renderTrendChart(trendDataMonthly.labels, trendDataMonthly.values);
+        });
+
+        function setActiveButton(activeId) {
+            ["toggle-daily", "toggle-weekly", "toggle-monthly"].forEach(id => {
+                document.getElementById(id).classList.remove("active");
+            });
+            document.getElementById(activeId).classList.add("active");
+        }
+
+            const leaderboardChart = new Chart(document.getElementById("ecoLeaderboardChart").getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.TopEcoProductLabels)),
+                datasets: [{
+                    label: "Carbon Emission (kg CO₂)",
+                    data: @Html.Raw(Json.Serialize(Model.TopEcoProductValues)),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    title: { display: true, text: 'Lowest Emission Products' },
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'kg CO₂'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Product'
+                        }
+                    }
+                }
+            }
+        });
+
+        const categoryChart = new Chart(document.getElementById("categoryBreakdownChart"), {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.ProductCategoryLabels)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.ProductCategoryValues)),
+                    backgroundColor: [
+                        '#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Emissions by Product Category (kg CO₂)' },
+                        datalabels: {
+                        display: true,
+                        color: '#000000',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: function(value, context) {
+                            const data = context.chart.data.datasets[0].data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const percentage = (value / total * 100).toFixed(1);
+                            return `${percentage}%`;
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        let productComparisonChart;
+        let shippingComparisonChart;
+    </script>
+    <script>
+        let panelsVisible = false;
+
+        function toggleAllPanels() {
+            const panels = ["productDetails", "itemDetails", "orderDetails"];
+            panels.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = panelsVisible ? "none" : "block";
+            });
+            panelsVisible = !panelsVisible;
+        }
+    </script>
+    <script>
+        const ecoLabels = @Html.Raw(Json.Serialize(Model.EcoProductTrendLabels));
+        const ecoCounts = @Html.Raw(Json.Serialize(Model.EcoProductTrendCounts));
+
+        new Chart(document.getElementById("ecoProductTrendChart"), {
+            type: 'line',
+            data: {
+                labels: ecoLabels,
+                datasets: [{
+                    label: "Eco-Friendly Products Added",
+                    data: ecoCounts,
+                    fill: false,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Monthly Trend of Eco Product Adoption"
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Eco Products'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const emitProductLabels = @Html.Raw(Json.Serialize(Model.TopEmitProductLabels));
+        const emitProductValues = @Html.Raw(Json.Serialize(Model.TopEmitProductValues));
+
+        new Chart(document.getElementById('topEmittingProductsChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: emitProductLabels,
+                datasets: [{
+                    label: 'Carbon Emission (kg CO₂)',
+                    data: emitProductValues,
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Worst Offending Products by Emissions'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'kg CO₂'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Product'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const itemEmissionLabels = @Html.Raw(Json.Serialize(Model.ItemEmissionBreakdown.Keys));
+        const itemEmissionValues = @Html.Raw(Json.Serialize(Model.ItemEmissionBreakdown.Values));
+
+        new Chart(document.getElementById('itemEmissionBreakdownChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: itemEmissionLabels,
+                datasets: [{
+                    label: 'Total Item Emission (kg CO₂)',
+                    data: itemEmissionValues,
+                    backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Item Emissions for Each Product'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kg CO₂'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Product'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const rawEcoData = @Html.Raw(Json.Serialize(Model.EcoVsNonEcoItemTimeline));
+        const labels = @Html.Raw(Json.Serialize(Model.EcoVsNonEcoMonths));
+
+        const ecoVsCounts = [];
+        const nonEcoVsCounts = [];
+
+        labels.forEach(month => {
+            const monthData = rawEcoData[month];
+            if (monthData) {
+                ecoVsCounts.push(monthData["Eco"] || 0);
+                nonEcoVsCounts.push(monthData["NonEco"] || 0);
+            } else {
+                ecoVsCounts.push(0);
+                nonEcoVsCounts.push(0);
+            }
+        });
+
+        const ctx = document.getElementById('ecoNonEcoItemChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Eco-Friendly Items',
+                        data: ecoVsCounts,
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                    },
+                    {
+                        label: 'Non-Eco Items',
+                        data: nonEcoVsCounts,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Eco vs Non-Eco Item Count Over Time'
+                    },
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Item Count'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const transportLabels = @Html.Raw(Json.Serialize(Model.TransportModeEmissionLabels));
+        const transportValues = @Html.Raw(Json.Serialize(Model.TransportModeEmissionValues));
+
+        new Chart(document.getElementById('transportEmissionChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: transportLabels,
+                datasets: [{
+                    label: 'Total Carbon Emission (kg CO₂)',
+                    data: transportValues,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Carbon Emission by Transport Mode'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kg CO₂'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transport Mode'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const emissionWeightData = @Html.Raw(Json.Serialize(Model.OrderEmissionWeightPoints));
+
+        new Chart(document.getElementById("emissionWeightScatterChart").getContext("2d"), {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Emission vs Order Weight',
+                    data: emissionWeightData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'CO₂ Emission vs Order Weight'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Order Weight (kg)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Carbon Emission (kg CO₂)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const modeEfficiencyLabels = @Html.Raw(Json.Serialize(Model.TransportModeEfficiencyLabels));
+        const modeEfficiencyValues = @Html.Raw(Json.Serialize(Model.TransportModeEfficiencyValues));
+
+        new Chart(document.getElementById("emissionPerKmChart").getContext("2d"), {
+            type: 'bar',
+            data: {
+                labels: modeEfficiencyLabels,
+                datasets: [{
+                    label: 'kg CO₂ per km',
+                    data: modeEfficiencyValues,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'CO₂ Emission per km by Transport Mode'
+                    },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kg CO₂ per km'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transport Mode'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const emissionDistanceRaw = @Html.Raw(Json.Serialize(Model.EmissionVsDistanceByTransport));
+
+        const transportModeColors = {
+            "AIR": 'rgba(255, 99, 132, 0.7)',
+            "TRUCK": 'rgba(54, 162, 235, 0.7)',
+            "SEA": 'rgba(75, 192, 192, 0.7)'
+        };
+
+        const transportModeBorderColors = {
+            "AIR": 'rgba(255, 99, 132, 1)',
+            "TRUCK": 'rgba(54, 162, 235, 1)',
+            "SEA": 'rgba(75, 192, 192, 1)'
+        };
+
+        const scatterDatasets = Object.entries(emissionDistanceRaw).map(([mode, points]) => ({
+            label: mode,
+            data: points.map(p => ({ x: p.distance, y: p.emission })),
+            backgroundColor: transportModeColors[mode] || 'rgba(150, 150, 150, 0.7)',
+            borderColor: transportModeBorderColors[mode] || 'rgba(150, 150, 150, 1)',
+            pointRadius: 5
+        }));
+
+        new Chart(document.getElementById("emissionDistanceScatterChart").getContext("2d"), {
+            type: 'scatter',
+            data: {
+                datasets: scatterDatasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Emission vs Distance by Transport Mode'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Distance (km)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Carbon Emission (kg CO₂)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const efficiencyLabels = @Html.Raw(Json.Serialize(Model.EmissionEfficiencyByTransport.Keys));
+        const efficiencyValues = @Html.Raw(Json.Serialize(Model.EmissionEfficiencyByTransport.Values));
+
+        new Chart(document.getElementById("emissionEfficiencyChart"), {
+            type: 'bar',
+            data: {
+                labels: efficiencyLabels,
+                datasets: [{
+                    label: 'kg CO₂ / kg shipped',
+                    data: efficiencyValues,
+                    backgroundColor: 'orange',
+                    borderColor: 'darkorange',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Emission Efficiency by Transport Mode'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kg CO₂ / kg shipped'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transport Mode'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+            </div>
+        </div> 
+    </div> 
+</body>
+
+</html>
+<style>
+    .embedded-panel p {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+</style>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: "Nunito", sans-serif;
+    }
+
+    #wrapper {
+        display: flex;
+        min-height: 100%;
+        width: 100%;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 250px;
+        background-color: #4e73df;
+        color: white;
+        min-height: 100%;
+        margin-top: 1rem;
+    }
+
+    #content-wrapper {
+        margin-left: 0;
+        width: 100%;
+        padding: 0 !important;
+        box-sizing: border-box;
+        margin-top: 1rem;
+    }
+
+    .dashboard-content {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .dashboard-container {
+        max-width: 100%;
+    }
+
+    .container, .container-fluid {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 20px;
+    }
+
+    .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 900px;
+        height: 300px; 
+        margin: 0 auto;
+    }
+
+    canvas {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .topbar {
+        box-shadow: 0 0.15rem 1rem 0 rgba(58,59,69,.15);
+    }
+</style>
+
+
