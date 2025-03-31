@@ -17,51 +17,6 @@
     ViewData["Title"] = "Sustainable Resource Inventory";
 }
 
-<div class="card">
-    <div class="card-header bg-success text-white">
-        <h5>🌱 Sustainable Resource Inventory</h5>
-        using CleanBrilliantCompany.Models.Entity;
-    </div>
-
-    <div class="card-body">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Resource Name</th>
-                    <th>Quantity</th>
-                    <th>Measurement Unit</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-
-            <tbody id="inventoryTable">
-                @foreach (var ingredient in Model)
-                {
-                    var status = ingredient.ReorderStatus ? "Low" : "Available";
-                    var statusClass = ingredient.ReorderStatus ? "text-warning" : "text-success";
-
-                    if (ingredient.Quantity == 0)
-                    {
-                        status = "Out of Stock";
-                        statusClass = "text-danger";
-                    }
-                <tr>
-                    <td>@ingredient.IngredientName</td>
-                    <td>@ingredient.ThresholdQuantity</td>
-                    <td>@ingredient.MeasurementUnit</td>
-                    <td class="@statusClass">
-                        <strong>
-                            @(status == "Available" ? "✅ Available" :
-                                                        status == "Low" ? "⚠️ Low" : "❌ Out of Stock")
-                        </strong>
-                    </td>
-                </tr>
-                                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
 <div class="card mt-4">
     <div class="card-header bg-success text-white">
         <h5>🌱 Carbon Footprint Reduction</h5>
@@ -75,7 +30,7 @@
 
         @if (carbonDataWithSavings != null && carbonDataWithSavings.Any())
         {
-            <table class="table table-bordered">
+            <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
                         <th>Entity ID</th>
@@ -120,7 +75,7 @@
 </div>
 
 @* Insert New Sustainable Resource Form *@
-<h3 class="mt-4">Add New sustainable Resource</h3>
+@* <h3 class="mt-4">Add New sustainable Resource</h3>
 
 <form asp-action="ProcessResource" asp-controller="SustainableIngredients" method="post"
     class="border p-3 bg-light rounded">
@@ -158,10 +113,10 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Add Resource</button>
-</form>
+</form> *@
 
 
-@* Alert Section *@
+@* Alert Section
 @{
     var lowStockItems = Model.Where(i => i.ReorderStatus || i.ThresholdQuantity == 0).ToList();
 }
@@ -183,4 +138,4 @@
                 }
         </ul>
     </div>
-}
+} *@
