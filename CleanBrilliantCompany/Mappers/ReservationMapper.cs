@@ -26,7 +26,7 @@ namespace CleanBrilliantCompany.Mappers
                     await connection.OpenAsync();
 
                     string query = @"
-                        SELECT isnull(IDENT_CURRENT('Reservation') + IDENT_INCR('Reservation'),1) AS 'reservationId'";
+                        SELECT CAST(isnull(IDENT_CURRENT('Reservation') + IDENT_INCR('Reservation'),1) AS INT) AS 'reservationId'";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -59,14 +59,14 @@ namespace CleanBrilliantCompany.Mappers
                     await connection.OpenAsync();
 
                     string query = @"
-                        INSERT INTO dbo.Reservation (reservationId, productId, warehouseId, reservationDate, reservationPurpose,
+                        INSERT INTO dbo.Reservation (productId, warehouseId, reservationDate, reservationPurpose,
                                                         reservedQuantity, staffId)
-                        VALUES (@ReservationId, @ProductId, @WarehouseId, @ReservationDate, @ReservationPurpose, @ReservedQuantity, 
+                        VALUES (@ProductId, @WarehouseId, @ReservationDate, @ReservationPurpose, @ReservedQuantity, 
                                 @StaffId)";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@ReservationId", reservationId);
+                        //command.Parameters.AddWithValue("@ReservationId", reservationId);
                         command.Parameters.AddWithValue("@ProductId", productId);
                         command.Parameters.AddWithValue("@WarehouseId", warehouseId);
                         command.Parameters.AddWithValue("@ReservationDate", reservationDate);
@@ -127,6 +127,45 @@ namespace CleanBrilliantCompany.Mappers
                         else
                         {
                             return "Error updated reservation.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updated reservation: {ex.Message}");
+                return $"Error updated reservation: {ex.Message}";
+            }
+        }
+
+        public async Task<string> updatePurpose(int reservationId, DateOnly reservationDate, string reservationPurpose, int staffId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string query = @"
+                        UPDATE dbo.Reservation
+                        SET reservationDate = @ReservationDate, reservationPurpose = @ReservationPurpose, staffId = @StaffId
+                        WHERE reservationId = @ReservationId";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ReservationId", reservationId);
+                        command.Parameters.AddWithValue("@ReservationDate", reservationDate);
+                        command.Parameters.AddWithValue("@ReservationPurpose", reservationPurpose);
+                        command.Parameters.AddWithValue("@StaffId", staffId);
+
+                        int result = await command.ExecuteNonQueryAsync();
+                        if (result > 0)
+                        {
+                            return $"Reservation '{reservationId}' updated successfully.";
+                        }
+                        else
+                        {
+                            return "Error update reservation purpose.";
                         }
                     }
                 }

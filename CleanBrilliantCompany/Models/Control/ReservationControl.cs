@@ -2,6 +2,7 @@
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
@@ -17,20 +18,16 @@ namespace CleanBrilliantCompany.Models.Control
         private readonly IStaffDetails _staffDetails;
         private readonly ReservationMapper _reservationMapper;
 
-        public ReservationControl(IItem item, IItemUpdate itemUpdate, IReserve reserve, ReservationMapper reservationMapper)
-        {
-            _item = item;
-            _itemUpdate = itemUpdate;
-            _reserve = reserve;
-            _reservationMapper = reservationMapper;
-        }
-
-        public ReservationControl(IConfiguration configuration)
+        public ReservationControl(IConfiguration configuration, IItem item, IItemUpdate itemUpdate, IReserve reserve)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _reservationMapper = new ReservationMapper(connectionString);
-
             Console.WriteLine("Reservation loaded from database.");
+
+            _item = item;
+            _itemUpdate = itemUpdate;
+            _reserve = reserve;
+            Console.WriteLine("Reservation Interfaces loaded");
         }
 
         public async Task<List<Reservation>> ShowReservations()
@@ -53,7 +50,9 @@ namespace CleanBrilliantCompany.Models.Control
                 // Handle the case where "ReservationId" is not in the dictionary or is not an int
                 return false; // Or throw an exception, depending on your error handling strategy
             });
-            reservation.InsertItems(reservationId, items);
+            if (items.Count != 0) {
+                reservation = reservation.InsertItems(reservation, items);
+            }
             return await Task.FromResult(reservation);
 
         }
@@ -94,10 +93,52 @@ namespace CleanBrilliantCompany.Models.Control
                     Console.WriteLine($"Error updating item: {ex.Message}");
                 }
             }
-            string result = await _reservationMapper.insert(reservationId, productId, warehouseId, reservationDate, reservationPurpose, reservedQuantity, staffId);
+            string result = await _reservationMapper.insert(reservationId, productId, warehouseId, reservationDate, reservationPurpose, reservedItems.Count, staffId);
 
             return result;
         }
+
+        // Testing
+        public async Task<List<Item>> GetItemStatus(ItemStatus status) {
+            List<Item> availableItems = await _reserve.getItemsByStatus(status);
+            return availableItems;
+        }
+
+        public async Task<List<Dictionary<string, object>>> GetProductList()
+        {
+            ItemStatus getStatus = ItemStatus.Available;
+            List<Item> availableItems = await _reserve.getItemsByStatus(getStatus);
+            List<Item> sortedItems = availableItems.OrderBy(x => { x.retrieveItemInfo().TryGetValue("ProductId", out var productIdObj); return productIdObj as int?; }).ThenByDescending(x => { x.retrieveItemInfo().TryGetValue("ExpiryDate", out var expiryDateObj); return expiryDateObj as DateTime?; }).ToList();
+            List<Dictionary<string, object>> products = new List<Dictionary<string, object>>();
+            foreach (Item item in sortedItems)
+            {
+                int count = 0;
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                if (item.retrieveItemInfo().TryGetValue("ProductId", out var productIdObj) && productIdObj is int productId)
+                {
+                    Product product = await _reserve.retrieveProductDetails(productId);
+                    dictionary = product.retrieveProductInfo();
+                    foreach (Dictionary<string, object> kvp in products)
+                    {
+                        if (kvp.TryGetValue("ProductId", out var productIdkObj) && productIdkObj is int productkId && productkId == productId)
+                        {
+                            if (kvp.TryGetValue("Count", out var countObj) && countObj is int tempCount) { count = tempCount; }
+                            count++;
+                            kvp["Count"] = count;
+                            break;
+                        }
+                    }
+                    if (count == 0)
+                    {
+                        count++;
+                        dictionary.Add("Count", count);
+                        products.Add(dictionary);
+                    }
+                }  
+            }
+            return products;
+        }
+
 
         public async Task<string> UpdateReservationQuantity(int reservationId, int quantity, int staffId)
         {
@@ -118,7 +159,9 @@ namespace CleanBrilliantCompany.Models.Control
             {
                 if (quantity == 0)
                 {
-                    bool i = await ReturnReservedStockToinventory(reservation, staffId);
+                    string result1 = await _reservationMapper.update(reservationId, productId, warehouseId, reservationDate, reservationPurpose, quantity, staffId);
+                    string results = await ReturnReservedStockToinventory(reservation, staffId);
+                    return results;
                 }
                 else if (quantity < reservedQuantity)
                 {
@@ -165,6 +208,7 @@ namespace CleanBrilliantCompany.Models.Control
                             Console.WriteLine($"Error updating item: {ex.Message}");
                         }
                     }
+                    quantity = reservedItems.Count + reservedQuantity;
                 }
                 else
                 {
@@ -177,25 +221,38 @@ namespace CleanBrilliantCompany.Models.Control
             return result;
         }
 
-        public async Task<bool> ReturnReservedStockToinventory(Reservation reservation, int staffId)
+        public async Task<string> ReturnReservedStockToinventory(Reservation reservation, int staffId)
         {
             Dictionary<string, object> reservationDict = reservation.GetReservationDetails();
             int reservationId = 0;
+            int quantity = 0;
             string reservationPurpose = "";
             ItemStatus setStatus = ItemStatus.Available;
             List<Item> reservedItems = [];
+            if (reservationDict.TryGetValue("ReservationId", out var reservationIdObj) && reservationIdObj is int tempReservationId) { reservationId = tempReservationId; }
+            if (reservationDict.TryGetValue("ReservationPurpose", out var reservationPurposeObj) && reservationPurposeObj is string tempReservationPurpose) { reservationPurpose = tempReservationPurpose; }
             if (reservationDict.TryGetValue("ReservedItems", out var reservedItemsObj) && reservedItemsObj is List<Item> tempReservedItems) { reservedItems = tempReservedItems; }
-            foreach (Item item in reservedItems)
+            if (reservedItems.Count == 0)
             {
+                reservationPurpose += string.Join(" ", " [Returned]");
+                string sl = await UpdateReservationPurpose(reservationId, reservationPurpose, staffId);
+                return "No items to return. : " + sl;
+            }
+            for (int i = reservedItems.Count - 1; i >= 0; i--)
+            {
+                Item item = reservedItems[i];
                 try
                 {
                     if (item.retrieveItemInfo().TryGetValue("ItemId", out var itemIdObj) && itemIdObj is int itemId)
                     {
                         bool updatestatus = await _itemUpdate.updateItemStatus(itemId, null, null, null, null, setStatus);
-                        if (!updatestatus) { Console.WriteLine($"Error updating item: " + itemId); }
+                        if (!updatestatus)
+                        {
+                            Console.WriteLine($"Error updating item: " + itemId);
+                        }
                         else
                         {
-                            reservedItems.Remove(item);
+                            reservedItems.RemoveAt(i);
                         }
                     }
                 }
@@ -204,24 +261,16 @@ namespace CleanBrilliantCompany.Models.Control
                     Console.WriteLine($"Error updating item: {ex.Message}");
                 }
             }
-            if (reservationDict.TryGetValue("ReservationId", out var reservationIdObj) && reservationIdObj is int tempReservationId) { reservationId = tempReservationId; }
-            if (reservationDict.TryGetValue("ReservationPurpose", out var reservationPurposeObj) && reservationPurposeObj is string tempReservationPurpose) { reservationPurpose = tempReservationPurpose; }
-            reservationPurpose += string.Join(" ", "[Returned]");
+            reservationPurpose += string.Join(" ", " [Returned]");
             string s = await UpdateReservationPurpose(reservationId, reservationPurpose, staffId);
-            if (reservedItems.Count <= 0) { return true; } else { return false; }
+            if (reservedItems.Count <= 0) { return "Reserved Stock Returned"; } else { return "Return Error"; }
         }
 
         public async Task<string> UpdateReservationPurpose(int reservationId, String reservationPurpose, int staffId)
         {
-            Reservation reservation = await GetReservationById(reservationId);
-            Dictionary<string, object> reservationDict = reservation.GetReservationDetails();
-            int productId = 0, warehouseId = 0, reservedQuantity = 0;
             DateOnly reservationDate = DateOnly.FromDateTime(DateTime.Now);
-            if (reservationDict.TryGetValue("ProductId", out var productIdObj) && productIdObj is int tempProductId) { productId = tempProductId; }
-            if (reservationDict.TryGetValue("WarehouseId", out var warehouseIdObj) && warehouseIdObj is int tempWarehouseId) { warehouseId = tempWarehouseId; }
-            if (reservationDict.TryGetValue("ReservationPurpose", out var reservationPurposeObj) && reservationPurposeObj is string tempReservationPurpose) { reservationPurpose = tempReservationPurpose; }
-            if (reservationDict.TryGetValue("ReservedQuantity", out var reservedQuantityObj) && reservedQuantityObj is int tempReservedQuantity) { reservedQuantity = tempReservedQuantity; }
-            string result = await _reservationMapper.update(reservationId, productId, warehouseId, reservationDate, reservationPurpose, reservedQuantity, staffId);
+            //string result = await _reservationMapper.update(reservationId, productId, warehouseId, reservationDate, reservationPurpose, reservedQuantity, staffId);
+            string result = await _reservationMapper.updatePurpose(reservationId, reservationDate, reservationPurpose, staffId);
             Console.WriteLine(result);
             return result;
         }

@@ -1,20 +1,22 @@
 ﻿using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 // using CleanBrilliantCompany.Models.ViewModel;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    [Route("inventory/management/reservation")]
+    [Route("inventory/management/stockflow/reservation")]
     public class ReservationController : Controller
     {
         private readonly ReservationControl _reservationControl;
 
-        public ReservationController(IConfiguration configuration)
+        public ReservationController(IConfiguration configuration, IItem item, IItemUpdate itemUpdate, IReserve reserve)
         {
-            _reservationControl = new ReservationControl(configuration);
+            _reservationControl = new ReservationControl(configuration, item, itemUpdate, reserve);
         }
 
         // default get all items
@@ -55,10 +57,50 @@ namespace CleanBrilliantCompany.Controllers
             string result = await _reservationControl.ReserveStock(reservedQuantity, warehouseId, productId, reservationPurpose, staffId);
             if (result.Contains("Error"))
             {
-                return BadRequest(new { error = "Failed to reserve stock." });
+                return BadRequest(new { error = "Failed to reserve stock. : " + result });
             }
             else
             {   
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpGet]
+        [Route("reserveitemstatus")]
+        public async Task<IActionResult> Index1()
+        {
+            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
+            List<Item> items = await _reservationControl.GetItemStatus(ItemStatus.Available);
+
+            foreach (var item in items)
+            {
+                itemsInfo.Add(item.retrieveItemInfo());
+            }
+
+            return View(itemsInfo);
+        }
+
+        [HttpGet]
+        [Route("reserveproducts")]
+        public async Task<IActionResult> Reserve()
+        {
+            List<Dictionary<string, object>> products = await _reservationControl.GetProductList();
+
+            return View(products);
+        }
+
+        [HttpPost]
+        [Route("returnReservation")]
+        public async Task<IActionResult> returnReservation(int reservationId, int staffId)
+        {
+            Reservation reservation = await _reservationControl.GetReservationById(reservationId);
+            string result = await _reservationControl.ReturnReservedStockToinventory(reservation, staffId);
+            if (result.Contains("Error"))
+            {
+                return BadRequest(new { error = "Failed to return reservation : " + result });
+            }
+            else
+            {
                 return RedirectToAction("Index");
             }
         }
@@ -73,7 +115,7 @@ namespace CleanBrilliantCompany.Controllers
             string result = await _reservationControl.UpdateReservationQuantity(reservationId, quantity, staffId);
             if (result.Contains("Error"))
             {
-                return BadRequest(new { error = "Failed to update quantity." });
+                return BadRequest(new { error = "Failed to update quantity. : " + result });
             }
             else
             {
@@ -91,7 +133,7 @@ namespace CleanBrilliantCompany.Controllers
             string result = await _reservationControl.UpdateReservationPurpose(reservationId, reservationPurpose, staffId);
             if (result.Contains("Error"))
             {
-                return BadRequest(new { error = "Failed to update purpose." });
+                return BadRequest(new { error = "Failed to update purpose. : " + result });
             }
             else
             {

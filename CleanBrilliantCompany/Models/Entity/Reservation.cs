@@ -65,10 +65,10 @@
             ReservedItems = reservedItems ?? ReservedItems;
         }
 
-        public void InsertItems(int? reservationId,  List<Item>? reservedItems)
+        public Reservation InsertItems(Reservation reservation,  List<Item>? reservedItems)
         {
-            ReservationId = reservationId ?? ReservationId;
-            ReservedItems = reservedItems ?? ReservedItems;
+            reservation.ReservedItems = reservedItems ?? reservation.ReservedItems;
+            return reservation;
         }
 
         public Dictionary<string, object> GetReservationDetails()
@@ -82,7 +82,7 @@
                 { "ReservationPurpose", ReservationPurpose },
                 { "ReservedQuantity", ReservedQuantity },
                 { "StaffId", StaffId },
-                { "ReservedItems" , ReservedItems }
+                { "ReservedItems" , ReservedItems ?? new List<Item>()}
             };
         }
 
