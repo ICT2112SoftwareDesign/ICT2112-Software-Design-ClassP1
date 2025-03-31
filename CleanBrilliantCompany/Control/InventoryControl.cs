@@ -11,9 +11,9 @@ namespace CleanBrilliantCompany.Control
         private readonly ApplicationDbContext _context;
         private readonly SimulatedDbContext _simulatedContext;
         private readonly IInventoryRepository _inventoryRepository;
-        private readonly IProduct _productService;
+        private readonly Team6IProduct _productService;
 
-        public InventoryControl(ApplicationDbContext context, SimulatedDbContext simulatedContext, IInventoryRepository inventoryRepository, IProduct productService)
+        public InventoryControl(ApplicationDbContext context, SimulatedDbContext simulatedContext, IInventoryRepository inventoryRepository, Team6IProduct productService)
         {
             _inventoryRepository = inventoryRepository ?? throw new ArgumentNullException(nameof(inventoryRepository));
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));

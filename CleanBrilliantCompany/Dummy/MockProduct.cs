@@ -3,7 +3,7 @@ using CleanBrilliantCompany.DatabaseEntities;
 
 namespace CleanBrilliantCompany.Dummy
 {
-    public class MockProduct : IProduct
+    public class MockProduct : Team6IProduct
     {
         private readonly SimulatedDbContext _context;
 

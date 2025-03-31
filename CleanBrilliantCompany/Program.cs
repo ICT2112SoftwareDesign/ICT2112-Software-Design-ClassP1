@@ -109,14 +109,14 @@ builder.Services.AddScoped<IAlertService, InAppAlert>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<CostMapper>();
 builder.Services.AddScoped<CostControl>();
-builder.Services.AddScoped<IProduct, MockProduct>(); // Simulation
+builder.Services.AddScoped<Team6IProduct, MockProduct>(); // Simulation
 builder.Services.AddScoped<InventoryControl>();
 builder.Services.AddScoped<IInventoryRepository, InventoryMapper>();
 
 builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>();
-builder.Services.AddScoped<IItem, CostDataRetrievalService>();
-builder.Services.AddScoped<IBatch, CostDataRetrievalService>();
-builder.Services.AddScoped<IManufacturer, CostDataRetrievalService>();
+builder.Services.AddScoped<CostIItem, CostDataRetrievalService>();
+builder.Services.AddScoped<CostIBatch, CostDataRetrievalService>();
+builder.Services.AddScoped<CostIManufacturer, CostDataRetrievalService>();
 builder.Services.AddScoped<ManufacturerRepo, ManufacturerMapper>();
 
 // register the manufacturer control 

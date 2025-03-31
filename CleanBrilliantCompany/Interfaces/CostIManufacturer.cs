@@ -3,7 +3,7 @@ using CleanBrilliantCompany.DatabaseEntities;
 
 namespace CleanBrilliantCompany.Interface
 {
-    public interface IManufacturer
+    public interface CostIManufacturer
     {
         List<ManufacturerTable> GetAllManufacturers();
 

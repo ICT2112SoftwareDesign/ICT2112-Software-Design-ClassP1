@@ -3,7 +3,7 @@ using CleanBrilliantCompany.DatabaseEntities;
 
 namespace CleanBrilliantCompany.Interface
 {
-    public interface IItem
+    public interface CostIItem
     {
         List<ItemTable> getItems();
     }

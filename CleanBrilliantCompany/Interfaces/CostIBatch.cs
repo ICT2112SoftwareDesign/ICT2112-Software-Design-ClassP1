@@ -3,7 +3,7 @@ using CleanBrilliantCompany.DatabaseEntities;
 
 namespace CleanBrilliantCompany.Interface
 {
-    public interface IBatch
+    public interface CostIBatch
     {
         List<ProductBatchTable> GetAllProductBatch();
 

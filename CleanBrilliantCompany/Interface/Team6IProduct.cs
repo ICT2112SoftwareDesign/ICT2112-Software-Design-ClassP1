@@ -3,7 +3,7 @@
 namespace CleanBrilliantCompany.Interface
 
 {
-    public interface IProduct
+    public interface Team6IProduct
     {
         // Returns a dictionary of product IDs and their stock levels
         //Dictionary<int, int> GetProductStockLevels();

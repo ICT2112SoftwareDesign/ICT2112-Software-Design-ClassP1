@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CleanBrilliantCompany.Service
 {
-    public class CostDataRetrievalService : IItem, IManufacturer, IBatch
+    public class CostDataRetrievalService : CostIItem, CostIManufacturer, CostIBatch
     {
         private readonly ApplicationDbContext _db;
 
