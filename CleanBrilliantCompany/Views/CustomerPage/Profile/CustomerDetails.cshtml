@@ -1,3 +1,9 @@
+@{
+    string emailPreference = Context.Session.GetString("emailPreference") ?? "";
+    bool suppressPaid = emailPreference.Contains("paid");
+    bool suppressCancelled = emailPreference.Contains("cancelled");
+    int customerId = int.Parse(Context.Session.GetString("customerId") ?? "0");
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,6 +30,34 @@
     <div class="profile-header mb-4">
         <h3 class="font-weight-bold text-white">Orders/Purchases: </h3>
     </div>
+
+    <div class="row mb-4"></div>
+        <form asp-controller="CustomerPage" asp-action="updatePreferences" method="post" class="mb-4">
+            <h5 class="text-dark">Email Notification Preferences</h5>
+            <p class="text-muted">Uncheck to receive emails for the events below.</p>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="suppressPaid" id="suppressPaid"
+                    @(suppressPaid ? "checked" : "") />
+                <label class="form-check-label text-dark" for="suppressPaid">
+                    Suppress "Order Created (Paid)" Emails
+                </label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="suppressCancelled" id="suppressCancelled"
+                    @(suppressCancelled ? "checked" : "") />
+                <label class="form-check-label text-dark" for="suppressCancelled">
+                    Suppress "Order Cancelled" Emails
+                </label>
+            </div>
+
+            <input type="hidden" name="customerId" value="@customerId" />
+            <button type="submit" class="btn btn-primary">Save Preferences</button>
+        </form>
+
+    </div>
+
 
     <!-- Four smaller cards in a row -->
     <div class="row mb-4">

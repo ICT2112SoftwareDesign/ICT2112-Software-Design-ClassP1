@@ -9,6 +9,7 @@ namespace CleanBrilliantCompany.Models
         private string password;
         private string customerAddress;
         private string email;
+        private string emailPreference;
 
         private int getCustomerId()
         {
@@ -60,6 +61,16 @@ namespace CleanBrilliantCompany.Models
             this.customerAddress = address;
         }
 
+        public string getEmailPreferenceRaw()
+        {
+            return emailPreference;
+        }
+
+        private void setEmailPreferenceRaw(string value)
+        {
+            this.emailPreference = value;
+        }
+
         public T getSession<T>(string propertyName)
         {
             switch (propertyName)
@@ -103,5 +114,25 @@ namespace CleanBrilliantCompany.Models
                     throw new Exception("Unknown property");
             }
         } 
+
+        // Public method to check if a type should be excluded from emails
+        public bool ShouldSuppressEmail(string type) // e.g., "paid" or "cancelled"
+        {
+            if (string.IsNullOrEmpty(emailPreference)) return false;
+            return emailPreference.Split(',').Contains(type);
+        }
+
+        // For form binding
+        public bool GetPaidSuppressed() => ShouldSuppressEmail("paid");
+        public bool GetCancelledSuppressed() => ShouldSuppressEmail("cancelled");
+
+        public void SetPreferencesFromCheckbox(bool suppressPaid, bool suppressCancelled)
+        {
+            List<string> suppressed = new List<string>();
+            if (suppressPaid) suppressed.Add("paid");
+            if (suppressCancelled) suppressed.Add("cancelled");
+            emailPreference = suppressed.Count > 0 ? string.Join(",", suppressed) : null;
+        }
     }
+    
 }

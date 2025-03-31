@@ -29,6 +29,10 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Password"] = customerDetails.getSession<string>("password");
                 TempData["Username"] = customerDetails.getSession<string>("username");
                 TempData["CustomerAddress"] = customerDetails.getSession<string>("customerAddress");
+                TempData["EmailPreference"] = customerDetails.getEmailPreferenceRaw() ?? "";
+
+                HttpContext.Session.SetString("emailPreference", customerDetails.getEmailPreferenceRaw() ?? "");
+
             }
             else
             {
@@ -124,6 +128,24 @@ namespace CleanBrilliantCompany.Controllers
                 CustomerDetails();
                 return RedirectToAction("CustomerDetails", "CustomerPage");
             }
+        }
+
+        [HttpPost]
+        public IActionResult updatePreferences(int customerId, bool suppressPaid, bool suppressCancelled)
+        {
+            var customer = _customerManagement.getCustomer(customerId);
+            if (customer != null)
+            {
+                customer.SetPreferencesFromCheckbox(suppressPaid, suppressCancelled);
+                _customerManagement.updateEmailPreference(customerId, customer.getEmailPreferenceRaw());
+                Console.WriteLine("Email Preference: " + customer.getEmailPreferenceRaw());
+
+                // 🆕 Refresh session
+                var updatedCustomer = _customerManagement.getCustomer(customerId);
+                HttpContext.Session.SetString("emailPreference", updatedCustomer.getEmailPreferenceRaw() ?? "");
+            }
+
+            return RedirectToAction("CustomerDetails", "CustomerInput");
         }
 
 

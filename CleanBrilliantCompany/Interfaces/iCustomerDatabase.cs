@@ -15,6 +15,8 @@ namespace CleanBrilliantCompany.Interfaces
         bool customerUsernameExists(int customerId, string username);
         bool updateCustomerDetails(int customerId, string username, string email, string address);
         bool updatePassword(int customerId, string password);
+        bool updateEmailPreference(int customerId, string? emailPreference);
+
 
         // For session
         int getIdByEmail(string email);

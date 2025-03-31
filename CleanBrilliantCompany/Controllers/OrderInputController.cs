@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interfaces;
 using System.Text.Json;
+using CleanBrilliantCompany.Services;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -12,6 +13,7 @@ namespace CleanBrilliantCompany.Controllers
         private readonly IShippingAgents _shippingAgents;
         private readonly ReviewManagement _reviewManagement;
         private readonly CustomerManagement _customerManagement;
+        private readonly EmailService _emailService = new EmailService();
 
         public OrderInputController(
             OrderManagement orderManagement,
@@ -249,6 +251,17 @@ namespace CleanBrilliantCompany.Controllers
                 {
                     TempData["Error"] = "Order placed, but failed to clear the cart. Please contact support.";
                 }
+                
+                CustomerRDM customer = _customerManagement.getCustomer(customerId.Value);
+
+                if (customer != null && !customer.ShouldSuppressEmail("paid"))
+                {
+                    _emailService.SendEmail(
+                        customerEmail,
+                        "Order Confirmation",
+                        $"Your order has been placed successfully! Order ID: {orderId}"
+                    );
+                }
 
                 TempData["Success"] = "Payment processed and order placed successfully!";
                 return RedirectToAction("orderConfirmation", new { orderId });
@@ -453,7 +466,7 @@ namespace CleanBrilliantCompany.Controllers
                     }
                 }
             }
-
+            
             ViewBag.ShippingDetails = shippingDetails;
             return View("~/Views/Order/Cancelled.cshtml", orders);
         }
@@ -517,6 +530,17 @@ namespace CleanBrilliantCompany.Controllers
             var success = _orderManagement.cancelOrder(orderId, customerId.Value);
             if (success)
             {
+                var customer = _customerManagement.getCustomer(customerId.Value);
+                string customerEmail = customer?.getSession<string>("email") ?? "";
+
+                if (customer != null && !customer.ShouldSuppressEmail("cancelled"))
+                {
+                    _emailService.SendEmail(
+                        customerEmail,
+                        "Order Cancelled",
+                        $"Your order (ID: {orderId}) has been successfully cancelled."
+                    );
+                }
                 TempData["Success"] = "Order cancelled successfully.";
             }
             else

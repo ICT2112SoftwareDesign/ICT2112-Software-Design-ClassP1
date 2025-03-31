@@ -60,5 +60,11 @@ namespace CleanBrilliantCompany.Models
             // Call the method in CustomerMapper to verify credentials
             return _customerDatabase.verifyCustomerCredentials(email, password);
         }
+        
+        public bool updateEmailPreference(int customerId, string? emailPreference)
+        {
+            return _customerDatabase.updateEmailPreference(customerId, emailPreference);
+        }
+
     }
 }

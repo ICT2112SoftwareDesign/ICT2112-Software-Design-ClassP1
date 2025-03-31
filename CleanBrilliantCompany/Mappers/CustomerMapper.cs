@@ -317,5 +317,29 @@ namespace CleanBrilliantCompany.Mappers
             return false;
         }
 
+        public bool updateEmailPreference(int customerId, string? emailPreference)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    UPDATE dbo.Customer 
+                    SET emailPreference = @EmailPreference 
+                    WHERE customerId = @CustomerId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", customerId);
+                    command.Parameters.AddWithValue("@EmailPreference", 
+                        string.IsNullOrEmpty(emailPreference) ? (object)DBNull.Value : emailPreference);
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+        }
+
+
     }
 }
