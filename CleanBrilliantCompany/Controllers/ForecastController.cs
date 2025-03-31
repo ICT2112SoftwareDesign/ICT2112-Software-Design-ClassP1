@@ -15,14 +15,14 @@ namespace CleanBrilliantCompany.Controllers
     public class ForecastController : Controller
     {
         private readonly ForecastFacade _forecastFacade;
-        private readonly IMemoryCache _cache;
-        private const string DashboardCacheKey = "Dashboard_User123"; // Adjust key for user-specific caching
+        //private readonly IMemoryCache _cache;
+        //private const string DashboardCacheKey = "Dashboard_User123"; // Adjust key for user-specific caching
 
         // Inject ForecastControl and IMemoryCache via DI
-        public ForecastController(ForecastFacade forecastControl, IMemoryCache cache)
+        public ForecastController(ForecastFacade forecastControl)
         {
             _forecastFacade = forecastControl;
-            _cache = cache;
+            //_cache = cache;
         }
 
         // Handles user input actions, typically triggered from UI
