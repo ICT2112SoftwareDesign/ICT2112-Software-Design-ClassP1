@@ -524,3 +524,4 @@ CleanBrilliantCompany/obj/
 
 # DLLs and runtime outputs
 *.dll
+/CleanBrilliantCompany/bin/Debug

@@ -25,31 +25,27 @@ using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Set the license for QuestPDF
 QuestPDF.Settings.License = LicenseType.Community;
+
+// Load environment variables from .env file
 DotNetEnv.Env.Load();
 
-// var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+// Try to get connection string from environment variable first
+string? connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-
-// load environment variables from .env file
-// Env.Load();
-// get the connection string from the environment variables
-// var connectionString = Env.GetString("CONNECTION_STRING");
-//string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
-
-//// string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-////var configuration = builder.Configuration;
-////builder.Services.AddSingleton<IConfiguration>(configuration);
-//builder.Services.AddSingleton(connectionString);
-
-
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Fallback to appsettings.json if env var not found
 if (string.IsNullOrEmpty(connectionString))
 {
-    throw new InvalidOperationException(
-        "Connection string 'DefaultConnectionString' is missing or empty."
-    );
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 }
+
+// Final check to ensure a valid connection string was found
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string not found in environment variables or appsettings.json.");
+}
+
 builder.Services.AddSingleton(connectionString);
 
 // using CleanBrilliantCompany.Interfaces;
