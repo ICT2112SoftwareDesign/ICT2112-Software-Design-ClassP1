@@ -29,9 +29,9 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["Password"] = customerDetails.getSession<string>("password");
                 TempData["Username"] = customerDetails.getSession<string>("username");
                 TempData["CustomerAddress"] = customerDetails.getSession<string>("customerAddress");
-                TempData["EmailPreference"] = customerDetails.getEmailPreferenceRaw() ?? "";
+                TempData["EmailPreference"] = customerDetails.getSession<string>("emailPreference");
 
-                HttpContext.Session.SetString("emailPreference", customerDetails.getEmailPreferenceRaw() ?? "");
+                HttpContext.Session.SetString("emailPreference", customerDetails.getSession<string>("emailPreference") ?? "");
 
             }
             else
@@ -131,21 +131,49 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult updatePreferences(int customerId, bool suppressPaid, bool suppressCancelled)
+        public IActionResult updatePreferences(string suppressPaid, string suppressCancelled)
         {
-            var customer = _customerManagement.getCustomer(customerId);
-            if (customer != null)
-            {
-                customer.SetPreferencesFromCheckbox(suppressPaid, suppressCancelled);
-                _customerManagement.updateEmailPreference(customerId, customer.getEmailPreferenceRaw());
-                Console.WriteLine("Email Preference: " + customer.getEmailPreferenceRaw());
+            int? customerId = base.getLoggedInCustomerId();
+            var customerDetails = base.GetCustomerSession();
+            string updatedEmailPreference = "";
 
-                // 🆕 Refresh session
-                var updatedCustomer = _customerManagement.getCustomer(customerId);
-                HttpContext.Session.SetString("emailPreference", updatedCustomer.getEmailPreferenceRaw() ?? "");
+            bool paid = !string.IsNullOrEmpty(suppressPaid) && suppressPaid.ToLower() == "true";
+            bool cancelled = !string.IsNullOrEmpty(suppressCancelled) && suppressCancelled.ToLower() == "true";
+
+            if(paid && cancelled){
+                Console.WriteLine("prefences", updatedEmailPreference);
+                updatedEmailPreference = "paid,cancelled";
             }
-
-            return RedirectToAction("CustomerDetails", "CustomerInput");
+            else if(!paid && cancelled){
+                updatedEmailPreference = "cancelled";
+            }
+            else if(paid && !cancelled){
+                updatedEmailPreference = "paid";
+            }
+            else{
+                updatedEmailPreference = null;
+            }
+            
+            if (customerDetails != null)
+            {
+                bool updateSuccess = _customerManagement.updateEmailPreference(customerId ?? -1, updatedEmailPreference);
+                if(updateSuccess){
+                    CustomerDetails();
+                    return RedirectToAction("CustomerDetails", "CustomerPage");
+                }
+                else{
+                    TempData["Message"] = "Failed to update email preferences.";
+                    CustomerDetails();
+                    return RedirectToAction("CustomerDetails", "CustomerPage");
+                }
+                
+            }
+            else{
+                TempData["Message"] = "Unable to retrieve your details.";
+                CustomerDetails();
+                return RedirectToAction("CustomerDetails", "CustomerPage");
+            }
+            
         }
 
 

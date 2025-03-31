@@ -251,11 +251,12 @@ namespace CleanBrilliantCompany.Controllers
                 {
                     TempData["Error"] = "Order placed, but failed to clear the cart. Please contact support.";
                 }
-                
-                CustomerRDM customer = _customerManagement.getCustomer(customerId.Value);
 
-                if (customer != null && !customer.ShouldSuppressEmail("paid"))
+                string emailPreference = customerDetails.getSession<string>("emailPreference") ?? "";
+
+                if (customerDetails != null && emailPreference.Contains("paid", StringComparison.OrdinalIgnoreCase))
                 {
+                    Console.WriteLine("Sent paid email");
                     _emailService.SendEmail(
                         customerEmail,
                         "Order Confirmation",
@@ -530,11 +531,13 @@ namespace CleanBrilliantCompany.Controllers
             var success = _orderManagement.cancelOrder(orderId, customerId.Value);
             if (success)
             {
-                var customer = _customerManagement.getCustomer(customerId.Value);
-                string customerEmail = customer?.getSession<string>("email") ?? "";
+                var customerDetails = base.GetCustomerSession();
+                string customerEmail = customerDetails?.getSession<string>("email") ?? "";
+                string emailPreference = customerDetails.getSession<string>("emailPreference") ?? "";
 
-                if (customer != null && !customer.ShouldSuppressEmail("cancelled"))
+                if (customerDetails != null && emailPreference.Contains("cancelled", StringComparison.OrdinalIgnoreCase))
                 {
+                    Console.WriteLine("Sent email");
                     _emailService.SendEmail(
                         customerEmail,
                         "Order Cancelled",

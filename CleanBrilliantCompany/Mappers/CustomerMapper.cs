@@ -178,7 +178,7 @@ namespace CleanBrilliantCompany.Mappers
             {
                 connection.Open();
 
-                string query = "SELECT username, email, password, customerAddress FROM dbo.Customer WHERE customerId = @CustomerId";
+                string query = "SELECT username, email, password, customerAddress, emailPreference FROM dbo.Customer WHERE customerId = @CustomerId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -195,6 +195,7 @@ namespace CleanBrilliantCompany.Mappers
                             customer.setSession("email", reader.GetString(reader.GetOrdinal("email"))); 
                             customer.setSession("password", reader.GetString(reader.GetOrdinal("password"))); 
                             customer.setSession("customerAddress", reader.IsDBNull(reader.GetOrdinal("customerAddress")) ? null : reader.GetString(reader.GetOrdinal("customerAddress")));
+                            customer.setSession("emailPreference", reader.IsDBNull(reader.GetOrdinal("emailPreference")) ? null : reader.GetString(reader.GetOrdinal("emailPreference")));
 
                             return customer;
                         }

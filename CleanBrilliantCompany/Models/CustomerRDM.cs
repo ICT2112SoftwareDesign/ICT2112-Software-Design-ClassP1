@@ -61,12 +61,22 @@ namespace CleanBrilliantCompany.Models
             this.customerAddress = address;
         }
 
+        private string getEmailPreference()
+        {
+            return emailPreference;
+        }
+
+        private void setEmailPreference(string value)
+        {
+            this.emailPreference = value;
+        }
+
         public string getEmailPreferenceRaw()
         {
             return emailPreference;
         }
 
-        private void setEmailPreferenceRaw(string value)
+        public void setEmailPreferenceRaw(string value)
         {
             this.emailPreference = value;
         }
@@ -85,6 +95,8 @@ namespace CleanBrilliantCompany.Models
                     return (T)(object)getEmail();
                 case "customerAddress":
                     return (T)(object)getCustomerAddress();
+                case "emailPreference":
+                    return (T)(object)getEmailPreference();
                 default:
                     throw new Exception("Unknown property");
             }
@@ -110,29 +122,13 @@ namespace CleanBrilliantCompany.Models
                 case "customerAddress":
                     setCustomerAddress(value?.ToString()); 
                     break;
+                case "emailPreference":
+                    setEmailPreference(value?.ToString());
+                    break;
                 default:
                     throw new Exception("Unknown property");
             }
         } 
-
-        // Public method to check if a type should be excluded from emails
-        public bool ShouldSuppressEmail(string type) // e.g., "paid" or "cancelled"
-        {
-            if (string.IsNullOrEmpty(emailPreference)) return false;
-            return emailPreference.Split(',').Contains(type);
-        }
-
-        // For form binding
-        public bool GetPaidSuppressed() => ShouldSuppressEmail("paid");
-        public bool GetCancelledSuppressed() => ShouldSuppressEmail("cancelled");
-
-        public void SetPreferencesFromCheckbox(bool suppressPaid, bool suppressCancelled)
-        {
-            List<string> suppressed = new List<string>();
-            if (suppressPaid) suppressed.Add("paid");
-            if (suppressCancelled) suppressed.Add("cancelled");
-            emailPreference = suppressed.Count > 0 ? string.Join(",", suppressed) : null;
-        }
     }
     
 }

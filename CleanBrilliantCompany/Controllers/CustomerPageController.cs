@@ -515,25 +515,5 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("viewWishlist");
         }
 
-        [HttpPost]
-        public IActionResult updatePreferences(int customerId, bool suppressPaid, bool suppressCancelled)
-        {
-            var customer = _customerManagement.getCustomer(customerId);
-            if (customer != null)
-            {
-                customer.SetPreferencesFromCheckbox(suppressPaid, suppressCancelled);
-                _customerManagement.updateEmailPreference(customerId, customer.getEmailPreferenceRaw());
-                Console.WriteLine("Email Preference: " + customer.getEmailPreferenceRaw());
-
-                // 🆕 Refresh session
-                var updatedCustomer = _customerManagement.getCustomer(customerId);
-                HttpContext.Session.SetString("emailPreference", updatedCustomer.getEmailPreferenceRaw() ?? "");
-            }
-
-            return RedirectToAction("CustomerDetails", "CustomerInput");
-        }
-
-        
-
     }
 }
