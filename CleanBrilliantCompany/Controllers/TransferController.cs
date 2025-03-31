@@ -24,28 +24,6 @@ namespace CleanBrilliantCompany.Controllers
 
         }
 
-        [Route("Test")]
-        public async Task<IActionResult> Index()
-        {
-            try
-            {
-                List<Dictionary<string, object>> warehousesInfo = new List<Dictionary<string, object>>();
-                // List<Item> items = await _itemControl.getAllItems();
-                List<Warehouse> warehouses = await _transferControl.getAllWarehouseDetails(); // Fetch warehouse data
-                foreach (var warehouse in warehouses)
-                {
-                    warehousesInfo.Add(warehouse.retrieveWarehouseInfo());
-                }
-                // Console.WriteLine("WAREHOUSES: " + warehouses);
-                return View(warehousesInfo); // Pass data to the view
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                return View(new List<Dictionary<string, object>>()); // Return an empty list in case of an error
-            }
-        }
-
         // [HttpPost]
         [Route("ViewTransfer")]
         public async Task<IActionResult> Transfer(int page = 1, int pageSize = 10, string transferStatus = "")

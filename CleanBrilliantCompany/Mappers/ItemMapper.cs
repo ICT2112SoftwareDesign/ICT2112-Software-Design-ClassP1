@@ -870,52 +870,6 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public List<Warehouse> getAllWarehouseDetails()
-        {
-            List<Warehouse> warehouses = new List<Warehouse>();
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                // Define the SQL query to retrieve items
-                string query = "SELECT * FROM Warehouse";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    // Execute the query and get the results
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        // Check if the query executed successfully and returned any rows
-                        if (getDatabaseQueryStatus(reader))
-                        {
-                            // Iterate through each row in the result set
-                            while (reader.Read())
-                            {
-                                // ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
-                                // Create the Item object using the constructor
-                                Warehouse warehouse = new Warehouse(
-                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                    reader.GetString(reader.GetOrdinal("warehouseAddress")),
-                                    reader.GetInt32(reader.GetOrdinal("currentCapacity")),
-                                    reader.GetInt32(reader.GetOrdinal("maxCapacity"))
-                                );
-
-                                // Add the item to the list
-                                warehouses.Add(warehouse);
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("No data found for the query.");
-                        }
-                    }
-                }
-            }
-
-            return warehouses;
-        }
-
         public List<Item> getTransferredItems(int transferId)
         {
             List<Item> transferredItems = new List<Item>();

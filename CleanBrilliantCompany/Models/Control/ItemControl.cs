@@ -169,11 +169,6 @@ namespace CleanBrilliantCompany.Models.Control
         {
             return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
         }
-        // get all warehouse details
-        public async Task<List<Warehouse>> getAllWarehouseDetails()
-        {
-            return await Task.FromResult(_itemMapper.getAllWarehouseDetails());
-        }
 
         // METHOD FOR HANDLING REFUNDED ITEMS 
         public void returnItemToInventory(List<int> itemId, string refundReason)

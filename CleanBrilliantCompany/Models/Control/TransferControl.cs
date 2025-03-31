@@ -41,11 +41,6 @@ namespace CleanBrilliantCompany.Models.Control
             return await _iWarehouseInterface.getProductQuantityByWarehouse(productId, warehouseId);
         }
 
-        public async Task<List<Warehouse>> getAllWarehouseDetails()
-        {
-            return await _iWarehouseInterface.getAllWarehouseDetails();
-        }
-
         public async Task<int> createTransfer(int transferId, int productId, int sourceWarehouseId, int destinationWarehouseId, int quantity, TransferStatus status)
         {
             return await Task.FromResult(_transferMapper.createTransfer(transferId, productId, sourceWarehouseId, destinationWarehouseId, quantity, status));

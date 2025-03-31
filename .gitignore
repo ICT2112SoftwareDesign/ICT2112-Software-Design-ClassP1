@@ -500,3 +500,35 @@ $RECYCLE.BIN/
 *.swp
 \obj
 appsettings.json
+# Build artifacts
+bin/
+obj/
+
+# VS-specific folders
+.vs/
+.vscode/
+.idea/
+
+# User secrets and environment config
+.env
+CleanBrilliantCompany/.env
+
+# Ignore all Debug folders and build outputs
+CleanBrilliantCompany/bin/
+CleanBrilliantCompany/obj/
+
+# Cache and temp files
+*.cache
+*.assets
+*.FileListAbsolute.txt
+
+# DLLs and runtime outputs
+*.dll
+/CleanBrilliantCompany/bin/Debug
+/CleanBrilliantCompany/bin/Debug
+/CleanBrilliantCompany/bin/Debug/net9.0
+/CleanBrilliantCompany/bin
+/CleanBrilliantCompany/bin
+/CleanBrilliantCompany/Properties
+/CleanBrilliantCompany/Properties
+/CleanBrilliantCompany/bin/Debug
