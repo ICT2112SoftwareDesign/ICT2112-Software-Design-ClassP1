@@ -109,110 +109,167 @@
 
 <script>
     // Get product details for JavaScript
-    const products = [];
+const products = [];
     
-    @foreach (var product in ViewBag.Products)
-    {
-        @:products.push(@Html.Raw(Json.Serialize(product.GetProductDetails())));
-    }
+@foreach (var product in ViewBag.Products)
+{
+    @:products.push(@Html.Raw(Json.Serialize(product.GetProductDetails())));
+}
 
-    // Function to filter products based on selected manufacturer
-    function filterProducts() {
-        const manufacturerId = document.getElementById('ManufacturerId').value;
-        
-        // Filter products by manufacturer ID
-        const filteredProducts = products.filter(product => product.ManufacturerId == manufacturerId);
+// Function to filter products based on selected manufacturer and already selected products
+// Function to filter products based on selected manufacturer and already selected products
+function filterProducts() {
+    const manufacturerId = document.getElementById('ManufacturerId').value;
+    
+    // Filter products by manufacturer ID
+    const filteredProducts = products.filter(product => product.ManufacturerId == manufacturerId);
 
-        // Track selected product IDs
-        let selectedProductIds = [];
+    // Get all product dropdowns
+    const productSelects = document.querySelectorAll("select[name^='Products'][name$='.ProductId']");
+    
+    // Track selected product IDs and which dropdown selected them
+    const selectedProducts = {};
+    productSelects.forEach(select => {
+        if (select.value) {
+            selectedProducts[select.value] = select.name;
+        }
+    });
 
-        // Get all product dropdowns and track selected products
-        const productSelects = document.querySelectorAll("select[name^='Products']");
-        productSelects.forEach(select => {
-            if (select.value) {
-                selectedProductIds.push(select.value);
+    // Loop through all product dropdowns and update them
+    productSelects.forEach(select => {
+        // Store selected value before updating options
+        const selectedValue = select.value;
+        const currentSelectName = select.name;
+
+        let optionsHtml = '<option value="">-- Select a Product --</option>';
+
+        // Add the filtered products to the dropdown
+        filteredProducts.forEach(product => {
+            // Only add this product if it's either:
+            // 1. The currently selected value for this dropdown
+            // 2. Not selected in any other dropdown
+            const isSelectedInAnotherDropdown = selectedProducts[product.ProductId] && 
+                                               selectedProducts[product.ProductId] !== currentSelectName;
+            
+            if (product.ProductId == selectedValue || !isSelectedInAnotherDropdown) {
+                optionsHtml += `<option value="${product.ProductId}" ${product.ProductId == selectedValue ? 'selected' : ''}>${product.ProductId} - ${product.ProductName}</option>`;
             }
         });
 
-        // Loop through all product dropdowns and update them
-        productSelects.forEach(select => {
-            // Store selected value before updating options
-            const selectedValue = select.value;
-
-            let optionsHtml = '<option value="">-- Select a Product --</option>';
-
-            // Add the filtered products to the dropdown
-            filteredProducts.forEach(product => {
-                // Disable the option if it's already selected in any other dropdown
-                const isSelected = selectedProductIds.includes(product.ProductId) ? 'disabled' : '';
-                optionsHtml += `<option value="${product.ProductId}" ${product.ProductId == selectedValue ? 'selected' : ''} ${isSelected}>${product.ProductId} - ${product.ProductName}</option>`;
-            });
-
-            // Update the dropdown options
-            select.innerHTML = optionsHtml;
-        });
-
-        // Check if there are only 2 products for the manufacturer and hide the "Add Product" button if already selected
-        if (filteredProducts.length <= 2 && document.querySelectorAll(".productItem").length >= filteredProducts.length) {
-            document.getElementById("addProduct").style.display = 'none';
-        } else {
-            document.getElementById("addProduct").style.display = 'inline-block';
-        }
-    }
-
-    // Adding a new product form dynamically
-    let productCount = 1;
-    document.getElementById("addProduct").addEventListener("click", function () {
-        const productSection = document.getElementById("productSection");
-        const newProduct = document.createElement("div");
-        newProduct.classList.add("productItem");
-
-        // Build options HTML
-        let optionsHtml = '<option value="">-- Select a Product --</option>';
-        products.forEach(product => {
-            optionsHtml += `<option value="${product.ProductId}">${product.ProductId} - ${product.ProductName}</option>`;
-        });
-
-        newProduct.innerHTML = `
-            <div class="form-group">
-                <label for="ProductId">Product ID</label>
-                <select class="form-control" name="Products[${productCount}].ProductId" required onchange="filterProducts()">
-                    ${optionsHtml}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="Quantity">Quantity</label>
-                <input type="number" class="form-control" name="Products[${productCount}].Quantity" required />
-            </div>
-
-            <input type="hidden" name="Products[${productCount}].DefectQuantity" value="" />
-
-            <div class="form-group">
-                <button type="button" class="btn btn-danger remove-product">Remove Product</button>
-            </div>
-
-            <hr />
-        `;
-        productSection.appendChild(newProduct);
-        
-        // Add event listener to the newly created remove button
-        newProduct.querySelector('.remove-product').addEventListener('click', function() {
-            productSection.removeChild(newProduct);
-            filterProducts();  // Re-filter when a product is removed
-        });
-
-        // Reapply the manufacturer filter to the new product dropdown
-        filterProducts();
-        
-        productCount++;
+        // Update the dropdown options
+        select.innerHTML = optionsHtml;
     });
 
-    // Call filterProducts initially to populate products based on manufacturer selection
-    document.getElementById('ManufacturerId').addEventListener('change', filterProducts);
+    // Check if all products for the manufacturer have been selected or if there are as many dropdowns as products
+    const totalAvailableProducts = filteredProducts.length;
+    const totalProductDropdowns = productSelects.length;
+    
+    // Hide the "Add Product" button if we've created as many dropdowns as there are available products
+    if (totalProductDropdowns >= totalAvailableProducts) {
+        document.getElementById("addProduct").style.display = 'none';
+    } else {
+        document.getElementById("addProduct").style.display = 'inline-block';
+    }
+}
 
-    // Call filterProducts initially to populate products when the page loads
+// Adding a new product form dynamically
+let productCount = 1;
+document.getElementById("addProduct").addEventListener("click", function () {
+    const productSection = document.getElementById("productSection");
+    const manufacturerId = document.getElementById('ManufacturerId').value;
+    
+    if (!manufacturerId) {
+        alert("Please select a manufacturer first");
+        return;
+    }
+    
+    // Get currently selected product IDs
+    const selectedProductIds = [];
+    document.querySelectorAll("select[name^='Products'][name$='.ProductId']").forEach(select => {
+        if (select.value) {
+            selectedProductIds.push(select.value);
+        }
+    });
+    
+    // Check if there are available products to add
+    const availableProducts = products.filter(product => 
+        product.ManufacturerId == manufacturerId && !selectedProductIds.includes(product.ProductId)
+    );
+
+    if (availableProducts.length === 0) {
+        alert("No more products available for this manufacturer");
+        return;
+    }
+
+    const newProduct = document.createElement("div");
+    newProduct.classList.add("productItem");
+
+    newProduct.innerHTML = `
+        <div class="form-group">
+            <label for="ProductId">Product ID</label>
+            <select class="form-control" name="Products[${productCount}].ProductId" required>
+                <option value="">-- Select a Product --</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="Quantity">Quantity</label>
+            <input type="number" class="form-control" name="Products[${productCount}].Quantity" required />
+        </div>
+
+        <input type="hidden" name="Products[${productCount}].DefectQuantity" value="" />
+
+        <div class="form-group">
+            <button type="button" class="btn btn-danger remove-product">Remove Product</button>
+        </div>
+
+        <hr />
+    `;
+    productSection.appendChild(newProduct);
+    
+    // Add event listener to the newly created remove button
+    newProduct.querySelector('.remove-product').addEventListener('click', function() {
+        productSection.removeChild(newProduct);
+        filterProducts();  // Re-filter when a product is removed
+    });
+    
+    productCount++;
+    
+    // Apply the filter to update all dropdowns including the new one
     filterProducts();
+});
+
+// Add change event listeners to all product selects
+document.addEventListener('change', function(event) {
+    if (event.target.name && event.target.name.startsWith('Products') && event.target.name.endsWith('.ProductId')) {
+        filterProducts();
+    }
+});
+
+// Call filterProducts when the manufacturer changes
+document.getElementById('ManufacturerId').addEventListener('change', function() {
+    // Reset product sections when manufacturer changes
+    const productSection = document.getElementById("productSection");
+    // Keep only the first product item and clear its selection
+    const productItems = productSection.querySelectorAll('.productItem');
+    for (let i = 1; i < productItems.length; i++) {
+        productSection.removeChild(productItems[i]);
+    }
+    const firstProductSelect = productSection.querySelector("select[name^='Products'][name$='.ProductId']");
+    if (firstProductSelect) {
+        firstProductSelect.value = '';
+    }
+    
+    // Reset product count
+    productCount = 1;
+    
+    filterProducts();
+});
+
+// Call filterProducts initially to populate products when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    filterProducts();
+});
 </script>
 
 

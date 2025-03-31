@@ -96,39 +96,50 @@ namespace CleanBrilliantCompany.Controllers.Reorder
             return RedirectToAction("Reorder");
         }
 
-        
-        [HttpPost("update/{id}")]
+[HttpPost("update/{id}")]
 [ValidateAntiForgeryToken]
 public IActionResult UpdateReorderDetails(int id, ReorderRequest_RDM reorder)
 {
-    Console.WriteLine($"DEBUG CONTROLLER: Form submitted with ID: {id}, Model ReorderId: {reorder.ReorderId}");
-    
-    // Debug products to be updated
-    Console.WriteLine($"DEBUG CONTROLLER: Number of products: {reorder.Products?.Count ?? 0}");
-    if (reorder.Products != null)
+    // Ensure reorder.Products is initialized
+    if (reorder.Products == null)
     {
-        foreach (var product in reorder.Products)
-        {
-            Console.WriteLine($"DEBUG CONTROLLER: Product - ReorderProductId: {product.ReorderProductId}, ProductId: {product.ProductId}, Quantity: {product.Quantity}");
-        }
+        reorder.Products = new List<ReorderRequest_Products>();
+    }
+    
+    // Log the incoming data
+    Console.WriteLine($"DEBUG CONTROLLER: Reorder ID: {reorder.ReorderId}, Manufacturer ID: {reorder.ManufacturerId}");
+    Console.WriteLine($"DEBUG CONTROLLER: Number of products: {reorder.Products.Count}");
+    
+    foreach (var product in reorder.Products)
+    {
+        Console.WriteLine($"DEBUG CONTROLLER: Product - ReorderProductId: {product.ReorderProductId}, ProductId: {product.ProductId}, Quantity: {product.Quantity}");
     }
 
     if (!ModelState.IsValid)
     {
-        Console.WriteLine("DEBUG CONTROLLER: ModelState is invalid");
-        foreach (var state in ModelState)
-        {
-            Console.WriteLine($"DEBUG CONTROLLER: Key: {state.Key}, Errors: {state.Value.Errors.Count}");
-            foreach (var error in state.Value.Errors)
-            {
-                Console.WriteLine($"DEBUG CONTROLLER: Error: {error.ErrorMessage}");
-            }
-        }
+        // Repopulate ViewBag data for the view
+        IProduct productService = new ProductManagement();
+        IManufacturer manufacturerService = new ProductManufacturerManagement();
+
+        ViewBag.Products = productService.getAllProducts();
+        ViewBag.Manufacturers = manufacturerService.getAllManufacturers();
+        
         return View("~/Views/Reorder/UpdateReorderDetails.cshtml", reorder);
     }
 
     try
     {
+        // If we don't have any products in the form submission, fetch the existing ones
+        if (reorder.Products.Count == 0)
+        {
+            var existingReorder = _reorderManagement.getReorderRequestDetails(id);
+            if (existingReorder != null && existingReorder.Products != null)
+            {
+                reorder.Products = existingReorder.Products;
+                Console.WriteLine($"DEBUG CONTROLLER: Loaded {reorder.Products.Count} existing products");
+            }
+        }
+
         // Call your service to update the reorder request
         _reorderManagement.updateReorderRequest(reorder);
 
@@ -144,7 +155,7 @@ public IActionResult UpdateReorderDetails(int id, ReorderRequest_RDM reorder)
         Console.WriteLine($"DEBUG CONTROLLER: Exception in UpdateReorderDetails: {ex.Message}");
         TempData["ErrorMessage"] = $"Error updating reorder request: {ex.Message}";
         
-        // Fetch products and manufacturers for the edit view again
+        // Repopulate ViewBag data for the view
         IProduct productService = new ProductManagement();
         IManufacturer manufacturerService = new ProductManufacturerManagement();
 
@@ -154,7 +165,6 @@ public IActionResult UpdateReorderDetails(int id, ReorderRequest_RDM reorder)
         return View("~/Views/Reorder/UpdateReorderDetails.cshtml", reorder);
     }
 }
-
 
         [HttpPost("delete_product")]
         [ValidateAntiForgeryToken]

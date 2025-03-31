@@ -190,7 +190,7 @@ namespace CleanBrilliantCompany.Data
             return reorder;  // Return the ReorderRequest with its associated products
         }
 
-public void updateReorderRequest(ReorderRequest_RDM reorder)
+        public void updateReorderRequest(ReorderRequest_RDM reorder)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
@@ -199,7 +199,7 @@ public void updateReorderRequest(ReorderRequest_RDM reorder)
 
                 try
                 {
-                    // Update the ReorderRequest itself
+                    // Update the ReorderRequest itself (no changes needed here)
                     string reorderQuery = @"
                         UPDATE dbo.ReorderRequest
                         SET ManufacturerId = @ManufacturerId, 
@@ -223,34 +223,93 @@ public void updateReorderRequest(ReorderRequest_RDM reorder)
                         }
                     }
 
-                    // Update each product in the ReorderRequestProduct table
-                    foreach (var product in reorder.Products)
+                    Console.WriteLine("Reorder updated successfully");
+
+                    // Check if there are products to update
+                    if (reorder.Products != null && reorder.Products.Count > 0)
                     {
-                        string productQuery = @"
-                            UPDATE dbo.ReorderRequestProduct
-                            SET productId = @ProductId,
-                                Quantity = @Quantity,
-                                DefectQuantity = @DefectQuantity
-                            WHERE reorder_product_Id = @ReorderProductId;  
-                        ";
-
-                        using (SqlCommand cmd = new SqlCommand(productQuery, conn, transaction))
+                        Console.WriteLine($"Found {reorder.Products.Count} products to update");
+                        
+                        // Update each product in the ReorderRequestProduct table
+                        foreach (var product in reorder.Products)
                         {
-                            cmd.Parameters.AddWithValue("@ReorderProductId", product.ReorderProductId);
-                            cmd.Parameters.AddWithValue("@ProductId", product.ProductId);  
-                            cmd.Parameters.AddWithValue("@Quantity", product.Quantity);
-                            cmd.Parameters.AddWithValue("@DefectQuantity", product.DefectQuantity ?? (object)DBNull.Value);
-
-                            int rowsAffected = cmd.ExecuteNonQuery();
-                            if (rowsAffected == 0)
+                            if (product.ReorderProductId > 0)
                             {
-                                Console.WriteLine($"No rows updated for Product ID: {product.ProductId}, ReorderProductId: {product.ReorderProductId}");
+                                // This is an existing product, update it
+                                Console.WriteLine($"Updating product with ReorderProductId: {product.ReorderProductId}");
+                                
+                                string productQuery = @"
+                                    UPDATE dbo.ReorderRequestProduct
+                                    SET productId = @ProductId,
+                                        Quantity = @Quantity,
+                                        DefectQuantity = @DefectQuantity
+                                    WHERE reorder_product_Id = @ReorderProductId;  
+                                ";
+
+                                using (SqlCommand cmd = new SqlCommand(productQuery, conn, transaction))
+                                {
+                                    cmd.Parameters.AddWithValue("@ReorderProductId", product.ReorderProductId);
+                                    cmd.Parameters.AddWithValue("@ProductId", product.ProductId);  
+                                    cmd.Parameters.AddWithValue("@Quantity", product.Quantity);
+                                    cmd.Parameters.AddWithValue("@DefectQuantity", product.DefectQuantity ?? (object)DBNull.Value);
+
+                                    Console.WriteLine("Executing product update query");
+                                    int rowsAffected = cmd.ExecuteNonQuery();
+                                    
+                                    if (rowsAffected == 0)
+                                    {
+                                        Console.WriteLine($"No rows updated for Product ID: {product.ProductId}, ReorderProductId: {product.ReorderProductId}");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"Updated {rowsAffected} row(s) for Product ID: {product.ProductId}, ReorderProductId: {product.ReorderProductId}");
+                                    }
+                                }
                             }
                             else
                             {
-                                Console.WriteLine($"Updated {rowsAffected} row(s) for Product ID: {product.ProductId}, ReorderProductId: {product.ReorderProductId}");
+                                // This is a new product, insert it
+                                Console.WriteLine($"Inserting new product with Product ID: {product.ProductId}");
+                                
+                                string insertQuery = @"
+                                    INSERT INTO dbo.ReorderRequestProduct (
+                                        ReorderId, 
+                                        ProductId, 
+                                        Quantity, 
+                                        DefectQuantity
+                                    ) VALUES (
+                                        @ReorderId, 
+                                        @ProductId, 
+                                        @Quantity, 
+                                        @DefectQuantity
+                                    );
+                                ";
+
+                                using (SqlCommand cmd = new SqlCommand(insertQuery, conn, transaction))
+                                {
+                                    cmd.Parameters.AddWithValue("@ReorderId", reorder.ReorderId);
+                                    cmd.Parameters.AddWithValue("@ProductId", product.ProductId);
+                                    cmd.Parameters.AddWithValue("@Quantity", product.Quantity);
+                                    cmd.Parameters.AddWithValue("@DefectQuantity", product.DefectQuantity ?? (object)DBNull.Value);
+
+                                    Console.WriteLine("Executing product insert query");
+                                    int rowsAffected = cmd.ExecuteNonQuery();
+                                    
+                                    if (rowsAffected == 0)
+                                    {
+                                        Console.WriteLine($"Failed to insert Product ID: {product.ProductId}");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"Inserted new product with Product ID: {product.ProductId}");
+                                    }
+                                }
                             }
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No products to update");
                     }
 
                     // Commit the transaction if all updates are successful
