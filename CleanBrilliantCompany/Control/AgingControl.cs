@@ -1,3 +1,6 @@
+using CleanBrilliantCompany.Interfaces;
+using CleanBrilliantCompany.Models.Entity;
+
 public class AgingControl : IStorageDuration
 {
     private Dashboard agingDashboard;
@@ -6,14 +9,20 @@ public class AgingControl : IStorageDuration
 
 
     //private fakebatchinterface 
-    private FakeBatchInterface fakeBatchInterface;
+   //!private FakeBatchInterface fakeBatchInterface;
 
     //private fakeProductInterface 
-    private FakeProductInterface fakeProductInterface;
+    //!private FakeProductInterface fakeProductInterface;
+
+    private IProduct fakeProductInterface;
+    private IBatch fakeBatchInterface; 
+
     public AgingControl(
         AgingRepo agingMapper,
-        FakeBatchInterface fakeBatchInterface,
-        FakeProductInterface fakeProductInterface
+        //!FakeBatchInterface fakeBatchInterface,
+        //!FakeProductInterface fakeProductInterface
+        IProduct fakeProductInterface,
+        IBatch fakeBatchInterface
         )
     {
         this.agingMapper = agingMapper;
@@ -22,7 +31,7 @@ public class AgingControl : IStorageDuration
         this.fakeProductInterface = fakeProductInterface;
         // 🔹 Retrieve data from the database / fake DB
         LoadDashboards();
-        getStorageDuration(1);
+        //getStorageDuration(1);
     }
 
     // 🔹 Load dashboards from the database (or fake DB)
@@ -67,14 +76,20 @@ public class AgingControl : IStorageDuration
             var productID = product.Key;
             var analyticsList = product.Value;
             // get the product details 
-            RawProductData? productData = fakeProductInterface.getProductDetails(productID);
+            //!RawProductData? productData = fakeProductInterface.getProductDetails(productID);
+            Product productData = fakeProductInterface.getProductDetails(productID); 
+
+
             if (productData == null)
             {
                 Console.WriteLine("⚠ Product not found.");
                 continue;
             }
             // add this product to the dashboard
-            (agingDashboard as AgingDashboardRdm).addProductToNameMap(productID, productData.productName);
+            //! (agingDashboard as AgingDashboardRdm).addProductToNameMap(productID, productData.productName);
+            (agingDashboard as AgingDashboardRdm).addProductToNameMap(productID, productData.retrieveProductInfo()["ProductName"].ToString());
+
+
             // loop through the analyticsList and create the analytics 
             foreach (var analyticsDto in analyticsList)
             {
@@ -130,14 +145,27 @@ public class AgingControl : IStorageDuration
         // using the dashboard's requestedStartDate and requestedEndDate
         // i will filter out the batches that are within the date range using the batch's receive date 
 
-        var filteredBatches = batches.Where(b => b.ReceiveDate >= dashboard.RequestedStartDate && b.ReceiveDate <= dashboard.RequestedEndDate).ToList();
+        //! var filteredBatches = batches.Where(b => b.ReceiveDate >= dashboard.RequestedStartDate && b.ReceiveDate <= dashboard.RequestedEndDate).ToList();
+        var filteredBatches = batches
+        .Where(b =>
+        {
+            var info = b.retrieveProductBatchInfo();
+            var receiveDate = (DateTime)info["ReceiveDate"];
+            return receiveDate >= dashboard.RequestedStartDate &&
+                receiveDate <= dashboard.RequestedEndDate;
+        }).ToList();
+        //! ================================================================
 
         // Retrieve all stock histories for all batches
-        var stockHistories = new List<RawStockHistoryData>();
+        //! var stockHistories = new List<RawStockHistoryData>();
+        var stockHistories = new List<StockHistory>(); // Use the correct type for stock histories 
+
         foreach (var batch in filteredBatches)
         {
-            var stockHistory = fakeBatchInterface.getStockHistoryByBatch(batch.BatchCode);
-            stockHistories.AddRange(stockHistory);  // Efficiently add all records at once
+            //!var stockHistory = fakeBatchInterface.getStockHistoryByBatch(batch.BatchCode);
+            
+            //!stockHistories.AddRange(stockHistory);  // Efficiently add all records at once
+            var stockHistory = fakeBatchInterface.getStockHistoryByBatch((int)batch.retrieveProductBatchInfo()["BatchCode"]);
         }
 
         // Use the existing populateAnalytics method
@@ -152,17 +180,17 @@ public class AgingControl : IStorageDuration
     {
         // i need the batch's receive data then use current time to minus the receive date 
 
-        RawBatchData batch = fakeBatchInterface.getBatchDetails(batchCode);
-        if (batch == null)
-        {
-            Console.WriteLine("⚠ Batch not found.");
-            return -1;
-        }
-        DateTime currentDate = DateTime.Now;
-        TimeSpan storageDuration = currentDate - batch.ReceiveDate;
-        Console.WriteLine("Storage duration for batch {0} is {1} days", batchCode, storageDuration.Days);
-        return storageDuration.Days;
-
+        // RawBatchData batch = fakeBatchInterface.getBatchDetails(batchCode);
+        // if (batch == null)
+        // {
+        //     Console.WriteLine("⚠ Batch not found.");
+        //     return -1;
+        // }
+        // DateTime currentDate = DateTime.Now;
+        // TimeSpan storageDuration = currentDate - batch.ReceiveDate;
+        // Console.WriteLine("Storage duration for batch {0} is {1} days", batchCode, storageDuration.Days);
+        // return storageDuration.Days;
+        return 0 ; 
     }
     public string GenerateReport()
     {
