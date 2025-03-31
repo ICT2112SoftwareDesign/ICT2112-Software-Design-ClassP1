@@ -1,5 +1,32 @@
+@using Newtonsoft.Json
+@using CleanBrilliantCompany.DTO;
+@model List<EmissionPredDTO>
 @{
     ViewData["Title"] = "Goal Emissions Graph";
+
+    var graphJson = ViewData["graph"] as string;
+    var graph = string.IsNullOrEmpty(graphJson) 
+                      ? new List<EmissionPredDTO>() 
+                      : Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmissionPredDTO>>(graphJson);
+    var graphEmission = (graph != null && graph.Any())
+                          ? graph.Select(g => g.emisission).ToList()
+                          : new List<double>();
+    var graphDate = (graph != null && graph.Any())
+                          ? graph.Select(g => g.day).ToList()
+                          : new List<DateTime>();
+
+    var predictionsJson = ViewData["predictions"] as string;
+    var predictions = string.IsNullOrEmpty(predictionsJson)
+                      ? new List<EmissionPredDTO>() 
+                      : Newtonsoft.Json.JsonConvert.DeserializeObject<List<EmissionPredDTO>>(predictionsJson);
+    var predictionsEmission = (predictions != null && predictions.Any())
+                          ? predictions.Select(p => p.emisission).ToList() 
+                          : new List<double>();
+    var predictionsDate = (predictions != null && predictions.Any())
+                          ? predictions.Select(p => p.day).ToList() 
+                          : new List<DateTime>();
+
+    
 }
 
 <h2>Goal Emissions vs Date</h2>
@@ -14,28 +41,67 @@
 </div>
 
 <canvas id="goalEmissionChart" width="400" height="200"></canvas>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20200211/json2.min.js"></script>
 
 <script type="text/javascript">
-    var dates = @Html.Raw(ViewData["Dates"]);
-    var emissions = @Html.Raw(ViewData["Emissions"]);
+    var goalDates = @Html.Raw(ViewData["goalDates"]);
+    var goalEmissions = @Html.Raw(ViewData["goalEmissions"]);
+    var graphEmission = @Html.Raw(JsonConvert.SerializeObject(graphEmission));
+    var graphDate = @Html.Raw(JsonConvert.SerializeObject(graphDate));
+    var predictionsEmission = @Html.Raw(JsonConvert.SerializeObject(predictionsEmission));
+    var predictionsDate = @Html.Raw(JsonConvert.SerializeObject(predictionsDate));
 
-    console.log("Dates:", dates);
-    console.log("Emissions:", emissions);
+    goalDates = goalDates.map(date => new Date(date));
+    graphDate = graphDate.map(date => new Date(date));
+    predictionsDate = predictionsDate.map(date => new Date(date));
+    
+    var goalData = goalDates.map((date, index) => ({
+        x: date,
+        y: goalEmissions[index]
+    }));
+
+    var graphData = graphDate.map((date, index) => ({
+        x: date,
+        y: graphEmission[index]
+    }));
+
+    var predictionData = predictionsDate.map((date, index) => ({
+        x: date,
+        y: predictionsEmission[index]
+    }));
+
+    console.log("goalDates:", goalDates);
+    console.log("goalEmissions:", goalEmissions);
+    console.log("current emission:", graphEmission);
+    console.log("predicted missions:", predictionsEmission);
+
+    
 
     var ctx = document.getElementById("goalEmissionChart").getContext("2d");
 
     var goalEmissionChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: dates, // X-axis (Date)
+            labels: goalDates, // X-axis (Date)
             datasets: [{
                 label: 'Target Emission',
-                data: emissions, // Y-axis (Target Emission)
+                data: goalData,
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true
+            },{
+                label: 'Predicted Carbon Emission',
+                data: predictionData,
+                borderColor: 'rgba(255, 159, 64, 1)',
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                fill: true
+            },{
+                label: 'Current Carbon Emission',
+                data: graphData,
+                borderColor: 'rgba(153, 102, 255, 1)',
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
                 fill: true
             }]
         },
@@ -43,7 +109,15 @@
             responsive: true,
             scales: {
                 x: {
-                    type: 'category', // 'category' type for string-based dates
+                    type: 'time', // 'category' type for string-based dates
+                    time: {
+                        unit: 'month', // You can set the unit to 'day', 'month', etc.
+                        tooltipFormat: 'MMM, yyyy', // Format for tooltips
+                        displayFormats: {
+                            'month': 'MMM yyyy', // Format displayed on the x-axis
+                            'day': 'MM/DD/YYYY'
+                        }
+                    },
                     title: {
                         display: true,
                         text: 'Date'
@@ -52,7 +126,7 @@
                 y: {
                     title: {
                         display: true,
-                        text: 'Target Emission'
+                        text: 'Carbon Emission'
                     }
                 }
             }
@@ -67,10 +141,10 @@
         // Filter the dates and emissions based on the selected range
         var filteredDates = [];
         var filteredEmissions = [];
-        for (var i = 0; i < dates.length; i++) {
-            if (dates[i] >= startDate && dates[i] <= endDate) {
-                filteredDates.push(dates[i]);
-                filteredEmissions.push(emissions[i]);
+        for (var i = 0; i < goalDates.length; i++) {
+            if (goalDates[i] >= startDate && goalDates[i] <= endDate) {
+                filteredDates.push(goalDates[i]);
+                filteredEmissions.push(goalEmissions[i]);
             }
         }
 

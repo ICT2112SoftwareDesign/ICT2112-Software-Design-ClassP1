@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Globalization;
 using Newtonsoft.Json;
+using CleanBrilliantCompany.DTO;
 
 public class AnalyticsController : Controller
 {
@@ -26,6 +27,16 @@ public class AnalyticsController : Controller
         // Fetch goals for the graph with optional date range filter
         var goals = await _analyticManager.RetrieveGoalsForGraph(startDate, endDate);
 
+        // Retrieve Emissions to load from db
+        await _analyticManager.retrieveOrderEmission();
+        await _analyticManager.retrieveItemEmission();
+
+        // Retrieve Predictions
+        await _analyticManager.predictCarbonEmission();
+        List<EmissionPredDTO> predictions = _analyticManager.getPredictEmission();
+
+        
+
         if (!goals.Any())
         {
             _logger.LogError("No goals found for graph.");
@@ -36,15 +47,21 @@ public class AnalyticsController : Controller
         _logger.LogInformation("Retrieved goals: {0} goals found.", goals.Count());
 
         // Log the goal dates and emissions
-        var dates = goals.Select(g => new DateTime(g.GetGoalYear(), g.GetGoalMonth(), 1)).ToList();
-        var emissions = goals.Select(g => g.GetTargetEmission()).ToList();
+        var goalDates = goals.Select(g => new DateTime(g.GetGoalYear(), g.GetGoalMonth(), 1)).ToList();
+        var goalEmissions = goals.Select(g => g.GetTargetEmission()).ToList();
 
-        _logger.LogInformation("Dates: {0}", string.Join(", ", dates.Select(d => d.ToString("yyyy-MM"))));
-        _logger.LogInformation("Emissions: {0}", string.Join(", ", emissions));
+        // ViewBag.goalDates = goalDates;
+        // ViewBag.goalEmissions = goalEmissions;
+
+        _logger.LogInformation("Dates: {0}", string.Join(", ", goalDates.Select(d => d.ToString("yyyy-MM"))));
+        _logger.LogInformation("Emissions: {0}", string.Join(", ", goalEmissions));
 
         // Serialize the lists to JSON format for use in the view
-        ViewData["Dates"] = JsonConvert.SerializeObject(dates);
-        ViewData["Emissions"] = JsonConvert.SerializeObject(emissions);
+        ViewData["graph"] = JsonConvert.SerializeObject(await _analyticManager.getGraphEmission());
+        ViewData["goalDates"] = JsonConvert.SerializeObject(goalDates);
+        ViewData["goalEmissions"] = JsonConvert.SerializeObject(goalEmissions);
+
+        ViewData["predictions"] = JsonConvert.SerializeObject(predictions);
 
         return View();
     }

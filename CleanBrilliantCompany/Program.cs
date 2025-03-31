@@ -29,6 +29,8 @@ builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
 builder.Services.AddScoped<GoalManagement>();
 builder.Services.AddScoped<IGoals, GoalManagement>();
 builder.Services.AddScoped<CarbonOrderAnalyticManager>();
+builder.Services.AddScoped<IPredictionStrategy, PredictionSSA>();
+builder.Services.AddScoped<IPredictionStrategy, PredictionSMA>();
 
 builder.Services.AddScoped<CarbonOrderAnalyticManager>();
 builder.Services.AddScoped<CarbonOrderAnalyticManager>();

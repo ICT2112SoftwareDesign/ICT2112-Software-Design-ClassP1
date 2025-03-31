@@ -6,10 +6,10 @@ namespace CleanBrilliantCompany.Models
         private string entityType;
         private double carbonEmission;
         private string ecoStatus;
-        private DateOnly dateCreated;
+        private DateTime dateCreated;
 
         // Constructor
-        public CarbonFootprintRecordRDM(int carbonFootprintId, int entityId, string entityType, double carbonEmission, string ecoStatus, DateOnly dateCreated){
+        public CarbonFootprintRecordRDM(int carbonFootprintId, int entityId, string entityType, double carbonEmission, string ecoStatus, DateTime dateCreated){
             this.carbonFootprintId = carbonFootprintId;
             this.entityId = entityId;
             this.entityType = entityType;
@@ -69,12 +69,12 @@ namespace CleanBrilliantCompany.Models
             this.ecoStatus = ecoStatus;
         }
 
-        private DateOnly getDateCreated()
+        private DateTime getDateCreated()
         {
             return dateCreated;
         }
 
-        private void setDateCreated(DateOnly dateCreated)
+        private void setDateCreated(DateTime dateCreated)
         {
             this.dateCreated = dateCreated;
         }
@@ -100,7 +100,7 @@ namespace CleanBrilliantCompany.Models
             return ecoStatus.Equals("Eco", StringComparison.OrdinalIgnoreCase);
         }
 
-        public bool isDateWithinRange(DateOnly startDate, DateOnly endDate)
+        public bool isDateWithinRange(DateTime startDate, DateTime endDate)
         {
             return dateCreated >= startDate && dateCreated <= endDate;
         }
@@ -120,7 +120,7 @@ namespace CleanBrilliantCompany.Models
             return ecoStatus;
         }
 
-        public DateOnly getDateCreatedForInsert()
+        public DateTime getDateCreatedForInsert()
         {
             return dateCreated;
         }

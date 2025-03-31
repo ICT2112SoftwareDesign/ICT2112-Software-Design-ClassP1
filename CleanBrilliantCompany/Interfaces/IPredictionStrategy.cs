@@ -7,6 +7,6 @@ namespace CleanBrilliantCompany.Interfaces
 {
     public interface IPredictionStrategy
     {
-        public List<EmissionPredDTO> retrievePrediction(List<DateOnly> days, List<float> data);
+        public List<EmissionPredDTO> retrievePrediction(List<DateTime> days, List<double> data);
     }
 }
