@@ -1,0 +1,322 @@
+[
+    {
+        "ItemID": 4,
+        "DateTime": "2023-01-02",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 5,
+        "DateTime": "2023-01-05",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 6,
+        "DateTime": "2023-01-08",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 7,
+        "DateTime": "2023-01-11",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 8,
+        "DateTime": "2023-01-14",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 9,
+        "DateTime": "2023-01-17",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 10,
+        "DateTime": "2023-01-20",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 14,
+        "DateTime": "2023-01-23",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 15,
+        "DateTime": "2023-01-26",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 16,
+        "DateTime": "2023-01-29",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 17,
+        "DateTime": "2023-02-01",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 18,
+        "DateTime": "2023-02-04",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 19,
+        "DateTime": "2023-02-07",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 20,
+        "DateTime": "2023-02-10",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 21,
+        "DateTime": "2023-02-13",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 22,
+        "DateTime": "2023-02-16",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 23,
+        "DateTime": "2023-02-19",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 24,
+        "DateTime": "2023-02-22",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 26,
+        "DateTime": "2023-02-25",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 28,
+        "DateTime": "2023-02-28",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 29,
+        "DateTime": "2023-03-03",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 30,
+        "DateTime": "2023-03-06",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 31,
+        "DateTime": "2023-03-09",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 32,
+        "DateTime": "2023-03-12",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 33,
+        "DateTime": "2023-03-15",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 34,
+        "DateTime": "2023-03-18",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 35,
+        "DateTime": "2023-03-21",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 36,
+        "DateTime": "2023-03-24",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 37,
+        "DateTime": "2023-03-27",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 38,
+        "DateTime": "2023-03-30",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 39,
+        "DateTime": "2023-04-02",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 40,
+        "DateTime": "2023-04-05",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 41,
+        "DateTime": "2023-04-08",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 42,
+        "DateTime": "2023-04-11",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 43,
+        "DateTime": "2023-04-14",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 44,
+        "DateTime": "2023-04-17",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 45,
+        "DateTime": "2023-04-20",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 46,
+        "DateTime": "2023-04-23",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 47,
+        "DateTime": "2023-04-26",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 48,
+        "DateTime": "2023-04-29",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 49,
+        "DateTime": "2023-05-02",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 50,
+        "DateTime": "2023-05-05",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 51,
+        "DateTime": "2023-05-08",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 52,
+        "DateTime": "2023-05-11",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 53,
+        "DateTime": "2023-05-14",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 54,
+        "DateTime": "2023-05-17",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 55,
+        "DateTime": "2023-05-20",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 57,
+        "DateTime": "2023-05-23",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 58,
+        "DateTime": "2023-05-26",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 59,
+        "DateTime": "2023-05-29",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 60,
+        "DateTime": "2023-06-01",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 61,
+        "DateTime": "2023-06-04",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 62,
+        "DateTime": "2023-06-07",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 63,
+        "DateTime": "2023-06-10",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 64,
+        "DateTime": "2023-06-13",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 65,
+        "DateTime": "2023-06-16",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 66,
+        "DateTime": "2023-06-19",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 67,
+        "DateTime": "2023-06-22",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 68,
+        "DateTime": "2023-06-25",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 69,
+        "DateTime": "2023-06-28",
+        "Quantity": 8
+    },
+    {
+        "ItemID": 70,
+        "DateTime": "2023-07-01",
+        "Quantity": 5
+    },
+    {
+        "ItemID": 71,
+        "DateTime": "2023-07-04",
+        "Quantity": 7
+    },
+    {
+        "ItemID": 72,
+        "DateTime": "2023-07-07",
+        "Quantity": 6
+    },
+    {
+        "ItemID": 73,
+        "DateTime": "2023-07-10",
+        "Quantity": 8
+    }
+]

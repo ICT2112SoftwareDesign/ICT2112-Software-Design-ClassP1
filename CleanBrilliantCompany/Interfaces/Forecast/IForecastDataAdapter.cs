@@ -1,4 +1,5 @@
 ﻿using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.Models.Entity;
 
 namespace CleanBrilliantCompany.Interfaces.Forecast
 {

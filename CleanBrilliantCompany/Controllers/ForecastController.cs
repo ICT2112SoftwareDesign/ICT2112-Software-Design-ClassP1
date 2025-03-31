@@ -38,15 +38,19 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult FetchDashboardData()
         {
             // 1) Possibly retrieve from DB or from your facade
-            var dashboard = _forecastFacade.generateDashboard(DateTime.Now.AddMonths(1), 0);
+            // Calculate the first day of next month
+            DateTime forecastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
+            var dashboard = _forecastFacade.generateDashboard(forecastMonth, 0);
 
             // 2) Serialize
             string serialized = JsonSerializer.Serialize(dashboard);
             // Generate the trend data map: "yyyy-MM" -> (productId -> forecast value)
-            Dictionary<string, Dictionary<int, object>> trendData =
-                _forecastFacade.GenerateForecastTrendData(DateTime.Now.AddMonths(1), 12);
+            // Calculate the first day of next month
+            DateTime forecastTrendMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
+            var trendData=_forecastFacade.GenerateForecastTrendData(forecastTrendMonth, 12);
 
-  
+
+
             // Pass the data via ViewBag
             ViewBag.TrendData = trendData;
 
@@ -73,8 +77,8 @@ namespace CleanBrilliantCompany.Controllers
                  forecastMonth, priceAdjustment
             );
             // Generate the trend data map: "yyyy-MM" -> (productId -> forecast value)
-            Dictionary<string, Dictionary<int, object>> trendData =
-                _forecastFacade.GenerateForecastTrendData(DateTime.Now.AddMonths(1), 12);
+            DateTime forecastTrendMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
+            var trendData = _forecastFacade.GenerateForecastTrendData(forecastTrendMonth, 12);
             // Pass the data via ViewBag
             ViewBag.TrendData = trendData;
 
