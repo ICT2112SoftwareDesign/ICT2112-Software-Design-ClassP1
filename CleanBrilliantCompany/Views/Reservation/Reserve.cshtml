@@ -413,109 +413,55 @@
 
                         <!-- Page Heading -->
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-gray-800">Reservation List</h1>
-                        </div>
-
-                        <div class="row mb-3">
-                            @* Search Reservation ID *@
-                            <div class="col-md-auto">
-                                <form method="post" asp-action="searchById" class="row g-2">
-                                    <div class="col-auto">
-                                        <input class="form-control" id="reservationId" type="number" name="reservationId"
-                                               placeholder="Search Reservation by Id" required>
-                                    </div>
-                                    <div class="col-auto">
-                                        <button type="submit" class="btn btn-primary">
-                                            Search
-                                        </button>
-                                    </div>
-                                    <div class="col-auto">
-                                        <a asp-action="Index" class="btn btn-secondary">
-                                            Clear
-                                        </a>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="col-md-auto">
-                                @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveStockModal">
-                                    Reserve Stock
-                                </button>*@
-                                 <a href="@Url.Action("Reserve", "Reservation")" class="btn btn-primary" role="button">
-                                Reserve Stock Page
-                                </a>
-
-                            </div>
+                            <h1 class="h3 mb-0 text-gray-800">Reservation Product List</h1>
                         </div>
 
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Reservation ID</th>
                                     <th>Product ID</th>
-                                    <th>Warehouse ID</th>
-                                    <th>Reservation Date</th>
-                                    <th>Reservation Purpose</th>
-                                    <th>Reserved Quantity</th>
-                                    <th>StaffId</th>
+                                    <th>Product Name</th>
+                                    <th>Product Category</th>
+                                    <th>Manufacturer ID</th>
+                                    <th>Product Weight</th>
+                                    <th>Volume</th>
+                                    <th>Toxicity Percentage</th>
+                                    <th>Carbon Footprint</th>
+                                    <th>Product State</th>
+                                    <th>Count</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var reservations in Model)
+                                @foreach (var products in Model)
                                 {
-                                    <tr>
-                                        <td>@reservations["ReservationId"]</td>
-                                        <td>@reservations["ProductId"]</td>
-                                        <td>@reservations["WarehouseId"]</td>
-                                        <td>@reservations["ReservationDate"]</td>
-                                        <td>@reservations["ReservationPurpose"]</td>
-                                        <td>@reservations["ReservedQuantity"]</td>
-                                        <td>@reservations["StaffId"]</td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateReservationModal"
-                                                    data-reservation-id="@reservations["ReservationId"]">
-                                                Update
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#updateItemStatusModalOld" data-updateitemOld-id="@reservations["ReservationId"]">
-                                                Update Status
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#updateItemStatusModal" data-updatereservation-id="@reservations["ReservationId"]">
-                                                Update Reservation
-                                            </button>
-                                        </td>
-                                    <td>
-                                        <form method="post" asp-action="returnReservation">
-                                            <input type="hidden" id="reservationId" name="reservationId" value=@reservations["ReservationId"]>
-                                            <input type="hidden" id="staffId" name="staffId" value=@reservations["StaffId"]>
-                                            <button type="submit" class="btn btn-primary" @(reservations["ReservationPurpose"]?.ToString().Contains("[Returned]") == true ? "disabled" : "")>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
-                                                    <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z" />
-                                                </svg>
-                                                Return Stock
-                                            </button>
-                                        </form>
+                                <tr>
+                                    <td>@products["ProductId"]</td>
+                                    <td>@products["ProductName"]</td>
+                                    <td>@products["ProductCategory"]</td>
+                                    <td>@products["ManufacturerId"]</td>
+                                    <td>@products["ProductWeight"]</td>
+                                    <td>@products["Volume"]</td>
+                                    <td>@products["ToxicityPercentage"]</td>
+                                    <td>@products["CarbonFootprint"]</td>
+                                    <td>@products["ProductState"]</td>
+                                    <td>@products["Count"]</td>
+                                    <td class="d-flex">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal"
+                                                data-reserveModal-id="@products["ProductId"]">
+                                            Reserve
+                                        </button>
                                     </td>
-                                    </tr>
+                                </tr>
                                 }
                             </tbody>
                         </table>
-
-                        @* button to trigger add model
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveStockModal">
-                            Reserve Stock
-                        </button>
 
                         @* button to trigger get warehouse quantity model
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#warehouseModel">
                             Get Warehouse Quantity
                         </button>*@
 
-                        @* reserve stock modal *@
+                        @* add item modal *@
                         <div class="modal fade" id="reserveStockModal" tabindex="-1" aria-labelledby="reserveStockModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -556,25 +502,35 @@
                             </div>
                         </div>
 
-                        @* update reservation modal *@
-                        <div class="modal fade" id="updateReservationModal" tabindex="-1" aria-labelledby="updateReservationModalLabel" aria-hidden="true">
+                        @* reserve modal *@
+                        <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModal" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="updateReservationModalLabel">Update Reservation</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h5 class="modal-title" id="reserveModalLabel">Create Reservation</h5>
                                     </div>
                                     <div class="modal-body">
-                                        <form method="post" asp-action="updateReservationQuantity">
-                                            <input type="hidden" id="updateReservationId" name="reservationId">
+                                        <form method="post" asp-action="reserveStock">
+                                            <input type="hidden" id="reserveProductId" name="productId">
                                             <div class="mb-3">
-                                                <label for="salePrice" class="form-label">Sale Price</label>
-                                                <input type="text" class="form-control" id="salePrice" name="salePrice" required>
+                                                <label for="warehouseId" class="form-label">Warehouse ID</label>
+                                                <input type="number" class="form-control" id="warehouseId" name="warehouseId" required>
                                             </div>
-
+                                            <div class="mb-3">
+                                                <label for="reservedQuantity" class="form-label">Reserved Quantity</label>
+                                                <input type="number" class="form-control" id="reservedQuantity" name="reservedQuantity" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="reservationPurpose" class="form-label">Reservation Purpose</label>
+                                                <input type="text" class="form-control" id="reservationPurpose" name="reservationPurpose" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="staffId" class="form-label">Staff ID</label>
+                                                <input type="number" class="form-control" id="staffId" name="staffId" required>
+                                            </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save Item</button>
+                                                <button type="submit" class="btn btn-primary">Reserve Product</button>
                                             </div>
                                         </form>
                                     </div>
@@ -699,41 +655,14 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                var updateModal = document.getElementById("updateReservationModal");
+                var updateModal = document.getElementById("reserveModal");
 
                 updateModal.addEventListener("show.bs.modal", function (event) {
                     var button = event.relatedTarget;
-                    var reservationId = button.getAttribute("data-reservation-id");
+                    var productId = button.getAttribute("data-reserveModal-id");
 
-                    var hiddenInput = document.getElementById("updateItemId");
-                    hiddenInput.value = itemId;
-                    console.log(hiddenInput.value);
-                });
-            });
-
-            document.addEventListener("DOMContentLoaded", function () {
-                var updateModal = document.getElementById("reserveStockModal");
-
-                updateModal.addEventListener("show.bs.modal", function (event) {
-                    var button = event.relatedTarget;
-                    var reservationId = button.getAttribute("data-reservation-id");
-
-                    var hiddenInput = document.getElementById("updateItemId");
-                    hiddenInput.value = itemId;
-                    console.log(hiddenInput.value);
-                });
-            });
-
-            document.addEventListener("DOMContentLoaded", function () {
-                var updateModal = document.getElementById("updateItemStatusModal");
-
-                updateModal.addEventListener("show.bs.modal", function (event) {
-                    var button = event.relatedTarget;
-                    var itemId = button.getAttribute("data-updateitem-id");
-
-                    var hiddenInput = document.getElementById("updateStatusItemId");
-                    hiddenInput.value = itemId;
-
+                    var hiddenInput = document.getElementById("reserveProductId");
+                    hiddenInput.value = productId;
                     console.log(hiddenInput.value);
                 });
             });
