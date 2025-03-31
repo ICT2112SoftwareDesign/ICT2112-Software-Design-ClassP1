@@ -39,12 +39,12 @@
     </form>
 
 
-    @if (Model == null || !Model.Any())
-    {
-                        <p>No Transfer Record Found.</p>
-    }
-    else
-    {
+                    @if (Model == null || !Model.Any())
+                    {
+                                        <p>No Transfer Record Found.</p>
+                    }
+                    else
+                    {
                         <script>
                             // Store all warehouse details for JavaScript - use ViewBag.AllWarehouses instead of extracting from Model
                             const allWarehouses = [
@@ -170,10 +170,9 @@
                         </nav>
 
             }
-            </div>
+        </div>
             <!-- /.container-fluid -->
 
-            </div>
             <!-- End of Main Content -->
 
    <script>

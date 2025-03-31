@@ -18,7 +18,7 @@
             <form method="post" asp-action="searchById" class="row g-2">
                 <div class="col-auto">
                     <input class="form-control" id="reservationId" type="number" name="reservationId"
-                            placeholder="Search Reservation by Id" required>
+                        placeholder="Search Reservation by Id" required>
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">
@@ -36,8 +36,8 @@
             @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveStockModal">
                 Reserve Stock
             </button>*@
-                <a href="@Url.Action("Reserve", "Reservation")" class="btn btn-primary" role="button">
-            Reserve Stock Page
+            <a href="@Url.Action("Reserve", "Reservation")" class="btn btn-primary" role="button">
+                Reserve Stock Page
             </a>
 
         </div>
@@ -67,37 +67,44 @@
                     <td>@reservations["ReservedQuantity"]</td>
                     <td>@reservations["StaffId"]</td>
                     <td>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateReservationModal"
-                                data-reservation-id="@reservations["ReservationId"]">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateReservationModal" data-reservation-id="@reservations["ReservationId"]">
                             Update
                         </button>
                     </td>
                     <td>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#updateItemStatusModalOld" data-updateitemOld-id="@reservations["ReservationId"]">
+                            data-bs-target="#updateItemStatusModalOld"
+                            data-updateitemOld-id="@reservations["ReservationId"]">
                             Update Status
                         </button>
                     </td>
                     <td>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#updateItemStatusModal" data-updatereservation-id="@reservations["ReservationId"]">
+                            data-bs-target="#updateItemStatusModal"
+                            data-updatereservation-id="@reservations["ReservationId"]">
                             Update Reservation
                         </button>
                     </td>
-                <td>
-                    <form method="post" asp-action="returnReservation">
-                        <input type="hidden" id="reservationId" name="reservationId" value=@reservations["ReservationId"]>
-                        <input type="hidden" id="staffId" name="staffId" value=@reservations["StaffId"]>
-                        <button type="submit" class="btn btn-primary" @(reservations["ReservationPurpose"]?.ToString().Contains("[Returned]") == true ? "disabled" : "")>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
-                                <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z" />
+                    <td>
+                        <form method="post" asp-action="returnReservation">
+                            <input type="hidden" id="reservationId" name="reservationId"
+                                value=@reservations["ReservationId"]>
+                            <input type="hidden" id="staffId" name="staffId" value=@reservations["StaffId"]>
+                            <button type="submit" class="btn btn-primary"
+                                @(reservations["ReservationPurpose"]?.ToString().Contains("[Returned]") == true ? "disabled"
+                                                            : "")>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                                class="bi bi-reply" viewBox="0 0 16 16">
+                                <path
+                                    d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z" />
                             </svg>
                             Return Stock
                         </button>
                     </form>
                 </td>
-                </tr>
-            }
+            </tr>
+                        }
         </tbody>
     </table>
 
@@ -112,7 +119,8 @@ q       <button type="button" class="btn btn-primary" data-bs-toggle="modal" dat
     </button>*@
 
     @* reserve stock modal *@
-    <div class="modal fade" id="reserveStockModal" tabindex="-1" aria-labelledby="reserveStockModalLabel" aria-hidden="true">
+    <div class="modal fade" id="reserveStockModal" tabindex="-1" aria-labelledby="reserveStockModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -127,7 +135,8 @@ q       <button type="button" class="btn btn-primary" data-bs-toggle="modal" dat
                         </div>
                         <div class="mb-3">
                             <label for="reservedQuantity" class="form-label">Reserved Quantity</label>
-                            <input type="number" class="form-control" id="reservedQuantity" name="reservedQuantity" required>
+                            <input type="number" class="form-control" id="reservedQuantity" name="reservedQuantity"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="warehouseId" class="form-label">Warehouse ID</label>
@@ -135,7 +144,8 @@ q       <button type="button" class="btn btn-primary" data-bs-toggle="modal" dat
                         </div>
                         <div class="mb-3">
                             <label for="reservationPurpose" class="form-label">Reservation Purpose</label>
-                            <input type="text" class="form-control" id="reservationPurpose" name="reservationPurpose" required>
+                            <input type="text" class="form-control" id="reservationPurpose" name="reservationPurpose"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="staffId" class="form-label">Staff ID</label>
@@ -153,7 +163,8 @@ q       <button type="button" class="btn btn-primary" data-bs-toggle="modal" dat
     </div>
 
     @* update reservation modal *@
-    <div class="modal fade" id="updateReservationModal" tabindex="-1" aria-labelledby="updateReservationModalLabel" aria-hidden="true">
+    <div class="modal fade" id="updateReservationModal" tabindex="-1" aria-labelledby="updateReservationModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -180,7 +191,7 @@ q       <button type="button" class="btn btn-primary" data-bs-toggle="modal" dat
 
     @* update item id & status model (to test for iItemUpdate) *@
     <div class="modal fade" id="updateItemStatusModal" tabindex="-1" aria-labelledby="updateItemStatusModalLabel"
-            aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
