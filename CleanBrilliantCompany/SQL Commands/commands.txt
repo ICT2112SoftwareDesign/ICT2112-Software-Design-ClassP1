@@ -1,0 +1,7 @@
+SELECT 
+    c.table_schema AS SchemaName,
+    c.table_name AS TableName,
+    c.column_name AS ColumnName
+FROM information_schema.columns c
+WHERE c.column_name = 'batchCode'
+ORDER BY c.table_schema, c.table_name;

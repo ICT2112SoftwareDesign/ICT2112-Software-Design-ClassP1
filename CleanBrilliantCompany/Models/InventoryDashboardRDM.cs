@@ -1,0 +1,168 @@
+using System.Data;
+
+namespace CleanBrilliantCompany.Models
+{
+    public class InventoryDashboardRDM : Dashboard
+    {
+        private readonly Dictionary<int, int> _stockLevel;
+        private readonly Dictionary<int, int> _threshold;
+        private readonly Dictionary<int, bool> _replenishmentStatus;
+        private readonly List<int> _lowStockProducts;
+        private readonly List<int> _overStockProducts;
+
+        public Dictionary<int, int> StockLevel
+        {
+            get => new Dictionary<int, int>(_stockLevel);
+            private set => throw new InvalidOperationException("Use SetStockLevel to modify StockLevel.");
+        }
+
+        public Dictionary<int, int> Threshold
+        {
+            get => new Dictionary<int, int>(_threshold);
+            private set => throw new InvalidOperationException("Use SetThreshold to modify Threshold.");
+        }
+
+        public Dictionary<int, bool> ReplenishmentStatus
+        {
+            get => new Dictionary<int, bool>(_replenishmentStatus);
+            private set => throw new InvalidOperationException("Use SetReplenishmentStatus to modify ReplenishmentStatus.");
+        }
+
+        // Lists to store product IDs for low stock and overstock alerts
+        public List<int> LowStockProducts => new List<int>(_lowStockProducts);
+        public List<int> OverStockProducts => new List<int>(_overStockProducts);
+
+        public InventoryDashboardRDM(string name, int validityDuration)
+            : base(0, name, DateTime.Now, DateTime.Now, validityDuration, 2)
+        {
+            _stockLevel = new Dictionary<int, int>();
+            _threshold = new Dictionary<int, int>();
+            _replenishmentStatus = new Dictionary<int, bool>();
+            _lowStockProducts = new List<int>();
+            _overStockProducts = new List<int>();
+        }
+
+        public InventoryDashboardRDM(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, DateTime generatedDate)
+            : base(dashboardId, name, requestedStartDate, requestedEndDate, validityDuration, 2, generatedDate)
+        {
+            _stockLevel = new Dictionary<int, int>();
+            _threshold = new Dictionary<int, int>();
+            _replenishmentStatus = new Dictionary<int, bool>();
+            _lowStockProducts = new List<int>();
+            _overStockProducts = new List<int>();
+        }
+
+        public int GetDashboardId()
+        {
+            return DashboardId;
+        }
+
+        private void EnsureProductExists(int productId)
+        {
+            // If the product doesn't exist, initialize it in all dictionaries
+            if (!_stockLevel.ContainsKey(productId))
+            {
+                _stockLevel[productId] = 0; // Default stock level
+            }
+            if (!_threshold.ContainsKey(productId))
+            {
+                _threshold[productId] = 0; // Default threshold
+            }
+            if (!_replenishmentStatus.ContainsKey(productId))
+            {
+                _replenishmentStatus[productId] = false; // Default replenishment status
+            }
+        }
+
+        public int GetStockLevel(int productId)
+        {
+            return _stockLevel.TryGetValue(productId, out var stock) ? stock : -1;
+        }
+
+        public Dictionary<int, int> GetAllStockLevels()
+        {
+            return new Dictionary<int, int>(_stockLevel);
+        }
+
+        public int GetThreshold(int productId)
+        {
+            return _threshold.TryGetValue(productId, out var stock) ? stock : -1;
+        }
+
+        public Dictionary<int, int> GetAllThresholds()
+        {
+            return new Dictionary<int, int>(_threshold);
+        }
+
+        public bool? GetReplenishmentStatus(int productId)
+        {
+            return _replenishmentStatus.TryGetValue(productId, out var status) ? status : null;
+        }
+
+        public Dictionary<int, bool> GetAllReplenishmentStatuses()
+        {
+            return new Dictionary<int, bool>(_replenishmentStatus);
+        }
+
+        protected void SetStockLevel(int productId, int stockLevel)
+        {
+            EnsureProductExists(productId);
+            _stockLevel[productId] = stockLevel;
+        }
+
+        protected void SetThreshold(int productId, int threshold)
+        {
+            EnsureProductExists(productId);
+            _threshold[productId] = threshold;
+        }
+
+        protected void SetReplenishmentStatus(int productId, bool replenishmentStatus)
+        {
+            EnsureProductExists(productId);
+            _replenishmentStatus[productId] = replenishmentStatus;
+        }
+
+        public bool IsLowStock(int productId)
+        {
+            return _stockLevel[productId] < _threshold[productId] * 0.35;
+        }
+
+        public bool IsOverStock(int productId)
+        {
+            return _stockLevel[productId] > _threshold[productId] * 1.6;
+        }
+
+        public void UpdateStockThreshold(Dictionary<int, int> stockLevels, Dictionary<int, int> thresholds)
+        {
+            foreach (var item in stockLevels)
+            {
+                SetStockLevel(item.Key, item.Value);
+            }
+
+            foreach (var item in thresholds)
+            {
+                SetThreshold(item.Key, item.Value);
+            }
+        }
+
+        public void UpdateReplenishmentStatus()
+        {
+            foreach (var productId in _stockLevel.Keys)
+            {
+                bool needsReplenishment = _stockLevel[productId] < _threshold[productId] * 0.35;
+                SetReplenishmentStatus(productId, needsReplenishment);
+            }
+        }
+
+        public void GenerateAlerts()
+        {
+            _lowStockProducts.Clear();
+            _overStockProducts.Clear();
+
+            // These use the thresholds that came from ProductThresholdTable
+            _lowStockProducts.AddRange(_stockLevel.Keys.Where(IsLowStock));
+            _overStockProducts.AddRange(_stockLevel.Keys.Where(IsOverStock));
+        }
+
+    }
+}
