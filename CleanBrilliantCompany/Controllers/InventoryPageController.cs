@@ -27,10 +27,7 @@ namespace CleanBrilliantCompany.Controllers
                 var alertStreaks = _inventoryControl.GetWeeklyConsecutiveAlertCounts();
 
                 // Send categories to dropdown
-                var categories = _inventoryControl.GetAllProducts()
-                                    .Select(p => p.productCategory)
-                                    .Distinct()
-                                    .ToList();
+                var categories = _inventoryControl.GetProductCategories();
 
                 var productLookup = _inventoryControl.GetProductLookup();
 

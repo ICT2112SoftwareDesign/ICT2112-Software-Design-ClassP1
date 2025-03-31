@@ -1,17 +1,17 @@
 using CleanBrilliantCompany.DatabaseEntities;
-using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.DTO;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using CleanBrilliantCompany.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public class ApplicationDbContext : DbContext
 {
     // public DbSet<DashboardTable> Dashboards { get; set; }
+    public DbSet<DashboardTable> DashboardTable { get; set; }
+    public DbSet<DashboardTypeTable> DashboardTableType { get; set; }
     public DbSet<AgingAnalyticsDetailsTable> AgingAnalyticsDetails { get; set; }
 
     // Inventory
-    public DbSet<DashboardTable> DashboardTable { get; set; }
-    public DbSet<DashboardTypeTable> DashboardTableType { get; set; }
     public DbSet<AlertTypeTable> AlertTypeTable { get; set; }
     public DbSet<InventoryLevelTable> InventoryLevelTable { get; set; }
     public DbSet<InventoryAlertsTable> InventoryAlertsTable { get; set; }
@@ -21,7 +21,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<DashboardTable> Dashboards { get; set; }
     public DbSet<ItemTable> Items { get; set; }
-    public DbSet<ProductTable> Product { get; set; }
+    //public DbSet<ProductTable> Product { get; set; }
     public DbSet<ProductBatchTable> ProductBatch { get; set; }
 
     public DbSet<ManufacturerTable> Manufacturers { get; set; }

@@ -2,12 +2,9 @@ using CleanBrilliantCompany.Control;
 using CleanBrilliantCompany.Controllers;
 using CleanBrilliantCompany.DataSource.Interface;
 using CleanBrilliantCompany.DataSource.Mapper;
-using CleanBrilliantCompany.Dummy;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Interfaces.Forecast;
-using CleanBrilliantCompany.Mapper;
 using CleanBrilliantCompany.Mapper;
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models.Control;
@@ -159,9 +156,9 @@ builder.Services.AddScoped<AgingRepo, AgingMapper>();
 builder.Services.AddScoped<AgingControl>();
 
 // simulated version  (for product batches and stockhistory)
-builder.Services.AddDbContext<SimulatedDbContext>(options =>
-    options.UseSqlServer(connectionString)
-);
+//builder.Services.AddDbContext<SimulatedDbContext>(options =>
+//    options.UseSqlServer(connectionString)
+//);
 
 //register the fakebatch interface
 // builder.Services.AddScoped<FakeBatchInterface>();
@@ -173,7 +170,7 @@ builder.Services.AddScoped<IAlertService, InAppAlert>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<CostMapper>();
 builder.Services.AddScoped<CostControl>();
-builder.Services.AddScoped<Team6IProduct, MockProduct>(); // Simulation
+//builder.Services.AddScoped<Team6IProduct, MockProduct>(); // Simulation
 builder.Services.AddScoped<InventoryControl>();
 builder.Services.AddScoped<IInventoryRepository, InventoryMapper>();
 
