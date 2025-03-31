@@ -9,7 +9,7 @@
         "environmentVariables": {
             "ASPNETCORE_ENVIRONMENT": "Development"
         },
-        "launchUrl": "forecast/fetchDashboardData"
+        "launchUrl": "CostPage"
     },
     "https": {
       "commandName": "Project",

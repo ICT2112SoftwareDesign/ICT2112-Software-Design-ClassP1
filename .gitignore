@@ -525,3 +525,10 @@ CleanBrilliantCompany/obj/
 # DLLs and runtime outputs
 *.dll
 /CleanBrilliantCompany/bin/Debug
+/CleanBrilliantCompany/bin/Debug
+/CleanBrilliantCompany/bin/Debug/net9.0
+/CleanBrilliantCompany/bin
+/CleanBrilliantCompany/bin
+/CleanBrilliantCompany/Properties
+/CleanBrilliantCompany/Properties
+/CleanBrilliantCompany/bin/Debug
