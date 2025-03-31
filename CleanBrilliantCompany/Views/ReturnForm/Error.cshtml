@@ -8,24 +8,33 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>Error</h3>
+<div class="px-5">
+    <h3>Error</h3>
 
-@if (errorType == "NotFound")
-{
-    <p>Return form not found.</p>
-}
-else if (errorType == "DeleteError")
-{
-    <p>Error encountered during deletion.</p>
-}
-else if (errorType == "InputError")
-{
-    <p>Invalid input. Possible cause of errors:</p>
-    <p>Manufacturer and/or Item ID doesn't exists.</p>
-    <p>Item is already refunded.</p>
-    <p>Item is not marked as Available.</p>
-}
-else
-{
-    <p>An unknown error occurred.</p>
-}
+    @if (errorType == "NotFound")
+    {
+        <p>Return form not found.</p>
+    }
+    else if (errorType == "DeleteError")
+    {
+        <p>Error encountered during deletion.</p>
+    }
+    else if (errorType == "InputError")
+    {
+        <p>Invalid input. Possible cause of errors:</p>
+        <p>Manufacturer and/or Item ID doesn't exists.</p>
+        <p>Item is already refunded.</p>
+        <p>Item is not marked as Available.</p>
+    }
+    else
+    {
+        <p>An unknown error occurred.</p>
+    }
+
+</div>
+<body>
+    </div>
+    </div>
+    </div>
+</body>
+</html>
