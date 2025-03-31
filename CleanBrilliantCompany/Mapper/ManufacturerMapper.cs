@@ -29,10 +29,6 @@ public class ManufacturerMapper : ManufacturerRepo
         {
             Console.WriteLine("⚠ No manufacturer dashboard found.");
         }
-        else
-        {
-            Console.WriteLine($"✅ Manufacturer dashboard found: {dashboard.Name}");
-        }
         return dashboard;
     }
 
@@ -56,10 +52,6 @@ public class ManufacturerMapper : ManufacturerRepo
         if (metricsList.Count == 0)
         {
             Console.WriteLine("⚠ No manufacturer metrics found for this dashboard.");
-        }
-        else
-        {
-            Console.WriteLine($"✅ Found {metricsList.Count} manufacturer metrics.");
         }
 
         return metricsList;

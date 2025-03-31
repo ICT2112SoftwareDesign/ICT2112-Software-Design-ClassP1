@@ -20,7 +20,6 @@ public class ManufacturerControl
             Console.WriteLine("⚠ No manufacturer dashboard found.");
             return;
         }
-        Console.WriteLine($"📊 Manufacturer dashboard found: {dashboardDto.Name} generated on: {dashboardDto.GeneratedDate}");
 
         // Check if the dates are null, and provide default values if needed
         DateTime requestedStartDate = dashboardDto.RequestedStartDate;
@@ -35,7 +34,6 @@ public class ManufacturerControl
         if (manufacturerDashboard is ManufacturerDashboardRdm manufacturerDashboardRdm)
         {
             manufacturerDashboardRdm.Metrics = metricsList;
-            Console.WriteLine($"📊 {metricsList.Count} Manufacturer Metrics found.");
 
             manufacturerDashboardRdm.MetricDetailsList = ManufacturerMapper
             .GetManufacturerMetrics(dashboardDto.DashboardId)
@@ -57,7 +55,6 @@ public class ManufacturerControl
     // Method to retrieve the latest dashboard
     public ManufacturerDashboardRdm? GetLatestDashboard()
     {
-        Console.WriteLine("🔍 Retrieving the latest manufacturer dashboard...");
         return manufacturerDashboard as ManufacturerDashboardRdm;
     }
 
@@ -65,12 +62,12 @@ public class ManufacturerControl
     public void GenerateNewDashboard(DashboardDTO dto)
     {
         // Set the type for the dashboard
-        dto.Type = 3; // Assuming 3 corresponds to Manufacturer Dashboard Type ID
+        dto.Type = 3; // Manufacturer Dashboard Type ID
 
         // Create the new dashboard
         var dashboard = DashboardFactory.createDashboard(dto);
 
-        // Assuming you have a reorder interface injected (like in your earlier instructions)
+        // Assuming you have a reorder interface injected
         var reorders = fakeReorderInterface.GetAllReorderDetails(); // Adjust this to match the method that fetches batches for manufacturers
 
         // Filter the reorders by the requested start and end date
@@ -87,7 +84,6 @@ public class ManufacturerControl
 
     public string GenerateReport()
     {
-
         var dashboard = GetLatestDashboard();
 
         if (dashboard == null)
