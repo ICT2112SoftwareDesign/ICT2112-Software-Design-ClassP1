@@ -148,7 +148,7 @@ builder.Services.AddScoped<ProductFactory>();
 builder.Services.AddScoped<ProductMapper>();
 
 // register fake context as a singleton
-builder.Services.AddSingleton<FakeDbContext>();
+//builder.Services.AddSingleton<FakeDbContext>();
 
 // register aging mapper to use fakedb context
 //builder.Services.AddScoped<AgingMapper>();
@@ -164,10 +164,11 @@ builder.Services.AddDbContext<SimulatedDbContext>(options =>
 );
 
 //register the fakebatch interface
-builder.Services.AddScoped<FakeBatchInterface>();
+// builder.Services.AddScoped<FakeBatchInterface>();
 
-//register the fakeproduct interface
-builder.Services.AddScoped<FakeProductInterface>();
+// //register the fakeproduct interface
+// builder.Services.AddScoped<FakeProductInterface>();
+
 builder.Services.AddScoped<IAlertService, InAppAlert>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<CostMapper>();
