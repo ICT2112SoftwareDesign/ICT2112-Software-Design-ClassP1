@@ -1,0 +1,238 @@
+@model CleanBrilliantCompany.Models.OrderRDM
+@inject CleanBrilliantCompany.Models.OrderFulfilmentManagement OrderFulfilmentManagement
+
+@{
+    ViewData["Title"] = "Order Fulfilment Details";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Order Fulfilment Details</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        .order-detail-card {
+            margin-bottom: 20px;
+            border-left: 4px solid #4e73df;
+        }
+        .status-badge {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-shipped {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-refund {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-cancelled {
+            background-color: #d6d8db;
+            color: #1b1e21;
+        }
+        .order-summary {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        @await Html.PartialAsync("~/Views/Staff/staff-sidebar.cshtml")
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    
+                    <h4 class="mb-0 text-gray-800">Order Details</h4>
+                </nav>
+                <!-- End of Topbar -->
+
+                <div class="container-fluid">
+                    @if (Model != null)
+                    {
+                        <div class="card shadow mb-4 order-detail-card">
+                            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 font-weight-bold text-primary">Order #@Model.RetrieveOrderID()</h6>
+                                @{
+                                    var statusClass = "";
+                                    switch(Model.RetrieveStatus())
+                                    {
+                                        case "Pending":
+                                            statusClass = "status-pending";
+                                            break;
+                                        case "Shipped":
+                                            statusClass = "status-shipped";
+                                            break;
+                                        case "Completed":
+                                            statusClass = "status-completed";
+                                            break;
+                                        case "RefundRequested":
+                                            statusClass = "status-refund";
+                                            break;
+                                        case "Cancelled":
+                                            statusClass = "status-cancelled";
+                                            break;
+                                    }
+                                }
+                                <span class="status-badge @statusClass">@Model.RetrieveStatus()</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="order-summary">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p><strong>Order Date:</strong> @Model.RetrieveOrderDate().ToShortDateString()</p>
+                                            <p><strong>Order ID:</strong> @Model.RetrieveOrderID()</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>Shipping Method:</strong> @Model.RetrieveOrderShipping()</p>
+                                            <p><strong>Total Weight:</strong> @Model.RetrieveOrderWeight() kg</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>Total Amount:</strong> $@Model.RetrieveOrderTotal().ToString("N2")</p>
+                                            <p><strong>Shipping Address:</strong> @Model.RetrieveOrderAddress()</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h5 class="font-weight-bold">Order Status Management</h5>
+                                    <div class="form-inline">
+                                        <select class="form-control mr-2 status-select" style="min-width: 200px;" data-order-id="@Model.RetrieveOrderID()">
+                                            <option value="Pending" selected="@(Model.RetrieveStatus() == "Pending")">Pending</option>
+                                            <option value="Shipped" selected="@(Model.RetrieveStatus() == "Shipped")">Shipped</option>
+                                            <option value="Completed" selected="@(Model.RetrieveStatus() == "Completed")">Completed</option>
+                                            <option value="RefundRequested" selected="@(Model.RetrieveStatus() == "RefundRequested")">Refund Requested</option>
+                                            <option value="Cancelled" selected="@(Model.RetrieveStatus() == "Cancelled")">Cancelled</option>
+                                        </select>
+                                        <button class="btn btn-primary update-status-btn" data-order-id="@Model.RetrieveOrderID()">
+                                            <i class="fas fa-sync-alt mr-2"></i>Update Status
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            Order not found or unable to load order details.
+                        </div>
+                    }
+                    
+                    <a href="@Url.Action("Index", "OrderFulfilment")" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="~/js/sb-admin-2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Update button click handler
+            $('.update-status-btn').click(function() {
+                const button = $(this);
+                const orderId = button.data('order-id');
+                const statusSelect = $(`select.status-select[data-order-id="${orderId}"]`);
+                const newStatus = statusSelect.val();
+
+                console.log('Attempting to update order:', orderId, 'to status:', newStatus);
+
+                button.prop('disabled', true);
+                button.html('<i class="fas fa-spinner fa-spin"></i> Updating...');
+
+                $.ajax({
+                    url: '/staff/OrderFulfilment/UpdateStatus',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        orderId: orderId,
+                        status: newStatus
+                    }),
+                    success: function(response) {
+                        console.log('Update response:', response);
+                        if (response.success) {
+                            // Update successful
+                            alert(`Order #${orderId} updated to ${newStatus}`);
+
+                            // Update the status badge immediately
+                            var statusBadge = $('.status-badge');
+                            statusBadge.text(newStatus);
+                            
+                            // Update the status class
+                            statusBadge.removeClass('status-pending status-shipped status-completed status-refund status-cancelled');
+                            
+                            var newClass = '';
+                            switch(newStatus) {
+                                case 'Pending': newClass = 'status-pending'; break;
+                                case 'Shipped': newClass = 'status-shipped'; break;
+                                case 'Completed': newClass = 'status-completed'; break;
+                                case 'RefundRequested': newClass = 'status-refund'; break;
+                                case 'Cancelled': newClass = 'status-cancelled'; break;
+                            }
+                            statusBadge.addClass(newClass);
+                        } else {
+                            alert(response.message || 'Update failed');
+                        }
+                        resetButton(button);
+                    },
+                    error: function(xhr) {
+                        console.error('Update error:', xhr);
+                        alert(xhr.responseJSON?.error || 'Server error');
+                        resetButton(button);
+                    }
+                });
+            });
+
+            function resetButton(button) {
+                setTimeout(function() {
+                    button.html('<i class="fas fa-sync-alt mr-2"></i>Update Status').prop('disabled', false);
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>

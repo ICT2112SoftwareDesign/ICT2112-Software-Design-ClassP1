@@ -29,7 +29,7 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
-
+        [HttpGet("details/{orderId}")]
         public IActionResult Details(int orderId)
         {
             try
@@ -39,7 +39,7 @@ namespace CleanBrilliantCompany.Controllers
                 {
                     return NotFound();
                 }
-                return View(order);
+                return View("~/Views/OrderFulfilment/orderfulfilmentdetails.cshtml", order);
             }
             catch (Exception ex)
             {

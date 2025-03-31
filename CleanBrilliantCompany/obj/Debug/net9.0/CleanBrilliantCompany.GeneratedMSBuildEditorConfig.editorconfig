@@ -96,6 +96,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJGdWxmaWxtZW50XG9yZGVyZnVsZmlsbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/jarre/OneDrive/Documents/GitHub/SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/OrderFulfilment/orderfulfilmentdetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJGdWxmaWxtZW50XG9yZGVyZnVsZmlsbWVudGRldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/jarre/OneDrive/Documents/GitHub/SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Cancelled.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcQ2FuY2VsbGVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -134,6 +138,22 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/jarre/OneDrive/Documents/GitHub/SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Products/ProductDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcUHJvZHVjdERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jarre/OneDrive/Documents/GitHub/SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ListOfReorders.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlclxMaXN0T2ZSZW9yZGVycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jarre/OneDrive/Documents/GitHub/SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ReorderDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlclxSZW9yZGVyRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jarre/OneDrive/Documents/GitHub/SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ReorderForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlclxSZW9yZGVyRm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jarre/OneDrive/Documents/GitHub/SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/UpdateReorderDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlclxVcGRhdGVSZW9yZGVyRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/jarre/OneDrive/Documents/GitHub/SoftwareDesign/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Review/ProductReviews.cshtml]
