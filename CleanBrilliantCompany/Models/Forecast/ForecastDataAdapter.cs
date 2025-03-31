@@ -4,18 +4,19 @@ using CleanBrilliantCompany.Interfaces.Forecast;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Linq;
 
 namespace CleanBrilliantCompany.Models.Forecast
 {
     public class ForecastDataAdapter: IForecastDataAdapter
     {
         private readonly TempForecastIProduct _productService;
-        private readonly ISales _salesService;
+        private readonly IOrderRange _salesService;
         private readonly IProduct _iProduct;
         private readonly IItem _iItem;
         private readonly IBatch _iBatch;
 
-        public ForecastDataAdapter(TempForecastIProduct productService, ISales salesService, IProduct iProduct, IItem iItem, IBatch iBatch)
+        public ForecastDataAdapter(TempForecastIProduct productService, IOrderRange salesService, IProduct iProduct, IItem iItem, IBatch iBatch)
         {
             _productService = productService;
             _salesService = salesService;
@@ -24,15 +25,54 @@ namespace CleanBrilliantCompany.Models.Forecast
             _iItem = iItem;
         }
 
-        public void GetForecastInputs(DateTime selectedMonth, out List<ProductDTO> products, out Dictionary<int, int> aggregatedSales)
+        //public void GetForecastInputs(DateTime selectedMonth, out List<ProductDTO> products, out Dictionary<int, int> aggregatedSales)
+        //{
+        //    // Get all products
+        //    var productsInfo = _iProduct.getAllProducts(); // List of products with dictionary info
+        //    products = new List<ProductDTO>();
+
+
+        //    foreach (var productInfo in productsInfo)
+        //    { 
+        //        var productDetails = productInfo.retrieveProductInfo();
+        //        int id = productDetails.ContainsKey("ProductId") ? (int)productDetails["ProductId"] : 0;
+        //        string name = productDetails.ContainsKey("ProductName") ? productDetails["ProductName"]?.ToString() ?? string.Empty : string.Empty;
+
+        //        var dto = new ProductDTO(id, name);
+        //        products.Add(dto);
+        //    }
+
+        //    // Get all sales in the selected month
+        //    var sales = _salesService.getSalesData(selectedMonth.Month);
+
+        //    // Map to final ProductID through Item → Batch → Product
+        //    var productSales = new Dictionary<int, int>();
+
+        //    foreach (var sale in sales)
+        //    {
+        //        //var itemDetails = _iItem.getItemById(sale.ItemID).Result;
+        //        //int productId = (int)itemDetails.retrieveItemInfo()["ProductId"];
+
+        //        if (!productSales.ContainsKey(sale.ProductID))
+        //            productSales[sale.ProductID] = 0;
+
+        //        productSales[sale.ProductID] += sale.Quantity;
+        //    }
+
+        //    aggregatedSales = productSales;
+
+        //}
+        public void GetForecastInputs(
+    DateTime selectedMonth,
+    out List<ProductDTO> products,
+    out Dictionary<int, int> aggregatedSales)
         {
             // Get all products
-            var productsInfo = _iProduct.getAllProducts(); // List of products with dictionary info
+            var productsInfo = _iProduct.getAllProducts();
             products = new List<ProductDTO>();
 
-
             foreach (var productInfo in productsInfo)
-            { 
+            {
                 var productDetails = productInfo.retrieveProductInfo();
                 int id = productDetails.ContainsKey("ProductId") ? (int)productDetails["ProductId"] : 0;
                 string name = productDetails.ContainsKey("ProductName") ? productDetails["ProductName"]?.ToString() ?? string.Empty : string.Empty;
@@ -44,28 +84,26 @@ namespace CleanBrilliantCompany.Models.Forecast
             // Get all sales in the selected month
             var sales = _salesService.getSalesData(selectedMonth.Month);
 
-            // Map to final ProductID through Item → Batch → Product
-            var productSales = new Dictionary<int, int>();
+            // Map to final ProductID
+            var localAggregatedSales = new Dictionary<int, int>();
 
             foreach (var sale in sales)
             {
-                var itemDetails = _iItem.getItemById(sale.ItemID).Result;
-                var batchDetails = _iBatch.getBatchDetails((int)itemDetails.retrieveItemInfo()["BatchCode"]);
-                var batchInfo = batchDetails.retrieveProductBatchInfo();
+                if (!localAggregatedSales.ContainsKey(sale.ProductID))
+                    localAggregatedSales[sale.ProductID] = 0;
 
-                if (batchInfo.TryGetValue("ProductId", out object? prodIdObj) && prodIdObj is int productId)
-                {
-                    if (!productSales.ContainsKey(productId))
-                        productSales[productId] = 0;
-
-                    productSales[productId] += sale.Quantity;
-                }
+                localAggregatedSales[sale.ProductID] += sale.Quantity;
             }
 
-            aggregatedSales = productSales;
+            // Now filter products to only those with sales
+            products = products.Where(p => localAggregatedSales.ContainsKey(p.ID)).ToList();
+
+            // Finally assign to the out parameter
+            aggregatedSales = localAggregatedSales;
         }
 
-       
+
+
     }
 }
 

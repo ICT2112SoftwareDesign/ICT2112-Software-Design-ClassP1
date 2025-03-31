@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace CleanBrilliantCompany.Interfaces
 {
-    public class ISales
+    public class IOrderRange
     {
         //private readonly List<SalesDTO> _sales = new List<SalesDTO>()
         //{

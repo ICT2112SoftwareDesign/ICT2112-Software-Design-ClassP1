@@ -23,7 +23,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             MetricFactory metricFactory,
             IForecastRepository forecastRepository,
             TempForecastIProduct iProduct,
-            ISales iSale,
+            IOrderRange iSale,
             IAlert alertService,
             IForecastDataAdapter forecastDataAdapter
         )

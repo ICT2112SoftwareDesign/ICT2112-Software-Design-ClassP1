@@ -15,7 +15,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         public ForecastControl(
             IForecastRepository forecastRepository,
             IForecastingFacade forecastingFacade,
-            ISales isale
+            IOrderRange isale
         )
         {
             this.forecastRepository = forecastRepository;
