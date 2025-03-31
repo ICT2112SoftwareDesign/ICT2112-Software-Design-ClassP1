@@ -1,0 +1,60 @@
+﻿@model List<CleanBrilliantCompany.DTO.InventoryDTO>
+
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Product Thresholds";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Product Thresholds</h1>
+</div>
+
+@if (Model.Any())
+{
+    <!-- existing table -->
+        <table class="table table-bordered" id="thresholdTable" width="100%" cellspacing="0">
+            <!-- Table content -->
+            <thead class="thead-light">
+                <tr>
+                    <th>Product ID</th>
+                    <th>Name</th>
+                    <th>Threshold</th>
+                    <th>Last Updated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>@product.ProductId</td>
+                        <td>@product.ProductName</td>
+                        <td>@product.Threshold</td>
+                        <td>@(product.LastUpdated?.ToString("g") ?? "N/A")</td>
+                        <td>
+                            <a asp-action="EditThreshold" asp-route-id="@product.ProductId"
+                               class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+}
+else
+{
+    <div class="p-3">No products available.</div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#thresholdTable').DataTable({
+                "order": [[ 0, "asc" ]], // Default sort by first column (Product ID)
+                "columnDefs": [
+                    { "orderable": false, "targets": 4 } // Disable sorting on 'Actions' column
+                ]
+            });
+        });
+    </script>
+}

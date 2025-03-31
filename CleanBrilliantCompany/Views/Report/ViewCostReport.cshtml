@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Cost Report";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<div class="card shadow p-4">
+    @Html.Raw(ViewBag.ReportHtml)
+</div>

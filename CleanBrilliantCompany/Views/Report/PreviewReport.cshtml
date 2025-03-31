@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Preview Report";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>Select Dashboards</h2>
+
+<form asp-action="GenerateSelectedReport" method="post">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Aging" id="agingCheck">
+        <label class="form-check-label" for="agingCheck">Aging Dashboard</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Manufacturer"
+            id="manufacturerCheck">
+        <label class="form-check-label" for="manufacturerCheck">Manufacturer Dashboard</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Cost" id="costCheck">
+        <label class="form-check-label" for="costCheck">Cost Dashboard</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Inventory" id="inventoryCheck">
+        <label class="form-check-label" for="inventoryCheck">Inventory Dashboard</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Forecast" id="forecastCheck">
+        <label class="form-check-label" for="forecastCheck">Forecast Dashboard</label>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-primary">Generate Report</button>
+</form>
