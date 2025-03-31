@@ -446,8 +446,8 @@
                                     <td>@products["ProductState"]</td>
                                     <td>@products["Count"]</td>
                                     <td class="d-flex">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateReservationModal"
-                                                data-reservation-id="@products["ProductId"]">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal"
+                                                data-reserveModal-id="@products["ProductId"]">
                                             Reserve
                                         </button>
                                     </td>
@@ -456,10 +456,10 @@
                             </tbody>
                         </table>
 
-                        @* button to trigger get warehouse quantity model *@
+                        @* button to trigger get warehouse quantity model
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#warehouseModel">
                             Get Warehouse Quantity
-                        </button>
+                        </button>*@
 
                         @* add item modal *@
                         <div class="modal fade" id="reserveStockModal" tabindex="-1" aria-labelledby="reserveStockModalLabel" aria-hidden="true">
@@ -502,25 +502,35 @@
                             </div>
                         </div>
 
-                        @* update item modal *@
-                        <div class="modal fade" id="updateReservationModal" tabindex="-1" aria-labelledby="updateReservationModalLabel" aria-hidden="true">
+                        @* reserve modal *@
+                        <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModal" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="updateReservationModalLabel">Update Reservation</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h5 class="modal-title" id="reserveModalLabel">Create Reservation</h5>
                                     </div>
                                     <div class="modal-body">
-                                        <form method="post" asp-action="updateReservationQuantity">
-                                            <input type="hidden" id="updateReservationId" name="reservationId">
+                                        <form method="post" asp-action="reserveStock">
+                                            <input type="hidden" id="reserveProductId" name="productId">
                                             <div class="mb-3">
-                                                <label for="salePrice" class="form-label">Sale Price</label>
-                                                <input type="text" class="form-control" id="salePrice" name="salePrice" required>
+                                                <label for="warehouseId" class="form-label">Warehouse ID</label>
+                                                <input type="number" class="form-control" id="warehouseId" name="warehouseId" required>
                                             </div>
-
+                                            <div class="mb-3">
+                                                <label for="reservedQuantity" class="form-label">Reserved Quantity</label>
+                                                <input type="number" class="form-control" id="reservedQuantity" name="reservedQuantity" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="reservationPurpose" class="form-label">Reservation Purpose</label>
+                                                <input type="text" class="form-control" id="reservationPurpose" name="reservationPurpose" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="staffId" class="form-label">Staff ID</label>
+                                                <input type="number" class="form-control" id="staffId" name="staffId" required>
+                                            </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save Item</button>
+                                                <button type="submit" class="btn btn-primary">Reserve Product</button>
                                             </div>
                                         </form>
                                     </div>
@@ -645,28 +655,14 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                var updateModal = document.getElementById("updateReservationModal");
+                var updateModal = document.getElementById("reserveModal");
 
                 updateModal.addEventListener("show.bs.modal", function (event) {
                     var button = event.relatedTarget;
-                    var reservationId = button.getAttribute("data-reservation-id");
+                    var productId = button.getAttribute("data-reserveModal-id");
 
-                    var hiddenInput = document.getElementById("updateItemId");
-                    hiddenInput.value = itemId;
-                    console.log(hiddenInput.value);
-                });
-            });
-
-            document.addEventListener("DOMContentLoaded", function () {
-                var updateModal = document.getElementById("updateItemStatusModal");
-
-                updateModal.addEventListener("show.bs.modal", function (event) {
-                    var button = event.relatedTarget;
-                    var itemId = button.getAttribute("data-updateitem-id");
-
-                    var hiddenInput = document.getElementById("updateStatusItemId");
-                    hiddenInput.value = itemId;
-
+                    var hiddenInput = document.getElementById("reserveProductId");
+                    hiddenInput.value = productId;
                     console.log(hiddenInput.value);
                 });
             });
