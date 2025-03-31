@@ -11,7 +11,6 @@ using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Models.Factory;
 using CleanBrilliantCompany.Models.Forecast;
-using CleanBrilliantCompany.Service;
 using CleanBrilliantCompany.Services;
 using CleanBrilliantCompany.Services.Forecast;
 using CleanBrilliantCompany.Services.Notification;
@@ -175,9 +174,6 @@ builder.Services.AddScoped<InventoryControl>();
 builder.Services.AddScoped<IInventoryRepository, InventoryMapper>();
 
 builder.Services.AddScoped<ILogger<CostDashboardRdm>, Logger<CostDashboardRdm>>();
-builder.Services.AddScoped<CostIItem, CostDataRetrievalService>();
-builder.Services.AddScoped<CostIBatch, CostDataRetrievalService>();
-builder.Services.AddScoped<CostIManufacturer, CostDataRetrievalService>();
 builder.Services.AddScoped<ManufacturerRepo, ManufacturerMapper>();
 
 // register the manufacturer control

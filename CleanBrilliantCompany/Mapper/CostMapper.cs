@@ -12,21 +12,14 @@ public class CostMapper
     private readonly ItemControl _itemControl;
     private readonly ApplicationDbContext _db;
 
-    private readonly CostIItem _itemService;
-    private readonly CostIBatch _batchService;
-    private readonly CostIManufacturer _manufacturerService;
-
 
     // public CostMapper(ApplicationDbContext dbContext)
     // {
     //  _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     // }
 
-      public CostMapper(CostIItem itemService, CostIBatch batchService, CostIManufacturer manufacturerService,ApplicationDbContext dbContext,ProductControl productControl,ItemControl itemControl)
+      public CostMapper(ApplicationDbContext dbContext,ProductControl productControl,ItemControl itemControl)
     {
-        _itemService = itemService;
-        _batchService = batchService;
-        _manufacturerService = manufacturerService;
         _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _productControl = productControl;  
         _itemControl = itemControl;  
