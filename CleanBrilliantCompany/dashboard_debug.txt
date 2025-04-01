@@ -1492,3 +1492,42 @@
 [4/1/2025 5:27:19 PM] [DashboardManagement] Calculated total refunded: 238.99
 [4/1/2025 5:27:19 PM] [DashboardManagement] Net revenue calculation: Total Revenue = 3922.0, Total Refunded = 238.99, Net = 3683.01
 [4/1/2025 5:27:19 PM] [DashboardManagement] Dashboard metrics: Orders=84, Refunds=14, Pending=5, Revenue=$3683.01
+[4/1/2025 5:28:42 PM] [DashboardManagement] Dashboard initialized with order and refund databases
+[4/1/2025 5:28:42 PM] [DashboardManagement] Checking dashboard data availability
+[4/1/2025 5:28:42 PM] [DashboardManagement] Orders retrieved: 84
+[4/1/2025 5:28:42 PM] [DashboardManagement] Refunds retrieved: 14
+[4/1/2025 5:28:42 PM] [DashboardManagement] Data available: True
+[4/1/2025 5:28:42 PM] [DashboardManagement] Retrieving all dashboard metrics
+[4/1/2025 5:28:42 PM] [DashboardManagement] Total order count: 84
+[4/1/2025 5:28:42 PM] [DashboardManagement] Total refund count: 14
+[4/1/2025 5:28:42 PM] [DashboardManagement] Pending refund count: 5
+[4/1/2025 5:28:42 PM] [DashboardManagement] Calculated total revenue: 3922.0
+[4/1/2025 5:28:42 PM] [DashboardManagement] Calculated total refunded: 238.99
+[4/1/2025 5:28:42 PM] [DashboardManagement] Net revenue calculation: Total Revenue = 3922.0, Total Refunded = 238.99, Net = 3683.01
+[4/1/2025 5:28:42 PM] [DashboardManagement] Dashboard metrics: Orders=84, Refunds=14, Pending=5, Revenue=$3683.01
+[4/1/2025 5:32:28 PM] [DashboardManagement] Dashboard initialized with order and refund databases
+[4/1/2025 5:32:28 PM] [DashboardManagement] Checking dashboard data availability
+[4/1/2025 5:32:28 PM] [DashboardManagement] Orders retrieved: 84
+[4/1/2025 5:32:28 PM] [DashboardManagement] Refunds retrieved: 14
+[4/1/2025 5:32:28 PM] [DashboardManagement] Data available: True
+[4/1/2025 5:32:28 PM] [DashboardManagement] Retrieving all dashboard metrics
+[4/1/2025 5:32:28 PM] [DashboardManagement] Total order count: 84
+[4/1/2025 5:32:28 PM] [DashboardManagement] Total refund count: 14
+[4/1/2025 5:32:28 PM] [DashboardManagement] Pending refund count: 5
+[4/1/2025 5:32:28 PM] [DashboardManagement] Calculated total revenue: 3922.0
+[4/1/2025 5:32:28 PM] [DashboardManagement] Calculated total refunded: 238.99
+[4/1/2025 5:32:28 PM] [DashboardManagement] Net revenue calculation: Total Revenue = 3922.0, Total Refunded = 238.99, Net = 3683.01
+[4/1/2025 5:32:28 PM] [DashboardManagement] Dashboard metrics: Orders=84, Refunds=14, Pending=5, Revenue=$3683.01
+[4/1/2025 5:33:07 PM] [DashboardManagement] Dashboard initialized with order and refund databases
+[4/1/2025 5:33:07 PM] [DashboardManagement] Checking dashboard data availability
+[4/1/2025 5:33:07 PM] [DashboardManagement] Orders retrieved: 84
+[4/1/2025 5:33:07 PM] [DashboardManagement] Refunds retrieved: 14
+[4/1/2025 5:33:07 PM] [DashboardManagement] Data available: True
+[4/1/2025 5:33:07 PM] [DashboardManagement] Retrieving all dashboard metrics
+[4/1/2025 5:33:07 PM] [DashboardManagement] Total order count: 84
+[4/1/2025 5:33:07 PM] [DashboardManagement] Total refund count: 14
+[4/1/2025 5:33:07 PM] [DashboardManagement] Pending refund count: 5
+[4/1/2025 5:33:07 PM] [DashboardManagement] Calculated total revenue: 3922.0
+[4/1/2025 5:33:07 PM] [DashboardManagement] Calculated total refunded: 238.99
+[4/1/2025 5:33:07 PM] [DashboardManagement] Net revenue calculation: Total Revenue = 3922.0, Total Refunded = 238.99, Net = 3683.01
+[4/1/2025 5:33:07 PM] [DashboardManagement] Dashboard metrics: Orders=84, Refunds=14, Pending=5, Revenue=$3683.01
