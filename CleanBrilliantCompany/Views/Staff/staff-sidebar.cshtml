@@ -13,8 +13,8 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
-        <a class="nav-link" href="@Url.Action("", "Staff")">
+    <li class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Staff" && (ViewContext.RouteData.Values["action"].ToString() == "Dashboard" || ViewContext.RouteData.Values["action"].ToString() == "") ? "active" : "")">
+        <a class="nav-link" href="@Url.Action("Dashboard", "Staff")">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
         </a>
@@ -29,39 +29,39 @@
     </div>
 
     <!-- Nav Item - Shipping -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="@Url.Action("ShippingAgent", "Staff")">
+    <li class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "ShippingAgent" ? "active" : "")">
+        <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "ShippingAgent" ? "" : "collapsed")" href="@Url.Action("Index", "ShippingAgent")">
             <i class="fas fa-fw fa-ship"></i>
             <span>Shipping</span>
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="@Url.Action("OrderFulfilment", "Staff")">
+    <li class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "OrderFulfilment" ? "active" : "")">
+        <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "OrderFulfilment" ? "" : "collapsed")" href="@Url.Action("Index", "OrderFulfilment")">
             <i class="fas fa-fw fa-ship"></i>
             <span>Order Fulfilment</span>
         </a>
     </li>
 
     <!-- Nav Item - Return/Refund -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="@Url.Action("Refund", "Staff")">
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Refund" ? "active" : "")">
+        <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "Refund" ? "" : "collapsed")" href="@Url.Action("Refund", "Staff")">
             <i class="fas fa-fw fa-money-bill"></i>
             <span>Return & Refund</span>
         </a>
     </li>
 
     <!-- Nav Item - Reorder -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="@Url.Action("Reorder", "Staff")">
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Reorder" ? "active" : "")">
+        <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "Reorder" ? "" : "collapsed")" href="@Url.Action("Reorder", "Staff")">
             <i class="fas fa-fw fa-list"></i>
             <span>Reorder</span>
         </a>
     </li>
 
     <!-- Nav Item - Support Tickets -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="@Url.Action("SupportTicket", "Staff")">
+    <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "SupportTicket" ? "active" : "")">
+        <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "SupportTicket" ? "" : "collapsed")" href="@Url.Action("SupportTicket", "Staff")">
             <i class="fas fa-fw fa-ticket-alt"></i>
             <span>Tickets</span>
         </a>
