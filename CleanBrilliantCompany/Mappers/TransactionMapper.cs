@@ -7,7 +7,7 @@ using Microsoft.Data.SqlClient;
 
 namespace CleanBrilliantCompany.Models.Mapper
 {
-    public class TransactionMapper: iTransactionDatabase
+    public class TransactionMapper: ITransactionDatabase
     {
         private readonly string _connectionString;
 
@@ -69,12 +69,6 @@ namespace CleanBrilliantCompany.Models.Mapper
         }
 
         //Add another one for getting transaction by productName after if have time
-
-        // public List<Transaction> getTransactionByItem(int itemId)
-        // {
-        //     List<Transaction> transactions = new List<Transaction>();
-
-        // }
 
         public List<Transaction> getTransactionByItem(int itemId)
 {

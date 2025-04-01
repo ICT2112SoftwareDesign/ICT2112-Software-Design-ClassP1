@@ -10,7 +10,7 @@ using CleanBrilliantCompany.Models.Mapper;
 
 namespace CleanBrilliantCompany.Models.Control
 {
-    public class TransactionControl : iTransactionQuery, IObserver
+    public class TransactionControl : ITransactionQuery, IObserver
 
     {
 
