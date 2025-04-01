@@ -113,19 +113,36 @@ namespace CleanBrilliantCompany.Controllers
         float productWeight, int quantity, int volumeOrZero, float toxicityPercentage, int carbonFootprint, bool isLiquid)
         // int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
-            // Collect the manufacturerId
-            Product product = _productControl.getProductDetails(productId);
-            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
-            productInfo.Add(product.retrieveProductInfo());
-            int oldManufacturerId = Convert.ToInt32(productInfo[0]["ManufacturerId"]);
+            try
+            {
+                // Collect the manufacturerId
+                Product product = _productControl.getProductDetails(productId);
+                List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+                productInfo.Add(product.retrieveProductInfo());
+                int oldManufacturerId = Convert.ToInt32(productInfo[0]["ManufacturerId"]);
 
-            // Based on isLiquid update volume
-            string productState = isLiquid ? "1" : "0";
-            int volume = isLiquid ? volumeOrZero : 0;
-            _productControl.updateProduct(productId, productName, productCategory, 
-                                        productCost, oldManufacturerId, productWeight, 
-                                        quantity, volume, toxicityPercentage, 
-                                        carbonFootprint, productState);
+                // Based on isLiquid update volume
+                string productState = isLiquid ? "1" : "0";
+                int volume = isLiquid ? volumeOrZero : 0;
+                bool isUpdated = _productControl.updateProduct(productId, productName, productCategory, 
+                                            productCost, oldManufacturerId, productWeight, 
+                                            quantity, volume, toxicityPercentage, 
+                                            carbonFootprint, productState);
+
+                // Check if the update was successful
+                if (isUpdated)
+                {
+                    TempData["SuccessMessage"] = $"Product '{productName}' (ID: {productId}) updated successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"Error updating product '{productName}' (ID: {productId}).";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Exception: {ex.Message}";
+            }
             return RedirectToAction("Index");
         }
 

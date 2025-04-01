@@ -10,7 +10,7 @@ namespace CleanBrilliantCompany.Interfaces
         void createProduct(string productName, string category, float productCost, 
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState);
         void deleteProduct(int productId);
-        public void updateProduct(int productId, string productName, string category, float productCost, 
+        public bool updateProduct(int productId, string productName, string category, float productCost, 
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState);
 
         // Product Batch

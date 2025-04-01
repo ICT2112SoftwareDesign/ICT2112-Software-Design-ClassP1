@@ -33,6 +33,22 @@
     <!-- Page Wrapper -->
     @* <div id="wrapper"> *@
 
+            @* @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            } *@
+
                 <!-- Content goes here -->
             <!-- Main Content -->
             <div class="container-fluid">
@@ -395,6 +411,34 @@
                     </div>
 
             </div>
+
+            @* popup messages *@
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050; right: 20px; top: 20px;">
+                <!-- Success Toast -->
+                <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+                    aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>Success:</strong> <span id="successMessageText"></span>
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <!-- Error Toast -->
+                <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert"
+                    aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>Error:</strong> <span id="errorMessageText"></span>
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+
             <!-- End of Main Content -->
 
             <!-- Footer -->
@@ -548,5 +592,35 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get success and error messages from TempData
+            let successMessage = "@Html.Raw(TempData["SuccessMessage"])";
+            let errorMessage = "@Html.Raw(TempData["ErrorMessage"])";
+
+            // Show success toast if the message exists
+            if (successMessage && successMessage.trim() !== "") {
+                document.getElementById("successMessageText").innerText = successMessage;
+                @* let toastElement = new bootstrap.Toast(document.getElementById("successToast")); *@
+                let toastElement = new bootstrap.Toast(document.getElementById("successToast"), {
+                    delay: 3000,
+                    autohide: true
+                });
+                toastElement.show();
+            }
+
+            // Show error toast if the message exists
+            if (errorMessage && errorMessage.trim() !== "") {
+                document.getElementById("errorMessageText").innerText = errorMessage;
+                @* let toastElement = new bootstrap.Toast(document.getElementById("errorToast")); *@
+                let toastElement = new bootstrap.Toast(document.getElementById("errorToast"), {
+                delay: 3000, // Show for 3 seconds
+                autohide: true // Auto-hide after delay
+                });
+                toastElement.show();
+            }
+        });
     </script>
 </body>
