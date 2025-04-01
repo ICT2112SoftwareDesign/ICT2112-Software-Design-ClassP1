@@ -3894,24 +3894,31 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jarre\\.nuget\\packages\\": {}
+    "C:\\Users\\hhuim\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectUniqueName": "c:\\Users\\hhuim\\Desktop\\Work\\SIT\\Year 2\\Trimester 2\\ICT2112 Software Design\\Project\\Code\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "projectName": "CleanBrilliantCompany",
-      "projectPath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
-      "packagesPath": "C:\\Users\\jarre\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jarre\\OneDrive\\Documents\\GitHub\\SoftwareDesign\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+      "projectPath": "c:\\Users\\hhuim\\Desktop\\Work\\SIT\\Year 2\\Trimester 2\\ICT2112 Software Design\\Project\\Code\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "packagesPath": "C:\\Users\\hhuim\\.nuget\\packages\\",
+      "outputPath": "c:\\Users\\hhuim\\Desktop\\Work\\SIT\\Year 2\\Trimester 2\\ICT2112 Software Design\\Project\\Code\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\jarre\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\hhuim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3930,7 +3937,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net9.0": {
@@ -3972,7 +3979,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
