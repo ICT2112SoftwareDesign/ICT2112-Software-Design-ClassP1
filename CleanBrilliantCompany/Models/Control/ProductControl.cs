@@ -44,18 +44,18 @@ namespace CleanBrilliantCompany.Models.Control
                                     manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
         }
 
-        public void CreateSolidProduct(string productName, string category, float productCost,
+        public int CreateSolidProduct(string productName, string category, float productCost,
         int manufacturerId, float weight, int quantity, float toxicityPercentage, int carbonFootprint)
         {
-            _productFactory.CreateProduct(productName, category, productCost,
+            return _productFactory.CreateProduct(productName, category, productCost,
                                         manufacturerId, weight, quantity, 0,
                                         toxicityPercentage, carbonFootprint, isLiquid: false);
         }
 
-        public void CreateLiquidProduct(string productName, string category, float productCost,
+        public int CreateLiquidProduct(string productName, string category, float productCost,
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint)
         {
-            _productFactory.CreateProduct(productName, category, productCost,
+            return _productFactory.CreateProduct(productName, category, productCost,
                                         manufacturerId, weight, quantity, volume,
                                         toxicityPercentage, carbonFootprint, isLiquid: true);
         }
@@ -69,11 +69,11 @@ namespace CleanBrilliantCompany.Models.Control
         int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
             // Validation: Ensure product cost is greater than 0
-            if (productCost <= 0 || volume < 0 || carbonFootprint < 0 || productWeight <= 0 || toxicityPercentage < 0)
-            {
-                Console.WriteLine("Error: Cant Update Product ");
-                return false;
-            }
+            // if (productCost <= 0 || volume < 0 || carbonFootprint < 0 || productWeight <= 0 || toxicityPercentage < 0)
+            // {
+            //     Console.WriteLine("Error: Cant Update Product ");
+            //     return false;
+            // }
 
             bool error = _productMapper.update(productId, productName, category, productCost, 
                                     manufacturerId, productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState);

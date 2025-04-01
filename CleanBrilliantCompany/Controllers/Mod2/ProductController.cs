@@ -43,21 +43,80 @@ namespace CleanBrilliantCompany.Controllers
         public async Task<IActionResult> CreateProduct(string productName, string productCategory, float productCost, 
         int manufacturerId, float weight, int volume, float toxicityPercentage, int carbonFootprint, bool isLiquid)
         {
-
-            int quantity = 0; // New product, so default quantity is 0
-            if (isLiquid)
+            try
             {
-                _productControl.CreateLiquidProduct(productName, productCategory, productCost,
-                                                    manufacturerId, weight, quantity, volume,
+
+                // Input Validation
+                if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(productCategory))
+                {
+                    TempData["ErrorMessage"] = "Product name and category cannot be empty.";
+                    return RedirectToAction("Index");
+                }
+
+                if (manufacturerId <= 0)
+                {
+                    TempData["ErrorMessage"] = "Invalid manufacturer ID.";
+                    return RedirectToAction("Index");
+                }
+
+                if (productCost <= 0)
+                {
+                    TempData["ErrorMessage"] = "Product cost must be greater than 0.";
+                    return RedirectToAction("Index");
+                }
+
+                if (weight <= 0)
+                {
+                    TempData["ErrorMessage"] = "Product weight must be greater than 0.";
+                    return RedirectToAction("Index");
+                }
+
+                if (volume < 0)
+                {
+                    TempData["ErrorMessage"] = "Volume cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                if (toxicityPercentage < 0)
+                {
+                    TempData["ErrorMessage"] = "Toxicity percentage cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                if (carbonFootprint < 0)
+                {
+                    TempData["ErrorMessage"] = "Carbon footprint cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                int quantity = 0; // New product, so default quantity is 0
+                int productId;
+                if (isLiquid)
+                {
+                    productId = _productControl.CreateLiquidProduct(productName, productCategory, productCost,
+                                                        manufacturerId, weight, quantity, volume,
+                                                        toxicityPercentage, carbonFootprint);
+                }
+                else
+                {
+                    productId = _productControl.CreateSolidProduct(productName, productCategory, productCost,
+                                                    manufacturerId, weight, quantity,
                                                     toxicityPercentage, carbonFootprint);
-            }
-            else
-            {
-                _productControl.CreateSolidProduct(productName, productCategory, productCost,
-                                                manufacturerId, weight, quantity,
-                                                toxicityPercentage, carbonFootprint);
-            }
+                }
 
+                if (productId != -1) // Successful creation
+                {
+                    TempData["SuccessMessage"] = $"Product '{productName}' created successfully with ID: {productId}.";
+                }
+                else // Failure
+                {
+                    TempData["ErrorMessage"] = $"Failed to create product '{productName}'.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating product: {ex.Message}";
+            }
             return RedirectToAction("Index");
         }
 
@@ -115,6 +174,43 @@ namespace CleanBrilliantCompany.Controllers
         {
             try
             {
+                // Input Validation
+                if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(productCategory))
+                {
+                    TempData["ErrorMessage"] = "Product name and category cannot be empty.";
+                    return RedirectToAction("Index");
+                }
+
+                if (productCost <= 0)
+                {
+                    TempData["ErrorMessage"] = "Product cost must be greater than 0.";
+                    return RedirectToAction("Index");
+                }
+
+                if (productWeight <= 0)
+                {
+                    TempData["ErrorMessage"] = "Product weight must be greater than 0.";
+                    return RedirectToAction("Index");
+                }
+
+                if (volumeOrZero < 0)
+                {
+                    TempData["ErrorMessage"] = "Volume cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                if (toxicityPercentage < 0)
+                {
+                    TempData["ErrorMessage"] = "Toxicity percentage cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                if (carbonFootprint < 0)
+                {
+                    TempData["ErrorMessage"] = "Carbon footprint cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
                 // Collect the manufacturerId
                 Product product = _productControl.getProductDetails(productId);
                 List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();

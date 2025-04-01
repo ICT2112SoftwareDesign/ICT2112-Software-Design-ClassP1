@@ -23,7 +23,7 @@ namespace CleanBrilliantCompany.Models.Control
             new ReorderRequestSample
             {
                 ReorderId = 2,
-                ProductId = 241,
+                ProductId = 1012,
                 Quantity = 2,
                 ManufacturerId = 1,
                 ExpectedDeliveryDate = new DateTime(2025, 4, 5),
@@ -43,7 +43,7 @@ namespace CleanBrilliantCompany.Models.Control
             new ReorderRequestSample // Added new Approved
             {
                 ReorderId = 4,
-                ProductId = 999,
+                ProductId = 1014,
                 Quantity = 2,
                 ManufacturerId = 10,
                 ExpectedDeliveryDate = new DateTime(2025, 4, 11),
