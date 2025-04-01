@@ -4,11 +4,15 @@ using CleanBrilliantCompany.DomainControl;
 using CleanBrilliantCompany.Interfaces;  // Ensure this matches your actual namespace
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.CalculatorImplementation;
+using CleanBrilliantCompany.Models.Control;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register Database Configuration
 builder.Services.AddScoped<FeedbackRepository>();
@@ -66,6 +70,11 @@ builder.Services.AddScoped<IShipmentCFCalculator, CalculateShipmentCFImpl>();
 builder.Services.AddScoped<IOrder, MockOrderService>();
 builder.Services.AddScoped<IStorageDuration, StorageDurationStubImpl>();
 
+// Register async dependencies
+builder.Services.AddScoped<IIngredientDB, IngredientGateway>();
+builder.Services.AddScoped<IToxicityClassificationStrategy, ToxicityClassificationStrategy>();
+builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -88,5 +97,15 @@ app.MapControllerRoute(
     name: "feedback",
     pattern: "feedback",
     defaults: new { controller = "Feedback", action = "Index" });
+
+app.MapControllerRoute(
+    name: "toxicity",
+    pattern: "toxicity",
+    defaults: new { Controller = "Toxicity", action = "Index" });
+
+app.MapControllerRoute(
+    name: "toxicityByProductName",
+    pattern: "toxicity/product/{productName}",
+    defaults: new { Controller = "Toxicity", action = "ViewByProductName" });
 
 app.Run();
