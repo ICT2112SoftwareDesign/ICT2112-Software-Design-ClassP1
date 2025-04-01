@@ -38,6 +38,10 @@
                             onclick="location.reload();">
                             <i class="fas fa-sync fa-sm text-white-50"></i> Refresh Data
                         </a>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"
+                            id="generateReportBtn">
+                            <i class="fas fa-file-alt fa-sm text-white-50"></i> Generate Report
+                        </a>
                     </div>
 
                     @if (ViewBag.ErrorMessage != null)
@@ -188,8 +192,9 @@
                                 @ViewBag.ChartData?.CurrentMonth</h6>
                         </div>
                         <div class="card-body">
-                            <div class="chart-pie pt-4 pb-2">
-                                <canvas id="profitPieChart"></canvas>
+
+                            <div class="chart-bar pt-4 pb-2">
+                                <canvas id="profitBarChart"></canvas>
                             </div>
                             <div class="mt-4 text-center small">
                                 <span class="mr-2">
@@ -227,7 +232,26 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-
+    <!-- Report Generated Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Report Generated</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    The report has been successfully generated.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -278,33 +302,44 @@
             if (totalOrders === 0 && totalRefunds === 0) {
                 alert('Warning: No order or refund data was found. This might indicate a connection issue.');
             }
+            $('#generateReportBtn').click(function (e) {
+                e.preventDefault();
+                // show the success message
+                $('#reportModal').modal('show');
+
+            });
         });
-        // Month selector functionality
+
+        // Chart variables
+        var dailyOrdersCtx = document.getElementById('dailyOrdersChart');
+        var dailyOrdersChart;
+        var profitBarCtx = document.getElementById('profitBarChart');  // Updated ID
+        var profitBarChart;
+
+        // Month selector functionality - UPDATED to refresh both charts
         document.getElementById('monthSelect').addEventListener('change', function () {
             var selectedOption = this.options[this.selectedIndex];
             document.getElementById('yearSelect').value = selectedOption.dataset.year;
+
+            // Submit the form to get new data for selected month
+            document.getElementById('dashboardFilterForm').submit();
         });
 
-        // Daily Orders Line Chart
-        var dailyOrdersCtx = document.getElementById('dailyOrdersChart');
-        var dailyOrdersChart;
-
-        // Profit Pie Chart
-        var profitPieCtx = document.getElementById('profitPieChart');
-        var profitPieChart;
-
         function renderCharts() {
-            // Destroy existing chart if it exists
+            // Destroy existing charts if they exist
             if (dailyOrdersChart) dailyOrdersChart.destroy();
+            if (profitBarChart) profitBarChart.destroy();
 
             // Get data from ViewBag
             var dailyOrderCounts = @Html.Raw(Json.Serialize(ViewBag.ChartData?.DailyOrderCounts)) || {};
             var dailyRefundCounts = @Html.Raw(Json.Serialize(ViewBag.ChartData?.DailyRefundCounts)) || {};
             var currentMonth = '@ViewBag.ChartData?.CurrentMonth' || 'Current Month';
+            var gross = @ViewBag.ChartData?.ProfitMetrics.GrossProfit || 0;
+            var refunds = @ViewBag.ChartData?.ProfitMetrics.RefundAmount || 0;
+            var net = @ViewBag.ChartData?.ProfitMetrics.NetProfit || 0;
 
             // Render Daily Orders and Refunds Chart
             if (dailyOrdersCtx) {
-                // 1. Combine and prepare the data
                 var dateMap = {};
 
                 // Process orders data
@@ -331,7 +366,6 @@
                 var ordersData = sortedEntries.map(entry => entry.orderCount);
                 var refundsData = sortedEntries.map(entry => entry.refundCount);
 
-                // 2. Create the chart
                 dailyOrdersChart = new Chart(dailyOrdersCtx, {
                     type: 'line',
                     data: {
@@ -409,7 +443,6 @@
                     }
                 });
 
-                // Helper function for day suffixes (1st, 2nd, 3rd, etc.)
                 function getDaySuffix(day) {
                     day = parseInt(day);
                     if (day > 3 && day < 21) return 'th';
@@ -421,80 +454,72 @@
                     }
                 }
             }
-        }
 
-        // Initialize chart when page loads
-        document.addEventListener('DOMContentLoaded', renderCharts);
-
-        // Optional: Re-render when window resizes for better responsiveness
-        window.addEventListener('resize', function () {
-            if (dailyOrdersChart) {
-                renderCharts();
-            }
-        });
-        // Profit Pie Chart
-        function renderProfitPieChart() {
-            var ctx = document.getElementById('profitPieChart');
-            if (!ctx) return;
-
-            // Destroy previous chart if exists
-            if (window.profitPieChart) {
-                window.profitPieChart.destroy();
-            }
-
-            // Get data from ViewBag
-            var profitData = @Html.Raw(Json.Serialize(ViewBag.ChartData?.ProfitMetrics)) || {};
-            var gross = @ViewBag.ChartData?.ProfitMetrics.GrossProfit || 0;
-            var refunds = @ViewBag.ChartData?.ProfitMetrics.RefundAmount || 0;
-            var net = @ViewBag.ChartData?.ProfitMetrics.NetProfit || 0;
-
-            // Create chart
-            window.profitPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Gross Profit', 'Refunds', 'Net Profit'],
-                    datasets: [{
-                        data: [gross, refunds, net],
-                        backgroundColor: [
-                            'rgba(28, 200, 138, 0.8)',  // Green
-                            'rgba(231, 74, 59, 0.8)',   // Red
-                            'rgba(78, 115, 223, 0.8)'   // Blue
-                        ],
-                        borderColor: [
-                            'rgba(28, 200, 138, 1)',
-                            'rgba(231, 74, 59, 1)',
-                            'rgba(78, 115, 223, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
+            // Render Profit Pie Chart
+            if (profitBarCtx) {
+                profitBarChart = new Chart(profitBarCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Gross Profit', 'Refunds', 'Net Profit'],
+                        datasets: [{
+                            label: 'Amount ($)',
+                            data: [gross, refunds, net],
+                            backgroundColor: [
+                                'rgba(28, 200, 138, 0.8)',  // Green
+                                'rgba(231, 74, 59, 0.8)',    // Red
+                                'rgba(78, 115, 223, 0.8)'    // Blue
+                            ],
+                            borderColor: [
+                                'rgba(28, 200, 138, 1)',
+                                'rgba(231, 74, 59, 1)',
+                                'rgba(78, 115, 223, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false  // Hide legend since we have the color indicators below
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.label + ': $' + context.raw.toFixed(2);
+                                    }
+                                }
+                            }
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    return context.label + ': $' + context.raw.toFixed(2);
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount ($)'
+                                },
+                                ticks: {
+                                    callback: function (value) {
+                                        return '$' + value.toFixed(2);
+                                    }
                                 }
                             }
                         }
-                    },
-                    cutout: '70%'
-                }
-            });
+                    }
+                });
+            }
         }
 
-        // Initialize when page loads
+        // Initialize charts when page loads
         document.addEventListener('DOMContentLoaded', function () {
-            renderProfitPieChart();
+            renderCharts();
+        });
 
-            // Your existing line chart initialization
-            if (typeof dailyOrdersChart !== 'undefined') {
-                // Initialize line chart if needed
+        // Handle window resize for both charts
+        window.addEventListener('resize', function () {
+            if (dailyOrdersChart || profitPieChart) {
+                renderCharts();
             }
         });
     </script>

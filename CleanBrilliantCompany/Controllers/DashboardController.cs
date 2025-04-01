@@ -82,7 +82,7 @@ namespace CleanBrilliantCompany.Controllers
                 // Get chart data for selected month (will return empty if no data)
                 var dailyOrderCounts = _dashboard.GetDailyOrderCountsForMonth(selectedDate);
                 var dailyRefundCounts = _dashboard.GetDailyRefundCountsForMonth(selectedDate);
-                var profitComponents = _dashboard.GetProfitComponents();
+                var profitComponents = _dashboard.GetProfitComponentsForMonths(selectedDate);
 
                 // Prepare ViewData/ViewBag
                 ViewBag.DataAvailable = dataAvailable;

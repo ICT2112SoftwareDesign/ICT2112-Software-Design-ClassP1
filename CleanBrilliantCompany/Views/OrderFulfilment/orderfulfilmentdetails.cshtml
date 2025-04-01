@@ -76,7 +76,7 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-                    
+
                     <h4 class="mb-0 text-gray-800">Order Details</h4>
                 </nav>
                 <!-- End of Topbar -->
@@ -89,7 +89,7 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Order #@Model.RetrieveOrderID()</h6>
                                 @{
                                     var statusClass = "";
-                                    switch(Model.RetrieveStatus())
+                                    switch (Model.RetrieveStatus())
                                     {
                                         case "Pending":
                                             statusClass = "status-pending";
@@ -114,31 +114,57 @@
                                 <div class="order-summary">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <p><strong>Order Date:</strong> @Model.RetrieveOrderDate().ToShortDateString()</p>
+                                            <p><strong>Order Date:</strong> @Model.RetrieveOrderDate().ToShortDateString()
+                                            </p>
                                             <p><strong>Order ID:</strong> @Model.RetrieveOrderID()</p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p><strong>Shipping Method:</strong> @Model.RetrieveOrderShipping()</p>
+                                            <p><strong>Shipping Method:</strong>
+                                                @{
+                                                    try
+                                                    {
+                                                        // Parse the JSON string
+                                                        var shippingInfo =
+                                                        Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(Model.RetrieveOrderShipping());
+                                                        <span>@shippingInfo.ShippingAgent (@shippingInfo.ShippingMethod) -
+                                                            @shippingInfo.ServiceType</span>
+                                                    }
+                                                    catch
+                                                    {
+                                                        // Fallback if parsing fails
+                                                        @Model.RetrieveOrderShipping()
+                                                    }
+                                                }
+                                            </p>
                                             <p><strong>Total Weight:</strong> @Model.RetrieveOrderWeight() kg</p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p><strong>Total Amount:</strong> $@Model.RetrieveOrderTotal().ToString("N2")</p>
+                                            <p><strong>Total Amount:</strong> $@Model.RetrieveOrderTotal().ToString("N2")
+                                            </p>
                                             <p><strong>Shipping Address:</strong> @Model.RetrieveOrderAddress()</p>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="mt-4">
                                     <h5 class="font-weight-bold">Order Status Management</h5>
                                     <div class="form-inline">
-                                        <select class="form-control mr-2 status-select" style="min-width: 200px;" data-order-id="@Model.RetrieveOrderID()">
-                                            <option value="Pending" selected="@(Model.RetrieveStatus() == "Pending")">Pending</option>
-                                            <option value="Shipped" selected="@(Model.RetrieveStatus() == "Shipped")">Shipped</option>
-                                            <option value="Completed" selected="@(Model.RetrieveStatus() == "Completed")">Completed</option>
-                                            <option value="RefundRequested" selected="@(Model.RetrieveStatus() == "RefundRequested")">Refund Requested</option>
-                                            <option value="Cancelled" selected="@(Model.RetrieveStatus() == "Cancelled")">Cancelled</option>
+                                        <select class="form-control mr-2 status-select" style="min-width: 200px;"
+                                            data-order-id="@Model.RetrieveOrderID()">
+                                            <option value="Pending" selected="@(Model.RetrieveStatus() == "Pending")">
+                                                Pending</option>
+                                            <option value="Shipped" selected="@(Model.RetrieveStatus() == "Shipped")">
+                                                Shipped</option>
+                                            <option value="Completed" selected="@(Model.RetrieveStatus() == "Completed")">
+                                                Completed</option>
+                                            <option value="RefundRequested"
+                                                selected="@(Model.RetrieveStatus() == "RefundRequested")">Refund Requested
+                                            </option>
+                                            <option value="Cancelled" selected="@(Model.RetrieveStatus() == "Cancelled")">
+                                                Cancelled</option>
                                         </select>
-                                        <button class="btn btn-primary update-status-btn" data-order-id="@Model.RetrieveOrderID()">
+                                        <button class="btn btn-primary update-status-btn"
+                                            data-order-id="@Model.RetrieveOrderID()">
                                             <i class="fas fa-sync-alt mr-2"></i>Update Status
                                         </button>
                                     </div>
@@ -152,10 +178,30 @@
                             Order not found or unable to load order details.
                         </div>
                     }
-                    
+
                     <a href="@Url.Action("Index", "OrderFulfilment")" class="btn btn-secondary">
                         <i class="fas fa-arrow-left mr-2"></i>Back to Orders
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Update Modal -->
+    <div class="modal fade" id="statusUpdateModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Status Updated</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="statusUpdateMessage">
+                    <!-- Message will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
@@ -172,15 +218,13 @@
     <script src="~/js/sb-admin-2.min.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Update button click handler
-            $('.update-status-btn').click(function() {
+            $('.update-status-btn').click(function () {
                 const button = $(this);
                 const orderId = button.data('order-id');
                 const statusSelect = $(`select.status-select[data-order-id="${orderId}"]`);
                 const newStatus = statusSelect.val();
-
-                console.log('Attempting to update order:', orderId, 'to status:', newStatus);
 
                 button.prop('disabled', true);
                 button.html('<i class="fas fa-spinner fa-spin"></i> Updating...');
@@ -193,47 +237,64 @@
                         orderId: orderId,
                         status: newStatus
                     }),
-                    success: function(response) {
-                        console.log('Update response:', response);
+                    success: function (response) {
                         if (response.success) {
-                            // Update successful
-                            alert(`Order #${orderId} updated to ${newStatus}`);
-
-                            // Update the status badge immediately
-                            var statusBadge = $('.status-badge');
-                            statusBadge.text(newStatus);
-                            
-                            // Update the status class
-                            statusBadge.removeClass('status-pending status-shipped status-completed status-refund status-cancelled');
-                            
-                            var newClass = '';
-                            switch(newStatus) {
-                                case 'Pending': newClass = 'status-pending'; break;
-                                case 'Shipped': newClass = 'status-shipped'; break;
-                                case 'Completed': newClass = 'status-completed'; break;
-                                case 'RefundRequested': newClass = 'status-refund'; break;
-                                case 'Cancelled': newClass = 'status-cancelled'; break;
+                            // Set the message content
+                            let message = `Order #${orderId} updated to ${newStatus}.`;
+                            if (newStatus === 'Shipped') {
+                                message += '<div class="mt-2 text-success"><i class="fas fa-check-circle"></i> Shipping agent notified</div>';
                             }
-                            statusBadge.addClass(newClass);
+
+                            // Update modal content
+                            $('#statusUpdateMessage').html(message);
+
+                            // Show the modal
+                            $('#statusUpdateModal').modal('show');
+
+                            // Update UI
+                            updateStatusBadge(newStatus);
                         } else {
                             alert(response.message || 'Update failed');
                         }
                         resetButton(button);
                     },
-                    error: function(xhr) {
-                        console.error('Update error:', xhr);
+                    error: function (xhr) {
                         alert(xhr.responseJSON?.error || 'Server error');
                         resetButton(button);
                     }
                 });
             });
 
+            // Manually handle modal close if data-dismiss isn't working
+            $(document).on('click', '[data-dismiss="modal"], #statusUpdateModal .btn-primary', function () {
+                $('#statusUpdateModal').modal('hide');
+            });
+
+            function updateStatusBadge(newStatus) {
+                var statusBadge = $('.status-badge');
+                statusBadge.text(newStatus);
+                statusBadge.removeClass('status-pending status-shipped status-completed status-refund status-cancelled');
+
+                var newClass = '';
+                switch (newStatus) {
+                    case 'Pending': newClass = 'status-pending'; break;
+                    case 'Shipped': newClass = 'status-shipped'; break;
+                    case 'Completed': newClass = 'status-completed'; break;
+                    case 'RefundRequested': newClass = 'status-refund'; break;
+                    case 'Cancelled': newClass = 'status-cancelled'; break;
+                }
+                statusBadge.addClass(newClass);
+            }
+
             function resetButton(button) {
-                setTimeout(function() {
+                setTimeout(function () {
                     button.html('<i class="fas fa-sync-alt mr-2"></i>Update Status').prop('disabled', false);
                 }, 1500);
             }
         });
     </script>
+
+
 </body>
+
 </html>

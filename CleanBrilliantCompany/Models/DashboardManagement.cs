@@ -269,12 +269,18 @@ namespace CleanBrilliantCompany.Models
             }
         }
 
-        public (decimal GrossProfit, decimal RefundAmount, decimal NetProfit) GetProfitComponents()
+        public (decimal GrossProfit, decimal RefundAmount, decimal NetProfit) GetProfitComponentsForMonths(DateTime selectedDate)
         {
             try
             {
-                var orders = _order.getAllOrders();
-                var refunds = _refundQuery.GetAllRefunds();
+                var startDate = new DateTime(selectedDate.Year, selectedDate.Month, 1);
+                var endDate = startDate.AddMonths(1).AddDays(-1);
+                var orders = _order.getAllOrders()
+                    .Where(o => o.RetrieveOrderDate() >= startDate && o.RetrieveOrderDate() <= endDate)
+                    .ToList();
+                var refunds = _refundQuery.GetAllRefunds()
+                    .Where(r => r.RefundRequestDate >= startDate && r.RefundRequestDate <= endDate)
+                    .ToList();
 
                 decimal grossProfit = orders.Sum(o => o.RetrieveOrderTotal());
                 decimal refundAmount = refunds
