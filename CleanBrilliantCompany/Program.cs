@@ -134,6 +134,19 @@ builder.Services.AddScoped<IOrderFulfilment, ItemControl>();
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();
 
+// Testing the Staff feedback
+// Register Database Configuration
+builder.Services.AddScoped<FeedbackRepository>();
+
+// Register Facades
+builder.Services.AddScoped<StaffFeedbackFacade>();
+builder.Services.AddScoped<ManageFeedbackFacade>();
+
+// Register Interfaces and Implementations
+builder.Services.AddScoped<IFeedbackSubmission, FeedbackSubmission>();
+builder.Services.AddScoped<IFeedbackRetrieval, FeedbackRetrieval>();
+builder.Services.AddScoped<IFeedbackManagement, FeedbackManagement>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

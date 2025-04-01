@@ -26,5 +26,7 @@ namespace CleanBrilliantCompany.Interfaces.StaffAuth
         // 🔹 Validation Checks
         bool StaffEmailExists(int staffId, string email);
         bool StaffUsernameExists(int staffId, string username);
+
+        string GetStaffRole(int staffId);
     }
 }

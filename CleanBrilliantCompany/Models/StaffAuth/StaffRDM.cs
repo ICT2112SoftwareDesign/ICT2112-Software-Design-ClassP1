@@ -145,5 +145,22 @@ namespace CleanBrilliantCompany.Models.StaffAuth
             // Implementation logic here
             return false;
         }
+
+        // New Role property based on the department or management level
+        public string Role
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(department))
+                {
+                    return "general"; // Staff is in General Staff
+                }
+                else if (!string.IsNullOrEmpty(managementLevel))
+                {
+                    return "management"; // Staff is in Management Staff
+                }
+                return "unknown"; // Unknown role
+            }
+        }
     }
 }

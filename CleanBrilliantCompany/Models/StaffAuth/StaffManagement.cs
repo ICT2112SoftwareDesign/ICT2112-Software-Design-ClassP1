@@ -60,6 +60,11 @@ namespace CleanBrilliantCompany.Models.StaffAuth
         {
             return _staffDatabase.GetStaffDetails(staffId);
         }
+
+        public string GetStaffRole(int staffId)
+        {
+            return _staffDatabase.GetStaffRole(staffId);  // Calls GetStaffRole from StaffMapper
+        }
     }
 }
 

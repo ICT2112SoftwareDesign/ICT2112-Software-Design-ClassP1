@@ -9,5 +9,7 @@ namespace CleanBrilliantCompany.Interfaces.StaffAuth
         bool IsAuthenticated(int staffId);
 
         int GetIdByEmail(string email);
+
+        string GetStaffRole(int staffId);
     }
 }

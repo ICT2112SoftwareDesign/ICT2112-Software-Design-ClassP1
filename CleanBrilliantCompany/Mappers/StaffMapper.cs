@@ -297,5 +297,33 @@ namespace CleanBrilliantCompany.Mappers
             }
             return staffList;
         }
+
+        public string GetStaffRole(int staffId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+            SELECT 
+                CASE 
+                    WHEN gs.staffId IS NOT NULL THEN 'general'
+                    WHEN ms.staffId IS NOT NULL THEN 'management'
+                    ELSE 'unknown'
+                END AS Role
+            FROM dbo.Staff s
+            LEFT JOIN dbo.GeneralStaff gs ON gs.staffId = s.staffId
+            LEFT JOIN dbo.ManagementStaff ms ON ms.staffId = s.staffId
+            WHERE s.staffId = @StaffId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StaffId", staffId);
+                    var role = command.ExecuteScalar()?.ToString();
+
+                    return role ?? "unknown";  // If not found, return "unknown"
+                }
+            }
+        }
     }
 }

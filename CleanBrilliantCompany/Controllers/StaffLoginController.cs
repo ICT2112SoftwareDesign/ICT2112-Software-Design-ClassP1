@@ -27,7 +27,13 @@ namespace CleanBrilliantCompany.Controllers
 
             if (isAuthenticated && loggedInStaffId > 0)
             {
+                // Store the staff ID and role in session
                 HttpContext.Session.SetInt32("LoggedInStaffId", loggedInStaffId);
+
+                // Retrieve the role from the database
+                string role = _staffAuthentication.GetStaffRole(loggedInStaffId);
+                HttpContext.Session.SetString("StaffRole", role);
+
                 return RedirectToAction("Index", "Staff");
             }
 

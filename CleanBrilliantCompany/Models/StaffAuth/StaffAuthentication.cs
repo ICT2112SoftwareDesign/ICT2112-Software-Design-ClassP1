@@ -40,5 +40,14 @@ namespace CleanBrilliantCompany.Models.StaffAuth
         {
             return _staffDatabase.VerifyStaffCredentials(email, password);
         }
+
+        public string GetStaffRole(int staffId)
+        {
+            // Fetch the staff details
+            var staffDetails = _staffDatabase.GetStaffDetails(staffId);
+
+            // Access the computed Role property
+            return staffDetails?.Role ?? "unknown"; // Return the role or default to "unknown"
+        }
     }
 }
