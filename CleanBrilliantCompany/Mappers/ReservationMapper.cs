@@ -106,7 +106,7 @@ namespace CleanBrilliantCompany.Mappers
                     string query = @"
                         UPDATE dbo.Reservation
                         SET productId = @ProductId, warehouseId = @WarehouseId, reservationDate = @ReservationDate, reservationPurpose = @ReservationPurpose, reservedQuantity = @ReservedQuantity, 
-                                staffId = @StaffId)
+                                staffId = @StaffId
                         WHERE reservationId = @ReservationId";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
