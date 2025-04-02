@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Data;
 using Microsoft.Extensions.Logging;
+using CleanBrilliantCompany.Models.Control;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,19 +23,24 @@ namespace CleanBrilliantCompany.Controllers
         private readonly IToxicityClassificationStrategy _classificationStrategy;
         private readonly ILogger<ToxicityController> _logger;
         private readonly ApplicationDbContext _dbContext;
+        private readonly IProductCF _productCF;
+        private readonly CarbonProductAnalyticManager _carbonProductAnalyticManager;
 
         public ToxicityController(
             IToxicity toxicity, 
             IIngredientDB ingredientGateway, 
             IToxicityClassificationStrategy classificationStrategy,
             ILogger<ToxicityController> logger,
-            ApplicationDbContext dbContext)
+            ApplicationDbContext dbContext,
+            IProductCF productCF)
         {
             _toxicity = toxicity;
             _ingredientGateway = ingredientGateway;
             _classificationStrategy = classificationStrategy;
             _logger = logger;
             _dbContext = dbContext;
+            _productCF = productCF;
+            _carbonProductAnalyticManager = new CarbonProductAnalyticManager(_productCF);
         }
 
         public IActionResult Toxicity()
@@ -81,8 +87,6 @@ namespace CleanBrilliantCompany.Controllers
             return products.Select(p => (string)p.ProductName).ToList();
         }
 
-
-
         // Main entry point for toxicity analysis
         public async Task<IActionResult> Index(string productName = "Eco-Friendly Shampoo")
         {
@@ -107,6 +111,11 @@ namespace CleanBrilliantCompany.Controllers
                     });
                 }
 
+                // Get product details from database to fetch its ID
+                var product = await _dbContext.Products
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.ProductName == productName);
+
                 // Calculate average toxicity
                 float avgToxicity = (float)ingredients.Average(i => i.IngredientToxicity);
                 
@@ -127,6 +136,24 @@ namespace CleanBrilliantCompany.Controllers
                 // Add enhanced analysis
                 report.ProductSafetyAnalysis = await _classificationStrategy.AnalyzeProductSafety(ingredients);
                 
+                // Get carbon footprint data if product exists
+                if (product != null)
+                {
+                    // Initialize carbon footprint data
+                    await _carbonProductAnalyticManager.retrieveProductEmission();
+                    
+                    // Get carbon footprint value for the product
+                    double carbonFootprint = await _carbonProductAnalyticManager.retreiveToxicity(product.ProductId);
+                    
+                    // Get eco status for the product
+                    string ecoStatus = await _carbonProductAnalyticManager.retrieveEcoStatus(product.ProductId);
+                    
+                    // Add carbon footprint data to ViewBag
+                    ViewBag.CarbonFootprint = carbonFootprint;
+                    ViewBag.EcoStatus = ecoStatus;
+                    ViewBag.CarbonFootprintImpact = AnalyzeCarbonFootprintImpact(carbonFootprint, avgToxicity);
+                }
+                
                 // Get ingredient-specific recommendations and alternatives
                 foreach (var ingredient in ingredients)
                 {
@@ -146,13 +173,6 @@ namespace CleanBrilliantCompany.Controllers
                 // Add correlation analysis
                 report.CorrelationAnalysis = AnalyzeIngredientCorrelations(ingredients);
                 
-                // Here you would integrate carbon footprint data when available
-                // if (_carbonFootprint != null)
-                // {
-                //     var carbonData = await _carbonFootprint.GetProductCarbonFootprint(productName);
-                //     report.CarbonFootprintData = carbonData;
-                // }
-                
                 return View(report);
             }
             catch (Exception ex)
@@ -160,6 +180,30 @@ namespace CleanBrilliantCompany.Controllers
                 _logger.LogError(ex, "Error in ToxicityController.Index");
                 return View("Error", new ErrorViewModel { RequestId = ex.Message });
             }
+        }
+
+        // Helper method to analyze carbon footprint impact
+        private string AnalyzeCarbonFootprintImpact(double carbonFootprint, float toxicityScore)
+        {
+            if (carbonFootprint <= 0)
+                return "No carbon footprint data available for this product.";
+                
+            string impact;
+            if (carbonFootprint < 50)
+                impact = "Low environmental impact. ";
+            else if (carbonFootprint < 100)
+                impact = "Moderate environmental impact. ";
+            else
+                impact = "High environmental impact. ";
+                
+            if (toxicityScore > 0.7)
+                impact += "High toxicity ingredients typically contribute significantly to the carbon footprint during production.";
+            else if (toxicityScore > 0.3)
+                impact += "Some moderate-toxicity ingredients may contribute to the carbon footprint during manufacturing.";
+            else
+                impact += "Low-toxicity ingredients generally have minimal impact on carbon emissions.";
+                
+            return impact;
         }
 
         // Separate page for Add Ingredient form
@@ -293,6 +337,30 @@ namespace CleanBrilliantCompany.Controllers
                 var toxicityTrends = AnalyzeToxicityTrends(ingredients);
                 var correlationAnalysis = AnalyzeIngredientCorrelations(ingredients);
                 
+                // Get product details from database to fetch its ID
+                var product = await _dbContext.Products
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.ProductName == productName);
+                
+                // Get carbon footprint if product exists
+                double carbonFootprint = 0;
+                string ecoStatus = "Unknown";
+                string carbonImpact = "No carbon footprint data available";
+                
+                if (product != null)
+                {
+                    // Initialize carbon footprint data
+                    await _carbonProductAnalyticManager.retrieveProductEmission();
+                    
+                    // Get carbon footprint value for the product
+                    carbonFootprint = await _carbonProductAnalyticManager.retreiveToxicity(product.ProductId);
+                    
+                    // Get eco status for the product
+                    ecoStatus = await _carbonProductAnalyticManager.retrieveEcoStatus(product.ProductId);
+                    
+                    carbonImpact = AnalyzeCarbonFootprintImpact(carbonFootprint, avgToxicity);
+                }
+                
                 // Generate report content
                 var reportBuilder = new StringBuilder();
                 reportBuilder.AppendLine($"TOXICITY ANALYSIS REPORT FOR {productName.ToUpper()}");
@@ -366,7 +434,9 @@ namespace CleanBrilliantCompany.Controllers
                 // Add carbon footprint related section
                 reportBuilder.AppendLine();
                 reportBuilder.AppendLine("CARBON FOOTPRINT CONSIDERATIONS:");
-                reportBuilder.AppendLine("High toxicity ingredients often have higher carbon footprints due to intensive manufacturing processes.");
+                reportBuilder.AppendLine($"Carbon Footprint Value: {carbonFootprint} units");
+                reportBuilder.AppendLine($"Eco Status: {ecoStatus}");
+                reportBuilder.AppendLine($"Environmental Impact: {carbonImpact}");
                 reportBuilder.AppendLine($"Replacing high toxicity ingredients with alternatives could reduce carbon emissions by approximately {highToxicityIngredients.Count * 5}%.");
                 
                 // Return as a downloadable text file
@@ -381,10 +451,11 @@ namespace CleanBrilliantCompany.Controllers
         }
         
         // Method for handling the creation of new ingredients
-        // Method for handling the creation of new ingredients
         [HttpPost]
         public async Task<IActionResult> Create(IngredientSDM ingredient)
         {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            
             try
             {
                 _logger.LogInformation($"Processing ingredient: {ingredient.IngredientName}");
@@ -400,12 +471,18 @@ namespace CleanBrilliantCompany.Controllers
                     // Record the newly added ingredient in the log
                     _logger.LogInformation($"Added new ingredient: {ingredient.IngredientName} with toxicity {toxicityScore} ({classification})");
                     
+                    // Commit the transaction
+                    await transaction.CommitAsync();
+                    
                     // Add success message
                     TempData["SuccessMessage"] = $"Ingredient {ingredient.IngredientName} added successfully and analyzed.";
                     
                     // Redirect to view product analysis that contains this ingredient
                     return RedirectToAction("Index", new { productName = await GetProductNameById(ingredient.ProductId) });
                 }
+                
+                // If we got here, something failed, so roll back
+                await transaction.RollbackAsync();
                 
                 // If ModelState is invalid, repopulate the product list for the dropdown
                 var productList = await GetAllProductsAsync();
@@ -417,6 +494,9 @@ namespace CleanBrilliantCompany.Controllers
             }
             catch (Exception ex)
             {
+                // Roll back the transaction on exception
+                await transaction.RollbackAsync();
+                
                 _logger.LogError(ex, "Error processing ingredient");
                 ModelState.AddModelError("", "An error occurred while processing your request.");
                 
@@ -434,6 +514,8 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(IngredientSDM ingredient)
         {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            
             try
             {
                 _logger.LogInformation($"Updating ingredient ID {ingredient.IngredientId}: {ingredient.IngredientName}");
@@ -451,15 +533,24 @@ namespace CleanBrilliantCompany.Controllers
                     // Update the ingredient
                     await _ingredientGateway.UpdateIngredient(ingredient);
                     
+                    // Commit the transaction
+                    await transaction.CommitAsync();
+                    
                     TempData["SuccessMessage"] = $"Ingredient {ingredient.IngredientName} updated successfully.";
                     return RedirectToAction("Index", new { productName = await GetProductNameById(ingredient.ProductId) });
                 }
+                
+                // Roll back the transaction if model state is invalid
+                await transaction.RollbackAsync();
                 
                 TempData["ErrorMessage"] = "There was an error with the ingredient data. Please check your inputs.";
                 return View("EditIngredient", ingredient);
             }
             catch (Exception ex)
             {
+                // Roll back the transaction on exception
+                await transaction.RollbackAsync();
+                
                 _logger.LogError(ex, $"Error updating ingredient ID {ingredient.IngredientId}");
                 TempData["ErrorMessage"] = "An error occurred while updating the ingredient.";
                 return View("EditIngredient", ingredient);
@@ -470,6 +561,8 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int ingredientId)
         {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            
             try
             {
                 // Get ingredient details before deletion for logging and redirection
@@ -486,6 +579,9 @@ namespace CleanBrilliantCompany.Controllers
                 // Delete the ingredient
                 await _ingredientGateway.DeleteIngredient(ingredientId);
                 
+                // Commit the transaction
+                await transaction.CommitAsync();
+                
                 _logger.LogInformation($"Deleted ingredient ID {ingredientId}: {ingredientName}");
                 TempData["SuccessMessage"] = $"Ingredient {ingredientName} deleted successfully.";
                 
@@ -493,6 +589,9 @@ namespace CleanBrilliantCompany.Controllers
             }
             catch (Exception ex)
             {
+                // Roll back the transaction on exception
+                await transaction.RollbackAsync();
+                
                 _logger.LogError(ex, $"Error deleting ingredient ID {ingredientId}");
                 TempData["ErrorMessage"] = "An error occurred while deleting the ingredient.";
                 return RedirectToAction("Index");

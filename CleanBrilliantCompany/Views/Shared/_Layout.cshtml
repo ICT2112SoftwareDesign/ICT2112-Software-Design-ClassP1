@@ -62,6 +62,35 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+    // Initialize all collapse elements when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if Bootstrap 5 is being used
+        if (typeof bootstrap !== 'undefined') {
+            // Bootstrap 5 way - let Bootstrap handle the collapse
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        } else {
+            // Fallback for when Bootstrap JS is not loaded
+            var collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
+            collapseElements.forEach(function(element) {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var target = document.querySelector(this.getAttribute('data-bs-target'));
+                    if (target) {
+                        if (target.classList.contains('show')) {
+                            target.classList.remove('show');
+                        } else {
+                            target.classList.add('show');
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
