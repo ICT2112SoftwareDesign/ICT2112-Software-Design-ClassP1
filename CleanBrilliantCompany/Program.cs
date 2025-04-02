@@ -82,6 +82,7 @@ builder.Services.AddScoped<IGoals, GoalManagement>();
 
 // Carbon Order Item Analytic Manager
 builder.Services.AddScoped<CarbonOrderItemAnalyticManager>();
+builder.Services.AddScoped<CarbonProductAnalyticManager>();
 
 // Prediction services
 builder.Services.AddScoped<IPredictionStrategy, PredictionSSA>();
