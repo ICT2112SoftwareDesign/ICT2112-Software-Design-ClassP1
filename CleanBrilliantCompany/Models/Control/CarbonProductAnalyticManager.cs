@@ -24,7 +24,7 @@ namespace CleanBrilliantCompany.Models.Control
         public async Task retrieveProductEmission(){
             productEmission = _IProductCFService.getAllProductCarbonFootprint();
         }
-        public async Task<double> retreiveToxicity(int Id){
+        public async Task<double> retrieveToxicity(int Id){
             return _IProductCFService.getProductCarbonFootprint(Id);
         }
         public async Task<String> retrieveEcoStatus(int Id){

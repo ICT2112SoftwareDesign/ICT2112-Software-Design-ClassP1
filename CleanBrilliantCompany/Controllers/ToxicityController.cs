@@ -143,7 +143,7 @@ namespace CleanBrilliantCompany.Controllers
                     await _carbonProductAnalyticManager.retrieveProductEmission();
                     
                     // Get carbon footprint value for the product
-                    double carbonFootprint = await _carbonProductAnalyticManager.retreiveToxicity(product.ProductId);
+                    double carbonFootprint = await _carbonProductAnalyticManager.retrieveToxicity(product.ProductId);
                     
                     // Get eco status for the product
                     string ecoStatus = await _carbonProductAnalyticManager.retrieveEcoStatus(product.ProductId);
@@ -353,7 +353,7 @@ namespace CleanBrilliantCompany.Controllers
                     await _carbonProductAnalyticManager.retrieveProductEmission();
                     
                     // Get carbon footprint value for the product
-                    carbonFootprint = await _carbonProductAnalyticManager.retreiveToxicity(product.ProductId);
+                    carbonFootprint = await _carbonProductAnalyticManager.retrieveToxicity(product.ProductId);
                     
                     // Get eco status for the product
                     ecoStatus = await _carbonProductAnalyticManager.retrieveEcoStatus(product.ProductId);
