@@ -18,7 +18,9 @@ html body .red-test { color: red !important; }
       </a>
       <form asp-controller="Report" asp-action="PreviewReport" method="get">
         <input type="hidden" name="selectedDashboards" value="Cost" />
-        <button type="submit" class="btn btn-sm btn-secondary shadow-sm">Generate Report</button>
+        <button type="submit" class="btn btn-sm btn-secondary shadow-sm">
+          <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+          </button>
       </form>
     </div>
 
