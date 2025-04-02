@@ -89,7 +89,6 @@
                             <label for="staffId" class="form-label">Staff ID</label>
                             <input type="number" class="form-control" id="staffId" name="staffId" required>
                         </div>
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Reserve</button>
@@ -122,10 +121,7 @@
                             <label for="reservationPurpose" class="form-label">Reservation Purpose</label>
                             <input type="text" class="form-control" id="reservationPurpose" name="reservationPurpose" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="staffId" class="form-label">Staff ID</label>
-                            <input type="number" class="form-control" id="staffId" name="staffId" required>
-                        </div>
+                            <input type="hidden" class="form-control" id="staffId" name="staffId" value=1>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Reserve Product</button>
