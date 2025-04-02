@@ -49,71 +49,47 @@
 
                     <div class="modal-footer">
                         <button type="submit" id="generateDashboardBtn" class="btn btn-primary">Generate</button>
-                <div>
-                    <h2>@Model.Name</h2>
-                    <p><strong>Requested Start Date:</strong> @(Model.RequestedStartDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
-                    <p><strong>Requested End Date:</strong> @(Model.RequestedEndDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
-                    <p><strong>Generated Date:</strong> @(Model.GeneratedDate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
-                    <p><strong>Validity Duration:</strong> @Model.ValidityDuration</p>
-                </div>
-
-                @if (Model.MetricDetailsList != null && Model.MetricDetailsList.Any())
-                {
-                    <!-- <h3>Metrics:</h3>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Manufacturer ID</th>
-                                <th>Delivery Rate</th>
-                                <th>Defect Rate</th>
-                                <th>Dependency Rate</th>
-                                <th>Risk Flag</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var metric in Model.MetricDetailsList)
-                        {
-        <tr>    
-            <td>@metric.ManufacturerId</td>
-                                <td>@metric.DeliveryRate</td>
-                                <td>@metric.DefectRate</td>
-                                <td>@metric.DependencyRate</td>
-                                <td>@(metric.RiskFlag ? "Yes" : "No")</td>
-                            </tr>
-                        }
-                        </tbody>
-                        </table> -->
-
-                    <div style="display: flex; flex-wrap: wrap; gap: 40px;">
-                        <div style="width: 45%; height: 350px; margin-top: 40px; margin-bottom: 40px;">
-                            <h2>Delivery Rate by Manufacturer</h2>
-                            <canvas id="deliveryRateChart"></canvas>
-                        </div>
-
-                        <div style="width: 45%; height: 350px; margin-top: 40px; margin-bottom: 40px;">
-                            <h2>Defect Rate by Manufacturer</h2>
-                            <canvas id="defectChart"></canvas>
-                        </div>
-
-                        <div style="width: 45%; height: 350px; margin-bottom: 60px;">
-                            <h2>Dependency Rate Distribution</h2>
-                            <p>Dependency Rate = Manufacturer Quantity/Total Quantity</p>
-                            <p>Low : <0.05 &nbsp|&nbsp Med: 0.05 < 0.2 &nbsp|&nbsp High: >0.2</p>
-                            <canvas id="dependencyRatePieChart"></canvas>
-                        </div>
-
-                        <div style="width: 45%; height: 350px; margin-bottom: 60px;">
-                            <h2>Risk Flag Distribution</h2>
-                            <p>Risky = (Defect Rate * Dependency Rate) > 0.1</p>
-                            <p>&nbsp</p>
-                            <canvas id="riskPieChart"></canvas>
-                        </div>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<div>
+    <h2>@Model.Name</h2>
+    <p><strong>Requested Start Date:</strong> @(Model.RequestedStartDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
+    <p><strong>Requested End Date:</strong> @(Model.RequestedEndDate.ToString("yyyy-MM-dd") ?? "N/A")</p>
+    <p><strong>Generated Date:</strong> @(Model.GeneratedDate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
+    <p><strong>Validity Duration:</strong> @Model.ValidityDuration</p>
+</div>
+
+@if (Model.Metrics != null && Model.Metrics.Any())
+{
+    <!-- <h3>Metrics:</h3>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Manufacturer ID</th>
+                                            <th>Delivery Rate</th>
+                                            <th>Defect Rate</th>
+                                            <th>Dependency Rate</th>
+                                            <th>Risk Flag</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+    @foreach (var metric in Model.Metrics)
+    {
+                                                    <tr>
+                                                        <td>@metric.ManufacturerId</td>
+                                                        <td>@metric.DeliveryRate</td>
+                                                        <td>@metric.DefectRate</td>
+                                                        <td>@metric.DependencyRate</td>
+                                                        <td>@(metric.RiskFlag ? "Yes" : "No")</td>
+                                                    </tr>
+    }
+                                    </tbody>
+                                    </table> -->
 
     <div style="display: flex; flex-wrap: wrap; gap: 40px;">
         <div style="width: 45%; height: 350px; margin-top: 40px; margin-bottom: 40px;">
@@ -127,14 +103,18 @@
         </div>
 
         <div style="width: 45%; height: 350px; margin-bottom: 60px;">
-            <h2>Dependency Rate Distribution</h2>
-            <canvas id="dependencyRatePieChart"></canvas>
-        </div>
+                            <h2>Dependency Rate Distribution</h2>
+                            <p>Dependency Rate = Manufacturer Quantity/Total Quantity</p>
+                            <p>Low : <0.05 &nbsp|&nbsp Med: 0.05 &lt 0.2 &nbsp|&nbsp High: >0.2</p>
+                            <canvas id="dependencyRatePieChart"></canvas>
+                        </div>
 
-        <div style="width: 45%; height: 350px; margin-bottom: 60px;">
-            <h2>Risk Flag Distribution</h2>
-            <canvas id="riskPieChart"></canvas>
-        </div>
+                        <div style="width: 45%; height: 350px; margin-bottom: 60px;">
+                            <h2>Risk Flag Distribution</h2>
+                            <p>Risky = (Defect Rate * Dependency Rate) > 0.1</p>
+                            <p>&nbsp</p>
+                            <canvas id="riskPieChart"></canvas>
+                        </div>
     </div>
 }
 else
@@ -151,10 +131,9 @@ else
     @{
         <script>
 
-                const metrics = @Html.Raw(Json.Serialize(Model.MetricDetailsList));
-                console.log("Metrics:", metrics);
+            const metrics = @Html.Raw(Json.Serialize(Model.Metrics));
 
-            //Metrics for Delivery Chartc
+            //Metrics for Delivery Chart
             // Extract the manufacturer IDs and delivery rates from the metrics
             const del_manufacturerIds = metrics.map(m => m.manufacturerId);
             const del_deliveryRates = metrics.map(m => m.deliveryRate);
