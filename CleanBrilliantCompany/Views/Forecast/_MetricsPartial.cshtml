@@ -531,7 +531,18 @@
         document.getElementById("slider-display").textContent = slider.value + "%";
         generateDashboardFromSlider(slider); // Reuse your existing function
     }
-        
+
+    function syncGlobalTextInput(slider) {
+        // Sync the number input
+        const globalTextInput = document.getElementById("global-text");
+        globalTextInput.value = slider.value;
+
+        @* // Update the text display with % *@
+        @* const display = document.getElementById("slider-display"); *@
+        @* if (display) { *@
+        @*     display.textContent = slider.value + "%"; *@
+        @* } *@
+    }
 
     @* // Serialize the model's metrics collection. *@
     @* // Ensure that Model.GetMetrics() returns the properties "productName", "productId", and "forecastedStock" *@
