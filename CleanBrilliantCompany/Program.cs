@@ -35,6 +35,7 @@ builder.Services.AddScoped<ProductControl>();
 builder.Services.AddScoped<ProductMapper>();
 builder.Services.AddScoped<ItemControl>();
 builder.Services.AddScoped<ItemMapper>();
+builder.Services.AddScoped<GoalManagement>();
 
 // Mappers
 builder.Services.AddScoped<IProductCarbonFootprintDB, ProductCFMapper>();
@@ -74,6 +75,8 @@ builder.Services.AddScoped<IStorageDuration, StorageDurationStubImpl>();
 builder.Services.AddScoped<IIngredientDB, IngredientGateway>();
 builder.Services.AddScoped<IToxicityClassificationStrategy, ToxicityClassificationStrategy>();
 builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
+builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
+builder.Services.AddScoped<IGoals, GoalManagement>();
 
 var app = builder.Build();
 
@@ -107,5 +110,23 @@ app.MapControllerRoute(
     name: "toxicityByProductName",
     pattern: "toxicity/product/{productName}",
     defaults: new { Controller = "Toxicity", action = "ViewByProductName" });
+
+app.MapControllerRoute(
+    name: "goalsManagement",
+    pattern: "Goals",
+    defaults: new { controller = "GoalsPage", action = "GoalsManagement" }
+);
+
+app.MapControllerRoute(
+    name: "goalsCreation",
+    pattern: "Goals/GoalsCreation",
+    defaults: new { controller = "GoalsPage", action = "GoalsCreation" }
+);
+
+app.MapControllerRoute(
+    name: "goalsModification",
+    pattern: "Goals/GoalsModification",
+    defaults: new { controller = "GoalsPage", action = "GoalsModification" }
+);
 
 app.Run();

@@ -1,0 +1,62 @@
+@model CleanBrilliantCompany.Models.Entity.GoalsSDM;
+
+@{
+    ViewData["Title"] = "Modify Goal";
+}
+
+<h1>Modify Goal</h1>
+
+<form id="modifyGoalForm">
+    <div class="form-group">
+        <label for="goalDate">Goal Date:</label>
+        <input type="month" id="goalDate" name="goalDate" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="targetEmission">Target Emission (kg CO2):</label>
+        <input type="number" id="targetEmission" name="targetEmission" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Goal</button>
+</form>
+
+<!-- Notification -->
+<div id="notification" class="alert" style="display:none; margin-top:10px;"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#modifyGoalForm").submit(function (event) {
+            event.preventDefault(); // Prevent form reload
+
+            var formData = {
+                goalDate: $("#goalDate").val(),
+                targetEmission: $("#targetEmission").val()
+            };
+
+            $.ajax({
+                url: "/GoalsInput/ModifyGoal",
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    var notification = $("#notification");
+                    if (response.success) {
+                        notification.removeClass("alert-danger").addClass("alert-success")
+                            .text(response.message).fadeIn();
+
+                        setTimeout(function () {
+                            location.reload(); // Reload after success
+                        }, 1500);
+                    } else {
+                        notification.removeClass("alert-success").addClass("alert-danger")
+                            .text(response.message).fadeIn();
+                    }
+                },
+                error: function () {
+                    $("#notification").removeClass("alert-success").addClass("alert-danger")
+                        .text("An unexpected error occurred.").fadeIn();
+                }
+            });
+        });
+    });
+</script>
