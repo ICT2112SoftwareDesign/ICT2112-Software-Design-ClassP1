@@ -4,7 +4,6 @@ public class CostControl
     private List<CostDashboardRdm> dashboards; 
     private CostMapper costMapper; 
     private ILogger<CostDashboardRdm>? logger;
-    private IVisualizationService? visualizationService;
     private IAlertService? alertService;
     public ApplicationDbContext DbContext => dbContext;
 
