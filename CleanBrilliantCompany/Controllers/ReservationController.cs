@@ -106,13 +106,50 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        [Route("updateReservationQuantity")]
-        public async Task<IActionResult> updateReservationQuantity(int reservationId, int quantity, int staffId)
+        [Route("updateReservation")]
+        public async Task<IActionResult> updateReservation(int reservationId, int? reservedQuantity, string reservationPurpose, int staffId)
         {
             Console.WriteLine("ReservationID: " + reservationId);
-            Console.WriteLine("New Quantity: " + quantity);
+            Console.WriteLine("New Quantity: " + reservedQuantity);
+            Console.WriteLine("New Purpose: " + reservationPurpose);
+            string resultq = "", resultp = "";
 
-            string result = await _reservationControl.UpdateReservationQuantity(reservationId, quantity, staffId);
+            if (reservedQuantity != null)
+            {
+                resultq = await _reservationControl.UpdateReservationQuantity(reservationId, (int)reservedQuantity, staffId);
+                Console.WriteLine("UpdateReservationQuantity Runned");
+            }
+            if (reservationPurpose !=null)
+            {
+                resultp = await _reservationControl.UpdateReservationPurpose(reservationId, reservationPurpose, staffId);
+                Console.WriteLine("UpdateReservationPurpose Runned");
+            }
+            if (resultq.Contains("Error") && resultp.Contains("Error"))
+            {
+                return BadRequest(new { error = "Failed to update quantity & purpose. : " + resultq + " : " + resultp });
+            }
+            else if (resultq.Contains("Error"))
+            {
+                return BadRequest(new { error = "Failed to update quantity. : " + resultq });
+            }
+            else if (resultp.Contains("Error"))
+            {
+                return BadRequest(new { error = "Failed to update purpose. : " + resultp });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        [Route("updateReservationQuantity")]
+        public async Task<IActionResult> updateReservationQuantity(int reservationId, int reservedQuantity, int staffId)
+        {
+            Console.WriteLine("ReservationID: " + reservationId);
+            Console.WriteLine("New Quantity: " + reservedQuantity);
+
+            string result = await _reservationControl.UpdateReservationQuantity(reservationId, reservedQuantity, staffId);
             if (result.Contains("Error"))
             {
                 return BadRequest(new { error = "Failed to update quantity. : " + result });
