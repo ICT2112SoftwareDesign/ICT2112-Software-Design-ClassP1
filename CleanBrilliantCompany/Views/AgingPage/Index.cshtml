@@ -35,6 +35,10 @@
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateModal">
                 Generate Dashboard
             </button>
+            <form asp-controller="Report" asp-action="PreviewReport" method="get" style="display: inline;">
+                <input type="hidden" name="selectedDashboards" value="Aging" />
+                <button type="submit" class="btn btn-secondary">Generate Report</button>
+            </form>
 
             <!-- Modal -->
             <div class="modal fade" id="generateModal" tabindex="-1" aria-hidden="true">

@@ -276,14 +276,20 @@
         </div>
 
         <div class="text-center">
-            <form method="post" action="/Forecast/GenerateForecast" class="d-flex justify-content-center align-items-center gap-2">
-                <input type="hidden" name="type" value="stock" />
+            <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                <form method="post" action="/Forecast/GenerateForecast" class="d-flex justify-content-center align-items-center gap-2">
+                    <input type="hidden" name="type" value="stock" />
 
-                <label for="monthInput" class="fw-bold me-2">Select Forecast Month:</label>
-                <input type="month" id="monthInput" name="month" min="@minValue" required class="form-control w-auto" />
+                    <label for="monthInput" class="fw-bold me-2">Select Forecast Month:</label>
+                    <input type="month" id="monthInput" name="month" min="@minValue" required class="form-control w-auto" />
 
-                <button class="btn btn-primary ms-2" type="submit">Generate Forecast</button>
-            </form>
+                    <button class="btn btn-primary ms-2" type="submit">Generate Forecast</button>
+                </form>
+                <form asp-controller="Report" asp-action="PreviewReport" method="get" style="display: inline;">
+                    <input type="hidden" name="selectedDashboards" value="Forecast" />
+                    <button type="submit" class="btn btn-secondary">Generate Report</button>
+                </form>
+            </div>
         </div>
     </div>
 
