@@ -7,6 +7,7 @@ public class ManufacturerDashboardRdm : Dashboard
         // Initialization code, if needed
         Metrics = new List<ManufacturerMetricsDTO>();  // Initialize the Metrics list
         MetricDetailsList = new List<ManufacturerMetricDetails>();  // List for detailed metric calculations
+        ManufacturerNames = new Dictionary<int, string>();
     }
 
     // Property to store the manufacturer metrics
@@ -15,12 +16,17 @@ public class ManufacturerDashboardRdm : Dashboard
     // List of detailed metrics for calculations
     public List<ManufacturerMetricDetails> MetricDetailsList { get; set; }
 
+    public Dictionary<int, string> ManufacturerNames { get; set; }
+
     public void populateMetrics(List<ReorderData> reorders)
     {
         // Grouping the reorders by ManufacturerId to calculate metrics for each manufacturer
         var manufacturerReorders = reorders
             .GroupBy(r => r.ManufacturerId)
             .ToDictionary(g => g.Key, g => g.ToList());
+
+        // Calculate total quantity ordered across all manufacturers
+        double totalQuantityInSystem = reorders.Sum(o => o.Quantity);
 
         // Iterate over each manufacturer and calculate the metrics
         foreach (var manufacturerGroup in manufacturerReorders)
@@ -38,14 +44,16 @@ public class ManufacturerDashboardRdm : Dashboard
             double totalQuantity = orders.Sum(o => o.Quantity);
             double defectRate = totalQuantity > 0 ? Math.Round(totalDefectQuantity / totalQuantity, 3) : 0;
 
-            // Calculate DependencyRate: number of orders for that manufacturer / total orders in the system
-            double dependencyRate = Math.Round(totalOrders / reorders.Count, 3);
+            // Calculate DependencyRate: total quantity for that manufacturer / total quantity in the system
+            double dependencyRate = totalQuantityInSystem > 0 ? Math.Round(totalQuantity / totalQuantityInSystem, 3) : 0;
 
             // Calculate RiskFlag: true if defect rate * dependency rate > 0.1
             bool riskFlag = defectRate * dependencyRate > 0.1;
 
+            string manufacturerIdString = manufacturerId.ToString();
+
             // Add to the list of metrics
-            MetricDetailsList.Add(new ManufacturerMetricDetails(manufacturerId, deliveryRate, defectRate, dependencyRate, riskFlag));
+            MetricDetailsList.Add(new ManufacturerMetricDetails(manufacturerIdString, deliveryRate, defectRate, dependencyRate, riskFlag));
         }
     }
 

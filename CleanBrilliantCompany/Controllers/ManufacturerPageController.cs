@@ -19,6 +19,7 @@ public class ManufacturerPageController : Controller
     public IActionResult Index()
     {
         var latestDashboard = manufacturerControl.GetLatestDashboard(); 
+
         if (latestDashboard == null) 
         {
             Console.WriteLine("No manufacturer dashboard found.");

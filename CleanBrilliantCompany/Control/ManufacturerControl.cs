@@ -1,13 +1,17 @@
+using CleanBrilliantCompany.Interfaces;
+
 public class ManufacturerControl
 {
     private Dashboard manufacturerDashboard;
     private readonly ManufacturerRepo ManufacturerMapper;
     private readonly FakeReorderInterface fakeReorderInterface;
+    private readonly IManufacturer _Imanufacturer;
 
-    public ManufacturerControl(ManufacturerRepo ManufacturerMapper, FakeReorderInterface fakeReorderInterface)
+    public ManufacturerControl(ManufacturerRepo ManufacturerMapper, FakeReorderInterface fakeReorderInterface, IManufacturer _Imanufacturer)
     {
         this.ManufacturerMapper = ManufacturerMapper;
         this.fakeReorderInterface = fakeReorderInterface;
+        this._Imanufacturer =  _Imanufacturer;
         LoadDashboard();
     }
 
@@ -20,7 +24,6 @@ public class ManufacturerControl
             Console.WriteLine("⚠ No manufacturer dashboard found.");
             return;
         }
-        Console.WriteLine($"📊 Manufacturer dashboard found: {dashboardDto.Name} generated on: {dashboardDto.GeneratedDate}");
 
         // Check if the dates are null, and provide default values if needed
         DateTime requestedStartDate = dashboardDto.RequestedStartDate;
@@ -35,18 +38,23 @@ public class ManufacturerControl
         if (manufacturerDashboard is ManufacturerDashboardRdm manufacturerDashboardRdm)
         {
             manufacturerDashboardRdm.Metrics = metricsList;
-            Console.WriteLine($"📊 {metricsList.Count} Manufacturer Metrics found.");
 
             manufacturerDashboardRdm.MetricDetailsList = ManufacturerMapper
             .GetManufacturerMetrics(dashboardDto.DashboardId)
-            .Select(m => new ManufacturerMetricDetails(
-                m.ManufacturerId,
+            .Select(m => {
+            // Fetch the manufacturer details
+            var manufacturerDetails = _Imanufacturer.getManufacturerDetails(m.ManufacturerId);
+            var companyName = manufacturerDetails.retrieveProductManufacturerInfo()["CompanyName"].ToString();
+
+            // Replace ManufacturerId with the company name directly
+            return new ManufacturerMetricDetails(
+                companyName,  // Use the company name instead of ID
                 m.DeliveryRate,
                 m.DefectRate,
                 m.DependencyRate,
                 m.RiskFlag
-            )).ToList();
-
+            );
+        }).ToList();
         }
         else
         {
@@ -57,7 +65,6 @@ public class ManufacturerControl
     // Method to retrieve the latest dashboard
     public ManufacturerDashboardRdm? GetLatestDashboard()
     {
-        Console.WriteLine("🔍 Retrieving the latest manufacturer dashboard...");
         return manufacturerDashboard as ManufacturerDashboardRdm;
     }
 
@@ -125,8 +132,6 @@ public class ManufacturerControl
         }
 
         report.AppendLine("</tbody></table>");
-
-        Console.WriteLine("Manufacturer Report generated.");
         return report.ToString();
     }
 
