@@ -1,17 +1,22 @@
 using Microsoft.Data.SqlClient;
 using CleanBrilliantCompany.Interfaces;
+using System;
 
 public class WishlistMapper : IWishlistDatabase
 {
     private readonly string _connectionString;
+    private readonly IWishlistQueryObserver _observer;
     
-    public WishlistMapper(string connectionString)
+    public WishlistMapper(string connectionString, IWishlistQueryObserver observer)
     {
         _connectionString = connectionString;
+        _observer = observer;
     }
     
     public string getWishlistProductIdsString(int customerId)
     {
+        _observer.LogGetWishlist(customerId);
+        
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
@@ -34,6 +39,8 @@ public class WishlistMapper : IWishlistDatabase
     
     public bool customerWishlistExists(int customerId)
     {
+        bool exists;
+        
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
@@ -43,13 +50,18 @@ public class WishlistMapper : IWishlistDatabase
             {
                 command.Parameters.AddWithValue("@CustomerId", customerId);
                 int count = (int)command.ExecuteScalar();
-                return count > 0;
+                exists = count > 0;
             }
         }
+        
+        _observer.LogWishlistExists(customerId, exists);
+        return exists;
     }
     
     public bool saveWishlistProductIdsString(int customerId, string productIdsString)
     {
+        bool success = false;
+        
         try
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -80,12 +92,16 @@ public class WishlistMapper : IWishlistDatabase
                         insertCommand.ExecuteNonQuery();
                     }
                 }
+                
+                success = true;
             }
-            return true;
         }
         catch (Exception)
         {
-            return false;
+            success = false;
         }
+        
+        _observer.LogSaveWishlist(customerId, productIdsString, success);
+        return success;
     }
 }

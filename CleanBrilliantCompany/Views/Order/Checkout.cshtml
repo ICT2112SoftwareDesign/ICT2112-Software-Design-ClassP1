@@ -29,7 +29,7 @@
             <!-- Shipping Details -->
             <div class="col-md-6">
                 <h4 class="mb-3">Shipping Details</h4>
-                <form id="checkoutForm" asp-action="Checkout" method="post">
+                <form id="checkoutForm" asp-controller= "OrderInput" asp-action="checkout" method="post">
                     <div class="form-group">
                         <label for="deliveryAddress">Shipping Address (Postal Code, Street Name & Building Unit)</label>
                         <textarea id="deliveryAddress" name="deliveryAddress" class="form-control" rows="3" placeholder="Enter your delivery address" required>@ViewBag.CustomerAddress</textarea>
@@ -118,7 +118,7 @@
 
         <!-- Place Order Button -->
         <div class="text-center mt-4">
-            <form asp-action="PlaceOrder" method="post">
+            <form asp-controller="OrderInput" asp-action="placeOrder" method="post">
                 <input type="hidden" id="hiddenDeliveryAddress" name="deliveryAddress" value="@customerAddress" />
                 <input type="hidden" name="serviceType" value="@selectedServiceType" />
                 <input type="hidden" name="shippingType" value="@selectedShippingType" />

@@ -13,9 +13,9 @@
         @foreach (var review in Model)
         {
             <li class="list-group-item">
-                <strong>Customer:</strong> @review.GetCustomerId() <br />
-                <strong>Rating:</strong> @review.GetRating() <br />
-                <strong>Review:</strong> @review.GetReview()
+                <strong>Customer:</strong> @review.RetrieveCustomerId() <br />
+                <strong>Rating:</strong> @review.RetrieveRating() <br />
+                <strong>Review:</strong> @review.RetrieveReviewText()
             </li>
         }
     </ul>

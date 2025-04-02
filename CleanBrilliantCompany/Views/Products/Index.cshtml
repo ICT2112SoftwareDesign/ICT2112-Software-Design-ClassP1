@@ -103,7 +103,7 @@
                 <img src="~/img/placeholderimg.png" alt="Product Image">
                 <div class="product-title">@product["ProductName"]</div>
                 <div class="product-price">$@product["CostPrice"]</div>
-                <form asp-controller="CustomerPage" asp-action="AddToCart" method="post">
+                <form asp-controller="CartInput" asp-action="addToCart" method="post">
                     <input type="hidden" name="productId" value="@product["ProductId"]" />
                     <input type="number" name="quantity" value="1" min="1" class="form-control mb-2" />
                     <button class="btn btn-cart">Add to Cart</button>

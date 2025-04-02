@@ -46,7 +46,7 @@ namespace CleanBrilliantCompany.Models
         private void LogToFile(string message)
         {
             try
-            {
+            { 
                 using (StreamWriter writer = File.AppendText(_logFilePath))
                 {
                     writer.WriteLine(message);

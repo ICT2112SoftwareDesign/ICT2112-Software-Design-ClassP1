@@ -21,13 +21,10 @@ namespace CleanBrilliantCompany.Models
             {
                 return false;
             }
+            else if(_customerDatabase.customerUsernameExists(username)){
+                return false;
+            }
             return _customerDatabase.createCustomer(username, password, email);
-        }
-
-        public string queryChatbot()
-        {
-            // Implementation logic here
-            return string.Empty;
         }
 
         public int getIdByEmail(string email)
@@ -56,18 +53,18 @@ namespace CleanBrilliantCompany.Models
          public bool updatePassword(int customerId, string password)
         {
             return _customerDatabase.updatePassword(customerId, password);
-        }
-
-        public bool notifyDBCustomerQueryStatus()
-        {
-            // Implementation logic here
-            return false;
-        }
+        }  
 
         public bool authenticateCustomer(string email, string password)
         {
             // Call the method in CustomerMapper to verify credentials
             return _customerDatabase.verifyCustomerCredentials(email, password);
         }
+        
+        public bool updateEmailPreference(int customerId, string? emailPreference)
+        {
+            return _customerDatabase.updateEmailPreference(customerId, emailPreference);
+        }
+
     }
 }

@@ -64,8 +64,9 @@
         </div>
 
         <div class="button-card">
-            <form asp-controller="CustomerPage" asp-action="AddToCart" method="post">
+            <form asp-controller="CartInput" asp-action="addToCart" method="post">
                 <input type="hidden" name="productId" value="@Model["ProductId"]" />
+                <input type="hidden" name="quantity" value="1" />
                 <button class="btn btn-cart">Add to Cart</button>
             </form>
 
@@ -75,7 +76,7 @@
             </form>
         
 
-           <form method="get" asp-action="ViewReviewsByProduct" asp-controller="CustomerPage">
+           <form method="get" asp-action="ViewReviewsByProduct" asp-controller="ReviewInput">
                     <input type="hidden" name="productId" value="@Model["ProductId"]" />
                     <button type="submit" class="btn btn-sm btn-info mt-2">View Reviews</button>
             </form>

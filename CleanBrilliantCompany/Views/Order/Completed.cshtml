@@ -11,7 +11,7 @@
     <div class="row mb-4">
         <!-- To Pay -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ViewCart" class="text-decoration-none">
+            <a asp-controller="CartInput" asp-action="viewCart" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-wallet" style="margin-right: 5px;"></i>To Pay</p>
@@ -22,7 +22,7 @@
 
         <!-- To Ship -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ToShip" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="toShip" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-box" style="margin-right: 5px;"></i>To Ship</p>
@@ -33,7 +33,7 @@
 
         <!-- To Receive -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ToReceive" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="toReceive" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-truck" style="margin-right: 5px;"></i>To Receive</p>
@@ -44,7 +44,7 @@
         
          <!-- Completed -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="Completed" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="completed" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-check" style="margin-right: 5px;"></i>Completed</p>
@@ -58,7 +58,7 @@
     <div class="row mb-4">
         <!-- Completed -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="Completed" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="completed" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-check-circle" style="margin-right: 5px; color: green;"></i>Completed</p>
@@ -69,7 +69,7 @@
 
         <!-- Refund -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="Refund" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="refund" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-undo" style="margin-right: 5px; color: orange;"></i>Refund</p>
@@ -80,7 +80,7 @@
 
         <!-- Cancelled -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="Cancelled" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="cancelled" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-times-circle" style="margin-right: 5px; color: red;"></i>Cancelled</p>
@@ -140,7 +140,7 @@
                                 }
                                 @if (!isReviewed)
                                 {
-                                    <form method="get" asp-action="RateProduct" asp-controller="CustomerPage">
+                                    <form method="get" asp-action="RateProduct" asp-controller="ReviewInput">
                                         <input type="hidden" name="productId" value="@product.Key" />
                                         <button type="submit" class="btn btn-outline-primary btn-sm">Rate</button>
                                     </form>
@@ -148,7 +148,7 @@
                                 else
                                 {
                                     <span class="text-success">✔️ Already Reviewed</span>
-                                    <form method="get" asp-action="EditReview" asp-controller="CustomerPage">
+                                    <form method="get" asp-action="EditReview" asp-controller="ReviewInput">
                                         <input type="hidden" name="productId" value="@product.Key" />
                                         <button type="submit" class="btn btn-outline-warning btn-sm">Edit Review</button>
                                     </form>
@@ -167,7 +167,7 @@
                 <div class="modal fade" id="refundModal-@order.RetrieveOrderID()" tabindex="-1" aria-labelledby="refundModalLabel-@order.RetrieveOrderID()" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form asp-action="RequestRefund" method="post" enctype="multipart/form-data">
+                            <form asp-asp-controller="OrderInput" asp-action="RequestRefund" method="post" enctype="multipart/form-data">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="refundModalLabel-@order.RetrieveOrderID()">Request Refund for Order ID: @order.RetrieveOrderID()</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

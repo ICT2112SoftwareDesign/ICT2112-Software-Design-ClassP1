@@ -9,6 +9,7 @@ namespace CleanBrilliantCompany.Models
         private string password;
         private string customerAddress;
         private string email;
+        private string emailPreference;
 
         private int getCustomerId()
         {
@@ -60,6 +61,26 @@ namespace CleanBrilliantCompany.Models
             this.customerAddress = address;
         }
 
+        private string getEmailPreference()
+        {
+            return emailPreference;
+        }
+
+        private void setEmailPreference(string value)
+        {
+            this.emailPreference = value;
+        }
+
+        public string getEmailPreferenceRaw()
+        {
+            return emailPreference;
+        }
+
+        public void setEmailPreferenceRaw(string value)
+        {
+            this.emailPreference = value;
+        }
+
         public T getSession<T>(string propertyName)
         {
             switch (propertyName)
@@ -74,6 +95,8 @@ namespace CleanBrilliantCompany.Models
                     return (T)(object)getEmail();
                 case "customerAddress":
                     return (T)(object)getCustomerAddress();
+                case "emailPreference":
+                    return (T)(object)getEmailPreference();
                 default:
                     throw new Exception("Unknown property");
             }
@@ -99,33 +122,13 @@ namespace CleanBrilliantCompany.Models
                 case "customerAddress":
                     setCustomerAddress(value?.ToString()); 
                     break;
+                case "emailPreference":
+                    setEmailPreference(value?.ToString());
+                    break;
                 default:
                     throw new Exception("Unknown property");
             }
-        }
-
-        public bool createCustomer(int customerId, string username, string password, string email)
-        {
-            // Implementation logic here
-            return false;
-        }
-
-        public bool getCustDetailsForOrder(int customerId, string username, string password, string email, string address)
-        {
-            // Implementation logic here
-            return false;
-        }
-
-        public string fetchReviewUsername()
-        {
-            // Implementation logic here
-            return string.Empty;
-        }
-
-        public bool  Address(int customerId, string address)
-        {
-            // Implementation logic here
-            return false;
-        }
+        } 
     }
+    
 }

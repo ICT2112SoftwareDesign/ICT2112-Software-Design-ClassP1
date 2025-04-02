@@ -1,4 +1,4 @@
-namespace CleanBrilliantCompany.Interfaces
+ namespace CleanBrilliantCompany.Interfaces
 {
     public interface ICustomerQueryObserver
     {

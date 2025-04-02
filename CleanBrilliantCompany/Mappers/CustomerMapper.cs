@@ -117,6 +117,23 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
         }
+        public bool customerUsernameExists(string username)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT COUNT(1) FROM dbo.Customer WHERE username = @Username";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
 
         // For session
         public int getIdByEmail(string email)
@@ -161,7 +178,7 @@ namespace CleanBrilliantCompany.Mappers
             {
                 connection.Open();
 
-                string query = "SELECT username, email, password, customerAddress FROM dbo.Customer WHERE customerId = @CustomerId";
+                string query = "SELECT username, email, password, customerAddress, emailPreference FROM dbo.Customer WHERE customerId = @CustomerId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -178,6 +195,7 @@ namespace CleanBrilliantCompany.Mappers
                             customer.setSession("email", reader.GetString(reader.GetOrdinal("email"))); 
                             customer.setSession("password", reader.GetString(reader.GetOrdinal("password"))); 
                             customer.setSession("customerAddress", reader.IsDBNull(reader.GetOrdinal("customerAddress")) ? null : reader.GetString(reader.GetOrdinal("customerAddress")));
+                            customer.setSession("emailPreference", reader.IsDBNull(reader.GetOrdinal("emailPreference")) ? null : reader.GetString(reader.GetOrdinal("emailPreference")));
 
                             return customer;
                         }
@@ -299,6 +317,30 @@ namespace CleanBrilliantCompany.Mappers
             // Implementation logic here
             return false;
         }
+
+        public bool updateEmailPreference(int customerId, string? emailPreference)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                    UPDATE dbo.Customer 
+                    SET emailPreference = @EmailPreference 
+                    WHERE customerId = @CustomerId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", customerId);
+                    command.Parameters.AddWithValue("@EmailPreference", 
+                        string.IsNullOrEmpty(emailPreference) ? (object)DBNull.Value : emailPreference);
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+        }
+
 
     }
 }

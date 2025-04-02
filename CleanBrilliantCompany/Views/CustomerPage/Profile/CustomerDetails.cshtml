@@ -1,3 +1,9 @@
+@{
+    string emailPreference = Context.Session.GetString("emailPreference") ?? "";
+    bool suppressPaid = emailPreference.Contains("paid");
+    bool suppressCancelled = emailPreference.Contains("cancelled");
+    int customerId = int.Parse(Context.Session.GetString("customerId") ?? "0");
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,11 +31,38 @@
         <h3 class="font-weight-bold text-white">Orders/Purchases: </h3>
     </div>
 
+    <div class="row mb-4">
+        <form asp-controller="CustomerInput" asp-action="updatePreferences" method="post" class="mb-4">
+            <h5 class="text-dark">Email Notification Preferences</h5>
+            <p class="text-muted">Check below to receive emails for the events below.</p>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="suppressPaid" id="suppressPaid" value="true"
+                    @(suppressPaid ? "checked" : "") />
+                <label class="form-check-label text-dark" for="suppressPaid">
+                    Receive "Order Created (Paid)" Emails
+                </label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="suppressCancelled" id="suppressCancelled" value="true"
+                    @(suppressCancelled ? "checked" : "") />
+                <label class="form-check-label text-dark" for="suppressCancelled">
+                    Receive "Order Cancelled" Emails
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Preferences</button>
+        </form>
+
+    </div>
+
+
     <!-- Four smaller cards in a row -->
     <div class="row mb-4">
         <!-- To Pay -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ViewCart" class="text-decoration-none">
+            <a asp-controller="CartInput" asp-action="viewCart" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-wallet" style="margin-right: 5px;"></i>To Pay</p>
@@ -40,7 +73,7 @@
 
         <!-- To Ship -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ToShip" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="toShip" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-box" style="margin-right: 5px;"></i>To Ship</p>
@@ -51,7 +84,7 @@
 
         <!-- To Receive -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="ToReceive" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="toReceive" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-truck" style="margin-right: 5px;"></i>To Receive</p>
@@ -62,7 +95,7 @@
 
         <!-- Completed -->
         <div class="col-sm-3 mb-3">
-            <a asp-controller="CustomerPage" asp-action="Completed" class="text-decoration-none">
+            <a asp-controller="OrderInput" asp-action="completed" class="text-decoration-none">
                 <div class="card text-center" style="cursor: pointer;">
                     <div class="card-body">
                         <p class="card-text"><i class="fas fa-check" style="margin-right: 5px;"></i>Completed</p>
@@ -97,7 +130,7 @@
 
                 <!-- Modal Body -->
                 <div class="modal-body">
-                    <form method="post" asp-action="updatePassword">
+                    <form method="post" asp-controller ="CustomerInput" asp-action="updatePassword">
                         <div class="form-group">
                             <label for="newPassword">New Password</label>
                             <input type="password" class="form-control" id="newPassword" name="newPassword" required />
@@ -121,7 +154,7 @@
     <!-- Profile Details inside a card -->
     <div class="card p-4">
         <h4 class="card-title font-weight-bold">Edit Profile Details</h4>
-        <form method="post" asp-action="updateCustomerDetails">
+        <form method="post" asp-controller ="CustomerInput" asp-action="updateCustomerDetails">
             <div class="form-group row">
                 <label for="username" class="col-sm-3 col-form-label">Username</label>
                 <div class="col-sm-6">

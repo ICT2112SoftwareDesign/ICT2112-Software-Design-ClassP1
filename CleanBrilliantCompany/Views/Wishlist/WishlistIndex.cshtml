@@ -43,7 +43,7 @@
                                     </button>
                                 </form>
                                 
-                                <form asp-controller="CustomerPage" asp-action="addToCart" method="post">
+                                <form asp-controller="CartInput" asp-action="addToCart" method="post">
                                     <input type="hidden" name="productId" value="@productId" />
                                     <input type="hidden" name="quantity" value="1" />
                                     <button type="submit" class="btn btn-primary">
