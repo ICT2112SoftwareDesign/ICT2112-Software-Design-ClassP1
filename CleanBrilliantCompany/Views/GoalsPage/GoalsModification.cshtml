@@ -3,23 +3,32 @@
 @{
     ViewData["Title"] = "Modify Goal";
 }
+<body id="page-top">
+    <div id="wrapper" class="d-flex flex-nowrap min-vh-100">
+           @await Html.PartialAsync("_Sidebar")
 
-<h1>Modify Goal</h1>
+            <div class="text-center my-4">
+                <h1>Modify Goal</h1>
+            </div>
+            <div class="d-flex justify-content-center mt-4 gap-3">
+                <form id="modifyGoalForm">
+                    <div class="form-group">
+                        <label for="goalDate">Goal Date:</label>
+                        <input type="month" id="goalDate" name="goalDate" class="form-control" required />
+                    </div>
 
-<form id="modifyGoalForm">
-    <div class="form-group">
-        <label for="goalDate">Goal Date:</label>
-        <input type="month" id="goalDate" name="goalDate" class="form-control" required />
+                    <div class="form-group">
+                        <label for="targetEmission">Target Emission (kg CO2):</label>
+                        <input type="number" id="targetEmission" name="targetEmission" class="form-control" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update Goal</button>
+                </form>
+            </div>
+
+        </div>  
     </div>
-
-    <div class="form-group">
-        <label for="targetEmission">Target Emission (kg CO2):</label>
-        <input type="number" id="targetEmission" name="targetEmission" class="form-control" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update Goal</button>
-</form>
-
+</body>>
 <!-- Notification -->
 <div id="notification" class="alert" style="display:none; margin-top:10px;"></div>
 

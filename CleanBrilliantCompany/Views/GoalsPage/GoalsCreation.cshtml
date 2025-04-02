@@ -4,22 +4,32 @@
     ViewData["Title"] = "Create Goal";
 }
 
-<h2>Create a Goal</h2>
+<body id="page-top">
+    <div id="wrapper" class="d-flex flex-nowrap min-vh-100">
+           @await Html.PartialAsync("_Sidebar")
 
-<form id="goalForm" asp-action="Create" asp-controller="GoalsInput" method="post">
-    <div class="form-group">
-        <label for="TargetEmission">Target Emission (kg CO2):</label>
-        <input type="number" id="TargetEmission" name="TargetEmission" class="form-control" required />
+            <div class="text-center my-4">
+                <h1>Create a Goal</h1>
+            </div>
+            <div class="d-flex justify-content-center mt-4 gap-3">
+                <form id="goalForm" asp-action="Create" asp-controller="GoalsInput" method="post">
+                    <div class="form-group">
+                        <label for="TargetEmission">Target Emission (kg CO2):</label>
+                        <input type="number" id="TargetEmission" name="TargetEmission" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label for="goalDate">Goal Date:</label>
+                        <input type="month" id="goalDate" name="goalDate" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Goal</button>
+                </form>
+           </div>
+
+        </div>  
     </div>
-
-    <div>
-        <label for="goalDate">Goal Date:</label>
-        <input type="month" id="goalDate" name="goalDate" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create Goal</button>
-</form>
-
+</body>>
 <!-- Notification -->
 <div id="notification" class="alert alert-danger" style="display:none;"></div>
 
