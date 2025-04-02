@@ -46,12 +46,31 @@ namespace CleanBrilliantCompany.Controllers
 
             if (reportData == null)
             {
-                return NotFound("No report data available.");
+                // Fallback dummy PDF if no real data is available
+                string dummyHtml = @"
+            Sample Report Preview
+            This is a placeholder preview. Your actual AI-generated report will appear here once generated. 
+            Summarized dashboard insights
+            Explained metrics
+            Download-ready format
+            
+        ";
+
+                byte[] fallbackPdf = _reportGenerator.GeneratePDF(new Report
+                {
+                    ReportName = "Sample Preview",
+                    ReportType = "Placeholder",
+                    ReportDataText = dummyHtml
+                });
+
+                Response.Headers.Add("Content-Disposition", "inline; filename=SampleReportPreview.pdf");
+                return File(fallbackPdf, "application/pdf");
             }
 
             Response.Headers.Add("Content-Disposition", "inline; filename=CustomReport.pdf");
             return File(reportData, "application/pdf");
         }
+
 
         [HttpGet]
         public IActionResult TestDashboards()
