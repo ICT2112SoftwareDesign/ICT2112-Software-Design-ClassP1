@@ -1,172 +1,186 @@
 @{
-    ViewData["Title"] = "CostDashboard";
-    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+  ViewData["Title"] = "CostDashboard";
+  Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
 @* <style>
 html body .red-test { color: red !important; }
 </style> *@
-           <!-- Begin Page Content -->
+<!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800 red-test">Cost Dashboard - @Model.Name</h1>
-        <a href="#" id="generateDashboardBtn" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-sync-alt fa-sm text-white-50"></i> Refresh Dashboard
-        </a>
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800 red-test">Cost Dashboard - @Model.Name</h1>
+    <div class="d-flex gap-2">
+      <a href="#" id="generateDashboardBtn" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fas fa-sync-alt fa-sm text-white-50"></i> Refresh Dashboard
+      </a>
+      <form asp-controller="Report" asp-action="PreviewReport" method="get">
+        <input type="hidden" name="selectedDashboards" value="Cost" />
+        <button type="submit" class="btn btn-sm btn-secondary shadow-sm">
+          <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+          </button>
+      </form>
     </div>
-    <div id="dashboardAlert" class="alert alert-info mt-2" style="display:none;"></div>
 
-    <!-- NEW MAIN CONTENT: Cost Dashboard -->
-    <div class="container-fluid">
-        <h2></h2>
-        <p>Generated Date: @Model.GeneratedDate.ToShortDateString()   |   Validity Date: @Model.EndDate.ToShortDateString()</p>
-        <!-- Charts Section -->
+  </div>
+  <div id="dashboardAlert" class="alert alert-info mt-2" style="display:none;"></div>
+
+  <!-- NEW MAIN CONTENT: Cost Dashboard -->
+  <div class="container-fluid">
+    <h2></h2>
+    <p>Generated Date: @Model.GeneratedDate.ToShortDateString()   |   Validity Date: @Model.EndDate.ToShortDateString()
+    </p>
+    <!-- Charts Section -->
     <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h2 class="h4 mb-2 text-gray-800">Supplier Makeup</h2>
-                    <canvas id="supplierChart"></canvas>
-                </div>
-            </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="h4 mb-2 text-gray-800">Supplier Makeup</h2>
+            <canvas id="supplierChart"></canvas>
+          </div>
         </div>
-        <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-body d-flex flex-column">
-                    <h2 class="h4 mb-2 text-gray-800">Avg Batch Price per Manufacturer</h2>
-                    <div class="flex-grow-1">
-                        <canvas id="avgBatchPriceChart"></canvas>
-                    </div>
-                </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body d-flex flex-column">
+            <h2 class="h4 mb-2 text-gray-800">Avg Batch Price per Manufacturer</h2>
+            <div class="flex-grow-1">
+              <canvas id="avgBatchPriceChart"></canvas>
             </div>
+          </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-column">
-                    <h2 class="h4 mb-2 text-gray-800">Supplier & Batch Cost Overview</h2>
-                    <div class="flex-grow-1">
-                        <canvas id="overviewChart"></canvas>
-                    </div>
-                </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body d-flex flex-column">
+            <h2 class="h4 mb-2 text-gray-800">Supplier & Batch Cost Overview</h2>
+            <div class="flex-grow-1">
+              <canvas id="overviewChart"></canvas>
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
 
-        <h3 class="mt-5 mb-3 text-gray-800">🏭 Manufacturer Analytics</h3>
-        <div class="mb-3">
-            <label for="manufacturerSelect" class="form-label">Select a Manufacturer</label>
-            <select id="manufacturerSelect" class="form-select">
-                <option value="">-- Select Manufacturer --</option>
-            </select>
-        </div>
-
-        
-
-        <!-- Placeholder for Manufacturer Details -->
-        <div id="manufacturerDetails" class="mt-3"></div>
-
-        <!-- Placeholder for displaying batches -->
-        <div id="batchResults"></div>
-        <!-- Graph Containers -->
-        <div id="graphContainer" style="display: none;">
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="h5 mb-0 text-gray-800">Cheapest vs Most Expensive Item</h2>
-                            <canvas id="cheapestExpensiveChart" style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="h5 mb-0 text-gray-800">Last 5 Batches Received</h2>
-                            <canvas id="recentBatchesChart" style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h3 class="mt-5 mb-3 text-gray-800">📊 Product Analytics</h3>
-
-        <!-- Product Dropdown -->
-        <div class="mb-3">
-            <label for="productSelect" class="form-label">Select a Product</label>
-            <select id="productSelect" class="form-select">
-                <option value="">-- Select Product --</option>
-            </select>
-        </div>
-
-        <!-- Placeholder for Product Details -->
-        <div id="productDetails" class="mt-3"></div>
-
-        <!-- Placeholder for displaying product batches -->
-        <div id="productBatchResults"></div>
-
-        <!-- Graph Containers -->
-        <div id="productGraphContainer" style="display: none;">
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="h5 mb-0 text-gray-800">Cheapest vs Most Expensive Batch</h2>
-                            <canvas id="cheapestExpensiveProductChart" style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
-                        </div>
-                    </div>
-                </div>
-                  <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="h5 mb-0 text-gray-800">Recent Batch Transactions</h2>
-                            <canvas id="recentBatchesProductChart" style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Alerts & Notifications Card -->
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <h2 class="h3 mt-3 mb-4 text-gray-800">🔔 Alerts & Notifications</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <div id="alertsContainer" class="mt-2"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+    <h3 class="mt-5 mb-3 text-gray-800">🏭 Manufacturer Analytics</h3>
+    <div class="mb-3">
+      <label for="manufacturerSelect" class="form-label">Select a Manufacturer</label>
+      <select id="manufacturerSelect" class="form-select">
+        <option value="">-- Select Manufacturer --</option>
+      </select>
     </div>
-</div>>
-    <!-- END NEW MAIN CONTENT -->
 
 
-    <!-- jQuery, Bootstrap, and SB Admin 2 scripts -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="js/sb-admin-2.min.js"></script>
 
-    <!-- Chart.js and Bootstrap 5 scripts for Cost Dashboard -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Placeholder for Manufacturer Details -->
+    <div id="manufacturerDetails" class="mt-3"></div>
+
+    <!-- Placeholder for displaying batches -->
+    <div id="batchResults"></div>
+    <!-- Graph Containers -->
+    <div id="graphContainer" style="display: none;">
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5 mb-0 text-gray-800">Cheapest vs Most Expensive Item</h2>
+              <canvas id="cheapestExpensiveChart"
+                style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5 mb-0 text-gray-800">Last 5 Batches Received</h2>
+              <canvas id="recentBatchesChart"
+                style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="mt-5 mb-3 text-gray-800">📊 Product Analytics</h3>
+
+    <!-- Product Dropdown -->
+    <div class="mb-3">
+      <label for="productSelect" class="form-label">Select a Product</label>
+      <select id="productSelect" class="form-select">
+        <option value="">-- Select Product --</option>
+      </select>
+    </div>
+
+    <!-- Placeholder for Product Details -->
+    <div id="productDetails" class="mt-3"></div>
+
+    <!-- Placeholder for displaying product batches -->
+    <div id="productBatchResults"></div>
+
+    <!-- Graph Containers -->
+    <div id="productGraphContainer" style="display: none;">
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5 mb-0 text-gray-800">Cheapest vs Most Expensive Batch</h2>
+              <canvas id="cheapestExpensiveProductChart"
+                style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5 mb-0 text-gray-800">Recent Batch Transactions</h2>
+              <canvas id="recentBatchesProductChart"
+                style="display: block; box-sizing: border-box; max-height: 25vh; width: 100%;"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts & Notifications Card -->
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <h2 class="h3 mt-3 mb-4 text-gray-800">🔔 Alerts & Notifications</h2>
+        <div class="card">
+          <div class="card-body">
+            <div id="alertsContainer" class="mt-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+<!-- END NEW MAIN CONTENT -->
+
+
+<!-- jQuery, Bootstrap, and SB Admin 2 scripts -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="js/sb-admin-2.min.js"></script>
+
+<!-- Chart.js and Bootstrap 5 scripts for Cost Dashboard -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <script>
-// User Interactions
-document.getElementById("generateDashboardBtn").addEventListener("click", () => {
+  // User Interactions
+  document.getElementById("generateDashboardBtn").addEventListener("click", () => {
     fetch("/CostPage/GenerateDashboard", {
-        method: "POST"
+      method: "POST"
     })
-    .then(res => res.json())
-    .then(data => {
+      .then(res => res.json())
+      .then(data => {
         const alertBox = document.getElementById("dashboardAlert");
         alertBox.style.display = "block";
         alertBox.textContent = data.message;
@@ -174,121 +188,121 @@ document.getElementById("generateDashboardBtn").addEventListener("click", () => 
         console.log("[DEBUG] Dashboard response:", data.message);
 
         if (data.message.includes("Dashboard has been created")) {
-            setTimeout(() => location.reload(), 5000);
+          setTimeout(() => location.reload(), 5000);
         }
-    })
-    .catch(err => {
+      })
+      .catch(err => {
         console.error("Error generating dashboard:", err);
         alert("Something went wrong.");
-    });
-});
-
-(function() {
-  // Global chart instances to avoid duplicates
-  let recentProductBatchesChartInstance = null;
-  let recentBatchesChartInstance = null;
-
-  // Run when DOM is fully loaded
-  document.addEventListener("DOMContentLoaded", () => {
-    initProductDropdown();
-    initManufacturerDropdown();
-    fetchAvgBatchPriceChart();
-    fetchOverviewChart();
-    @* fetchCostVisualization(); *@
-    fetchSupplierComparison();
-    fetchAlerts();
-
-    // Set up event listeners
-    document.getElementById("productSelect").addEventListener("change", onProductChange);
-    document.getElementById("manufacturerSelect").addEventListener("change", onManufacturerChange);
+      });
   });
 
-  /* ---------------------- Product Functions ---------------------- */
+  (function () {
+    // Global chart instances to avoid duplicates
+    let recentProductBatchesChartInstance = null;
+    let recentBatchesChartInstance = null;
 
-  function initProductDropdown() {
-    fetch("/CostPage/GetAllProducts")
-      .then(res => res.json())
-      .then(data => {
-        const select = document.getElementById("productSelect");
-        select.innerHTML = `<option value="">-- Select Product --</option>`;
-        data.forEach(productId => {
-          const option = document.createElement("option");
-          option.value = productId;
-          option.textContent = `Product ${productId}`;
-          select.appendChild(option);
-        });
-        console.log("[DEBUG] Product dropdown populated:", data);
-      })
-      .catch(error => console.error("Error fetching products:", error));
-  }
+    // Run when DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", () => {
+      initProductDropdown();
+      initManufacturerDropdown();
+      fetchAvgBatchPriceChart();
+      fetchOverviewChart();
+      @* fetchCostVisualization(); *@
+        fetchSupplierComparison();
+      fetchAlerts();
 
-  function onProductChange(event) {
-    const productId = event.target.value;
-    const graphContainer = document.getElementById("productGraphContainer");
+      // Set up event listeners
+      document.getElementById("productSelect").addEventListener("change", onProductChange);
+      document.getElementById("manufacturerSelect").addEventListener("change", onManufacturerChange);
+    });
 
-    if (!productId) {
-      console.log("[DEBUG] No product selected.");
-      document.getElementById("productDetails").innerHTML = "";
-      document.getElementById("productBatchResults").innerHTML = "";
-      graphContainer.style.display = "none";
-      return;
+    /* ---------------------- Product Functions ---------------------- */
+
+    function initProductDropdown() {
+      fetch("/CostPage/GetAllProducts")
+        .then(res => res.json())
+        .then(data => {
+          const select = document.getElementById("productSelect");
+          select.innerHTML = `<option value="">-- Select Product --</option>`;
+          data.forEach(productId => {
+            const option = document.createElement("option");
+            option.value = productId;
+            option.textContent = `Product ${productId}`;
+            select.appendChild(option);
+          });
+          console.log("[DEBUG] Product dropdown populated:", data);
+        })
+        .catch(error => console.error("Error fetching products:", error));
     }
 
-    graphContainer.style.display = "block";
-    console.log(`[DEBUG] Fetching details for Product ID: ${productId}`);
-    fetchProductBatches(productId);
-    fetchRecentProductBatches(productId);
-    fetchCheapestExpensiveProduct(productId);
-    console.log("[DEBUG] Calling fetchProductAlerts for Product ID:", productId);
-    fetchProductAlerts(productId);
-  }
+    function onProductChange(event) {
+      const productId = event.target.value;
+      const graphContainer = document.getElementById("productGraphContainer");
+
+      if (!productId) {
+        console.log("[DEBUG] No product selected.");
+        document.getElementById("productDetails").innerHTML = "";
+        document.getElementById("productBatchResults").innerHTML = "";
+        graphContainer.style.display = "none";
+        return;
+      }
+
+      graphContainer.style.display = "block";
+      console.log(`[DEBUG] Fetching details for Product ID: ${productId}`);
+      fetchProductBatches(productId);
+      fetchRecentProductBatches(productId);
+      fetchCheapestExpensiveProduct(productId);
+      console.log("[DEBUG] Calling fetchProductAlerts for Product ID:", productId);
+      fetchProductAlerts(productId);
+    }
 
     function fetchProductAlerts(productId) {
-        if (!productId) {
-            console.log("[DEBUG] No product selected for alerts.");
-            document.getElementById("alertsContainer").innerHTML = "";  // ✅ Clear alerts
-            return;
-        }
+      if (!productId) {
+        console.log("[DEBUG] No product selected for alerts.");
+        document.getElementById("alertsContainer").innerHTML = "";  // ✅ Clear alerts
+        return;
+      }
 
-        console.log(`[DEBUG] Fetching product alerts for Product ID: ${productId}`);
+      console.log(`[DEBUG] Fetching product alerts for Product ID: ${productId}`);
 
-        fetch(`/CostPage/GetProductAlerts?productId=${productId}`)
+      fetch(`/CostPage/GetProductAlerts?productId=${productId}`)
         .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
+          if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
         })
         .then(data => {
-            console.log("[DEBUG] Raw Response Data:", data);
-            
-            // ✅ Ensure data is structured correctly
-            const alerts = data?.alerts || [];
-            console.log("[DEBUG] Extracted Alerts:", alerts);
+          console.log("[DEBUG] Raw Response Data:", data);
 
-            @* displayProductAlerts(alerts); *@
+          // ✅ Ensure data is structured correctly
+          const alerts = data?.alerts || [];
+          console.log("[DEBUG] Extracted Alerts:", alerts);
+
+          @* displayProductAlerts(alerts); *@
         })
-    .catch(error => console.error("Error fetching product alerts:", error));
-  }
-  
+        .catch(error => console.error("Error fetching product alerts:", error));
+    }
 
- 
 
-  function fetchProductBatches(productId) {
-    fetch(`/CostPage/GetBatchesByProduct?productId=${productId}`)
-      .then(res => res.json())
-      .then(batches => {
-        console.log("[DEBUG] Batches received:", batches);
-        if (!batches || batches.length === 0) {
-          document.getElementById("productDetails").innerHTML = "<p>No product details available.</p>";
-          return;
-        }
-        renderProductDetails(batches);
-      })
-      .catch(error => console.error("Error fetching product batches:", error));
-  }
 
-  @* function renderProductDetails(batches) {
+
+    function fetchProductBatches(productId) {
+      fetch(`/CostPage/GetBatchesByProduct?productId=${productId}`)
+        .then(res => res.json())
+        .then(batches => {
+          console.log("[DEBUG] Batches received:", batches);
+          if (!batches || batches.length === 0) {
+            document.getElementById("productDetails").innerHTML = "<p>No product details available.</p>";
+            return;
+          }
+          renderProductDetails(batches);
+        })
+        .catch(error => console.error("Error fetching product batches:", error));
+    }
+
+    @* function renderProductDetails(batches) {
     const container = document.getElementById("productDetails");
     container.innerHTML = `
       <div class="card">
@@ -329,16 +343,16 @@ document.getElementById("generateDashboardBtn").addEventListener("click", () => 
     `;
 } *@
 
-function renderProductDetails(batches) {
-    fetch(`/CostPage/GetProductAlerts?productId=${batches[0].productId}`)
-        .then(res => res.json())
-        .then(data => {
+      function renderProductDetails(batches) {
+        fetch(`/CostPage/GetProductAlerts?productId=${batches[0].productId}`)
+          .then(res => res.json())
+          .then(data => {
             const alerts = data.alerts.reduce((acc, alert) => {
-                const batchCodeMatch = alert.message.match(/Batch (\d+)/);
-                if (batchCodeMatch) {
-                    acc[batchCodeMatch[1]] = alert.message;
-                }
-                return acc;
+              const batchCodeMatch = alert.message.match(/Batch (\d+)/);
+              if (batchCodeMatch) {
+                acc[batchCodeMatch[1]] = alert.message;
+              }
+              return acc;
             }, {});
 
             const container = document.getElementById("productDetails");
@@ -354,13 +368,13 @@ function renderProductDetails(batches) {
                     <h5>Batch Details</h5>
                     <div class="accordion" id="batchAccordion">
                         ${batches.map((batch, index) => {
-                            const costPerUnit = batch.batchQuantity > 0 ? (batch.batchPrice / batch.batchQuantity).toFixed(2) : "N/A";
-                            let alertType = alerts[batch.batchCode]?.includes("Loss") ? "alert-danger" : "alert-warning";
-                            let alertMessage = alerts[batch.batchCode] 
-                                ? `<div class="alert ${alertType} mb-0" role="alert">${alerts[batch.batchCode]}</div>` 
-                                : "";
+              const costPerUnit = batch.batchQuantity > 0 ? (batch.batchPrice / batch.batchQuantity).toFixed(2) : "N/A";
+              let alertType = alerts[batch.batchCode]?.includes("Loss") ? "alert-danger" : "alert-warning";
+              let alertMessage = alerts[batch.batchCode]
+                ? `<div class="alert ${alertType} mb-0" role="alert">${alerts[batch.batchCode]}</div>`
+                : "";
 
-                            return `
+              return `
                                 ${alertMessage} <!-- ✅ Injecting here -->
                                 <div class="accordion-item mb-3">
                                     <h2 class="accordion-header" id="batchHeading-${index}">
@@ -380,179 +394,179 @@ function renderProductDetails(batches) {
                                     </div>
                                 </div>
                             `;
-                        }).join('')}
+            }).join('')}
                     </div>
                 </div>
             `;
-        })
-        .catch(error => console.error("Error fetching product alerts:", error));
-}
-
-
-  function fetchRecentProductBatches(productId) {
-    fetch(`/CostPage/GetRecentBatchesByProduct?productId=${productId}`)
-      .then(res => res.json())
-      .then(data => {
-        console.log("[DEBUG] Calling renderRecentProductBatchesChart...");
-        renderRecentProductBatchesChart(data);
-      })
-      .catch(error => console.error("Error fetching recent batch transactions:", error));
-  }
-
-  function renderRecentProductBatchesChart(data) {
-    console.log("[DEBUG] Received batch data:", data);
-    if (!data || data.length === 0) {
-      console.log("[DEBUG] No recent batch data available.");
-      return;
-    }
-    const canvas = document.getElementById("recentBatchesProductChart");
-    if (!canvas) {
-      console.log("[DEBUG] Canvas element not found!");
-      return;
-    }
-    const ctx = canvas.getContext("2d");
-    if (window.recentProductBatchesChartInstance) {
-      window.recentProductBatchesChartInstance.destroy();
-    }
-    const labels = data.map(batch => `Batch ${batch.batchCode}`);
-    const prices = data.map(batch => batch.batchPrice);
-    window.recentProductBatchesChartInstance = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Batch Price ($)",
-          data: prices,
-          backgroundColor: "rgba(54, 162, 235, 0.6)",
-          borderColor: "rgba(54, 162, 235, 1)",
-          borderWidth: 2,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { 
-            beginAtZero: true,
-            title: { display: true, text: "Batch Price ($)" }
-          },
-          x: { title: { display: true, text: "Recent Batches" } }
-        }
+          })
+          .catch(error => console.error("Error fetching product alerts:", error));
       }
-    });
-  }
 
-  function fetchCheapestExpensiveProduct(productId) {
-    fetch(`/CostPage/GetCheapestAndMostExpensiveByProduct?productId=${productId}`)
-      .then(res => res.json())
-      .then(data => renderCheapestExpensiveProductChart(data))
-      .catch(error => console.error("Error fetching cheapest & most expensive batch:", error));
-  }
 
-  let cheapestExpensiveProductChartInstance = null; // ✅ Global reference
+    function fetchRecentProductBatches(productId) {
+      fetch(`/CostPage/GetRecentBatchesByProduct?productId=${productId}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log("[DEBUG] Calling renderRecentProductBatchesChart...");
+          renderRecentProductBatchesChart(data);
+        })
+        .catch(error => console.error("Error fetching recent batch transactions:", error));
+    }
 
-function renderCheapestExpensiveProductChart(data) {
-    console.log("[DEBUG] Rendering cheapest & most expensive product chart...");
-
-    const canvas = document.getElementById("cheapestExpensiveProductChart");
-    if (!canvas) {
+    function renderRecentProductBatchesChart(data) {
+      console.log("[DEBUG] Received batch data:", data);
+      if (!data || data.length === 0) {
+        console.log("[DEBUG] No recent batch data available.");
+        return;
+      }
+      const canvas = document.getElementById("recentBatchesProductChart");
+      if (!canvas) {
         console.log("[DEBUG] Canvas element not found!");
         return;
+      }
+      const ctx = canvas.getContext("2d");
+      if (window.recentProductBatchesChartInstance) {
+        window.recentProductBatchesChartInstance.destroy();
+      }
+      const labels = data.map(batch => `Batch ${batch.batchCode}`);
+      const prices = data.map(batch => batch.batchPrice);
+      window.recentProductBatchesChartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Batch Price ($)",
+            data: prices,
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: "Batch Price ($)" }
+            },
+            x: { title: { display: true, text: "Recent Batches" } }
+          }
+        }
+      });
     }
 
-    const ctx = canvas.getContext("2d");
+    function fetchCheapestExpensiveProduct(productId) {
+      fetch(`/CostPage/GetCheapestAndMostExpensiveByProduct?productId=${productId}`)
+        .then(res => res.json())
+        .then(data => renderCheapestExpensiveProductChart(data))
+        .catch(error => console.error("Error fetching cheapest & most expensive batch:", error));
+    }
 
-    // ✅ Ensure the previous chart instance is destroyed before creating a new one
-    if (cheapestExpensiveProductChartInstance !== null) {
+    let cheapestExpensiveProductChartInstance = null; // ✅ Global reference
+
+    function renderCheapestExpensiveProductChart(data) {
+      console.log("[DEBUG] Rendering cheapest & most expensive product chart...");
+
+      const canvas = document.getElementById("cheapestExpensiveProductChart");
+      if (!canvas) {
+        console.log("[DEBUG] Canvas element not found!");
+        return;
+      }
+
+      const ctx = canvas.getContext("2d");
+
+      // ✅ Ensure the previous chart instance is destroyed before creating a new one
+      if (cheapestExpensiveProductChartInstance !== null) {
         console.log("[DEBUG] Destroying previous chart instance...");
         cheapestExpensiveProductChartInstance.destroy();
         cheapestExpensiveProductChartInstance = null; // ✅ Reset instance reference
-    }
+      }
 
-    const labels = [
+      const labels = [
         `📉 Cheapest Batch (Code: ${data.cheapestBatch.batchCode})`,
         `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatch.batchCode})`
-    ];
-    const values = [
+      ];
+      const values = [
         data.cheapestBatch?.batchPrice || 0,
         data.mostExpensiveBatch?.batchPrice || 0
-    ];
-    const backgroundColors = [
+      ];
+      const backgroundColors = [
         "rgba(54, 162, 235, 0.6)",
         "rgba(255, 99, 132, 0.6)"
-    ];
+      ];
 
-    // ✅ Create the new chart instance
-    cheapestExpensiveProductChartInstance = new Chart(ctx, {
+      // ✅ Create the new chart instance
+      cheapestExpensiveProductChartInstance = new Chart(ctx, {
         type: "bar",
         data: {
-            labels: labels,
-            datasets: [{
-                label: "Batch Price ($)",
-                data: values,
-                backgroundColor: backgroundColors,
-                borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
-                borderWidth: 1
-            }]
+          labels: labels,
+          datasets: [{
+            label: "Batch Price ($)",
+            data: values,
+            backgroundColor: backgroundColors,
+            borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+            borderWidth: 1
+          }]
         },
         options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
-            }
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
+          }
         }
-    });
+      });
 
-    console.log("[DEBUG] New chart instance created.");
-}
-  
-  /* -------------------- Manufacturer Functions -------------------- */
-
-  function initManufacturerDropdown() {
-    fetch("/CostPage/GetSupplierComparison")
-      .then(res => res.json())
-      .then(data => {
-        const select = document.getElementById("manufacturerSelect");
-        select.innerHTML = `<option value="">-- Select Manufacturer --</option>`;
-        data.forEach(manufacturer => {
-          const option = document.createElement("option");
-          option.value = manufacturer.manufacturerId;
-          option.textContent = manufacturer.manufacturerName;
-          select.appendChild(option);
-        });
-        console.log("[DEBUG] Manufacturer dropdown populated:", data);
-      })
-      .catch(error => console.error("Error fetching manufacturers:", error));
-  }
-
-  function onManufacturerChange(event) {
-    const manufacturerId = event.target.value;
-    const graphContainer = document.getElementById("graphContainer");
-
-    if (!manufacturerId) {
-      console.log("[DEBUG] No manufacturer selected.");
-      document.getElementById("manufacturerDetails").innerHTML = "";
-      document.getElementById("batchResults").innerHTML = "";
-      graphContainer.style.display = "none";
-      return;
+      console.log("[DEBUG] New chart instance created.");
     }
 
-    graphContainer.style.display = "block";
-    console.log(`[DEBUG] Fetching details for Manufacturer ID: ${manufacturerId}`);
-    fetchManufacturerDetails(manufacturerId);
-    fetchManufacturerBatches(manufacturerId);
-    fetchCheapestExpensiveManufacturer(manufacturerId);
-    fetchRecentBatchesManufacturer(manufacturerId);
-  }
+    /* -------------------- Manufacturer Functions -------------------- */
 
-  function fetchManufacturerDetails(manufacturerId) {
-    fetch(`/CostPage/GetManufacturerById?manufacturerId=${manufacturerId}`)
-      .then(res => res.json())
-      .then(manufacturer => {
-        document.getElementById("manufacturerDetails").innerHTML = `
+    function initManufacturerDropdown() {
+      fetch("/CostPage/GetSupplierComparison")
+        .then(res => res.json())
+        .then(data => {
+          const select = document.getElementById("manufacturerSelect");
+          select.innerHTML = `<option value="">-- Select Manufacturer --</option>`;
+          data.forEach(manufacturer => {
+            const option = document.createElement("option");
+            option.value = manufacturer.manufacturerId;
+            option.textContent = manufacturer.manufacturerName;
+            select.appendChild(option);
+          });
+          console.log("[DEBUG] Manufacturer dropdown populated:", data);
+        })
+        .catch(error => console.error("Error fetching manufacturers:", error));
+    }
+
+    function onManufacturerChange(event) {
+      const manufacturerId = event.target.value;
+      const graphContainer = document.getElementById("graphContainer");
+
+      if (!manufacturerId) {
+        console.log("[DEBUG] No manufacturer selected.");
+        document.getElementById("manufacturerDetails").innerHTML = "";
+        document.getElementById("batchResults").innerHTML = "";
+        graphContainer.style.display = "none";
+        return;
+      }
+
+      graphContainer.style.display = "block";
+      console.log(`[DEBUG] Fetching details for Manufacturer ID: ${manufacturerId}`);
+      fetchManufacturerDetails(manufacturerId);
+      fetchManufacturerBatches(manufacturerId);
+      fetchCheapestExpensiveManufacturer(manufacturerId);
+      fetchRecentBatchesManufacturer(manufacturerId);
+    }
+
+    function fetchManufacturerDetails(manufacturerId) {
+      fetch(`/CostPage/GetManufacturerById?manufacturerId=${manufacturerId}`)
+        .then(res => res.json())
+        .then(manufacturer => {
+          document.getElementById("manufacturerDetails").innerHTML = `
           <div class="card">
             <div class="card-body">
               <h5>${manufacturer.companyName}</h5>
@@ -561,24 +575,24 @@ function renderCheapestExpensiveProductChart(data) {
             </div>
           </div>
         `;
-      })
-      .catch(error => console.error("Error fetching manufacturer details:", error));
-  }
-
-  function fetchManufacturerBatches(manufacturerId) {
-    fetch(`/CostPage/GetBatchesByManufacturer?manufacturerId=${manufacturerId}`)
-      .then(res => res.json())
-      .then(batches => renderManufacturerBatchAccordion(batches))
-      .catch(error => console.error("Error fetching batches:", error));
-  }
-
-  function renderManufacturerBatchAccordion(batches) {
-    const container = document.getElementById("batchResults");
-    if (!batches || batches.length === 0) {
-      container.innerHTML = "<p>No batches available for this manufacturer.</p>";
-      return;
+        })
+        .catch(error => console.error("Error fetching manufacturer details:", error));
     }
-    container.innerHTML = `
+
+    function fetchManufacturerBatches(manufacturerId) {
+      fetch(`/CostPage/GetBatchesByManufacturer?manufacturerId=${manufacturerId}`)
+        .then(res => res.json())
+        .then(batches => renderManufacturerBatchAccordion(batches))
+        .catch(error => console.error("Error fetching batches:", error));
+    }
+
+    function renderManufacturerBatchAccordion(batches) {
+      const container = document.getElementById("batchResults");
+      if (!batches || batches.length === 0) {
+        container.innerHTML = "<p>No batches available for this manufacturer.</p>";
+        return;
+      }
+      container.innerHTML = `
       <div class="accordion" id="manufacturerBatchAccordion">
         ${batches.map((batch, index) => `
           <div class="accordion-item">
@@ -601,298 +615,298 @@ function renderCheapestExpensiveProductChart(data) {
         `).join('')}
       </div>
     `;
-  }
+    }
 
-  function fetchCheapestExpensiveManufacturer(manufacturerId) {
-    fetch(`/CostPage/GetCheapestAndMostExpensiveByManufacturer?manufacturerId=${manufacturerId}`)
-      .then(res => res.json())
-      .then(data => renderCheapestExpensiveChart(data))
-      .catch(error => console.error("Error fetching cheapest & most expensive batch:", error));
-  }
+    function fetchCheapestExpensiveManufacturer(manufacturerId) {
+      fetch(`/CostPage/GetCheapestAndMostExpensiveByManufacturer?manufacturerId=${manufacturerId}`)
+        .then(res => res.json())
+        .then(data => renderCheapestExpensiveChart(data))
+        .catch(error => console.error("Error fetching cheapest & most expensive batch:", error));
+    }
 
-  let cheapestExpensiveChartInstance = null;
+    let cheapestExpensiveChartInstance = null;
 
-  function renderCheapestExpensiveChart(data) {
+    function renderCheapestExpensiveChart(data) {
       console.log("[DEBUG] Rendering cheapest & most expensive product chart...");
 
       const canvas = document.getElementById("cheapestExpensiveChart");
       if (!canvas) {
-          console.log("[DEBUG] Canvas element not found!");
-          return;
+        console.log("[DEBUG] Canvas element not found!");
+        return;
       }
 
       const ctx = canvas.getContext("2d");
 
       // ✅ Ensure the previous chart instance is destroyed before creating a new one
       if (cheapestExpensiveChartInstance !== null) {
-          console.log("[DEBUG] Destroying previous chart instance...");
-          cheapestExpensiveChartInstance.destroy();
-          cheapestExpensiveChartInstance = null;
+        console.log("[DEBUG] Destroying previous chart instance...");
+        cheapestExpensiveChartInstance.destroy();
+        cheapestExpensiveChartInstance = null;
       }
 
       const labels = [
-          `📉 Cheapest Batch (Code: ${data.cheapestBatchCode})`,
-          `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatchCode})`
+        `📉 Cheapest Batch (Code: ${data.cheapestBatchCode})`,
+        `📈 Most Expensive Batch (Code: ${data.mostExpensiveBatchCode})`
       ];
       const values = [
-          data.cheapestBatchPrice || 0,
-          data.mostExpensiveBatchPrice || 0
+        data.cheapestBatchPrice || 0,
+        data.mostExpensiveBatchPrice || 0
       ];
       const backgroundColors = [
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 99, 132, 0.6)"
+        "rgba(54, 162, 235, 0.6)",
+        "rgba(255, 99, 132, 0.6)"
       ];
 
       cheapestExpensiveChartInstance = new Chart(ctx, {
-          type: "bar",
-          data: {
-              labels: labels,
-              datasets: [{
-                  label: "Batch Price ($)",
-                  data: values,
-                  backgroundColor: backgroundColors,
-                  borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
-                  borderWidth: 1
-              }]
-          },
-          options: {
-              indexAxis: 'y',
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                  x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
-              }
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Batch Price ($)",
+            data: values,
+            backgroundColor: backgroundColors,
+            borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { beginAtZero: true, title: { display: true, text: "Price ($)" } }
           }
+        }
       });
 
       console.log("[DEBUG] New chart instance created.");
-  }
-
-  function fetchRecentBatchesManufacturer(manufacturerId) {
-    fetch(`/CostPage/GetRecentBatchesByManufacturer?manufacturerId=${manufacturerId}`)
-      .then(res => res.json())
-      .then(data => renderRecentBatchesChart(data))
-      .catch(error => console.error("Error fetching recent batches:", error));
-  }
-
-  function renderRecentBatchesChart(data) {
-    const ctx = document.getElementById("recentBatchesChart").getContext("2d");
-    if (recentBatchesChartInstance) {
-      recentBatchesChartInstance.destroy();
     }
-    const labels = data.map(batch => `Batch ${batch.batchCode}`);
-    const prices = data.map(batch => batch.batchPrice);
-    recentBatchesChartInstance = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Batch Price ($)",
-          data: prices,
-          backgroundColor: "rgba(255, 206, 86, 0.6)",
-          borderColor: "rgba(255, 206, 86, 1)",
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { 
-            beginAtZero: true,
-            title: { display: true, text: "Batch Price ($)" }
-          },
-          x: { title: { display: true, text: "Recent Batches" } }
-        }
+
+    function fetchRecentBatchesManufacturer(manufacturerId) {
+      fetch(`/CostPage/GetRecentBatchesByManufacturer?manufacturerId=${manufacturerId}`)
+        .then(res => res.json())
+        .then(data => renderRecentBatchesChart(data))
+        .catch(error => console.error("Error fetching recent batches:", error));
+    }
+
+    function renderRecentBatchesChart(data) {
+      const ctx = document.getElementById("recentBatchesChart").getContext("2d");
+      if (recentBatchesChartInstance) {
+        recentBatchesChartInstance.destroy();
       }
-    });
-  }
-
-  /* -------------------- Other Charts & Alerts -------------------- */
-
-  function fetchAvgBatchPriceChart() {
-    fetch("/CostPage/GetAvgBatchPriceByManufacturer")
-      .then(res => res.json())
-      .then(data => renderAvgBatchPriceChart(data))
-      .catch(error => console.error("Error fetching Avg Batch Price:", error));
-  }
-
-  function renderAvgBatchPriceChart(data) {
-    const ctx = document.getElementById("avgBatchPriceChart").getContext("2d");
-    const labels = data.map(item => item.manufacturerName);
-    const avgPrices = data.map(item => item.avgBatchCost);
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Avg Batch Price ($)",
-          data: avgPrices,
-          backgroundColor: "rgba(255, 159, 64, 0.6)",
-          borderColor: "rgba(255, 159, 64, 1)",
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { tooltip: { enabled: true } },
-        scales: { 
-          y: { beginAtZero: true, title: { display: true, text: "Average Batch Price ($)" } },
-          x: { display: false }
+      const labels = data.map(batch => `Batch ${batch.batchCode}`);
+      const prices = data.map(batch => batch.batchPrice);
+      recentBatchesChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Batch Price ($)",
+            data: prices,
+            backgroundColor: "rgba(255, 206, 86, 0.6)",
+            borderColor: "rgba(255, 206, 86, 1)",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: "Batch Price ($)" }
+            },
+            x: { title: { display: true, text: "Recent Batches" } }
+          }
         }
-      }
-    });
-  }
+      });
+    }
 
-  function fetchOverviewChart() {
-    fetch("/CostPage/GetCheapestAndMostExpensiveOverview")
-      .then(res => res.json())
-      .then(data => renderOverviewChart(data))
-      .catch(error => console.error("Error fetching supplier & batch overview:", error));
-  }
+    /* -------------------- Other Charts & Alerts -------------------- */
 
- function renderOverviewChart(data) {
-   const ctx = document.getElementById("overviewChart").getContext("2d");
-   const labels = [
-     `💰 Cheapest Supplier (${data.cheapestManufacturer?.manufacturerName})`,
-     `💲 Most Expensive Supplier (${data.mostExpensiveManufacturer?.manufacturerName})`,
-     `📦 Cheapest Batch (Code: ${data.cheapestBatch?.batchCode})`,
-     `🚀 Most Expensive Batch (Code: ${data.mostExpensiveBatch?.batchCode})`
-   ];
-   const values = [
-     data.cheapestManufacturer?.avgBatchCost || 0,
-     data.mostExpensiveManufacturer?.avgBatchCost || 0,
-     data.cheapestBatch?.batchPrice || 0,
-     data.mostExpensiveBatch?.batchPrice || 0
-   ];
-   const backgroundColors = [
-     "rgba(75, 192, 192, 0.6)",
-     "rgba(255, 99, 132, 0.6)",
-     "rgba(54, 162, 235, 0.6)",
-     "rgba(255, 206, 86, 0.6)"
-   ];
-   new Chart(ctx, {
-     type: "bar",
-     data: {
-       labels: labels,
-       datasets: [{
-         label: "Cost ($)",
-         data: values,
-         backgroundColor: backgroundColors,
-         borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
-         borderWidth: 1
-       }]
-     },
-     options: {
-       indexAxis: 'y',
-       responsive: true,
-       maintainAspectRatio: false,
-       scales: { x: { beginAtZero: true, title: { display: true, text: "Price ($)" } } },
-       plugins: { tooltip: { enabled: true } }
-     }
-   });
- }
+    function fetchAvgBatchPriceChart() {
+      fetch("/CostPage/GetAvgBatchPriceByManufacturer")
+        .then(res => res.json())
+        .then(data => renderAvgBatchPriceChart(data))
+        .catch(error => console.error("Error fetching Avg Batch Price:", error));
+    }
 
-  function fetchCostVisualization() {
-    fetch("/CostPage/GetCostVisualization")
-      .then(res => res.json())
-      .then(data => renderCostChart(data))
-      .catch(error => console.error("Error fetching Cost Visualization:", error));
-  }
-
-  function renderCostChart(data) {
-    const ctx = document.getElementById("costChart").getContext("2d");
-    const labels = data.map(item => `Batch ${item.batchCode}`);
-    const prices = data.map(item => item.batchPrice);
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Batch Prices",
-          data: prices,
-          backgroundColor: "rgba(54, 162, 235, 0.6)",
-          borderColor: "rgba(54, 162, 235, 1)",
-          borderWidth: 1
-        }]
-      },
-      options: { responsive: true, scales: { y: { beginAtZero: true } } }
-    });
-  }
-
-  function fetchSupplierComparison() {
-    fetch("/CostPage/GetSupplierComparison")
-      .then(res => res.json())
-      .then(data => renderSupplierChart(data))
-      .catch(error => console.error("Error fetching Supplier Comparison:", error));
-  }
-
-  function generateHighlightColors(count) {
-    const highlightColors = [
-      "rgba(255, 159, 64, 0.6)",
-      "rgba(255, 99, 132, 0.6)",
-      "rgba(54, 162, 235, 0.6)",
-      "rgba(255, 206, 86, 0.6)",
-      "rgba(75, 192, 192, 0.6)",
-      "rgba(153, 102, 255, 0.6)",
-      "rgba(255, 153, 102, 0.6)",
-      "rgba(102, 255, 153, 0.6)",
-      "rgba(102, 204, 255, 0.6)",
-      "rgba(204, 102, 255, 0.6)"
-    ];
-    return Array.from({ length: count }, (_, i) => highlightColors[i % highlightColors.length]);
-  }
-
-  function renderSupplierChart(data) {
-    const ctx = document.getElementById("supplierChart").getContext("2d");
-    const labels = data.map(item => item.manufacturerName);
-    const batchCounts = data.map(item => item.batchCount);
-    const backgroundColors = generateHighlightColors(labels.length);
-    new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Batches per Supplier",
-          data: batchCounts,
-          backgroundColor: backgroundColors,
-          borderColor: "#ffffff",
-          borderWidth: 1
-        }]
-      },
-      options: { 
-        responsive: true,
-        plugins: { legend: { position: "right" } }
-      }
-    });
-  }
-
-  function fetchAlerts() {
-    fetch("/CostPage/GetAlerts")
-      .then(res => res.json())
-      .then(data => {
-        if (data.alerts && data.alerts.length > 0) {
-          displayAlerts(data.alerts);
+    function renderAvgBatchPriceChart(data) {
+      const ctx = document.getElementById("avgBatchPriceChart").getContext("2d");
+      const labels = data.map(item => item.manufacturerName);
+      const avgPrices = data.map(item => item.avgBatchCost);
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Avg Batch Price ($)",
+            data: avgPrices,
+            backgroundColor: "rgba(255, 159, 64, 0.6)",
+            borderColor: "rgba(255, 159, 64, 1)",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { tooltip: { enabled: true } },
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Average Batch Price ($)" } },
+            x: { display: false }
+          }
         }
-      })
-      .catch(error => console.error("Error fetching Alerts:", error));
-  }
+      });
+    }
 
-  function displayAlerts(alerts) {
-    const alertsContainer = document.getElementById("alertsContainer");
-    alertsContainer.innerHTML = "";
-    alerts.forEach(alert => {
-      const alertDiv = document.createElement("div");
-      alertDiv.className = "alert alert-danger alert-dismissible fade show";
-      alertDiv.setAttribute("role", "alert");
-      alertDiv.innerHTML = `
+    function fetchOverviewChart() {
+      fetch("/CostPage/GetCheapestAndMostExpensiveOverview")
+        .then(res => res.json())
+        .then(data => renderOverviewChart(data))
+        .catch(error => console.error("Error fetching supplier & batch overview:", error));
+    }
+
+    function renderOverviewChart(data) {
+      const ctx = document.getElementById("overviewChart").getContext("2d");
+      const labels = [
+        `💰 Cheapest Supplier (${data.cheapestManufacturer?.manufacturerName})`,
+        `💲 Most Expensive Supplier (${data.mostExpensiveManufacturer?.manufacturerName})`,
+        `📦 Cheapest Batch (Code: ${data.cheapestBatch?.batchCode})`,
+        `🚀 Most Expensive Batch (Code: ${data.mostExpensiveBatch?.batchCode})`
+      ];
+      const values = [
+        data.cheapestManufacturer?.avgBatchCost || 0,
+        data.mostExpensiveManufacturer?.avgBatchCost || 0,
+        data.cheapestBatch?.batchPrice || 0,
+        data.mostExpensiveBatch?.batchPrice || 0
+      ];
+      const backgroundColors = [
+        "rgba(75, 192, 192, 0.6)",
+        "rgba(255, 99, 132, 0.6)",
+        "rgba(54, 162, 235, 0.6)",
+        "rgba(255, 206, 86, 0.6)"
+      ];
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Cost ($)",
+            data: values,
+            backgroundColor: backgroundColors,
+            borderColor: backgroundColors.map(color => color.replace("0.6", "1")),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { x: { beginAtZero: true, title: { display: true, text: "Price ($)" } } },
+          plugins: { tooltip: { enabled: true } }
+        }
+      });
+    }
+
+    function fetchCostVisualization() {
+      fetch("/CostPage/GetCostVisualization")
+        .then(res => res.json())
+        .then(data => renderCostChart(data))
+        .catch(error => console.error("Error fetching Cost Visualization:", error));
+    }
+
+    function renderCostChart(data) {
+      const ctx = document.getElementById("costChart").getContext("2d");
+      const labels = data.map(item => `Batch ${item.batchCode}`);
+      const prices = data.map(item => item.batchPrice);
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Batch Prices",
+            data: prices,
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1
+          }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    function fetchSupplierComparison() {
+      fetch("/CostPage/GetSupplierComparison")
+        .then(res => res.json())
+        .then(data => renderSupplierChart(data))
+        .catch(error => console.error("Error fetching Supplier Comparison:", error));
+    }
+
+    function generateHighlightColors(count) {
+      const highlightColors = [
+        "rgba(255, 159, 64, 0.6)",
+        "rgba(255, 99, 132, 0.6)",
+        "rgba(54, 162, 235, 0.6)",
+        "rgba(255, 206, 86, 0.6)",
+        "rgba(75, 192, 192, 0.6)",
+        "rgba(153, 102, 255, 0.6)",
+        "rgba(255, 153, 102, 0.6)",
+        "rgba(102, 255, 153, 0.6)",
+        "rgba(102, 204, 255, 0.6)",
+        "rgba(204, 102, 255, 0.6)"
+      ];
+      return Array.from({ length: count }, (_, i) => highlightColors[i % highlightColors.length]);
+    }
+
+    function renderSupplierChart(data) {
+      const ctx = document.getElementById("supplierChart").getContext("2d");
+      const labels = data.map(item => item.manufacturerName);
+      const batchCounts = data.map(item => item.batchCount);
+      const backgroundColors = generateHighlightColors(labels.length);
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Batches per Supplier",
+            data: batchCounts,
+            backgroundColor: backgroundColors,
+            borderColor: "#ffffff",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: "right" } }
+        }
+      });
+    }
+
+    function fetchAlerts() {
+      fetch("/CostPage/GetAlerts")
+        .then(res => res.json())
+        .then(data => {
+          if (data.alerts && data.alerts.length > 0) {
+            displayAlerts(data.alerts);
+          }
+        })
+        .catch(error => console.error("Error fetching Alerts:", error));
+    }
+
+    function displayAlerts(alerts) {
+      const alertsContainer = document.getElementById("alertsContainer");
+      alertsContainer.innerHTML = "";
+      alerts.forEach(alert => {
+        const alertDiv = document.createElement("div");
+        alertDiv.className = "alert alert-danger alert-dismissible fade show";
+        alertDiv.setAttribute("role", "alert");
+        alertDiv.innerHTML = `
         <strong>⚠ Note:</strong> ${alert.message} <br>
         <small>Generated on ${new Date(alert.timestamp).toLocaleString()}</small>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       `;
-      alertsContainer.appendChild(alertDiv);
-    });
-  }
-})();
+        alertsContainer.appendChild(alertDiv);
+      });
+    }
+  })();
 </script>
