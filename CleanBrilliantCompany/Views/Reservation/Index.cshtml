@@ -43,8 +43,8 @@
         </div>
     </div>
 
-    <table class="table">
-        <thead>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
             <tr>
                 <th>Reservation ID</th>
                 <th>Product ID</th>
@@ -53,6 +53,7 @@
                 <th>Reservation Purpose</th>
                 <th>Reserved Quantity</th>
                 <th>StaffId</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -66,36 +67,30 @@
                     <td>@reservations["ReservationPurpose"]</td>
                     <td>@reservations["ReservedQuantity"]</td>
                     <td>@reservations["StaffId"]</td>
-                    <td>
+                    <td class="d-flex">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateReservationModal"
-                                data-reservation-id="@reservations["ReservationId"]">
+                                data-update-reservation-id="@reservations["ReservationId"]">
                             Update
                         </button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        @*<button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#updateItemStatusModalOld" data-updateitemOld-id="@reservations["ReservationId"]">
                             Update Status
                         </button>
-                    </td>
-                    <td>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#updateItemStatusModal" data-updatereservation-id="@reservations["ReservationId"]">
                             Update Reservation
-                        </button>
+                        </button>*@
+                        <form method="post" asp-action="returnReservation">
+                            <input type="hidden" id="reservationId" name="reservationId" value=@reservations["ReservationId"]>
+                            <input type="hidden" id="staffId" name="staffId" value=@reservations["StaffId"]>
+                            <button type="submit" class="btn btn-primary" @(reservations["ReservationPurpose"]?.ToString().Contains("[Returned]") == true ? "disabled" : "")>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
+                                    <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z" />
+                                </svg>
+                                Return Stock
+                            </button>
+                        </form>
                     </td>
-                <td>
-                    <form method="post" asp-action="returnReservation">
-                        <input type="hidden" id="reservationId" name="reservationId" value=@reservations["ReservationId"]>
-                        <input type="hidden" id="staffId" name="staffId" value=@reservations["StaffId"]>
-                        <button type="submit" class="btn btn-primary" @(reservations["ReservationPurpose"]?.ToString().Contains("[Returned]") == true ? "disabled" : "")>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
-                                <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z" />
-                            </svg>
-                            Return Stock
-                        </button>
-                    </form>
-                </td>
                 </tr>
             }
         </tbody>
@@ -158,16 +153,19 @@ q       <button type="button" class="btn btn-primary" data-bs-toggle="modal" dat
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="updateReservationModalLabel">Update Reservation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    @*<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
                 </div>
                 <div class="modal-body">
                     <form method="post" asp-action="updateReservationQuantity">
                         <input type="hidden" id="updateReservationId" name="reservationId">
                         <div class="mb-3">
-                            <label for="salePrice" class="form-label">Sale Price</label>
-                            <input type="text" class="form-control" id="salePrice" name="salePrice" required>
+                            <label for="reservedQuantity" class="form-label">Reserved Quantity</label>
+                            <input type="number" class="form-control" id="reservedQuantity" name="reservedQuantity" required>
                         </div>
-
+                        <div class="mb-3">
+                            <label for="reservationPurpose" class="form-label">Reservation Purpose</label>
+                            <input type="text" class="form-control" id="reservationPurpose" name="reservationPurpose" required>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save Item</button>
@@ -178,69 +176,16 @@ q       <button type="button" class="btn btn-primary" data-bs-toggle="modal" dat
         </div>
     </div>
 
-    @* update item id & status model (to test for iItemUpdate) *@
-    <div class="modal fade" id="updateItemStatusModal" tabindex="-1" aria-labelledby="updateItemStatusModalLabel"
-            aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateItemStatusModalLabel">Update Item Id & Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" asp-action="updateItemStatus">
-                        <input type="hidden" id="updateStatusItemId" name="itemId">
-                        <div class="mb-3">
-                            <label for="reservationId" class="form-label">Reservation Id</label>
-                            <input type="text" class="form-control" id="reservationId" name="reservationId">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="orderId" class="form-label">Order Id</label>
-                            <input type="text" class="form-control" id="orderId" name="orderId">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="orderId" class="form-label">Return Id</label>
-                            <input type="text" class="form-control" id="returnId" name="returnId">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="orderId" class="form-label">Transfer Id</label>
-                            <input type="text" class="form-control" id="transferId" name="transferId">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="itemStatus" class="form-label">Status</label>
-                            <select class="form-control" id="itemStatus" name="status" required>
-                                <option value="Available">Available</option>
-                                <option value="Reserved">Reserved</option>
-                                <option value="Sold">Sold</option>
-                                <option value="Refunded">Refunded</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Reservation</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var updateModal = document.getElementById("updateReservationModal");
 
         updateModal.addEventListener("show.bs.modal", function (event) {
             var button = event.relatedTarget;
-            var reservationId = button.getAttribute("data-reservation-id");
+            var reservationId = button.getAttribute("data-update-reservation-id");
 
-            var hiddenInput = document.getElementById("updateItemId");
-            hiddenInput.value = itemId;
+            var hiddenInput = document.getElementById("updateReservationId");
+            hiddenInput.value = reservationId;
             console.log(hiddenInput.value);
         });
     });
@@ -254,20 +199,6 @@ q       <button type="button" class="btn btn-primary" data-bs-toggle="modal" dat
 
             var hiddenInput = document.getElementById("updateItemId");
             hiddenInput.value = itemId;
-            console.log(hiddenInput.value);
-        });
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        var updateModal = document.getElementById("updateItemStatusModal");
-
-        updateModal.addEventListener("show.bs.modal", function (event) {
-            var button = event.relatedTarget;
-            var itemId = button.getAttribute("data-updateitem-id");
-
-            var hiddenInput = document.getElementById("updateStatusItemId");
-            hiddenInput.value = itemId;
-
             console.log(hiddenInput.value);
         });
     });
