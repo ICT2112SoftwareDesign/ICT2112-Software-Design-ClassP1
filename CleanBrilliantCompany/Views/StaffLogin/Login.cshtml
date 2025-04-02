@@ -62,7 +62,7 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">CBC Staff Portal</h1>
                                     </div>
                                     <form class="user" method="post" asp-controller="StaffLogin" asp-action="AuthenticateStaff">
                                         <div class="form-group">
@@ -98,9 +98,6 @@
                                     <div class="text-center">
                                         <a class="small" asp-controller="BeforeLoginPage" asp-action="Login">Are you a customer? Login here!</a>
                                     </div>
-                                    <div class="text-center">
-                                        <a class="small" asp-action="RegisterCustomer">Create an Account!</a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -112,6 +109,12 @@
         </div>
 
     </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - CleanBrilliantCompany - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
