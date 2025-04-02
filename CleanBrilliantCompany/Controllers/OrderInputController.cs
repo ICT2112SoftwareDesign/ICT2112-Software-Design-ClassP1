@@ -10,7 +10,7 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly OrderManagement _orderManagement;
         private readonly CartManagement _cartManagement;
-        private readonly IShippingAgents _shippingAgents;
+        private readonly IShippingAgent _shippingAgent;
         private readonly ReviewManagement _reviewManagement;
         private readonly CustomerManagement _customerManagement;
         private readonly EmailService _emailService = new EmailService();
@@ -18,7 +18,7 @@ namespace CleanBrilliantCompany.Controllers
         public OrderInputController(
             OrderManagement orderManagement,
             CartManagement cartManagement,
-            IShippingAgents shippingAgents,
+            IShippingAgent shippingAgent,
             ReviewManagement reviewManagement,
             CustomerManagement customerManagement,
             IHttpContextAccessor httpContextAccessor
@@ -26,7 +26,7 @@ namespace CleanBrilliantCompany.Controllers
         {
             _orderManagement = orderManagement;
             _cartManagement = cartManagement;
-            _shippingAgents = shippingAgents;
+            _shippingAgent = shippingAgent;
             _customerManagement = customerManagement;
             _reviewManagement = reviewManagement;
         }
@@ -54,8 +54,8 @@ namespace CleanBrilliantCompany.Controllers
             }
 
             var products = _cartManagement.getCartProductDetails(cart);
-            var serviceTypes = _shippingAgents.getServiceTypes();
-            var shippingMethods = _shippingAgents.getShippingMethods();
+            var serviceTypes = _orderManagement.getServiceTypes();
+            var shippingMethods = _orderManagement.getShippingMethods();
 
             if (!serviceTypes.Any() || !shippingMethods.Any())
             {
@@ -63,19 +63,18 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("GetAllProducts", "CustomerPage");
             }
 
+            var defaultShippingType = shippingMethods.First();
             var defaultServiceType = serviceTypes.First();
-            var shippingAgents = _shippingAgents.getShippingAgentList(Enum.TryParse<Service>(defaultServiceType, out var serviceEnum) ? serviceEnum : Service.OneDay);
+
+            var shippingAgents = _orderManagement.getAvailableShippingAgents(defaultShippingType,defaultServiceType);
 
             if (!shippingAgents.Any())
             {
-                TempData["Error"] = "No shipping agents are available at the moment.";
+                TempData["Error"] = "No shipping agents available for at the moment.";
                 return RedirectToAction("GetAllProducts", "CustomerPage");
             }
-
-            var defaultShippingAgent = shippingAgents.First();
-            var defaultShippingType = shippingMethods.First();
-
             decimal cartTotal = _cartManagement.calculateCartTotal(cart, products);
+
             decimal shippingFee = _orderManagement.calculateShippingFee(defaultServiceType);
 
             ViewBag.Products = products;
@@ -88,7 +87,6 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.ShippingAgents = shippingAgents;
             ViewBag.SelectedServiceType = defaultServiceType;
             ViewBag.SelectedShippingType = defaultShippingType;
-            ViewBag.SelectedShippingAgent = defaultShippingAgent;
             ViewBag.ShippingFee = shippingFee;
             ViewBag.FinalTotal = cartTotal + shippingFee;
 
@@ -137,7 +135,7 @@ namespace CleanBrilliantCompany.Controllers
             var products = _cartManagement.getCartProductDetails(cart);
             decimal cartTotal = cart.Sum(item => Convert.ToDecimal(products[item.Key]["CostPrice"]) * item.Value);
 
-            var shippingAgents = _orderManagement.getAvailableShippingAgents(serviceType);
+            var shippingAgents = _orderManagement.getAvailableShippingAgents(shippingType, serviceType);
             var serviceTypes = _orderManagement.getServiceTypes();
             var shippingMethods = _orderManagement.getShippingMethods();
 
