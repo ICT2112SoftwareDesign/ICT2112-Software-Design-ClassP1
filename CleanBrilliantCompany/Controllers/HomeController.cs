@@ -43,26 +43,6 @@ public class HomeController : Controller
         return View(); // Will look for Views/Home/Dashboards.cshtml
     }
 
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Cards()
-    {
-        return View();
-    }
-
-    public IActionResult Charts()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
