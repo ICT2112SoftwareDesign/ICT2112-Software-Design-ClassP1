@@ -64,7 +64,7 @@
     <p><strong>Validity Duration:</strong> @Model.ValidityDuration</p>
 </div>
 
-@if (Model.Metrics != null && Model.Metrics.Any())
+@if (Model.MetricDetailsList != null && Model.MetricDetailsList.Any())
 {
     <!-- <h3>Metrics:</h3>
                                 <table class="table table-striped">
@@ -78,7 +78,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-    @foreach (var metric in Model.Metrics)
+    @foreach (var metric in Model.MetricDetailsList)
     {
                                                     <tr>
                                                         <td>@metric.ManufacturerId</td>
@@ -102,19 +102,19 @@
             <canvas id="defectChart"></canvas>
         </div>
 
-        <div style="width: 45%; height: 350px; margin-bottom: 60px;">
-                            <h2>Dependency Rate Distribution</h2>
-                            <p>Dependency Rate = Manufacturer Quantity/Total Quantity</p>
-                            <p>Low : <0.05 &nbsp|&nbsp Med: 0.05 &lt 0.2 &nbsp|&nbsp High: >0.2</p>
-                            <canvas id="dependencyRatePieChart"></canvas>
-                        </div>
+        <div style="width: 45%; height: 350px; margin-bottom: 240px;">
+            <h2>Dependency Rate Distribution</h2>
+            <p>Dependency Rate = Manufacturer Quantity/Total Quantity</p>
+            <p>Low : <0.05 &nbsp|&nbsp Med: 0.05 &lt 0.2 &nbsp|&nbsp High: >0.2</p>
+            <canvas id="dependencyRatePieChart"></canvas>
+        </div>
 
-                        <div style="width: 45%; height: 350px; margin-bottom: 60px;">
-                            <h2>Risk Flag Distribution</h2>
-                            <p>Risky = (Defect Rate * Dependency Rate) > 0.1</p>
-                            <p>&nbsp</p>
-                            <canvas id="riskPieChart"></canvas>
-                        </div>
+        <div style="width: 45%; height: 350px; margin-bottom: 240px;">
+            <h2>Risk Flag Distribution</h2>
+            <p>Risky = (Defect Rate * Dependency Rate) > 0.1</p>
+            <p>&nbsp</p>
+            <canvas id="riskPieChart"></canvas>
+        </div>
     </div>
 }
 else
@@ -131,7 +131,7 @@ else
     @{
         <script>
 
-            const metrics = @Html.Raw(Json.Serialize(Model.Metrics));
+            const metrics = @Html.Raw(Json.Serialize(Model.MetricDetailsList));
 
             //Metrics for Delivery Chart
             // Extract the manufacturer IDs and delivery rates from the metrics
