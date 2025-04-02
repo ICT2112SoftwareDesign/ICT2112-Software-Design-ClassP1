@@ -1,0 +1,9 @@
+using CleanBrilliantCompany.DTO;
+
+namespace CleanBrilliantCompany.Interfaces
+{
+    public interface IPredictionStrategy
+    {
+        public List<EmissionPredDTO> retrievePrediction(List<DateTime> days, List<double> data);
+    }
+}

@@ -80,6 +80,13 @@ builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
 builder.Services.AddScoped<IGoals, GoalManagement>();
 
+// Carbon Order Item Analytic Manager
+builder.Services.AddScoped<CarbonOrderItemAnalyticManager>();
+
+// Prediction services
+builder.Services.AddScoped<IPredictionStrategy, PredictionSSA>();
+builder.Services.AddScoped<IPredictionStrategy, PredictionSMA>();
+
 // Alert services
 builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
 builder.Services.AddScoped<IEmissionDataService, EmissionDataService>();
@@ -140,6 +147,11 @@ app.MapControllerRoute(
     pattern: "Goals/GoalsModification",
     defaults: new { controller = "GoalsPage", action = "GoalsModification" }
 );
+
+app.MapControllerRoute(
+    name: "analyticsGraph",
+    pattern: "analytics/graph",
+    defaults: new { controller = "Analytics", action = "DisplayGraph" });
 
 app.MapControllerRoute(
     name: "alerts",
