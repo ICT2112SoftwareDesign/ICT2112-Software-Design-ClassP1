@@ -6,6 +6,8 @@ using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.CalculatorImplementation;
 using CleanBrilliantCompany.Models.Control;
 using Microsoft.EntityFrameworkCore;
+using CleanBrilliantCompany.Services;
+using CleanBrilliantCompany.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +45,7 @@ builder.Services.AddScoped<IItemCarbonFootprintDB, ItemCFMapper>();
 builder.Services.AddScoped<IOrderCarbonFootprintDB, OrderCFMapper>();
 builder.Services.AddScoped<IProductDatabase, ProductMapper>();
 builder.Services.AddScoped<IItemDatabase, ItemMapper>();
-builder.Services.AddScoped<IRoutingService, RoutingAPI>(); 
+builder.Services.AddScoped<IRoutingService, RoutingAPI>();
 
 // Product CF Controls
 builder.Services.AddScoped<IProductCF, ProductCarbonFootprintControl>();
@@ -78,6 +80,13 @@ builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
 builder.Services.AddScoped<IGoals, GoalManagement>();
 
+// Alert services
+builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
+builder.Services.AddScoped<IEmissionDataService, EmissionDataService>();
+builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddHostedService<MonthlyGoalCheckService>();
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -91,6 +100,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles(); // Add this line before app.UseRouting();
 app.UseRouting();
 app.UseAuthorization();
+
+// Map the hub endpoint before controller routes
+app.MapHub<AlertHub>("/alertHub");
 
 app.MapControllerRoute(
     name: "default",
@@ -127,6 +139,12 @@ app.MapControllerRoute(
     name: "goalsModification",
     pattern: "Goals/GoalsModification",
     defaults: new { controller = "GoalsPage", action = "GoalsModification" }
+);
+
+app.MapControllerRoute(
+    name: "alerts",
+    pattern: "alerts",
+    defaults: new { controller = "Alerts", action = "Index" }
 );
 
 app.Run();
