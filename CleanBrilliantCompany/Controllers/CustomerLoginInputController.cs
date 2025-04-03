@@ -28,7 +28,7 @@ namespace CleanBrilliantCompany.Controllers
                 // After user logs in stores customer id in session
                 HttpContext.Session.SetInt32("LoggedInUserId", loggedInCustomerId);
                 
-                return RedirectToAction("GetAllProducts", "CustomerPage");
+                return RedirectToAction("viewProducts", "ProductInput");
             }
             else
             {

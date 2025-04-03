@@ -80,7 +80,7 @@
 <body>
     <h2 style="text-align:center;">Product List</h2>
     <div class="search-container">
-        <form method="get" action="@Url.Action("GetAllProducts", "CustomerPage")">
+        <form method="get" action="@Url.Action("viewProducts", "ProductInput")">
             <input type="text" name="query" id="search-bar" placeholder="Search products by name...">
             <select name="filters" id="category-dropdown">
                 <option value="All">All Categories</option>
@@ -112,7 +112,7 @@
                     <input type="hidden" name="productId" value="@product["ProductId"]" />
                     <button type="submit" class="btn btn-wishlist">Add to Wishlist</button>
                 </form>
-                <a class="nav-link text-dark" asp-controller="CustomerPage" asp-action="ProductDetail" asp-route-productId="@product["ProductId"]">View Details</a>
+                <a class="nav-link text-dark" asp-controller="ProductInput" asp-action="viewProductDetails" asp-route-productId="@product["ProductId"]">View Details</a>
               
                 <div id="details-@product["ProductId"]" class="product-details">
                     <p><strong>Category:</strong> @product["Category"]</p>

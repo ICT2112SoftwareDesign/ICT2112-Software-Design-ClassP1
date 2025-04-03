@@ -65,58 +65,6 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
         }        
 
-        public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
-        {
-            List<Product> products = _productService.getAllProducts();
-
-            // Apply search filter
-            if (!string.IsNullOrEmpty(query))
-            {
-                products = products.Where(p => p.GetProductDetails()["ProductName"].ToString().Contains(query, System.StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-
-            // Apply category filter
-            if (filters != "All")
-            {
-                products = products.Where(p => p.GetProductDetails()["Category"].ToString() == filters).ToList();
-            }
-
-            // Apply sorting
-            products = sortOrder == "asc"
-                ? products.OrderBy(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList()
-                : products.OrderByDescending(p => float.Parse(p.GetProductDetails()["CostPrice"].ToString())).ToList();
-
-            // Convert to a list of dictionaries
-            var productDetails = products.Select(product => product.GetProductDetails()).ToList();
-
-            return View("~/Views/Products/Index.cshtml", productDetails);
-        }
-
-        public List<Product> FilterProducts(List<string> categories)
-        {
-            var allProducts = _productService.getAllProducts();
-            return allProducts.FindAll(p => categories.Contains(p.GetProductDetails()["Category"].ToString()));
-        }
-
-        [HttpGet]
-        public IActionResult ProductDetail(int productId)
-        {
-            var product = _productService.getProductDetails(productId);
-            if (product == null)
-            {
-                TempData["Error"] = "Product not found.";
-                return RedirectToAction("GetAllProducts");
-            }
-
-            var productDetails = product.GetProductDetails();
-
-            var reviews = _reviewManagement.ViewReviewsByProduct(productId);
-
-            ViewBag.ProductReviews = reviews;
-            ViewBag.ProductId = productId;
-            return View("~/Views/Products/ProductDetails.cshtml", productDetails);
-        }
-
         // Support Navigation Methods
         public IActionResult redirectToViewFAQs()
         {
