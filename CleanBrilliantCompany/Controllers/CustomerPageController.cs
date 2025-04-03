@@ -286,33 +286,5 @@ namespace CleanBrilliantCompany.Controllers
 
             return View("~/Views/Review/ProductReviews.cshtml", reviews);
         }*/
-
-        // part of ProductInputController
-        [HttpPost]
-        public IActionResult AddToWishlist(int productId)
-        {
-            // Retrieve customer ID from the session
-            int? customerId = base.getLoggedInCustomerId();
-            if (customerId == null)
-            {
-                TempData["Error"] = "User not logged in.";
-                return RedirectToAction("Login", "BeforeLoginPage");
-            }
-
-
-            // Call the wishlist management service
-            var success = _wishlistManagement.addToWishlist(customerId.Value, productId);
-
-            if (success)
-            {
-                TempData["Success"] = "Product added to wishlist successfully!";
-            }
-            else
-            {
-                TempData["Info"] = "Product is already in your wishlist.";
-            }
-
-            return RedirectToAction("GetAllProducts");
-        }
     }
 }
