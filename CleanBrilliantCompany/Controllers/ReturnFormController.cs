@@ -89,7 +89,7 @@ namespace CleanBrilliantCompany.Controllers
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
 
-            List<Item> items = _returnFormControl.displayAlToReturnItems();
+            List<Item> items = _returnFormControl.displayAllToReturnItems();
 
             foreach (var item in items)
             {
