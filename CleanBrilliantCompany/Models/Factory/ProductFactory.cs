@@ -1,7 +1,8 @@
+using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Mappers;
 namespace CleanBrilliantCompany.Models.Factory
 {
-    public class ProductFactory
+    public abstract class ProductFactory
     {
         private readonly ProductMapper _productMapper;
 
@@ -10,16 +11,8 @@ namespace CleanBrilliantCompany.Models.Factory
             _productMapper = productMapper;
         }
 
-        public int CreateProduct(string productName, string category, float productCost,
-                                int manufacturerId, float weight, int quantity, int volumeOrZero, 
-                                float toxicityPercentage, int carbonFootprint, bool isLiquid)
-        {
-            string productState = isLiquid ? "1" : "0";
-            int volume = isLiquid ? volumeOrZero : 0;
-
-            return _productMapper.insert(productName, category, productCost,
-                                manufacturerId, weight, quantity, volume,
-                                toxicityPercentage, carbonFootprint, productState);
-        }
+        public abstract int CreateProduct(string productName, string category, float productCost,
+                                              int manufacturerId, float weight, int quantity, int volume,
+                                              float toxicityPercentage, int carbonFootprint, bool isLiquid);
     }
 }

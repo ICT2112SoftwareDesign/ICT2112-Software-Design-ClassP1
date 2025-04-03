@@ -12,16 +12,17 @@ namespace CleanBrilliantCompany.Models.Control
         private readonly ProductMapper _productMapper;
         private readonly iReorderRequest _ireorderRequest;
         private readonly Lazy<IItemCreation> _lazyItemCreation;
-        private readonly ProductFactory _productFactory;
+        private readonly ProductFactory _liquidProductFactory;
+        private readonly ProductFactory _solidProductFactory;
 
-        public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, Lazy<IItemCreation> lazyItemCreation, ProductFactory productFactory)
+        public ProductControl(IConfiguration configuration, iReorderRequest ireorderRequest, Lazy<IItemCreation> lazyItemCreation)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _productMapper = new ProductMapper(connectionString);
             _ireorderRequest = ireorderRequest;
             _lazyItemCreation = lazyItemCreation;
-            _productFactory = productFactory;
-
+            _liquidProductFactory = new LiquidProductFactory(_productMapper);
+            _solidProductFactory = new SolidProductFactory(_productMapper);
             Console.WriteLine("Products loaded from database.");
         }
 
@@ -37,27 +38,42 @@ namespace CleanBrilliantCompany.Models.Control
             return  _productMapper.findAllProducts();
         }
 
-        public void createProduct(string productName, string category, float productCost, 
-        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
-        {
-            _productMapper.insert(productName, category, productCost, 
-                                    manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
-        }
+        // public void createProduct(string productName, string category, float productCost, 
+        // int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
+        // {
+        //     _productMapper.insert(productName, category, productCost, 
+        //                             manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
+        // }
 
-        public int CreateSolidProduct(string productName, string category, float productCost,
-        int manufacturerId, float weight, int quantity, float toxicityPercentage, int carbonFootprint)
-        {
-            return _productFactory.CreateProduct(productName, category, productCost,
-                                        manufacturerId, weight, quantity, 0,
-                                        toxicityPercentage, carbonFootprint, isLiquid: false);
-        }
+        // public int CreateSolidProduct(string productName, string category, float productCost,
+        // int manufacturerId, float weight, int quantity, float toxicityPercentage, int carbonFootprint)
+        // {
+        //     return _productFactory.CreateProduct(productName, category, productCost,
+        //                                 manufacturerId, weight, quantity, 0,
+        //                                 toxicityPercentage, carbonFootprint, isLiquid: false);
+        // }
 
-        public int CreateLiquidProduct(string productName, string category, float productCost,
-        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint)
+        // public int CreateLiquidProduct(string productName, string category, float productCost,
+        // int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint)
+        // {
+        //     return _productFactory.CreateProduct(productName, category, productCost,
+        //                                 manufacturerId, weight, quantity, volume,
+        //                                 toxicityPercentage, carbonFootprint, isLiquid: true);
+        // }
+
+        public int createProduct(string productName, string category, float productCost,
+                              int manufacturerId, float weight, int quantity, int volumeOrZero,
+                              float toxicityPercentage, int carbonFootprint, bool isLiquid)
         {
-            return _productFactory.CreateProduct(productName, category, productCost,
-                                        manufacturerId, weight, quantity, volume,
-                                        toxicityPercentage, carbonFootprint, isLiquid: true);
+            // Log the isLiquid value for debugging
+            Console.WriteLine($"[DEBUG] isLiquid: {isLiquid}");
+            ProductFactory productFactory = isLiquid ? _liquidProductFactory : _solidProductFactory;
+
+            int productId = productFactory.CreateProduct(productName, category, productCost, 
+                                                        manufacturerId, weight, quantity, volumeOrZero,
+                                                        toxicityPercentage, carbonFootprint, isLiquid);
+
+            return productId;
         }
 
         public void deleteProduct(int productId)

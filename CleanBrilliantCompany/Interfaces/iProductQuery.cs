@@ -7,8 +7,8 @@ namespace CleanBrilliantCompany.Interfaces
         // Product
         Product getProductDetails(int productId);
         List<Product> getAllProducts();
-        void createProduct(string productName, string category, float productCost, 
-        int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState);
+        // void createProduct(string productName, string category, float productCost, 
+        // int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState);
         void deleteProduct(int productId);
         public bool updateProduct(int productId, string productName, string category, float productCost, 
         int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState);

@@ -89,20 +89,23 @@ namespace CleanBrilliantCompany.Controllers
                     return RedirectToAction("Index");
                 }
 
-                int quantity = 0; // New product, so default quantity is 0
-                int productId;
-                if (isLiquid)
-                {
-                    productId = _productControl.CreateLiquidProduct(productName, productCategory, productCost,
-                                                        manufacturerId, weight, quantity, volume,
-                                                        toxicityPercentage, carbonFootprint);
-                }
-                else
-                {
-                    productId = _productControl.CreateSolidProduct(productName, productCategory, productCost,
-                                                    manufacturerId, weight, quantity,
-                                                    toxicityPercentage, carbonFootprint);
-                }
+                // int quantity = 0; // New product, so default quantity is 0
+                // int productId;
+                // if (isLiquid)
+                // {
+                //     productId = _productControl.CreateLiquidProduct(productName, productCategory, productCost,
+                //                                         manufacturerId, weight, quantity, volume,
+                //                                         toxicityPercentage, carbonFootprint);
+                // }
+                // else
+                // {
+                //     productId = _productControl.CreateSolidProduct(productName, productCategory, productCost,
+                //                                     manufacturerId, weight, quantity,
+                //                                     toxicityPercentage, carbonFootprint);
+                // }
+                int productId = _productControl.createProduct(productName, productCategory, productCost, manufacturerId, 
+                                                          weight, 0, volume, toxicityPercentage, carbonFootprint, isLiquid);
+
 
                 if (productId != -1) // Successful creation
                 {
