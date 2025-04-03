@@ -139,8 +139,8 @@
 
     // Apply the date range filter
     document.getElementById("applyDateRange").addEventListener("click", function() {
-        var startDate = document.getElementById("startDate").value;
-        var endDate = document.getElementById("endDate").value;
+        var startDate = document.getElementById("startDate").value + "-1";
+        var endDate = document.getElementById("endDate").value + "-1";
 
         // Filter the dates and emissions based on the selected range
         var filteredDates = [];
@@ -168,7 +168,6 @@
                 filteredPredictEmission.push(predictionData[i].y);
             }
         }
-        console.log(goalData);
         // Update the chart with the filtered data
         var newGoalData = filteredDates.map((date, index) => ({
             x: date,

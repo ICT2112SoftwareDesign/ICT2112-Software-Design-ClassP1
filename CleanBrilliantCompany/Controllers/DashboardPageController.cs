@@ -397,7 +397,7 @@ namespace CleanBrilliantCompany.Controllers
                 Volume = (int)volume,
                 ToxicityPercentage = toxicityPercentage,
                 CarbonFootprint = 0,
-                ProductState = "Ready"
+                ProductState = "1"
             };
 
             // Add product to the database (or stub)
