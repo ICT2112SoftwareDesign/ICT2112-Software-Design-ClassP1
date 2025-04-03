@@ -3894,25 +3894,31 @@
     ]
   },
   "packageFolders": {
-    "/Users/regine/.nuget/packages/": {}
+    "C:\\Users\\ganxi\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/CleanBrilliantCompany.csproj",
+      "projectUniqueName": "C:\\SIT\\Year 2 Tri 2\\ICT2112 - Software Design\\Project\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "projectName": "CleanBrilliantCompany",
-      "projectPath": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/CleanBrilliantCompany.csproj",
-      "packagesPath": "/Users/regine/.nuget/packages/",
-      "outputPath": "/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/obj/",
+      "projectPath": "C:\\SIT\\Year 2 Tri 2\\ICT2112 - Software Design\\Project\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "packagesPath": "C:\\Users\\ganxi\\.nuget\\packages\\",
+      "outputPath": "C:\\SIT\\Year 2 Tri 2\\ICT2112 - Software Design\\Project\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/Users/regine/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\ganxi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "/usr/local/share/dotnet/library-packs": {},
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3973,7 +3979,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

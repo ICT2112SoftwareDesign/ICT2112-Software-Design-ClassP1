@@ -5,7 +5,6 @@ using CleanBrilliantCompany.Interfaces.StaffAuth;
 using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.StaffAuth;
-using CleanBrilliantCompany.Observers;
 using CleanBrilliantCompany.Interfaces.SupportTicket;
 using CleanBrilliantCompany.Models.SupportTicket;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,73 +24,6 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-// Register the observer first
-builder.Services.AddSingleton<ICustomerQueryObserver, CustomerSystemLogger>();
-builder.Services.AddSingleton<IWishlistQueryObserver, WishlistSystemLogger>();
-
-// Then the mapper (which depends on the observer)
-builder.Services.AddSingleton<ICustomerDatabase>(provider => {
-    var observer = provider.GetRequiredService<ICustomerQueryObserver>();
-    return new CustomerMapper(connectionString, observer);
-});
-
-builder.Services.AddSingleton<IWishlistDatabase>(provider =>
-{
-    var observer = provider.GetRequiredService<IWishlistQueryObserver>();
-    return new WishlistMapper(connectionString, observer);
-});
-
-builder.Services.AddScoped<IEmailService, EmailService>();
-
-builder.Services.AddSingleton<CustomerManagement>();
-
-// 1. Register the Review Observer
-builder.Services.AddSingleton<IReviewQueryObserver, ReviewActivityLogger>(); // You can change to another implementation later
-
-// 2. Register the ReviewDatabase Mapper (depends on IReviewQueryObserver)
-builder.Services.AddSingleton<IReviewDatabase>(provider =>
-{
-    var observer = provider.GetRequiredService<IReviewQueryObserver>();
-    return new ReviewMapper(connectionString, observer);
-});
-
-// Register the Cart Observer (e.g., CartSystemLogger)
-builder.Services.AddSingleton<ICartQueryObserver, CartSystemLogger>();
-
-// Register the CartMapper (depends on ICartQueryObserver)
-builder.Services.AddSingleton<ICartDatabase>(provider =>
-{
-    var observer = provider.GetRequiredService<ICartQueryObserver>();
-    return new CartMapper(connectionString, observer);
-});
-
-// Register the Order Observer (OrderSystemLogger)
-builder.Services.AddSingleton<IOrderQueryObserver, OrderSystemLogger>();
-
-// Register the OrderMapper (depends on IOrderQueryObserver)
-builder.Services.AddSingleton<IOrderDatabase>(provider =>
-{
-    var observer = provider.GetRequiredService<IOrderQueryObserver>();
-    return new OrderMapper(connectionString, observer);
-});
-
-// Finally the management (which depends on the mapper)
-builder.Services.AddTransient<CustomerManagement>();
-builder.Services.AddTransient<SupportManagement>();
-builder.Services.AddTransient<IChatbot, ChatbotService>();
-//builder.Services.AddTransient<ISupportTicket, SupportTicketService>();
-builder.Services.AddScoped<IProduct, ProductManagement>(); 
-builder.Services.AddScoped<IWishlistManagement, WishlistManagement>();
-builder.Services.AddScoped<IOrder, OrderManagement>();
-builder.Services.AddTransient<OrderManagement>();
-builder.Services.AddTransient<CartManagement>();
-builder.Services.AddTransient<ICartManagement, CartManagement>();
-
-
-builder.Services.AddTransient<WishlistManagement>();
-builder.Services.AddTransient<ReviewManagement>();
-
 
 // Team 4 Dependencies
 // Add services to the container.
@@ -138,10 +70,6 @@ builder.Services.AddScoped<OrderFulfilmentManagement>();
 
 //Adding services for Dashboard
 builder.Services.AddScoped<DashboardManagement>();
-
-// Register the OrderFulfilment service (ItemControl as the implementation of IOrderFulfilment)
-builder.Services.AddScoped<IOrderFulfilment, ItemControl>();
-
 
 // This is where I add all the interfaces other users can use
 builder.Services.AddScoped<IStaffAuthentication, StaffAuthentication>();
