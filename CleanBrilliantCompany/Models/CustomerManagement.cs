@@ -5,7 +5,7 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class CustomerManagement
+    public class CustomerManagement : ICustomerSession
     {
         private readonly ICustomerDatabase _customerDatabase;
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -14,12 +15,12 @@ namespace CleanBrilliantCompany.Controllers
 
     public class ApplicationController : ISession
     {
-        private readonly CustomerManagement _customerManagement;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICustomerSession _customerSession;
 
-        public ApplicationController(CustomerManagement customerManagement, IHttpContextAccessor httpContextAccessor)
+        public ApplicationController(ICustomerSession customerSession, IHttpContextAccessor httpContextAccessor)
         {
-            _customerManagement = customerManagement ?? throw new ArgumentNullException(nameof(customerManagement));
+            _customerSession = customerSession ?? throw new ArgumentNullException(nameof(customerSession));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
@@ -36,10 +37,10 @@ namespace CleanBrilliantCompany.Controllers
 
             if (loggedInId != -1)
             {
-                var customerDetails = _customerManagement.getCustomer(loggedInId);
+                var customerDetails = _customerSession.getCustomer(loggedInId);
                 if (customerDetails != null)
                 {
-                    return customerDetails;
+                    return customerDetails; 
                 }
                 else
                 {
