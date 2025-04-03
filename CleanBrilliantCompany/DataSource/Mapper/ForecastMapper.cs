@@ -84,7 +84,7 @@ namespace CleanBrilliantCompany.DataSource.Mapper
         //        return null;
         //    }
         //}
-        public ForecastDashboardDTO toDTO(ForecastDashboard dashboard)
+        private ForecastDashboardDTO toDTO(ForecastDashboard dashboard)
         {
             int dashBoardId = dashboard.GetDashBoardID();
             DateTime startDate = dashboard.GetStartDate();
@@ -93,7 +93,7 @@ namespace CleanBrilliantCompany.DataSource.Mapper
             int validityDuration = dashboard.GetValidityDuration();
             return new ForecastDashboardDTO(dashBoardId, startDate, endDate, generatedDate);
         }
-        public ForecastDashboard toEntity(ForecastDashboardDTO dto, List<ForecastMetrics> metrics)
+        private ForecastDashboard toEntity(ForecastDashboardDTO dto, List<ForecastMetrics> metrics)
         {
             int dashBoardId = dto.DashBoardID;
             DateTime startDate = dto.StartDate;
