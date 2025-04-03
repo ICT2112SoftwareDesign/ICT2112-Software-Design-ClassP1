@@ -13,7 +13,7 @@ namespace CleanBrilliantCompany.Models.Entity
         Transferred,
     }
 
-    public class Item
+    public class Item : ISubject
     {
         // Private fields
         private int ItemId;
