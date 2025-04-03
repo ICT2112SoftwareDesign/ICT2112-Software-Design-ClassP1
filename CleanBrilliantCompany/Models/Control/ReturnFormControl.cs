@@ -30,7 +30,7 @@ namespace CleanBrilliantCompany.Models.Control
 
         }
 
-		public List<Item> displayAllRefundedItems()
+		public List<Item> displayAlToReturnItems()
 		{
 			return _iReturnForm.getToReturnItems().Result;
 
