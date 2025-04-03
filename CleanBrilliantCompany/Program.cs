@@ -191,10 +191,8 @@ builder.Services.AddScoped<ReportRepo, ReportMapper>();
 builder.Services.AddScoped<AgingControl>();
 builder.Services.AddScoped<ManufacturerControl>();
 builder.Services.AddScoped<CostControl>();
-builder.Services.AddScoped<IForecastingFacade, ForecastFacade>();
 builder.Services.AddScoped<DashboardFacade>();
 builder.Services.AddScoped<IDashboardFacade, DashboardFacade>();
-builder.Services.AddScoped<IForecastControl, ForecastControl>();
 Console.WriteLine($"[Debug] OpenAI Key Length: {apiKey?.Length}");
 builder.Services.AddSession();
 

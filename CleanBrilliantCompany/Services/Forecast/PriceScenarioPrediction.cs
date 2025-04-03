@@ -6,50 +6,6 @@ namespace CleanBrilliantCompany.Services.Forecast
 {
     public class PriceScenarioPrediction : IPredictionService
     {
-        //prediction for a all product
-        public List<ForecastMetrics> generateForecastMetric(Dictionary<int, int> aggregatedSales, List<ProductDTO> productList, int adjustmentFactor)
-        {
-            int minSales = aggregatedSales.Values.Min();
-            int maxSales = aggregatedSales.Values.Max();
-            var forecastDictionary = new Dictionary<int, int>();
-
-            foreach(var product in productList)
-            {
-                double normalizedSales;
-                double baseMultiplier;
-                double priceMultiplier;
-                int predictedDemand;
-                int pastSales = aggregatedSales.TryGetValue(product.ID, out int totalSales) ? totalSales : 0;
-                if (adjustmentFactor == 0)
-                {
-                     baseMultiplier = 1.5;
-                    predictedDemand = (int)Math.Round(pastSales * baseMultiplier );
-
-                }
-                else
-                {
-                     normalizedSales = (maxSales == minSales) ? 1 : (pastSales - minSales) / (double)(maxSales - minSales);
-                     baseMultiplier = 0.5 + (normalizedSales * 1); // Scales from 0.5 to 1.5
-                                                                         // Apply inverse price impact multiplier (high price reduces demand)
-                     priceMultiplier = GetPriceImpactMultiplier(pastSales, adjustmentFactor);
-                     predictedDemand = (int)Math.Round(pastSales * baseMultiplier * priceMultiplier);
-                }
-                
-                forecastDictionary[product.ID] = Math.Max(predictedDemand, 0);
-
-
-            }
-            return forecastDictionary.Select(entry =>
-            {
-                var product = productList.FirstOrDefault(p => p.ID == entry.Key);
-                string productName = product != null ? product.Name : "Unknown Product";
-
-                return new PriceScenarioForecast(entry.Key, entry.Value, productName, adjustmentFactor,0);
-            })
-            .Cast<ForecastMetrics>()
-            .ToList();
-            //TODO: Implement this method
-        }
 
         private double GetPriceImpactMultiplier(double normalizedSales, int adjustmentFactor)
         {

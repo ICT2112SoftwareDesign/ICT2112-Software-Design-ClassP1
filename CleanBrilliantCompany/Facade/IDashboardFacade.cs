@@ -8,5 +8,5 @@ public interface IDashboardFacade
     ManufacturerControl GetManufacturerControl();
     CostControl GetCostControl();
     InventoryControl GetInventoryControl();
-    IForecastControl GetForecastControl();
+    IForecastReportDetails GetForecastControl();
 }

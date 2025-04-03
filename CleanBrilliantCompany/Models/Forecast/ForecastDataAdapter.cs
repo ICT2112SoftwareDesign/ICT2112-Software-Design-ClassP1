@@ -10,19 +10,14 @@ namespace CleanBrilliantCompany.Models.Forecast
 {
     public class ForecastDataAdapter: IForecastDataAdapter
     {
-        private readonly TempForecastIProduct _productService;
         private readonly IOrderRange _salesService;
         private readonly IProduct _iProduct;
-        private readonly IItem _iItem;
-        private readonly IBatch _iBatch;
 
-        public ForecastDataAdapter(TempForecastIProduct productService, IOrderRange salesService, IProduct iProduct, IItem iItem, IBatch iBatch)
+        public ForecastDataAdapter(IOrderRange salesService, IProduct iProduct)
         {
-            _productService = productService;
             _salesService = salesService;
             _iProduct = iProduct;
-            _iBatch = iBatch;
-            _iItem = iItem;
+           
         }
 
         //public void GetForecastInputs(DateTime selectedMonth, out List<ProductDTO> products, out Dictionary<int, int> aggregatedSales)

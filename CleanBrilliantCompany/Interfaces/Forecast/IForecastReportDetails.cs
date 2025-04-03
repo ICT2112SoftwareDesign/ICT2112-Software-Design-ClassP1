@@ -2,7 +2,7 @@ using CleanBrilliantCompany.Models.Forecast;
 
 namespace CleanBrilliantCompany.Interfaces.Forecast
 {
-    public interface IForecastControl
+    public interface IForecastReportDetails
     {
         ForecastDashboard GetDashboard();
         string GenerateReport();

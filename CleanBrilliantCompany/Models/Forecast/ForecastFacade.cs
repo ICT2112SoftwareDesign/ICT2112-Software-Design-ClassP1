@@ -7,7 +7,7 @@ using CleanBrilliantCompany.Services.Sorting;
 
 namespace CleanBrilliantCompany.Models.Forecast
 {
-    public class ForecastFacade : IForecastingFacade
+    public class ForecastFacade : IForecastReportDetails
 
     {
         //private readonly IStockPredictionService _stockPredictionService;
@@ -37,11 +37,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             _alertService = alertService;
             _forecastDataAdapter = forecastDataAdapter;
         }
-        public ForecastDashboard getLatestDashboard()
-        {
-            ForecastDashboard dashboard = _forecastRepository.getLatestDashboard();
-            return dashboard;
-        }
+        
         public ForecastDashboard generateDashboard(DateTime selectedMonth, int adjustmentFactor = 0)
         {
 
@@ -153,10 +149,8 @@ namespace CleanBrilliantCompany.Models.Forecast
             return trendData;
         }
 
-        public ForecastDashboard retrieveUpcomingDashboard()
-        {
-            return generateDashboard(DateTime.Now.AddMonths(1), 0);
-        }
+      
+       
 
 
         public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth, int productId, String productName, int priceAdjustment)
@@ -182,67 +176,58 @@ namespace CleanBrilliantCompany.Models.Forecast
             return dashboard.GetMetrics();
         }
 
-        //private List<ForecastMetrics> SortMetrics(List<ForecastMetrics> metrics, String sortType)
-        //{
-        //    IForecastSortingStrategy strategy;
+        public ForecastDashboard GetDashboard()
+        {
+            return generateDashboard(DateTime.Now.AddMonths(1), 0);
 
-        //    switch (sortType)
-        //    {
-        //        case "name":
-        //            strategy = new SortByProductName();
-        //            break;
-        //        case "value":
-        //            strategy = new SortByForecastedStock();
-        //            break;
-        //        default:
-        //            strategy = new SortByProductID(); 
-        //            break;
-        //    }
+        }
+        public string GenerateReport()
+        {
+            var dashboard = GetDashboard();
 
-        //    var sorter = new ForecastMetricSorter(strategy);
-        //    return sorter.Sort(metrics);
-        //}
+            if (dashboard == null || dashboard.GetMetrics().Count == 0)
+            {
+                return "<p>No forecast data available for the upcoming month.</p>";
+            }
 
-        //public List<ForecastMetrics> generatePriceScenario(DateTime  selectedMonth, int adjustmentFactor)
-        //{
-        //    List<ProductDTO> productList;
-        //    Dictionary<int, int> aggregatedSales;
-        //    getSalesAndProduct(selectedMonth, out productList, out aggregatedSales);
-        //    List<ForecastMetrics> metrics = _scenarioPricingService.generateScenarioPricing(aggregatedSales, productList,adjustmentFactor);
-        //    return metrics;
-        //    //TODO: Implement this method
+            var report = new System.Text.StringBuilder();
+            report.AppendLine("<h1>Forecast Dashboard Report</h1>");
+            report.AppendLine($"<p>Forecast Period: {dashboard.GetStartDate():yyyy-MM-dd} to {dashboard.GetEndDate():yyyy-MM-dd}</p>");
+            report.AppendLine("<hr/>");
+            report.AppendLine("<h2>Forecast Metrics</h2>");
+            report.AppendLine("<table border='1' cellpadding='6' cellspacing='0' style='border-collapse: collapse;'>");
+            report.AppendLine("<thead><tr>");
+            report.AppendLine("<th>Product ID</th>");
+            report.AppendLine("<th>Product Name</th>");
+            report.AppendLine("<th>Forecasted Stock</th>");
+            report.AppendLine("<th>Stock Status</th>");
+            report.AppendLine("</tr></thead><tbody>");
 
-        //}
-        //public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth,int productId, String productName, int priceAdjustment)
-        //{
-        //    var salesList = _isale.getSalesData(selectedMonth.Month);
-        //    Dictionary<int, int>  aggregatedSales = aggregateResults(salesList);
+            foreach (var metric in dashboard.GetMetrics())
+            {
+                report.AppendLine("<tr>");
+                report.AppendLine($"<td>{metric.getProductId()}</td>");
+                report.AppendLine($"<td>{metric.getProductName()}</td>");
+                report.AppendLine($"<td>{metric.getForecastedStock()}</td>");
+                report.AppendLine("</tr>");
+            }
 
-        //    ForecastMetrics metric = _scenarioPricingService.generateScenarioPricing( aggregatedSales,  productId,  productName, priceAdjustment);
-        //    return metric;
-        //    //TODO: Implement this method
+            report.AppendLine("</tbody></table>");
 
-        //}
+            if (dashboard.GetAlertItemList().Count > 0)
+            {
+                report.AppendLine("<h2>Alerts</h2><ul>");
+                foreach (var alert in dashboard.GetAlertItemList())
+                {
+                    report.AppendLine($"<li>{alert}</li>");
+                }
+                report.AppendLine("</ul>");
+            }
 
-        //private void getSalesAndProduct(DateTime selectedMonth, out List<ProductDTO> productList, out Dictionary<int, int> aggregatedSales)
-        //{
-        //    productList = _iProduct.GetProductList();
-        //    var salesList = _isale.getSalesData(selectedMonth.Month);
-        //    aggregatedSales = aggregateResults(salesList);
+            return report.ToString();
+        }
 
-        //}
-
-        //private Dictionary<int, int> aggregateResults(List<SalesDTO> sales)
-        //{
-        //    // Aggregate total sales per product ID
-        //    return sales
-        //        .GroupBy(s => s.ProductID)
-        //        .ToDictionary(
-        //            g => g.Key, // ProductID as key
-        //            g => g.Sum(s => s.Quantity) // Sum up all quantities for this product
-        //        );
-        //}
-
+       
 
 
     }

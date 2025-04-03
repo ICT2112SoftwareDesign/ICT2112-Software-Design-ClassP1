@@ -15,18 +15,7 @@ namespace CleanBrilliantCompany.DataSource.Mapper
             _context = context;
         }
         
-        public ForecastDashboard getLatestDashboard()
-        {
-            DateTime startDate = DateTime.Now.AddDays(-7); // Start date 7 days ago
-            DateTime endDate = DateTime.Now;
-            List<ForecastMetrics> metricsList = new List<ForecastMetrics>
-            {
-              new StockForecast(1,12,"A"),
-              new StockForecast(2,3, "B")
-            };
-            ForecastDashboard forecastDashboard = new ForecastDashboard(0, startDate, endDate, DateTime.Now, 0, metricsList);
-            return forecastDashboard;
-        }
+  
         public void saveDashboard(ForecastDashboard dashboard)
         {
             ForecastDashboardDTO dashboardDto = toDTO(dashboard);

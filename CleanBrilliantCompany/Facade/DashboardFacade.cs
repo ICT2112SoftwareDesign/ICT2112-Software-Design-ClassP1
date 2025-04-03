@@ -8,7 +8,7 @@ public class DashboardFacade : IDashboardFacade
     private readonly ManufacturerControl manufacturerControl;
     private readonly CostControl costControl;
     private readonly InventoryControl inventoryControl;
-    private readonly IForecastControl forecastControl;
+    private readonly IForecastReportDetails forecastControl;
 
 
     public DashboardFacade(
@@ -16,7 +16,7 @@ public class DashboardFacade : IDashboardFacade
         ManufacturerControl manufacturerControl,
         CostControl costControl,
         InventoryControl inventoryControl,
-        IForecastControl forecastControl
+        IForecastReportDetails forecastControl
         )
     {
         this.agingControl = agingControl;
@@ -31,7 +31,7 @@ public class DashboardFacade : IDashboardFacade
     public ManufacturerControl GetManufacturerControl() => manufacturerControl;
     public CostControl GetCostControl() => costControl;
     public InventoryControl GetInventoryControl() => inventoryControl;
-    public IForecastControl GetForecastControl() => forecastControl;
+    public IForecastReportDetails GetForecastControl() => forecastControl;
     public List<Dashboard> getDashboardsData()
     {
         // this thing just calls every dashboard's getDashboardData method 
