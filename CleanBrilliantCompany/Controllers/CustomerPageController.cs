@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interfaces;
-using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,109 +63,7 @@ namespace CleanBrilliantCompany.Controllers
             ViewBag.Message = TempData["Message"];
 
             return View("~/Views/CustomerPage/Profile/CustomerDetails.cshtml");
-        }
-
-
-
-        // INPUT CONTROLLER METHODS
-
-        // HelpCenterInputController Methods
-
-        public IActionResult viewFAQs()
-        {
-            Dictionary<string, string> faqs = _supportManagement.FetchFAQs();
-            ViewBag.FAQs = faqs;
-
-            return View("~/Views/Support/FAQs.cshtml");
-        }
-
-        public IActionResult escalateIssue(String issueDescription)
-        {
-            // Retrieve customer ID from the session using the correct key
-            int? customerId = base.getLoggedInCustomerId();
-            if (customerId == -1)
-            {
-                TempData["Error"] = "User not logged in.";
-                return Json(new { redirectUrl = Url.Action("Login", "BeforeLoginPage") });
-            }
-
-            bool success = _supportManagement.createSupportTicket(customerId ?? -1, issueDescription);
-            if (success)
-            {
-                Console.WriteLine("Support ticket created, pop up will appear!");
-                TempData["Success"] = "Issue has been successfully raised!";
-            } else{
-                TempData["Error"] = "Failed to raise the issue!";
-            }
-
-            return RedirectToAction("viewFAQs");
-        }
-
-        public IActionResult viewSupportTickets()
-        {
-            // Retrieve customer ID from the session using the correct key
-            int? customerId = base.getLoggedInCustomerId();
-            if (customerId == -1)
-            {
-                TempData["Error"] = "User not logged in.";
-                return Json(new { redirectUrl = Url.Action("Login", "BeforeLoginPage") });
-            }
-
-            var allCustomerSupportTicket = _supportManagement.viewTicketByCustomer(customerId ?? -1);
-            ViewBag.AllSupportTickets = allCustomerSupportTicket;        
-            return View("~/Views/Support/ViewSupportTickets.cshtml");
-        }
-
-        // ChatbotInputController Methods
-
-        public IActionResult startChatSession()
-        {
-            string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
-
-            // Check if JSON exists and is not empty
-            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson)
-                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson)
-                : new List<Dictionary<string, string>>();
-
-            ViewBag.ChatHistory = chatHistory;
-
-            return View("~/Views/Support/Chatbot.cshtml");
-        }
-
-        [HttpPost]
-        public IActionResult provideAutomatedResponse(String query)
-        {
-            // Retrieve customer ID from the session using the correct key
-            int? customerId = base.getLoggedInCustomerId();
-            if (customerId == -1)
-            {
-                TempData["Error"] = "User not logged in.";
-                return RedirectToAction("Login", "BeforeLoginPage");
-            }
-
-            if (string.IsNullOrEmpty(query)) return RedirectToAction("startChatSession");
-
-            string botResponse = _supportManagement.handleQuery(customerId ?? -1, query);
-
-            string chatHistoryJson = HttpContext.Session.GetString("ChatHistory");
-
-            // Check if JSON is null or empty before deserialization
-            List<Dictionary<string, string>> chatHistory = !string.IsNullOrWhiteSpace(chatHistoryJson)
-                ? JsonSerializer.Deserialize<List<Dictionary<string, string>>>(chatHistoryJson)
-                : new List<Dictionary<string, string>>();
-
-            var userMessage = new Dictionary<string, string> { { "user", query } };
-            var botMessage = new Dictionary<string, string> { { "bot", botResponse } };
-
-            chatHistory.Add(userMessage);
-            chatHistory.Add(botMessage);
-
-            // Store updated chat history back in session
-            HttpContext.Session.SetString("ChatHistory", JsonSerializer.Serialize(chatHistory));
-
-
-            return RedirectToAction("startChatSession");
-        }
+        }        
 
         public IActionResult GetAllProducts(string query = "", string filters = "All", string sortOrder = "asc")
         {
@@ -220,7 +117,23 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Products/ProductDetails.cshtml", productDetails);
         }
 
+        // Support Navigation Methods
+        public IActionResult redirectToViewFAQs()
+        {
+            return RedirectToAction("viewFAQs", "HelpCenterInput");
+        }
 
+        public IActionResult redirectToViewSupportTickets()
+        {
+            return RedirectToAction("viewSupportTickets", "HelpCenterInput");
+        }
+
+        // Chatbot Navigation Methods
+        public IActionResult redirectToStartChatSession()
+        {
+            return RedirectToAction("startChatSession", "ChatbotInput");
+        }
+        
         //Cart Navigation Methods
 
         public IActionResult redirectToCart()
