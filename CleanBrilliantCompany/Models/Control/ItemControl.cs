@@ -41,7 +41,8 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // method for IItemDetails for team 6
-        public async Task<List<Item>> getItems() {
+        public async Task<List<Item>> getItems()
+        {
             return await Task.FromResult(_itemMapper.getItems());
         }
 
@@ -60,7 +61,7 @@ namespace CleanBrilliantCompany.Models.Control
         {
             Product product = await retrieveProductDetails(productId);
             List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
-            float salePrice = 0.0f;  
+            float salePrice = 0.0f;
             status = ItemStatus.Available;
 
             if (product != null)
@@ -220,6 +221,12 @@ namespace CleanBrilliantCompany.Models.Control
         {
             return await Task.FromResult(_itemMapper.getTransferredItems(transferId));
         }
+
+        public async Task<List<Product>> getLowStockProductInWarehouse()
+        {
+            return await Task.FromResult(_itemMapper.getLowStockProductInWarehouse());
+        }
+
 
     }
 }

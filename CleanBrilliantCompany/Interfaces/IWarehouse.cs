@@ -11,5 +11,7 @@ namespace CleanBrilliantCompany.Interfaces
         Task<int> getProductQuantityByWarehouse(int productId, int warehouseId);
 
         Task<List<Item>> getTransferredItems(int transferId);
+
+        Task<List<Product>> getLowStockProductInWarehouse();
     }
 }

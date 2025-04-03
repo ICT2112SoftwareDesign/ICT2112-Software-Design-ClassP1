@@ -192,64 +192,6 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public List<Product> getLowStockProductInWarehouse()
-        {
-            List<Product> products = new List<Product>();
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string selectQuery = @"
-                                    
-                SELECT 
-                    p.productId, 
-                    p.productName, 
-                    w.warehouseId,
-                    w.warehouseName, 
-                    COUNT(i.itemId) AS TotalQuantity,
-                    w.maxCapacity AS MaxCapacity,
-                    w.currentCapacity AS CurrentCapacity,
-                    (w.maxCapacity - w.currentCapacity) AS AvailableCapacity
-                FROM Warehouse w
-                CROSS JOIN Product p  -- Ensures every product is considered for every warehouse
-                LEFT JOIN Item i 
-                    ON p.productId = i.productId 
-                    AND w.warehouseId = i.warehouseId 
-                    AND i.itemStatus = 'Available'  -- Only count available items
-                GROUP BY p.productId, p.productName, w.warehouseId, w.warehouseName, w.maxCapacity, w.currentCapacity
-                HAVING COUNT(i.itemId) < 10; -- Adjust this threshold as needed
-                ";
-                // SELECT * FROM dbo.ItemTransfer
-
-
-                using (SqlCommand command = new SqlCommand(selectQuery, connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (getDatabaseQueryStatus(reader))
-                        {
-                            while (reader.Read())
-                            {
-                                Product product = new Product(
-                                    reader.GetInt32(reader.GetOrdinal("productId")),
-                                    reader.GetString(reader.GetOrdinal("productName")),
-                                    reader.GetString(reader.GetOrdinal("warehouseName")),
-                                    reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                    reader.GetInt32(reader.GetOrdinal("TotalQuantity")),
-                                    reader.GetInt32(reader.GetOrdinal("MaxCapacity")),
-                                    reader.GetInt32(reader.GetOrdinal("CurrentCapacity")),
-                                    reader.GetInt32(reader.GetOrdinal("AvailableCapacity"))
-                                );
-                                products.Add(product);
-                            }
-                        }
-                    }
-                }
-            }
-            return products;
-        }
-
         public bool updateWarehouseCapacity(int warehouseId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))

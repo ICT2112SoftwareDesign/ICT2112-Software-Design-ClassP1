@@ -53,7 +53,7 @@ namespace CleanBrilliantCompany.Models.Control
 
         public async Task<List<Product>> getLowStockProductInWarehouse()
         {
-            return await Task.FromResult(_transferMapper.getLowStockProductInWarehouse());
+            return await _iWarehouseInterface.getLowStockProductInWarehouse();
         }
 
         public async Task<bool> deleteTransfer(int transferId)
