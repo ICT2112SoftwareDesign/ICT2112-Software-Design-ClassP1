@@ -208,6 +208,10 @@ namespace CleanBrilliantCompany.Mapper
                 int lowStockWeeks = 0;
                 int overStockWeeks = 0;
 
+                // Track week ranges
+                //var weekRanges = new List<(int Year, int Week)>();
+                var weekRanges = new Dictionary<string, (int Year, int Week)[]>();
+
                 Console.WriteLine($"Processing Product {productId}");
 
                 foreach (var group in productGroup)
@@ -268,6 +272,15 @@ namespace CleanBrilliantCompany.Mapper
                         maxConsecutive = Math.Max(maxConsecutive, consecutiveWeeks);
                     }
 
+                    if (weeklyFlags.Any())
+                    {
+                        weekRanges[alertType] = new[]
+                        {
+                            (weeklyFlags.First().Year, weeklyFlags.First().Week),
+                            (weeklyFlags.Last().Year, weeklyFlags.Last().Week)
+                        };
+                    }
+
                     if (alertType == "LS")
                     {
                         lowStockWeeks = maxConsecutive;
@@ -284,6 +297,36 @@ namespace CleanBrilliantCompany.Mapper
                     }
 
                     Console.WriteLine($"Product {productId}, Type: {alertType}, Max Consecutive: {maxConsecutive}");
+                }
+
+                // Check for LS/OS overlap and adjust
+                if (weekRanges.ContainsKey("LS") && weekRanges.ContainsKey("OS"))
+                {
+                    var lsStart = weekRanges["LS"][0];
+                    var lsEnd = weekRanges["LS"][1];
+                    var osStart = weekRanges["OS"][0];
+                    var osEnd = weekRanges["OS"][1];
+
+                    int ToAbs((int Year, int Week) w) => w.Year * 52 + w.Week;
+                    int lsStartAbs = ToAbs(lsStart);
+                    int lsEndAbs = ToAbs(lsEnd);
+                    int osStartAbs = ToAbs(osStart);
+                    int osEndAbs = ToAbs(osEnd);
+
+                    bool isOverlapping = !(lsEndAbs + 1 < osStartAbs || osEndAbs + 1 < lsStartAbs);
+
+                    if (isOverlapping)
+                    {
+                        Console.WriteLine($"Overlapping LS/OS alerts for Product {productId}. Keeping only the longer streak.");
+                        if (lowStockWeeks >= overStockWeeks)
+                        {
+                            overStockWeeks = 0;
+                        }
+                        else
+                        {
+                            lowStockWeeks = 0;
+                        }
+                    }
                 }
 
                 result[productId] = (lowStockWeeks, overStockWeeks);
