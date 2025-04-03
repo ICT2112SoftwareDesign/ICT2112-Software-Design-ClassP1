@@ -60,30 +60,6 @@ namespace CleanBrilliantCompany.Controllers
         }
 
 
-        // default get all items
-        [HttpPost]
-        [Route("getItems")]
-
-        public async Task<IActionResult> getItems()
-        {
-            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-            List<Item> items = await _itemControl.getItems();
-
-            foreach (var item in items)
-            {
-                itemsInfo.Add(item.retrieveItemInfo());
-            }
-
-            foreach (var info in itemsInfo)
-            {
-                Console.WriteLine($"ItemId: {info["ItemId"]}");
-            }
-
-
-
-            return RedirectToAction("Index");
-        }
-
         [HttpPost]
         [Route("searchItemById")]
         public async Task<IActionResult> searchItemById(int searchedItemId)
@@ -124,23 +100,6 @@ namespace CleanBrilliantCompany.Controllers
             return View("Index", itemsInfo);  // Reuse Index view
         }
 
-
-
-        [HttpPost]
-        [Route("addItem")]
-        public async Task<IActionResult> addItem(int productId, int batchCode, int warehouseId, ItemStatus status)
-        {
-            bool result = await _itemControl.createItem(productId, batchCode, warehouseId, status);
-            if (result)
-            {
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return BadRequest(new { error = "Failed to add item." });
-            }
-        }
-
         [HttpPost]
         [Route("updateItem")]
         public async Task<IActionResult> updateItem(int itemId, float salePrice)
@@ -158,25 +117,6 @@ namespace CleanBrilliantCompany.Controllers
             {
                 TempData["ErrorMessage"] = "Item failed to update";
                 return BadRequest(new { error = "Failed to add item." });
-            }
-        }
-
-        [HttpPost]
-        [Route("deleteItem")]
-        public async Task<IActionResult> deleteItem(int deleteItemId)
-        {
-            Console.WriteLine("ItemID: " + deleteItemId);
-
-            bool result = await _itemControl.deleteItem(deleteItemId);
-            if (result)
-            {
-                TempData["SuccessMessage"] = "Item Successfully Deleted";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Failed to delete item";
-                return BadRequest(new { error = "Failed to delete item." });
             }
         }
 
@@ -203,45 +143,6 @@ namespace CleanBrilliantCompany.Controllers
             {
                 TempData["ErrorMessage"] = "Item failed to update";
                 return BadRequest(new { error = "Failed to add item." });
-            }
-        }
-
-        // TESTING FOR IPRODUCT METHOD
-        [HttpPost]
-        [Route("retrieveProductDetails")]
-        public async Task<IActionResult> retrieveProductDetails(int testProductId)
-        {
-            testProductId = 2;
-            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
-            Product? product = await _itemControl.retrieveProductDetails(testProductId);
-            productInfo.Add(product.retrieveProductInfo());
-            Console.WriteLine($"Product ID: {productInfo[0]["ProductId"]}");
-            // Console.WriteLine($"Product Name: {productInfo[0]["ProductName"]}");
-            // Console.WriteLine($"Product Category: {productInfo[0]["ProductCategory"]}");
-            // Console.WriteLine($"Manufacturer ID: {productInfo[0]["ManufacturerId"]}");
-            // Console.WriteLine($"Quantity: {productInfo[0]["Quantity"]}");
-
-            return RedirectToAction("Index");
-        }
-
-        // TESTING FOR IWAREHOUSE METHOD
-        [HttpPost]
-        [Route("getProductQuantityByWarehouse")]
-        public async Task<IActionResult> getProductQuantityByWarehouse(int productId, int warehouseId)
-        {
-            Console.WriteLine("PRODUCT ID: " + productId);
-            Console.WriteLine("Warehouse ID: " + warehouseId);
-
-            int result = await _itemControl.getProductQuantityByWarehouse(productId, warehouseId);
-
-            if (result >= 0)
-            {
-                Console.WriteLine("QUANTITY: " + result);
-                return RedirectToAction("Index", new { quantity = result });
-            }
-            else
-            {
-                return BadRequest(new { error = "Failed to get quantity" });
             }
         }
 
@@ -282,28 +183,5 @@ namespace CleanBrilliantCompany.Controllers
         }
 
 
-        // retrieving to returned items
-        [HttpPost]
-        [Route("getToReturnItems")]
-        public async Task<IActionResult> getToReturnItems()
-        {
-            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-            List<Item> items = await _itemControl.getToReturnItems();
-            foreach (var item in items)
-            {
-                itemsInfo.Add(item.retrieveItemInfo());
-            }
-
-            foreach (var info in itemsInfo)
-            {
-                Console.WriteLine($"ItemId: {info["ItemId"]}");
-            }
-
-            // Console.WriteLine($"Product Category: {productInfo[0]["ProductCategory"]}");
-            // Console.WriteLine($"Manufacturer ID: {productInfo[0]["ManufacturerId"]}");
-            // Console.WriteLine($"Quantity: {productInfo[0]["Quantity"]}");
-
-            return RedirectToAction("Index");
-        }
     }
 }
