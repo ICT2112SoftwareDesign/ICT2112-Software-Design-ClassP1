@@ -70,7 +70,7 @@
                 <button class="btn btn-cart">Add to Cart</button>
             </form>
 
-            <form asp-controller="CustomerPage" asp-action="AddToWishlist" method="post">
+            <form asp-controller="WishlistInput" asp-action="addToWishlist" method="post">
                 <input type="hidden" name="productId" value="@Model["ProductId"]" />
                 <button type="submit" class="btn btn-wishlist">Add to Wishlist</button>
             </form>

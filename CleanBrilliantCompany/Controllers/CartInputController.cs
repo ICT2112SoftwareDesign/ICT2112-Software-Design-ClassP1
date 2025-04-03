@@ -33,13 +33,13 @@ namespace CleanBrilliantCompany.Controllers
             if (quantity <= 0)
             {
                 TempData["Error"] = "Quantity must be greater than zero.";
-                return RedirectToAction("GetAllProducts", "CustomerPage");
+                return RedirectToAction("viewProducts", "ProductInput");
             }
 
             var success = _cartManagement.addToCart(customerId.Value, productId, quantity);
             TempData[success ? "Success" : "Error"] = success ? "Product added to cart successfully!" : "Failed to add product to cart.";
 
-            return RedirectToAction("GetAllProducts", "CustomerPage");
+            return RedirectToAction("viewProducts", "ProductInput");
         }
 
         [HttpPost]

@@ -108,7 +108,7 @@
                     <input type="number" name="quantity" value="1" min="1" class="form-control mb-2" />
                     <button class="btn btn-cart">Add to Cart</button>
                 </form>
-                <form asp-controller="CustomerPage" asp-action="AddToWishlist" method="post" class="d-inline">
+                <form asp-controller="WishlistInput" asp-action="addToWishlist" method="post" class="d-inline">
                     <input type="hidden" name="productId" value="@product["ProductId"]" />
                     <button type="submit" class="btn btn-wishlist">Add to Wishlist</button>
                 </form>
