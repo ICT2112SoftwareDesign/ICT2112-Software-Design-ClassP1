@@ -150,7 +150,7 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Refund", "OrderInput");
         }
 
-                [HttpPost]
+        [HttpPost]
         public IActionResult redirectToDeleteReview(int reviewId) 
         { 
             Console.WriteLine($"Redirecting to delete review with ID: {reviewId}");
@@ -158,7 +158,7 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("DeleteReview", "ReviewInput",new { reviewId = reviewId });
         }
 
-        [HttpPost]
+       [HttpPost]
         public IActionResult redirectToSubmitReview(string reviewText, int rating, int productId)
         {
             return RedirectToAction("SubmitReview", "ReviewInput", new { reviewText = reviewText, rating = rating, productId = productId });
@@ -169,6 +169,7 @@ namespace CleanBrilliantCompany.Controllers
         {
             return RedirectToAction("SubmitEditedReview", "ReviewInput", new { reviewId = reviewId, reviewText = reviewText, rating = rating, productId = productId });
         }
+
 
         [HttpPost]
         public IActionResult redirectToViewReviewsByProduct(int productId)
