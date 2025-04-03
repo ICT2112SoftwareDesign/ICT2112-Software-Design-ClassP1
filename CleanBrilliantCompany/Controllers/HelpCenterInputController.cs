@@ -24,6 +24,7 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Support/FAQs.cshtml");
         }
 
+        [HttpGet]
         public IActionResult escalateIssue(String issueDescription)
         {
             // Retrieve customer ID from the session using the correct key

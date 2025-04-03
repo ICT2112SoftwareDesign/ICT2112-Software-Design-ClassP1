@@ -34,7 +34,7 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Support/Chatbot.cshtml");
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult provideAutomatedResponse(String query)
         {
             // Retrieve customer ID from the session using the correct key

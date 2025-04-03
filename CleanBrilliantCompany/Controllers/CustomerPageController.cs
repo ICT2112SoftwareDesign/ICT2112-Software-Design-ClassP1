@@ -75,11 +75,21 @@ namespace CleanBrilliantCompany.Controllers
         {
             return RedirectToAction("viewSupportTickets", "HelpCenterInput");
         }
+        
+        public IActionResult redirectToEscalateIssue(string issueDescription)
+        {
+            return RedirectToAction("escalateIssue", "HelpCenterInput",  new { issueDescription = issueDescription });
+        }
 
         // Chatbot Navigation Methods
         public IActionResult redirectToStartChatSession()
         {
             return RedirectToAction("startChatSession", "ChatbotInput");
+        }
+
+        public IActionResult redirectToProvideAutomatedResponse(string query)
+        {
+            return RedirectToAction("provideAutomatedResponse", "ChatbotInput",  new { query });
         }
         
         //Cart Navigation Methods

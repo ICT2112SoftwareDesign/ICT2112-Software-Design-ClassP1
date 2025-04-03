@@ -57,7 +57,7 @@
                             }
                         </div>
                         <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-                            <form method="post" asp-action="provideAutomatedResponse" class="w-100">
+                            <form method="post" asp-controller="CustomerPage" asp-action="redirectToProvideAutomatedResponse" class="w-100">
                                 <div class="form-group d-flex align-items-center">
                                     <input type="text" id="query" name="query" class="form-control form-control-lg me-2" placeholder="Type message" />
                                     <button type="submit" class="btn btn-primary mb-2">
