@@ -101,6 +101,12 @@
 {
     <h2>Transactions for @ViewData["SearchDate"]</h2>
 
+        <!-- Button to switch between views -->
+    <div>
+        <button type="button" onclick="toggleView('tableView')" class="btn btn-primary">Table View</button>
+        <button type="button" onclick="toggleView('fullView')" class="btn btn-primary">Full View</button>
+    </div>
+
     <!-- Table View (hidden by default) -->
     <div id="tableView" style="display: block;">
         <table class="table">
