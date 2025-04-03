@@ -5,7 +5,7 @@ using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models
 {
-    public class OrderManagement : IOrder , IOrderRange
+    public class OrderManagement : IOrder, IOrderRange
     {
         private readonly IOrderDatabase _orderDatabase;
         private readonly ICartManagement _cartManagement;
@@ -23,7 +23,7 @@ namespace CleanBrilliantCompany.Models
             _shippingAgent = shippingAgent;
             _orderFulfilment = orderFulfilment;
         }
-    
+
         public int createOrder(
             int customerId,
             string deliveryAddress,
@@ -51,7 +51,7 @@ namespace CleanBrilliantCompany.Models
                 // Fetch all available shipping agents
                 var availableAgents = _shippingAgent.GetAllShippingAgentsAsync().Result;
 
-               // If no valid shippingAgent, shippingType, or serviceType is provided, select a default
+                // If no valid shippingAgent, shippingType, or serviceType is provided, select a default
                 if (string.IsNullOrWhiteSpace(shippingAgent) || string.IsNullOrWhiteSpace(shippingType) || string.IsNullOrWhiteSpace(serviceType))
                 {
                     var defaultAgent = availableAgents.FirstOrDefault();
@@ -80,7 +80,7 @@ namespace CleanBrilliantCompany.Models
                 }
 
 
-                 // Serialize the shipping details into JSON
+                // Serialize the shipping details into JSON
                 var shippingDetails = new
                 {
                     ShippingAgent = selectedAgent.ShippingAgentCompany,
@@ -111,7 +111,7 @@ namespace CleanBrilliantCompany.Models
 
                 // Save the order to the database
                 return _orderDatabase.insertOrder(order);
-                
+
             }
             catch (Exception ex)
             {
@@ -188,29 +188,20 @@ namespace CleanBrilliantCompany.Models
             return _orderDatabase.getOrdersByCustomerId(customerId);
         }
 
-        public bool cancelOrder(int orderId)
+        public bool cancelOrder(int orderId, int customerId)
         {
             var order = _orderDatabase.getOrderById(orderId);
-            if (order == null || order.RetrieveStatus() == "Cancelled")
+            if (order == null || order.RetrieveCustomerID() != customerId || order.RetrieveStatus() != "Pending")
             {
-                return false;
+                return false; // Cannot cancel the order
             }
+
+            // call the processCancelledOrder from MOD 2
+            _orderFulfilment.processCancelledOrder(orderId);
 
             order.UpdateStatus("Cancelled");
             return _orderDatabase.updateOrder(order);
         }
-
-        //public bool updateOrderStatus(int orderId, string status)
-        //{
-        //    var order = _orderDatabase.getOrderById(orderId);
-        //    if (order == null)
-        //    {
-        //        return false;
-        //    }
-
-        //    order.UpdateStatus(status);
-        //    return _orderDatabase.updateOrder(order);
-        //}
 
         public bool updateOrderStatus(int orderId, string status)
         {
@@ -230,21 +221,6 @@ namespace CleanBrilliantCompany.Models
             return result;
         }
 
-        public bool cancelOrder(int orderId, int customerId)
-        {
-            var order = _orderDatabase.getOrderById(orderId);
-            if (order == null || order.RetrieveCustomerID() != customerId || order.RetrieveStatus() != "Pending")
-            {
-                return false; // Cannot cancel the order
-            }
-            
-            // call the processCancelledOrder from MOD 2
-            _orderFulfilment.processCancelledOrder(orderId);
-
-            order.UpdateStatus("Cancelled");
-            return _orderDatabase.updateOrder(order);
-        }
-
         public bool requestRefund(int orderId, int customerId, string refundReason)
         {
             var order = _orderDatabase.getOrderById(orderId);
@@ -259,12 +235,12 @@ namespace CleanBrilliantCompany.Models
             // I can't do this without a concrete implementation of submitRefund yet
             var orderTotal = (float)order.RetrieveOrderTotal();
             var orderProds = order.RetrieveOrderProducts();
-            _submitRefund.SubmitRefund(orderId, refundReason,orderTotal, orderProds);
+            _submitRefund.SubmitRefund(orderId, refundReason, orderTotal, orderProds);
             return _orderDatabase.updateOrder(order);
         }
 
-         // Method for IOrderRange Interface 
-        
+        // Method for IOrderRange Interface 
+
         // For Mod 2 Team 6 = Get orders by date range
         public List<OrderRDM> getOrdersByDateRange(int monthNumber)
         {
@@ -272,7 +248,7 @@ namespace CleanBrilliantCompany.Models
             var allOrders = _orderDatabase.getAllOrders();
 
             // Filter orders by the specified month
-           return allOrders.Where(order => order.RetrieveOrderDate().Month == monthNumber).ToList();
+            return allOrders.Where(order => order.RetrieveOrderDate().Month == monthNumber).ToList();
         }
 
         // Method for IOrder interface
@@ -283,9 +259,20 @@ namespace CleanBrilliantCompany.Models
             return _orderDatabase.getAllOrders();
         }
 
+        public bool cancelOrder(int orderId)
+        {
+            var order = _orderDatabase.getOrderById(orderId);
+            if (order == null || order.RetrieveStatus() == "Cancelled")
+            {
+                return false;
+            }
+
+            order.UpdateStatus("Cancelled");
+            return _orderDatabase.updateOrder(order);
+        }
 
         // For Mod 3 Team 1 = Get a list of order items by order ID
-         public List<int> getOrderItemIds(int orderId)
+        public List<int> getOrderItemIds(int orderId)
         {
             var order = _orderDatabase.getOrderById(orderId);
             if (order == null)
