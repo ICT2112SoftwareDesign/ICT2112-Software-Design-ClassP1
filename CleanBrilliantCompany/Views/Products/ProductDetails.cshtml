@@ -76,10 +76,11 @@
             </form>
         
 
-           <form method="get" asp-action="ViewReviewsByProduct" asp-controller="ReviewInput">
-                    <input type="hidden" name="productId" value="@Model["ProductId"]" />
+            <form method="post" asp-action="redirectToViewReviewsByProduct" asp-controller="Customerpage">
+                    <input type="hidden" name="productId" value="@ViewBag.ProductId" />
                     <button type="submit" class="btn btn-sm btn-info mt-2">View Reviews</button>
             </form>
+
         </div>
         
     </div>

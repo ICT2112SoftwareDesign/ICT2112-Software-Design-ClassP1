@@ -65,7 +65,7 @@ namespace CleanBrilliantCompany.Controllers
             return View("~/Views/Review/RateProduct.cshtml");
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult SubmitReview(string reviewText, int rating, int productId)
         {
             Console.WriteLine($"Review: {reviewText}, Rating: {rating}, ProductID: {productId}");
@@ -80,7 +80,7 @@ namespace CleanBrilliantCompany.Controllers
 
             return RedirectToAction("completed", "OrderInput"); // gotta check where to go next. 
         }
-        [HttpPost]
+        [HttpGet]
         public IActionResult SubmitEditedReview(int reviewId, string reviewText, int rating, int productId)
         {
             if (!_reviewManagement.EditReview(reviewId, reviewText, rating))
@@ -110,7 +110,7 @@ namespace CleanBrilliantCompany.Controllers
 
             return RedirectToAction("GetAllProducts");
         }*/
-        [HttpPost]
+        [HttpGet]
         public IActionResult DeleteReview(int reviewId)
         {
             Console.WriteLine($"Deleting review with ID: {reviewId}");
