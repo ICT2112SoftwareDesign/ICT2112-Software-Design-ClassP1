@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Services;
 
 namespace CleanBrilliantCompany.Models
 {

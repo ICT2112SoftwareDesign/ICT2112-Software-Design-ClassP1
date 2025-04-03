@@ -42,6 +42,8 @@ builder.Services.AddSingleton<IWishlistDatabase>(provider =>
     return new WishlistMapper(connectionString, observer);
 });
 
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 builder.Services.AddSingleton<CustomerManagement>();
 
 // 1. Register the Review Observer

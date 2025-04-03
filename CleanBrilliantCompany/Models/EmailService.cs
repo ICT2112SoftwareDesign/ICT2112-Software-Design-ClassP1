@@ -1,17 +1,19 @@
 using System;
 using System.Net;
 using System.Net.Mail;
+using CleanBrilliantCompany.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
-namespace CleanBrilliantCompany.Services
+namespace CleanBrilliantCompany.Models
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
         private readonly string _smtpHost = "smtp.gmail.com";
         private readonly int _smtpPort = 587;
         private readonly string _smtpUser = "cleanbrilliantcompanyteam5@gmail.com";
         private readonly string _smtpPass = "qzqo frce gckr crdv"; // Use App Password if using Gmail 2FA
 
-        public void SendEmail(string toEmail, string subject, string body)
+        public void sendEmail (string toEmail, string subject, string body)
         {
             try
             {

@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interfaces;
 using System.Text.Json;
-using CleanBrilliantCompany.Services;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -13,7 +12,7 @@ namespace CleanBrilliantCompany.Controllers
         private readonly IShippingAgent _shippingAgent;
         private readonly ReviewManagement _reviewManagement;
         private readonly CustomerManagement _customerManagement;
-        private readonly EmailService _emailService = new EmailService();
+        private readonly IEmailService _emailService;
 
         public OrderInputController(
             OrderManagement orderManagement,
@@ -21,7 +20,8 @@ namespace CleanBrilliantCompany.Controllers
             IShippingAgent shippingAgent,
             ReviewManagement reviewManagement,
             CustomerManagement customerManagement,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IEmailService emailService
         ) : base(customerManagement, httpContextAccessor)
         {
             _orderManagement = orderManagement;
@@ -29,6 +29,7 @@ namespace CleanBrilliantCompany.Controllers
             _shippingAgent = shippingAgent;
             _customerManagement = customerManagement;
             _reviewManagement = reviewManagement;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -255,7 +256,7 @@ namespace CleanBrilliantCompany.Controllers
                 if (customerDetails != null && emailPreference.Contains("paid", StringComparison.OrdinalIgnoreCase))
                 {
                     Console.WriteLine("Sent paid email");
-                    _emailService.SendEmail(
+                    _emailService.sendEmail(
                         customerEmail,
                         "Order Confirmation",
                         $"Your order has been placed successfully! Order ID: {orderId}"
@@ -536,7 +537,7 @@ namespace CleanBrilliantCompany.Controllers
                 if (customerDetails != null && emailPreference.Contains("cancelled", StringComparison.OrdinalIgnoreCase))
                 {
                     Console.WriteLine("Sent email");
-                    _emailService.SendEmail(
+                    _emailService.sendEmail(
                         customerEmail,
                         "Order Cancelled",
                         $"Your order (ID: {orderId}) has been successfully cancelled."
