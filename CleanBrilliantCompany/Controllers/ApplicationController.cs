@@ -4,7 +4,15 @@ using CleanBrilliantCompany.Models;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    public class ApplicationController : Controller
+
+// Define the abstract base class in the same file
+    public abstract class ISession : Controller
+    {
+        // Define the contract that derived classes must implement
+        public abstract CustomerRDM GetCustomerSession();
+    }
+
+    public class ApplicationController : ISession
     {
         private readonly CustomerManagement _customerManagement;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -21,7 +29,8 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // Get Customer Session From Here
-        public CustomerRDM GetCustomerSession()
+        // This is the ISession Interface 
+        public override CustomerRDM GetCustomerSession()
         {
             int loggedInId = _httpContextAccessor.HttpContext.Session.GetInt32("LoggedInUserId") ?? -1;
 
@@ -42,6 +51,7 @@ namespace CleanBrilliantCompany.Controllers
                 return null;
             }
         }
+        // end of ISession Interface
 
         public ApplicationController(IHttpContextAccessor httpContextAccessor)
         {

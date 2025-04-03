@@ -20,7 +20,7 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult CustomerDetails()
         {
             int? customerId = base.getLoggedInCustomerId();
-            var customerDetails = base.GetCustomerSession();
+            var customerDetails = ((ISession)this).GetCustomerSession();
 
             if (customerDetails != null)
             {
@@ -46,7 +46,7 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult updateCustomerDetails(string username, string email, string address)
         {
             int? customerId = base.getLoggedInCustomerId();
-            var customerDetails = base.GetCustomerSession();
+            var customerDetails = ((ISession)this).GetCustomerSession();
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email))
             {
@@ -134,7 +134,7 @@ namespace CleanBrilliantCompany.Controllers
         public IActionResult updatePreferences(string suppressPaid, string suppressCancelled)
         {
             int? customerId = base.getLoggedInCustomerId();
-            var customerDetails = base.GetCustomerSession();
+            var customerDetails = ((ISession)this).GetCustomerSession();
             string updatedEmailPreference = "";
 
             bool paid = !string.IsNullOrEmpty(suppressPaid) && suppressPaid.ToLower() == "true";
