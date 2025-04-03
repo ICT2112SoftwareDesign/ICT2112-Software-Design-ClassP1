@@ -146,24 +146,15 @@
                 // Send data to server using AJAX
                 $.ajax({
                     type: "POST",
-                    url: "/CustomerPage/escalateIssue", 
+                    url: "/HelpCenterInput/escalateIssue", 
                     data: formData,
                     success: function(response) {
                          // Close the modal
                         const bsModal = bootstrap.Modal.getInstance(document.getElementById('reportIssueModal'));
                         bsModal.hide();
                         
-                        if (response.redirectUrl) {
-                            window.location.href = response.redirectUrl;
-                        } 
-                        
                         // Reset form
                         $('#issueForm')[0].reset();
-                    },
-                    error: function(error) {
-                        // Handle errors
-                        alert('There was an error submitting your issue. Please try again.');
-                        console.log(error);
                     }
                 });
             });
