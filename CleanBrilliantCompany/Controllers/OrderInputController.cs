@@ -42,7 +42,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            var customerDetails = base.GetCustomerSession();
+            var customerDetails = ((ISession)this).GetCustomerSession();
             string customerAddress = customerDetails?.getSession<string>("customerAddress") ?? string.Empty;
             string customerEmail = customerDetails?.getSession<string>("email") ?? string.Empty;
 
@@ -67,7 +67,7 @@ namespace CleanBrilliantCompany.Controllers
             var defaultShippingType = shippingMethods.First();
             var defaultServiceType = serviceTypes.First();
 
-            var shippingAgents = _orderManagement.getAvailableShippingAgents(defaultShippingType,defaultServiceType);
+            var shippingAgents = _orderManagement.getAvailableShippingAgents(defaultShippingType, defaultServiceType);
 
             if (!shippingAgents.Any())
             {
@@ -216,7 +216,7 @@ namespace CleanBrilliantCompany.Controllers
                 return RedirectToAction("Login", "BeforeLoginPage");
             }
 
-            var customerDetails = base.GetCustomerSession();
+            var customerDetails = ((ISession)this).GetCustomerSession();
             string customerEmail = customerDetails?.getSession<string>("email") ?? string.Empty;
 
             var cart = _cartManagement.viewCart(customerId.Value);
@@ -466,7 +466,7 @@ namespace CleanBrilliantCompany.Controllers
                     }
                 }
             }
-            
+
             ViewBag.ShippingDetails = shippingDetails;
             return View("~/Views/Order/Cancelled.cshtml", orders);
         }
@@ -530,7 +530,7 @@ namespace CleanBrilliantCompany.Controllers
             var success = _orderManagement.cancelOrder(orderId, customerId.Value);
             if (success)
             {
-                var customerDetails = base.GetCustomerSession();
+                var customerDetails = ((ISession)this).GetCustomerSession();
                 string customerEmail = customerDetails?.getSession<string>("email") ?? "";
                 string emailPreference = customerDetails.getSession<string>("emailPreference") ?? "";
 
