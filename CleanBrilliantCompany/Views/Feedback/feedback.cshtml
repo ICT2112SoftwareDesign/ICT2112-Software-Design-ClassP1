@@ -42,53 +42,7 @@
 
 <body id="page-top">
     <div id="wrapper">
-
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">CBC Carbon Footprint</div>
-            </a>
-
-            <hr class="sidebar-divider my-0">
-
-            <li class="nav-item active">
-                <a class="nav-link" href="/">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-
-            <hr class="sidebar-divider">
-
-            <div class="sidebar-heading">Feedback Tools</div>
-
-            <li class="nav-item">
-                <a class="nav-link" href="/feedback">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Feedback</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="/manager">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Manager Feedback</span>
-                </a>
-            </li>
-
-            <hr class="sidebar-divider">
-
-            <div class="sidebar-heading">Reporting</div>
-
-            <li class="nav-item">
-                <a class="nav-link" href="/dashboardpage/ecofriendlyreport">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Generate Report</span>
-                </a>
-            </li>
-        </ul>
+        @await Html.PartialAsync("_Sidebar")
         <div id="content-wrapper" style="padding-top: 0;">
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -438,7 +392,8 @@
     });
 </script>
 <style>
-    html, body {
+    html,
+    body {
         margin: 0;
         padding: 0;
         height: 100%;
@@ -477,7 +432,8 @@
         max-width: 100%;
     }
 
-    .container, .container-fluid {
+    .container,
+    .container-fluid {
         max-width: 100% !important;
         width: 100% !important;
         margin: 0 !important;
@@ -488,7 +444,7 @@
         position: relative;
         width: 100%;
         max-width: 900px;
-        height: 300px; 
+        height: 300px;
         margin: 0 auto;
     }
 
@@ -499,6 +455,6 @@
     }
 
     .topbar {
-        box-shadow: 0 0.15rem 1rem 0 rgba(58,59,69,.15);
+        box-shadow: 0 0.15rem 1rem 0 rgba(58, 59, 69, .15);
     }
 </style>
