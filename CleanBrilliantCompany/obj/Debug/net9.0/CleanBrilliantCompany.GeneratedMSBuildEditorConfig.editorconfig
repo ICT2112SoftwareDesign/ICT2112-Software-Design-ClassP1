@@ -9,265 +9,265 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = CleanBrilliantCompany
 build_property.RootNamespace = CleanBrilliantCompany
-build_property.ProjectDir = c:\Users\hhuim\Desktop\Work\SIT\Year 2\Trimester 2\ICT2112 Software Design\Project\Code\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany\
+build_property.ProjectDir = /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = c:\Users\hhuim\Desktop\Work\SIT\Year 2\Trimester 2\ICT2112 Software Design\Project\Code\ICT2112-Software-Design-ClassP1\CleanBrilliantCompany
+build_property.MSBuildProjectDirectory = /Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/BeforeLogin/login.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmVmb3JlTG9naW5cbG9naW4uY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/BeforeLogin/login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmVmb3JlTG9naW4vbG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/BeforeLogin/RegisterCustomer.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmVmb3JlTG9naW5cUmVnaXN0ZXJDdXN0b21lci5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/BeforeLogin/RegisterCustomer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmVmb3JlTG9naW4vUmVnaXN0ZXJDdXN0b21lci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Cart/Cart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxDYXJ0LmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Cart/Cart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FydC9DYXJ0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/CustomerPage/Profile/CustomerDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJQYWdlXFByb2ZpbGVcQ3VzdG9tZXJEZXRhaWxzLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/CustomerPage/Profile/CustomerDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ3VzdG9tZXJQYWdlL1Byb2ZpbGUvQ3VzdG9tZXJEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Feedback/EditFeedback.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmVlZGJhY2tcRWRpdEZlZWRiYWNrLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Feedback/EditFeedback.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRmVlZGJhY2svRWRpdEZlZWRiYWNrLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Feedback/feedback.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmVlZGJhY2tcZmVlZGJhY2suY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Feedback/feedback.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRmVlZGJhY2svZmVlZGJhY2suY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Feedback/ManagerFeedback.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmVlZGJhY2tcTWFuYWdlckZlZWRiYWNrLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Feedback/ManagerFeedback.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRmVlZGJhY2svTWFuYWdlckZlZWRiYWNrLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/404.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVw0MDQuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/404.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS80MDQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/blank.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxibGFuay5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/blank.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9ibGFuay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/buttons.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxidXR0b25zLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/buttons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9idXR0b25zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/cards.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxjYXJkcy5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/cards.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9jYXJkcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/charts.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxjaGFydHMuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/charts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9jaGFydHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/forgot-password.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxmb3Jnb3QtcGFzc3dvcmQuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/forgot-password.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9mb3Jnb3QtcGFzc3dvcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxpbmRleC5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9pbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/login.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxsb2dpbi5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9sb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/register.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxyZWdpc3Rlci5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9yZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/tables.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx0YWJsZXMuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/tables.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS90YWJsZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/utilities-animation.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1dGlsaXRpZXMtYW5pbWF0aW9uLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/utilities-animation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS91dGlsaXRpZXMtYW5pbWF0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/utilities-border.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1dGlsaXRpZXMtYm9yZGVyLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/utilities-border.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS91dGlsaXRpZXMtYm9yZGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/utilities-color.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1dGlsaXRpZXMtY29sb3IuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/utilities-color.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS91dGlsaXRpZXMtY29sb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/utilities-other.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVx1dGlsaXRpZXMtb3RoZXIuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Home/utilities-other.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS91dGlsaXRpZXMtb3RoZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/OrderFulfilment/orderfulfilment.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJGdWxmaWxtZW50XG9yZGVyZnVsZmlsbWVudC5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Cancelled.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXIvQ2FuY2VsbGVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/OrderFulfilment/orderfulfilmentdetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJGdWxmaWxtZW50XG9yZGVyZnVsZmlsbWVudGRldGFpbHMuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Checkout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXIvQ2hlY2tvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Cancelled.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcQ2FuY2VsbGVkLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Completed.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXIvQ29tcGxldGVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Checkout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcQ2hlY2tvdXQuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/OrderConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXIvT3JkZXJDb25maXJtYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Completed.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcQ29tcGxldGVkLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Payment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXIvUGF5bWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/OrderConfirmation.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcT3JkZXJDb25maXJtYXRpb24uY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Refund.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXIvUmVmdW5kLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Payment.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcUGF5bWVudC5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/ToReceive.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXIvVG9SZWNlaXZlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/Refund.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcUmVmdW5kLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/ToShip.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXIvVG9TaGlwLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/ToReceive.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcVG9SZWNlaXZlLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/OrderFulfilment/orderfulfilment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXJGdWxmaWxtZW50L29yZGVyZnVsZmlsbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Order/ToShip.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcVG9TaGlwLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/OrderFulfilment/orderfulfilmentdetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXJGdWxmaWxtZW50L29yZGVyZnVsZmlsbWVudGRldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Products/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcSW5kZXguY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Products/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdHMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Products/ProductDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcUHJvZHVjdERldGFpbHMuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Products/ProductDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdHMvUHJvZHVjdERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ListOfReorders.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlclxMaXN0T2ZSZW9yZGVycy5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ListOfReorders.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmVvcmRlci9MaXN0T2ZSZW9yZGVycy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ReorderDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlclxSZW9yZGVyRGV0YWlscy5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ReorderDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmVvcmRlci9SZW9yZGVyRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ReorderForm.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlclxSZW9yZGVyRm9ybS5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/ReorderForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmVvcmRlci9SZW9yZGVyRm9ybS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/UpdateReorderDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlclxVcGRhdGVSZW9yZGVyRGV0YWlscy5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Reorder/UpdateReorderDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmVvcmRlci9VcGRhdGVSZW9yZGVyRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Review/ProductReviews.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmV2aWV3XFByb2R1Y3RSZXZpZXdzLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Review/ProductReviews.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmV2aWV3L1Byb2R1Y3RSZXZpZXdzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Review/RateProduct.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmV2aWV3XFJhdGVQcm9kdWN0LmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Review/RateProduct.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmV2aWV3L1JhdGVQcm9kdWN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/footer.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXGZvb3Rlci5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/footer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL2Zvb3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/staff-footer.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXHN0YWZmLWZvb3Rlci5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/staff-footer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL3N0YWZmLWZvb3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_StaffLayout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TdGFmZkxheW91dC5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_StaffLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19TdGFmZkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/ShippingAgent/add-shippingagent.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hpcHBpbmdBZ2VudFxhZGQtc2hpcHBpbmdhZ2VudC5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/ShippingAgent/add-shippingagent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hpcHBpbmdBZ2VudC9hZGQtc2hpcHBpbmdhZ2VudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/ShippingAgent/edit-shippingagent.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hpcHBpbmdBZ2VudFxlZGl0LXNoaXBwaW5nYWdlbnQuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/ShippingAgent/edit-shippingagent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hpcHBpbmdBZ2VudC9lZGl0LXNoaXBwaW5nYWdlbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/ShippingAgent/shippingagent.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hpcHBpbmdBZ2VudFxzaGlwcGluZ2FnZW50LmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/ShippingAgent/shippingagent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hpcHBpbmdBZ2VudC9zaGlwcGluZ2FnZW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/StaffLogin/Login.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZMb2dpblxMb2dpbi5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Staff/staff-sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmYvc3RhZmYtc2lkZWJhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/StaffPage/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZQYWdlXEluZGV4LmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Staff/staff-topbar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmYvc3RhZmYtdG9wYmFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/StaffRefund/refund-details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZSZWZ1bmRccmVmdW5kLWRldGFpbHMuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/StaffLogin/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmZMb2dpbi9Mb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/StaffRefund/refund.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZSZWZ1bmRccmVmdW5kLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/StaffPage/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmZQYWdlL0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Staff/staff-sidebar.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcc3RhZmYtc2lkZWJhci5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/StaffRefund/refund-details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmZSZWZ1bmQvcmVmdW5kLWRldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Staff/staff-topbar.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcc3RhZmYtdG9wYmFyLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/StaffRefund/refund.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhZmZSZWZ1bmQvcmVmdW5kLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/SupportTicket/supportticket-details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFRpY2tldFxzdXBwb3J0dGlja2V0LWRldGFpbHMuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/Chatbot.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcG9ydC9DaGF0Ym90LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/SupportTicket/supportticket-index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFRpY2tldFxzdXBwb3J0dGlja2V0LWluZGV4LmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/FAQs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcG9ydC9GQVFzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/Chatbot.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxDaGF0Ym90LmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/ViewSupportTickets.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcG9ydC9WaWV3U3VwcG9ydFRpY2tldHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/FAQs.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxGQVFzLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/SupportTicket/supportticket-details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcG9ydFRpY2tldC9zdXBwb3J0dGlja2V0LWRldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Support/ViewSupportTickets.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxWaWV3U3VwcG9ydFRpY2tldHMuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/SupportTicket/supportticket-index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcG9ydFRpY2tldC9zdXBwb3J0dGlja2V0LWluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/TestProduct.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdFByb2R1Y3QuY3NodG1s
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/TestProduct.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGVzdFByb2R1Y3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Wishlist/WishlistIndex.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2lzaGxpc3RcV2lzaGxpc3RJbmRleC5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/Wishlist/WishlistIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvV2lzaGxpc3QvV2lzaGxpc3RJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/hhuim/Desktop/Work/SIT/Year 2/Trimester 2/ICT2112 Software Design/Project/Code/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+[/Users/regine/Desktop/SIT/Year 2/2.2/ICT 2002 Software Design/Website/ICT2112-Software-Design-ClassP1/CleanBrilliantCompany/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

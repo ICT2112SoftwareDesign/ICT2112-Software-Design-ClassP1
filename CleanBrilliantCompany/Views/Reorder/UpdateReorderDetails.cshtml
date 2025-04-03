@@ -7,6 +7,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,7 +29,7 @@
 
                 <!-- Page Content -->
                 <div class="container-fluid mt-4">
-                    
+
                     <h1 class="h3 mb-4 text-gray-800">Update Reorder Request</h1>
 
                     @if (TempData["SuccessMessage"] != null)
@@ -47,7 +48,7 @@
 
                     <form method="post" action="/staff/reorder/update/@Model.ReorderId">
                         @Html.AntiForgeryToken()
-                        
+
                         <!-- Add hidden field for ReorderId -->
                         <input type="hidden" name="ReorderId" value="@Model.ReorderId" />
 
@@ -62,7 +63,8 @@
                             <label for="Status">Status</label>
                             <select class="form-control" id="Status" name="Status" required>
                                 <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
-                                <option value="Order Confirmed" selected="@(Model.Status == "Order Confirmed")">Order Confirmed</option>
+                                <option value="Order Confirmed" selected="@(Model.Status == "Order Confirmed")">Order
+                                    Confirmed</option>
                                 <option value="Shipped" selected="@(Model.Status == "Shipped")">Shipped</option>
                                 <option value="Delivered" selected="@(Model.Status == "Delivered")">Delivered</option>
                             </select>
@@ -71,7 +73,9 @@
                         <!-- Expected Delivery Date -->
                         <div class="form-group">
                             <label for="ExpectedDeliveryDate">Expected Delivery Date</label>
-                            <input type="date" class="form-control" id="ExpectedDeliveryDate" name="ExpectedDeliveryDate" value="@Model.ExpectedDeliveryDate?.ToString("yyyy-MM-dd")" />
+                            <input type="date" class="form-control" id="ExpectedDeliveryDate"
+                                name="ExpectedDeliveryDate" value="@Model.ExpectedDeliveryDate?.ToString("yyyy-MM-dd")"
+                                min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         </div>
 
                         <!-- Product Information Section -->
@@ -86,10 +90,12 @@
                                     <div class="productItem">
                                         <div class="form-group">
                                             <label>Reorder Product ID</label>
-                                            <input type="text" class="form-control" value="@product.ReorderProductId" readonly />
-                                            <input type="hidden" name="Products[@i].ReorderProductId" value="@product.ReorderProductId" />
+                                            <input type="text" class="form-control" value="@product.ReorderProductId"
+                                                readonly />
+                                            <input type="hidden" name="Products[@i].ReorderProductId"
+                                                value="@product.ReorderProductId" />
                                         </div>
-                                        
+
                                         <div class="form-group">
                                             <label>Product ID</label>
                                             <select class="form-control" name="Products[@i].ProductId" required>
@@ -99,22 +105,25 @@
                                                     var details = productOption.GetProductDetails();
                                                     @if (details["ManufacturerId"].ToString() == Model.ManufacturerId.ToString())
                                                     {
-                                                        <option value="@details["ProductId"]" selected="@(details["ProductId"].ToString() == product.ProductId.ToString())">
+                                                        <option value="@details["ProductId"]"
+                                                            selected="@(details["ProductId"].ToString() == product.ProductId.ToString())">
                                                             @details["ProductId"] - @details["ProductName"]
                                                         </option>
                                                     }
                                                 }
                                             </select>
                                         </div>
-                                        
+
                                         <div class="form-group">
                                             <label>Quantity</label>
-                                            <input type="number" class="form-control" name="Products[@i].Quantity" value="@product.Quantity" required />
+                                            <input type="number" class="form-control" name="Products[@i].Quantity"
+                                                value="@product.Quantity" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Defect Quantity</label>
-                                            <input type="number" class="form-control" name="Products[@i].DefectQuantity" value="@product.DefectQuantity" />
+                                            <input type="number" class="form-control" name="Products[@i].DefectQuantity"
+                                                value="@product.DefectQuantity" />
                                         </div>
 
                                         @if (i > 0)
@@ -134,7 +143,8 @@
                             <p>No products found for this reorder request.</p>
                         }
 
-                        <button type="button" id="addProduct" class="btn btn-secondary mt-3">Add Another Product</button>
+                        <button type="button" id="addProduct" class="btn btn-secondary mt-3">Add Another
+                            Product</button>
 
                         <br />
                         <button type="submit" class="btn btn-primary mt-3">Update Reorder Request</button>
@@ -153,159 +163,159 @@
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <script>
-       // Get product details for JavaScript
-const products = [];
-    
+        // Get product details for JavaScript
+        const products = [];
+
 @foreach (var product in ViewBag.Products)
-{
-    @:products.push(@Html.Raw(Json.Serialize(product.GetProductDetails())));
-}
+            {
+                @:products.push(@Html.Raw(Json.Serialize(product.GetProductDetails())));
+        }
 
 // Filter products based on the manufacturer
 const manufacturerId = '@Model.ManufacturerId';
-const filteredProducts = products.filter(product => product.ManufacturerId == manufacturerId);
+        const filteredProducts = products.filter(product => product.ManufacturerId == manufacturerId);
 
-// Initialize the product count
-let productCount = @(Model.Products != null ? Model.Products.Count : 0);
+        // Initialize the product count
+        let productCount = @(Model.Products != null ? Model.Products.Count : 0);
 
-// Function to filter products based on currently selected products
-function filterProducts() {
-    // Track selected product IDs and which dropdown selected them
-    const selectedProducts = {};
-    
-    // Get all product dropdowns and track selected products
-    const productSelects = document.querySelectorAll("select[name^='Products'][name$='.ProductId']");
-    productSelects.forEach(select => {
-        if (select.value) {
-            selectedProducts[select.value] = select.name;
+        // Function to filter products based on currently selected products
+        function filterProducts() {
+            // Track selected product IDs and which dropdown selected them
+            const selectedProducts = {};
+
+            // Get all product dropdowns and track selected products
+            const productSelects = document.querySelectorAll("select[name^='Products'][name$='.ProductId']");
+            productSelects.forEach(select => {
+                if (select.value) {
+                    selectedProducts[select.value] = select.name;
+                }
+            });
+
+            // Loop through all product dropdowns and update them
+            productSelects.forEach(select => {
+                // Store selected value before updating options
+                const selectedValue = select.value;
+                const currentSelectName = select.name;
+
+                let optionsHtml = '<option value="">-- Select a Product --</option>';
+
+                // Add the filtered products to the dropdown
+                filteredProducts.forEach(product => {
+                    // Only add this product if it's either:
+                    // 1. The currently selected value for this dropdown
+                    // 2. Not selected in any other dropdown
+                    const isSelectedInAnotherDropdown = selectedProducts[product.ProductId] &&
+                        selectedProducts[product.ProductId] !== currentSelectName;
+
+                    if (product.ProductId == selectedValue || !isSelectedInAnotherDropdown) {
+                        optionsHtml += `<option value="${product.ProductId}" ${product.ProductId == selectedValue ? 'selected' : ''}>${product.ProductId} - ${product.ProductName}</option>`;
+                    }
+                });
+
+                // Update the dropdown options
+                select.innerHTML = optionsHtml;
+            });
+
+            // Check if we should hide the "Add Product" button
+            checkAddProductButton();
         }
-    });
 
-    // Loop through all product dropdowns and update them
-    productSelects.forEach(select => {
-        // Store selected value before updating options
-        const selectedValue = select.value;
-        const currentSelectName = select.name;
+        // Function to check if Add Product button should be shown
+        // Function to check if Add Product button should be shown
+        function checkAddProductButton() {
+            const status = document.getElementById('Status').value;
 
-        let optionsHtml = '<option value="">-- Select a Product --</option>';
-
-        // Add the filtered products to the dropdown
-        filteredProducts.forEach(product => {
-            // Only add this product if it's either:
-            // 1. The currently selected value for this dropdown
-            // 2. Not selected in any other dropdown
-            const isSelectedInAnotherDropdown = selectedProducts[product.ProductId] && 
-                                            selectedProducts[product.ProductId] !== currentSelectName;
-            
-            if (product.ProductId == selectedValue || !isSelectedInAnotherDropdown) {
-                optionsHtml += `<option value="${product.ProductId}" ${product.ProductId == selectedValue ? 'selected' : ''}>${product.ProductId} - ${product.ProductName}</option>`;
+            // Hide Add Product button if status is not Pending
+            if (status !== "Pending") {
+                document.getElementById("addProduct").style.display = 'none';
+                return;
             }
-        });
 
-        // Update the dropdown options
-        select.innerHTML = optionsHtml;
-    });
-    
-    // Check if we should hide the "Add Product" button
-    checkAddProductButton();
-}
+            // Get the number of product dropdown elements
+            const productSelects = document.querySelectorAll("select[name^='Products'][name$='.ProductId']");
+            const totalProductDropdowns = productSelects.length;
 
-// Function to check if Add Product button should be shown
-// Function to check if Add Product button should be shown
-function checkAddProductButton() {
-    const status = document.getElementById('Status').value;
-    
-    // Hide Add Product button if status is not Pending
-    if (status !== "Pending") {
-        document.getElementById("addProduct").style.display = 'none';
-        return;
-    }
-    
-    // Get the number of product dropdown elements
-    const productSelects = document.querySelectorAll("select[name^='Products'][name$='.ProductId']");
-    const totalProductDropdowns = productSelects.length;
-    
-    // Hide the "Add Product" button if we've created as many dropdowns as there are available products
-    if (totalProductDropdowns >= filteredProducts.length) {
-        document.getElementById("addProduct").style.display = 'none';
-    } else {
-        document.getElementById("addProduct").style.display = 'inline-block';
-    }
-}
-
-
-// Function to update field states based on status
-function updateFieldsBasedOnStatus() {
-    const status = document.getElementById('Status').value;
-    const isPending = status === "Pending";
-    const isDelivered = status === "Delivered";
-    
-    // Product ID dropdowns
-    const productSelects = document.querySelectorAll("select[name^='Products'][name$='.ProductId']");
-    productSelects.forEach(select => {
-        select.disabled = !isPending;
-        if (!isPending) {
-            select.classList.add('bg-light');
-        } else {
-            select.classList.remove('bg-light');
+            // Hide the "Add Product" button if we've created as many dropdowns as there are available products
+            if (totalProductDropdowns >= filteredProducts.length) {
+                document.getElementById("addProduct").style.display = 'none';
+            } else {
+                document.getElementById("addProduct").style.display = 'inline-block';
+            }
         }
-    });
-    
-    // Quantity inputs
-    const quantityInputs = document.querySelectorAll("input[name$='.Quantity']");
-    quantityInputs.forEach(input => {
-        input.readOnly = !isPending;
-        if (!isPending) {
-            input.classList.add('bg-light');
-        } else {
-            input.classList.remove('bg-light');
-        }
-    });
-    
-    // Defect quantity inputs
-    const defectQuantityInputs = document.querySelectorAll("input[name$='.DefectQuantity']");
-    defectQuantityInputs.forEach(input => {
-        input.readOnly = !isDelivered;
-        if (!isDelivered) {
-            input.classList.add('bg-light');
-        } else {
-            input.classList.remove('bg-light');
-        }
-    });
-    
-    // Remove product buttons - only show if status is Pending
-    const removeButtons = document.querySelectorAll('.remove-product');
-    removeButtons.forEach(button => {
-        button.style.display = isPending ? 'block' : 'none';
-    });
-    
-    // Update Add Product button visibility
-    checkAddProductButton();
-}
 
-// Adding a new product form dynamically
-document.getElementById("addProduct").addEventListener("click", function () {
-    // Get currently selected product IDs
-    const selectedProductIds = [];
-    document.querySelectorAll("select[name^='Products'][name$='.ProductId']").forEach(select => {
-        if (select.value) {
-            selectedProductIds.push(select.value);
+
+        // Function to update field states based on status
+        function updateFieldsBasedOnStatus() {
+            const status = document.getElementById('Status').value;
+            const isPending = status === "Pending";
+            const isDelivered = status === "Delivered";
+
+            // Product ID dropdowns
+            const productSelects = document.querySelectorAll("select[name^='Products'][name$='.ProductId']");
+            productSelects.forEach(select => {
+                select.disabled = !isPending;
+                if (!isPending) {
+                    select.classList.add('bg-light');
+                } else {
+                    select.classList.remove('bg-light');
+                }
+            });
+
+            // Quantity inputs
+            const quantityInputs = document.querySelectorAll("input[name$='.Quantity']");
+            quantityInputs.forEach(input => {
+                input.readOnly = !isPending;
+                if (!isPending) {
+                    input.classList.add('bg-light');
+                } else {
+                    input.classList.remove('bg-light');
+                }
+            });
+
+            // Defect quantity inputs
+            const defectQuantityInputs = document.querySelectorAll("input[name$='.DefectQuantity']");
+            defectQuantityInputs.forEach(input => {
+                input.readOnly = !isDelivered;
+                if (!isDelivered) {
+                    input.classList.add('bg-light');
+                } else {
+                    input.classList.remove('bg-light');
+                }
+            });
+
+            // Remove product buttons - only show if status is Pending
+            const removeButtons = document.querySelectorAll('.remove-product');
+            removeButtons.forEach(button => {
+                button.style.display = isPending ? 'block' : 'none';
+            });
+
+            // Update Add Product button visibility
+            checkAddProductButton();
         }
-    });
-    
-    // Check if there are available products to add
-    const availableProducts = filteredProducts.filter(product => !selectedProductIds.includes(product.ProductId));
 
-    if (availableProducts.length === 0) {
-        alert("No more products available for this manufacturer");
-        return;
-    }
+        // Adding a new product form dynamically
+        document.getElementById("addProduct").addEventListener("click", function () {
+            // Get currently selected product IDs
+            const selectedProductIds = [];
+            document.querySelectorAll("select[name^='Products'][name$='.ProductId']").forEach(select => {
+                if (select.value) {
+                    selectedProductIds.push(select.value);
+                }
+            });
 
-    const productSection = document.getElementById("productSection");
-    const newProduct = document.createElement("div");
-    newProduct.classList.add("productItem");
-    
-    newProduct.innerHTML = `
+            // Check if there are available products to add
+            const availableProducts = filteredProducts.filter(product => !selectedProductIds.includes(product.ProductId));
+
+            if (availableProducts.length === 0) {
+                alert("No more products available for this manufacturer");
+                return;
+            }
+
+            const productSection = document.getElementById("productSection");
+            const newProduct = document.createElement("div");
+            newProduct.classList.add("productItem");
+
+            newProduct.innerHTML = `
         <div class="form-group">
             <label for="ProductId">Product ID</label>
             <select class="form-control" name="Products[${productCount}].ProductId" required>
@@ -329,140 +339,141 @@ document.getElementById("addProduct").addEventListener("click", function () {
 
         <hr />
     `;
-    productSection.appendChild(newProduct);
-    
-    // Add event listener to the newly created remove button
-    newProduct.querySelector('.remove-product').addEventListener('click', function() {
-        productSection.removeChild(newProduct);
-        filterProducts();  // Re-filter when a product is removed
-    });
-    
-    productCount++;
-    
-    // Apply the filter to update all dropdowns including the new one
-    filterProducts();
-    // Update the fields based on status
-    updateFieldsBasedOnStatus();
-});
+            productSection.appendChild(newProduct);
 
-// Add change event listeners to all product selects
-document.addEventListener('change', function(event) {
-    if (event.target.name && event.target.name.startsWith('Products') && event.target.name.endsWith('.ProductId')) {
-        filterProducts();
-    }
-    
-    // Update fields when status changes
-    if (event.target.id === 'Status') {
-        updateFieldsBasedOnStatus();
-    }
-});
+            // Add event listener to the newly created remove button
+            newProduct.querySelector('.remove-product').addEventListener('click', function () {
+                productSection.removeChild(newProduct);
+                filterProducts();  // Re-filter when a product is removed
+            });
 
-// Add event listener to existing remove buttons
-document.querySelectorAll('.remove-product').forEach(button => {
-    button.addEventListener('click', function() {
-        const productItem = this.closest('.productItem');
-        const reorderProductId = productItem.querySelector('input[name$=".ReorderProductId"]')?.value;
-        const reorderId = document.querySelector('input[name="ReorderId"]').value;
-        
-        if (reorderProductId) {
-            // If this is an existing product with a ReorderProductId, send delete request to server
-            if (confirm('Are you sure you want to delete this product?')) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/staff/reorder/delete_product';
-                form.style.display = 'none';
-                
-                // Add CSRF token
-                const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '__RequestVerificationToken';
-                csrfInput.value = csrfToken;
-                form.appendChild(csrfInput);
-                
-                // Add reorder_product_Id
-                const reorderProductIdInput = document.createElement('input');
-                reorderProductIdInput.type = 'hidden';
-                reorderProductIdInput.name = 'reorder_product_Id';
-                reorderProductIdInput.value = reorderProductId;
-                form.appendChild(reorderProductIdInput);
-                
-                // Add reorderId
-                const reorderIdInput = document.createElement('input');
-                reorderIdInput.type = 'hidden';
-                reorderIdInput.name = 'reorderId';
-                reorderIdInput.value = reorderId;
-                form.appendChild(reorderIdInput);
-                
-                document.body.appendChild(form);
-                form.submit();
-            }
-        } else {
-            // If this is a new product (no ReorderProductId yet), just remove from DOM
-            productItem.parentNode.removeChild(productItem);
+            productCount++;
+
+            // Apply the filter to update all dropdowns including the new one
             filterProducts();
+            // Update the fields based on status
+            updateFieldsBasedOnStatus();
+        });
+
+        // Add change event listeners to all product selects
+        document.addEventListener('change', function (event) {
+            if (event.target.name && event.target.name.startsWith('Products') && event.target.name.endsWith('.ProductId')) {
+                filterProducts();
+            }
+
+            // Update fields when status changes
+            if (event.target.id === 'Status') {
+                updateFieldsBasedOnStatus();
+            }
+        });
+
+        // Add event listener to existing remove buttons
+        document.querySelectorAll('.remove-product').forEach(button => {
+            button.addEventListener('click', function () {
+                const productItem = this.closest('.productItem');
+                const reorderProductId = productItem.querySelector('input[name$=".ReorderProductId"]')?.value;
+                const reorderId = document.querySelector('input[name="ReorderId"]').value;
+
+                if (reorderProductId) {
+                    // If this is an existing product with a ReorderProductId, send delete request to server
+                    if (confirm('Are you sure you want to delete this product?')) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/staff/reorder/delete_product';
+                        form.style.display = 'none';
+
+                        // Add CSRF token
+                        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '__RequestVerificationToken';
+                        csrfInput.value = csrfToken;
+                        form.appendChild(csrfInput);
+
+                        // Add reorder_product_Id
+                        const reorderProductIdInput = document.createElement('input');
+                        reorderProductIdInput.type = 'hidden';
+                        reorderProductIdInput.name = 'reorder_product_Id';
+                        reorderProductIdInput.value = reorderProductId;
+                        form.appendChild(reorderProductIdInput);
+
+                        // Add reorderId
+                        const reorderIdInput = document.createElement('input');
+                        reorderIdInput.type = 'hidden';
+                        reorderIdInput.name = 'reorderId';
+                        reorderIdInput.value = reorderId;
+                        form.appendChild(reorderIdInput);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                } else {
+                    // If this is a new product (no ReorderProductId yet), just remove from DOM
+                    productItem.parentNode.removeChild(productItem);
+                    filterProducts();
+                }
+            });
+        });
+
+        // Add form submission validation
+        document.querySelector('form').addEventListener('submit', function (event) {
+            // Check defect quantity validation
+            const valid = validateDefectQuantities();
+            if (!valid) {
+                event.preventDefault();
+                // Display error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger';
+                errorDiv.textContent = 'Defect quantity must be less than or equal to quantity';
+
+                // Remove any existing error messages
+                const existingErrors = document.querySelectorAll('.alert-danger:not([role="alert"])');
+                existingErrors.forEach(error => error.remove());
+
+                // Insert error at top of form
+                this.insertBefore(errorDiv, this.firstChild);
+
+                // Scroll to top of form
+                window.scrollTo(0, this.offsetTop);
+            }
+        });
+
+        // Function to validate defect quantities
+        function validateDefectQuantities() {
+            let valid = true;
+
+            // Get all product items
+            const productItems = document.querySelectorAll('.productItem');
+
+            productItems.forEach(item => {
+                const quantity = parseInt(item.querySelector('input[name$=".Quantity"]').value) || 0;
+                const defectQuantity = parseInt(item.querySelector('input[name$=".DefectQuantity"]').value) || 0;
+
+                if (defectQuantity > quantity) {
+                    valid = false;
+                    // Highlight the invalid field
+                    const defectInput = item.querySelector('input[name$=".DefectQuantity"]');
+                    defectInput.classList.add('is-invalid');
+                } else {
+                    // Remove highlighting if it was previously invalid
+                    const defectInput = item.querySelector('input[name$=".DefectQuantity"]');
+                    defectInput.classList.remove('is-invalid');
+                }
+            });
+
+            return valid;
         }
-    });
-});
 
-// Add form submission validation
-document.querySelector('form').addEventListener('submit', function(event) {
-    // Check defect quantity validation
-    const valid = validateDefectQuantities();
-    if (!valid) {
-        event.preventDefault();
-        // Display error message
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'alert alert-danger';
-        errorDiv.textContent = 'Defect quantity must be less than or equal to quantity';
-        
-        // Remove any existing error messages
-        const existingErrors = document.querySelectorAll('.alert-danger:not([role="alert"])');
-        existingErrors.forEach(error => error.remove());
-        
-        // Insert error at top of form
-        this.insertBefore(errorDiv, this.firstChild);
-        
-        // Scroll to top of form
-        window.scrollTo(0, this.offsetTop);
-    }
-});
+        // Initialize all when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            filterProducts();
+            updateFieldsBasedOnStatus();
+        });
 
-// Function to validate defect quantities
-function validateDefectQuantities() {
-    let valid = true;
-    
-    // Get all product items
-    const productItems = document.querySelectorAll('.productItem');
-    
-    productItems.forEach(item => {
-        const quantity = parseInt(item.querySelector('input[name$=".Quantity"]').value) || 0;
-        const defectQuantity = parseInt(item.querySelector('input[name$=".DefectQuantity"]').value) || 0;
-        
-        if (defectQuantity > quantity) {
-            valid = false;
-            // Highlight the invalid field
-            const defectInput = item.querySelector('input[name$=".DefectQuantity"]');
-            defectInput.classList.add('is-invalid');
-        } else {
-            // Remove highlighting if it was previously invalid
-            const defectInput = item.querySelector('input[name$=".DefectQuantity"]');
-            defectInput.classList.remove('is-invalid');
-        }
-    });
-    
-    return valid;
-}
-
-// Initialize all when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    filterProducts();
-    updateFieldsBasedOnStatus();
-});
-
-// Call filterProducts and updateFieldsBasedOnStatus initially to set up the initial state
-filterProducts();
-updateFieldsBasedOnStatus();
+        // Call filterProducts and updateFieldsBasedOnStatus initially to set up the initial state
+        filterProducts();
+        updateFieldsBasedOnStatus();
     </script>
 </body>
+
 </html>

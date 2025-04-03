@@ -47,3 +47,5 @@
 [4/1/2025 5:17:31 PM] Authentication attempt by user: john.doe@example.com
 [4/1/2025 5:17:31 PM] Authentication failed for user: john.doe@example.com. Reason: User not found
 [4/2/2025 10:54:37 PM] Authentication attempt by user: john.marston@example.com
+[3/4/2025 12:02:48 PM] Authentication attempt by user: regine@email.com
+[3/4/2025 12:02:48 PM] Authentication succeeded for user: regine@email.com (ID: 39)
