@@ -67,7 +67,7 @@ namespace CleanBrilliantCompany.Controllers
             if (product == null)
             {
                 TempData["Error"] = "Product not found.";
-                return RedirectToAction("GetAllProducts");
+                return RedirectToAction("viewProductDetails");
             }
 
             var productDetails = product.GetProductDetails();
