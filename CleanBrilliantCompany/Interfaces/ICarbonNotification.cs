@@ -5,12 +5,34 @@ using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Interfaces
 {
+    /// <summary>
+    /// interface for retrieving carbon emission data from items and orders
+    /// </summary>
     public interface ICarbonNotification
     {
-        Task<IEnumerable<Alert>> GetAllAlertsAsync();
-        Task<Alert> GetAlertByIdAsync(int id);
-        Task<int> CreateAlertAsync(Alert alert);
-        Task<bool> UpdateAlertAsync(Alert alert);
-        Task<bool> DeleteAlertAsync(int id);
+        /// <summary>
+        /// retrieves item carbon footprint data
+        /// </summary>
+        Task RetrieveItemEmission();
+
+        /// <summary>
+        /// retrieves order carbon footprint data
+        /// </summary>
+        Task RetrieveOrderEmission();
+
+        /// <summary>
+        /// gets the list of item carbon footprints
+        /// </summary>
+        List<ItemCarbonFootprintRDM> GetItemEmission();
+
+        /// <summary>
+        /// gets the list of order carbon footprints
+        /// </summary>
+        List<OrderCarbonFootprintRDM> GetOrderEmission();
+
+        /// <summary>
+        /// calculates total emissions for a specific month and year
+        /// </summary>
+        Task<decimal> GetTotalEmissionsForMonthAsync(int month, int year);
     }
 }

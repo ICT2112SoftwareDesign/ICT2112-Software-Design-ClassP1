@@ -1,10 +1,10 @@
 using CleanBrilliantCompany.Data;
 using Microsoft.EntityFrameworkCore;
 using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Controllers;
+using CleanBrilliantCompany.Services;
+using CleanBrilliantCompany.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 // Enable logging
@@ -16,13 +16,20 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IItemCarbonFootprintDB, ItemCFMapper>();
+builder.Services.AddScoped<IOrderCarbonFootprintDB, OrderCFMapper>();
+
 // Register async dependencies
 builder.Services.AddScoped<IIngredientDB, IngredientGateway>();
 builder.Services.AddScoped<IToxicityClassificationStrategy, ToxicityClassificationStrategy>();
 builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 
+// Alert services
 builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
-builder.Services.AddScoped<ICarbonNotification, CarbonNotification>();
+builder.Services.AddScoped<ICarbonNotification, CarbonOrderItemAnalyticManager>();
+builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddHostedService<MonthlyGoalCheckService>();
+builder.Services.AddSignalR();
 
 
 builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
@@ -33,7 +40,8 @@ builder.Services.AddScoped<IPredictionStrategy, PredictionSSA>();
 builder.Services.AddScoped<IPredictionStrategy, PredictionSMA>();
 
 builder.Services.AddScoped<CarbonOrderAnalyticManager>();
-builder.Services.AddScoped<CarbonOrderAnalyticManager>();
+builder.Services.AddScoped<IItemCF, ItemCarbonFootprintControl>();
+builder.Services.AddScoped<IOrderCF, OrderCarbonFootprintControl>();
 
 var app = builder.Build();
 
@@ -48,6 +56,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
+
+// Map the hub endpoint before controller routes
+app.MapHub<AlertHub>("/alertHub");
 
 app.MapControllerRoute(
     name: "default",
