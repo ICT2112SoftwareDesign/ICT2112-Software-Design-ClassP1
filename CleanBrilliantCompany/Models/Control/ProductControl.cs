@@ -127,7 +127,7 @@ namespace CleanBrilliantCompany.Models.Control
         // public Dictionary<string, List<StockHistory>> getStockHistoryByBatch(int batchCode)
         public List<StockHistory> getStockHistoryByBatch(int batchCode)
         {
-            List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); // Return this if only want list of stockHistory
+            //List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); // Return this if only want list of stockHistory
             // var stockHistoryDictionary = new Dictionary<string, List<StockHistory>>(); // Return this if dictionary, Key = stockDate
             // foreach (var stockHistory in stockHistories)
             // {
@@ -141,7 +141,14 @@ namespace CleanBrilliantCompany.Models.Control
             //         stockHistoryDictionary[stockTakeDateKey].Add(stockHistory);
             //     }
             // }
-            return stockHistories;
+            //return stockHistories;
+            List<StockHistory> allHistories = _productMapper.findAllStockHistory();
+            var filteredHistories = allHistories
+                .Where(history => history.GetBatchCode() == batchCode)
+                .ToList();
+
+            return filteredHistories;
+            
         }
 
         public Dictionary<int, List<StockHistory>> getStockHistoryByDate(DateOnly stockTakeDate) 

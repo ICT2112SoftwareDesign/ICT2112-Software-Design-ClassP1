@@ -27,6 +27,7 @@ public class AgingDashboardRdm : Dashboard
     public Dictionary<int, List<AbstractAnalyticsDetails>> getBatchAnalyticsMap() => batchAnalyticsMap;
     private void setBatchAnalyticsMap(Dictionary<int, List<AbstractAnalyticsDetails>> batchAnalyticsMap) => this.batchAnalyticsMap = batchAnalyticsMap;
 
+
     public Dictionary<int, List<int>> getProductToBatchMap() => productToBatchMap;
     public void addBatchtoProductMap(int productId, int batchCode)
     {
@@ -103,60 +104,14 @@ public class AgingDashboardRdm : Dashboard
                 batchCode, 
                 quantity); 
 
-            // add them to analytics map
-            addBatchAnalytics(batchCode, storageLifeCycleAnalytics); 
-            addBatchAnalytics(batchCode, stockTurnOverAnalytics); 
-        }
-    }
-    public void populateAnalytics(List<RawBatchData> rawBatchData, List<RawStockHistoryData> rawStockHistoryData)
-    {
-        // so for each rawanalyticsdata i need to create 2 instances since 
-        // i have 2 types of agingAnalytics
-
-        // convert stockHistory to a dictionary first 
-        Dictionary<int, Dictionary<DateOnly, int>> stockHistoryMap = rawStockHistoryData
-        .GroupBy(x => x.BatchCode)
-        .ToDictionary(
-            //batchCode as the dictionary key
-            group => group.Key,
-            //each groups get converted to a dictionary
-            group => group.ToDictionary(x => x.Date, x => x.Quantity)
-            );
-
-        //step 2 : loop through the rawBatchData and create the analytics 
-        foreach (var rawBatch in rawBatchData)
-        {
-            int batchCode = rawBatch.BatchCode;
-            int productId = rawBatch.ProductId;
-
-            // ensure that the batchCode is in the analytics map 
-            if (!batchAnalyticsMap.ContainsKey(batchCode))
-            {
-                batchAnalyticsMap.Add(batchCode, new List<AbstractAnalyticsDetails>());
-            }
-
-            // check the batch for its product code, then see if it exist in the productToBatchMap, if yes add to it if not create a new entry 
-            addBatchtoProductMap(productId, batchCode);
-
-            //create storage lifecycle Analytics 
-            var storageLifeCycleAnalytics = new StorageLifeCycleAnalyticsDetails(
-                batchCode,
-                rawBatch.ReceiveDate,
-                rawBatch.ExpiryDate);
-
-            // create stock turnover analytics 
-            var stockTurnOverAnalytics = new StockTurnOverAnalyticsDetails(
-                batchCode,
-                rawBatch.Quantity);
-
             // set the quantity per day for the stockTurnOverAnalytics
             if (stockHistoryMap.ContainsKey(batchCode))
             {
                 stockTurnOverAnalytics.setQuantityPerDay(stockHistoryMap[batchCode]);
             }
-            // add the analytics to the batchAnalyticsMap 
-            addBatchAnalytics(batchCode, storageLifeCycleAnalytics);
-            addBatchAnalytics(batchCode, stockTurnOverAnalytics);
+            // add them to analytics map
+            addBatchAnalytics(batchCode, storageLifeCycleAnalytics); 
+            addBatchAnalytics(batchCode, stockTurnOverAnalytics); 
         }
     }
 
@@ -180,27 +135,6 @@ public class AgingDashboardRdm : Dashboard
     {
         return batchAnalyticsMap.ContainsKey(batchCode) ? batchAnalyticsMap[batchCode] : null;
     }
-
-    // public List<int> getExpiringProducts
-    // getStorageDurationForBatch()
-    // public int GetExpiredBatchCount()
-    // {
-    //     int count = 0;
-
-    //     foreach (var analyticsList in batchAnalyticsMap.Values)
-    //     {
-    //         foreach (var detail in analyticsList)
-    //         {
-    //             if (detail is StorageLifeCycleAnalyticsDetails s && s.IsExpired)
-    //             {
-    //                 count++;
-    //                 break;
-    //             }
-    //         }
-    //     }
-
-    //     return count;
-    // }
 
 
 

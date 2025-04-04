@@ -68,9 +68,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 // Add DbContext (if using Entity Framework Core)
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString)
-);
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//     options.UseSqlServer(connectionString)
+// );
 
 // Register services
 
@@ -99,7 +99,7 @@ builder.Services.AddScoped<IDashboardFacade, DashboardFacade>();
 
 builder.Services.AddScoped<IOrderRange>(); //TODO to be modified with actual ISale
 builder.Services.AddScoped<TempForecastIProduct>(); //TODO to be modified with actual ISale
-builder.Services.AddSession();
+//builder.Services.AddSession();
 
 builder.Services.AddMemoryCache();
 
@@ -144,30 +144,17 @@ builder.Services.AddScoped<ProductControl>();
 builder.Services.AddScoped<ProductMapper>();
 builder.Services.AddScoped<ProductFactory, LiquidProductFactory>();
 builder.Services.AddScoped<ProductFactory, SolidProductFactory>();
-// register fake context as a singleton
-//builder.Services.AddSingleton<FakeDbContext>();
 
-// register aging mapper to use fakedb context
-//builder.Services.AddScoped<AgingMapper>();
 
+//==================================================
+//aging
 builder.Services.AddScoped<AgingRepo, AgingMapper>();
-
-// register the aging control
 builder.Services.AddScoped<AgingControl>();
+//================================================
 
-// simulated version  (for product batches and stockhistory)
-//builder.Services.AddDbContext<SimulatedDbContext>(options =>
-//    options.UseSqlServer(connectionString)
-//);
-
-//register the fakebatch interface
-// builder.Services.AddScoped<FakeBatchInterface>();
-
-// //register the fakeproduct interface
-// builder.Services.AddScoped<FakeProductInterface>();
 
 builder.Services.AddScoped<IAlertService, InAppAlert>();
-builder.Services.AddControllersWithViews();
+// builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<CostMapper>();
 builder.Services.AddScoped<CostControl>();
 //builder.Services.AddScoped<Team6IProduct, MockProduct>(); // Simulation
@@ -188,9 +175,9 @@ builder.Services.AddHttpClient<IAIService, AIService>();
 builder.Services.AddScoped<ReportGenerator>();
 builder.Services.AddScoped<ReportControl>();
 builder.Services.AddScoped<ReportRepo, ReportMapper>();
-builder.Services.AddScoped<AgingControl>();
-builder.Services.AddScoped<ManufacturerControl>();
-builder.Services.AddScoped<CostControl>();
+//builder.Services.AddScoped<AgingControl>();
+//builder.Services.AddScoped<ManufacturerControl>();
+//builder.Services.AddScoped<CostControl>();
 builder.Services.AddScoped<IForecastReportDetails, ForecastFacade>();
 
 builder.Services.AddScoped<DashboardFacade>();

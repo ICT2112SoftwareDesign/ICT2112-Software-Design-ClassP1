@@ -231,7 +231,7 @@
                 const selectedEndDate = endDateInput.value;
                 if (selectedEndDate) 
                 {
-                    console.log("setting max")
+                    
                     startDateInput.max = selectedEndDate;
 
                     if (startDateInput.value > selectedEndDate) 
@@ -240,7 +240,7 @@
                     }
                 } else 
                 {
-                    console.log("removing max")
+                    
                     startDateInput.removeAttribute("max");
                 }
             });
@@ -330,8 +330,6 @@
                 var jsChartId = $"{productKey}{metric}";
                 var valuesJson = Json.Serialize(batchData.Values);
                 var labelsJson = Json.Serialize(batchData.Keys);
-                //Console.WriteLine("valuesJson" + valuesJson); 
-                //Console.WriteLine("labelsJson" + labelsJson); 
                 var axis = metric == "StorageDuration" ? "y" : "x";
 
                 // need to mod the data for deadstockpercentage as each value should be 100 percent but 2 different colors 
@@ -478,9 +476,6 @@
 
     function renderChart ( chartId, chartLabel, labels, data , barColors = null, chartType = "bar", indexAxis = "x")
     {
-        console.log ("chartLabel", chartLabel); 
-        console.log ("labels", labels); 
-        console.log ("data", data); 
         const ctx = document.getElementById(chartId).getContext('2d'); 
 
         // 🧠 Check for boolean values and convert accordingly
@@ -606,11 +601,8 @@
             }
             var productLabels = new List<string>();
             var productValues = new List<float>();
-            Console.WriteLine("Doing Metric: " + metric); 
             foreach (var product in productToBatchMap)
             {
-                Console.WriteLine("product" + product.Key); 
-                Console.WriteLine("=============================="); 
                 // find the name of the product 
                 var productName = productToNameMap[product.Key]; 
 
@@ -625,11 +617,7 @@
                     .Select(kv => Convert.ToSingle(kv.Value))
                     .ToList();
                 
-                Console.WriteLine("matchingValues Count: " + matchingValues.Count); 
-                foreach (var value in matchingValues)
-                {
-                    Console.Write ("Value: " + value);
-                }
+              
                 // so if the metric is remainingdays 
                 // we will track how many batches is expiring soon, medium and safe 
                 if (matchingValues.Any())
@@ -640,16 +628,12 @@
 
                 }
 
-                Console.WriteLine(" ");
-                Console.WriteLine("End of product " + product.Key); 
                 
             }
 
             var safeId = metric.Replace(" ", "").Replace("-", "").Replace(".", "");
             var labelsJson = Json.Serialize(productLabels);
             var valuesJson = Json.Serialize(productValues);
-            Console.WriteLine("Creating the product chart for " + metric); 
-
             <text>
                 const canvas_@safeId = document.createElement('canvas');
                 canvas_@(safeId).id = "product-chart-@safeId";
@@ -674,7 +658,7 @@
 
 
 
-            Console.WriteLine("End of Metric");
+    
         }
     }
 
