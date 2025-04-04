@@ -2,19 +2,17 @@
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
-// using CleanBrilliantCompany.Models.ViewModel;
-using Microsoft.Extensions.Configuration;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    [Route("inventory/management/reservation")]
+    [Route("inventory/management/stockflow/reservation")]
     public class ReservationController : Controller
     {
         private readonly ReservationControl _reservationControl;
 
-        public ReservationController(IConfiguration configuration)
+        public ReservationController(IConfiguration configuration, IItemUpdate itemUpdate, IReserve reserve)
         {
-            _reservationControl = new ReservationControl(configuration);
+            _reservationControl = new ReservationControl(configuration, itemUpdate, reserve);
         }
 
         // default get all items
@@ -55,7 +53,7 @@ namespace CleanBrilliantCompany.Controllers
             string result = await _reservationControl.ReserveStock(reservedQuantity, warehouseId, productId, reservationPurpose, staffId);
             if (result.Contains("Error"))
             {
-                return BadRequest(new { error = "Failed to reserve stock." });
+                return BadRequest(new { error = "Failed to reserve stock. : " + result });
             }
             else
             {   
@@ -63,17 +61,79 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("updateReservationQuantity")]
-        public async Task<IActionResult> updateReservationQuantity(int reservationId, int quantity, int staffId)
+        [HttpGet]
+        [Route("reserveproducts")]
+        public async Task<IActionResult> Reserve()
         {
-            Console.WriteLine("ReservationID: " + reservationId);
-            Console.WriteLine("New Quantity: " + quantity);
+            List<Dictionary<string, object>> products = await _reservationControl.GetProductList();
 
-            string result = await _reservationControl.UpdateReservationQuantity(reservationId, quantity, staffId);
+            return View(products);
+        }
+
+        [HttpPost]
+        [Route("returnReservation")]
+        public async Task<IActionResult> returnReservation(int reservationId, int staffId)
+        {
+            Reservation reservation = await _reservationControl.GetReservationById(reservationId);
+            string result = await _reservationControl.ReturnReservedStockToinventory(reservation, staffId);
             if (result.Contains("Error"))
             {
-                return BadRequest(new { error = "Failed to update quantity." });
+                return BadRequest(new { error = "Failed to return reservation : " + result });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        [Route("updateReservation")]
+        public async Task<IActionResult> updateReservation(int reservationId, int? reservedQuantity, string reservationPurpose, int staffId)
+        {
+            Console.WriteLine("ReservationID: " + reservationId);
+            Console.WriteLine("New Quantity: " + reservedQuantity);
+            Console.WriteLine("New Purpose: " + reservationPurpose);
+            string resultq = "", resultp = "";
+
+            if (reservedQuantity != null)
+            {
+                resultq = await _reservationControl.UpdateReservationQuantity(reservationId, (int)reservedQuantity, staffId);
+                Console.WriteLine("UpdateReservationQuantity Runned");
+            }
+            if (reservationPurpose !=null)
+            {
+                resultp = await _reservationControl.UpdateReservationPurpose(reservationId, reservationPurpose, staffId);
+                Console.WriteLine("UpdateReservationPurpose Runned");
+            }
+            if (resultq.Contains("Error") && resultp.Contains("Error"))
+            {
+                return BadRequest(new { error = "Failed to update quantity & purpose. : " + resultq + " : " + resultp });
+            }
+            else if (resultq.Contains("Error"))
+            {
+                return BadRequest(new { error = "Failed to update quantity. : " + resultq });
+            }
+            else if (resultp.Contains("Error"))
+            {
+                return BadRequest(new { error = "Failed to update purpose. : " + resultp });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        [Route("updateReservationQuantity")]
+        public async Task<IActionResult> updateReservationQuantity(int reservationId, int reservedQuantity, int staffId)
+        {
+            Console.WriteLine("ReservationID: " + reservationId);
+            Console.WriteLine("New Quantity: " + reservedQuantity);
+
+            string result = await _reservationControl.UpdateReservationQuantity(reservationId, reservedQuantity, staffId);
+            if (result.Contains("Error"))
+            {
+                return BadRequest(new { error = "Failed to update quantity. : " + result });
             }
             else
             {
@@ -91,7 +151,7 @@ namespace CleanBrilliantCompany.Controllers
             string result = await _reservationControl.UpdateReservationPurpose(reservationId, reservationPurpose, staffId);
             if (result.Contains("Error"))
             {
-                return BadRequest(new { error = "Failed to update purpose." });
+                return BadRequest(new { error = "Failed to update purpose. : " + result });
             }
             else
             {
