@@ -334,7 +334,7 @@ namespace CleanBrilliantCompany.Mappers
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@itemStatus", itemStatus).ToString();
+                    command.Parameters.AddWithValue("@itemStatus", itemStatus.ToString());
                     // Execute the query and get the results
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -357,7 +357,9 @@ namespace CleanBrilliantCompany.Mappers
                                     reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
                                     reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
                                     reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
-                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
+                                    reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId")),
+                                    "",
+                                    reader.GetDateTime(reader.GetOrdinal("expiryDate"))
                                 );
                                 // Add the item to the list
                                 items.Add(item);
