@@ -194,7 +194,7 @@ namespace CleanBrilliantCompany.Models.Control
                             Console.WriteLine($"Error updating item: {ex.Message}");
                         }
                     }
-                    quantity = reservedItems.Count + reservedQuantity;
+                    quantity = reservedItems.Count;
                 }
                 else
                 {
