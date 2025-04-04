@@ -22,14 +22,6 @@ namespace CleanBrilliantCompany.ReportManagement.Services
             _httpClient.Timeout = TimeSpan.FromSeconds(120);
         }
 
-        //     public async Task<string> GenerateAnalysis(string inputData)
-        // {
-        //     var response = await _httpClient.GetAsync("https://api.openai.com/v1/models");
-        //     response.EnsureSuccessStatusCode();
-
-        //     return await response.Content.ReadAsStringAsync();
-        // }
-
         public async Task<string> GenerateAnalysis(string inputData)
         {
             var requestBody = new

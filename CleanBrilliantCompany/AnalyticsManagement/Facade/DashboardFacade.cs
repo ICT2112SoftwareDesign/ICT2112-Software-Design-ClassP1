@@ -1,5 +1,4 @@
 using CleanBrilliantCompany.Control;
-using CleanBrilliantCompany.ForecastManagement.Interface;
 using CleanBrilliantCompany.Models.Forecast;
 
 public class DashboardFacade : IDashboardFacade
@@ -8,50 +7,58 @@ public class DashboardFacade : IDashboardFacade
     private readonly ManufacturerControl manufacturerControl;
     private readonly CostControl costControl;
     private readonly InventoryControl inventoryControl;
-    private readonly IForecastReportDetails forecastControl;
-
 
     public DashboardFacade(
         AgingControl agingControl,
         ManufacturerControl manufacturerControl,
         CostControl costControl,
-        InventoryControl inventoryControl,
-        IForecastReportDetails forecastControl
-        )
+        InventoryControl inventoryControl)
     {
         this.agingControl = agingControl;
         this.manufacturerControl = manufacturerControl;
         this.costControl = costControl;
         this.inventoryControl = inventoryControl;
-        this.forecastControl = forecastControl;
     }
 
-
-    public AgingControl GetAgingControl() => agingControl;
-    public ManufacturerControl GetManufacturerControl() => manufacturerControl;
-    public CostControl GetCostControl() => costControl;
-    public InventoryControl GetInventoryControl() => inventoryControl;
-    public IForecastReportDetails GetForecastControl() => forecastControl;
-    public List<Dashboard> getDashboardsData()
+    public List<Dashboard> GetDashboardsData()
     {
-        // this thing just calls every dashboard's getDashboardData method 
-        List<Dashboard> dashboards = new List<Dashboard>();
-
-        // go to control class and get the dashboard from aging 
-        Dashboard agingDashboard = agingControl.GetLatestDashboard();
-        dashboards.Add(agingDashboard);
-
-        Dashboard manufacturerDashboard = manufacturerControl.GetLatestDashboard();
-        dashboards.Add(manufacturerDashboard);
-
-        Dashboard costDashboard = costControl.GetLatestDashboard();
-        dashboards.Add(costDashboard);
-
-        string inventoryReport = inventoryControl.GenerateReport();
-
-        return dashboards;
+        return new List<Dashboard>
+        {
+            agingControl.GetLatestDashboard(),
+            manufacturerControl.GetLatestDashboard(),
+            costControl.GetLatestDashboard()
+            inventoryControl.GetLatestDashboard()
+        };
     }
-    public string GetForecastReport() => forecastControl.GenerateReport();
 
+    public string GenerateCombinedReport(List<string> selected)
+    {
+        var sb = new System.Text.StringBuilder();
 
+        if (selected.Contains("Aging"))
+        {
+            sb.AppendLine("===== AGING DASHBOARD =====");
+            sb.AppendLine(agingControl.GenerateReport());
+        }
+
+        if (selected.Contains("Manufacturer"))
+        {
+            sb.AppendLine("===== MANUFACTURER DASHBOARD =====");
+            sb.AppendLine(manufacturerControl.GenerateReport());
+        }
+
+        if (selected.Contains("Cost"))
+        {
+            sb.AppendLine("===== COST DASHBOARD =====");
+            sb.AppendLine(costControl.GenerateReport());
+        }
+
+        if (selected.Contains("Inventory"))
+        {
+            sb.AppendLine("===== INVENTORY DASHBOARD =====");
+            sb.AppendLine(inventoryControl.GenerateReport());
+        }
+
+        return sb.ToString();
+    }
 }

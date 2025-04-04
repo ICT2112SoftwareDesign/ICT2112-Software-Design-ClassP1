@@ -2,13 +2,13 @@ using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanBrilliantCompany.Mapper
+namespace CleanBrilliantCompany.Gateway
 {
-    public class ReportMapper : ReportRepo
+    public class ReportGateway : ReportRepo
     {
         private readonly ApplicationDbContext _db;
 
-        public ReportMapper(ApplicationDbContext db)
+        public ReportGateway(ApplicationDbContext db)
         {
             _db = db;
         }

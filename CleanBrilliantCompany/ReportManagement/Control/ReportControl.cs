@@ -20,37 +20,6 @@ namespace CleanBrilliantCompany.Control
             _dashboardFacade = dashboardFacade;
         }
 
-        public async Task<Report> GenerateReportAsync()
-        {
-            // Create new report
-            var report = new Report
-            {
-                ReportName = "Q1 Performance Report",
-                ReportType = "Sales"
-            };
-
-
-            // report.ReportDataText = aiSummary;
-
-            // Generate PDF from report
-            report.ReportData = _reportGenerator.GeneratePDF(report);
-
-            // Insert into DB
-            _repo.InsertReport(report);
-
-            var log = new ReportLog
-            {
-                Report = report,
-                GeneratedDate = DateTime.Now,
-                Status = "Generated"
-            };
-            _repo.InsertReportLog(log);
-
-            await _repo.SaveChangesAsync();
-
-            return report;
-        }
-
         public async Task<Report> GenerateCustomReportAsync(List<string> selected)
         {
             var sb = new StringBuilder();
@@ -106,7 +75,6 @@ namespace CleanBrilliantCompany.Control
             Console.WriteLine("AI Summary:\n" + aiSummary);
             return report;
         }
-
 
 
         public async Task<List<ReportLog>> GetReportLogsAsync(int reportID)

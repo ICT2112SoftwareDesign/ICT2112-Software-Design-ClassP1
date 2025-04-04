@@ -14,7 +14,5 @@ namespace CleanBrilliantCompany.Models
 
         public DateTime GeneratedDate { get; set; }
         public string Status { get; set; } = string.Empty;
-
-        public Report? Report { get; set; } // Navigation property (maybe delete later)
     }
 }
