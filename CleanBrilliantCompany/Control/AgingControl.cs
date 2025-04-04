@@ -5,21 +5,14 @@ public class AgingControl : IStorageDuration
 {
     private Dashboard agingDashboard;
     private AgingRepo agingMapper;
+    private IProduct productInterface;
+    private IBatch batchInterface; 
 
-
-    private IProduct fakeProductInterface;
-    private IBatch fakeBatchInterface; 
-
-    public AgingControl(
-        AgingRepo agingMapper,
-        IProduct fakeProductInterface,
-        IBatch fakeBatchInterface
-        )
+    public AgingControl(AgingRepo agingMapper, IProduct productInterface, IBatch batchInterface)
     {
         this.agingMapper = agingMapper;
-        // dashboards = new List<AgingDashboardRdm>();
-        this.fakeBatchInterface = fakeBatchInterface;
-        this.fakeProductInterface = fakeProductInterface;
+        this.batchInterface = batchInterface;
+        this.productInterface = productInterface;
         // 🔹 Retrieve data from the database / fake DB
         LoadDashboards();
     }
@@ -64,7 +57,7 @@ public class AgingControl : IStorageDuration
             var productID = product.Key;
             var analyticsList = product.Value;
             // get the product details 
-            Product productData = fakeProductInterface.getProductDetails(productID); 
+            Product productData = productInterface.getProductDetails(productID); 
 
 
             if (productData == null)
@@ -124,8 +117,7 @@ public class AgingControl : IStorageDuration
     {
         dto.Type = 1;
         var dashboard = DashboardFactory.createDashboard(dto);
-        //var fakeInterface = new FakeBatchInterface(); 
-        var batches = fakeBatchInterface.getAllProductBatch();
+        var batches = batchInterface.getAllProductBatch();
         // using the dashboard's requestedStartDate and requestedEndDate
         // i will filter out the batches that are within the date range using the batch's receive date 
 
@@ -141,13 +133,12 @@ public class AgingControl : IStorageDuration
         //! ================================================================
 
         // Retrieve all stock histories for all batches
-        //! var stockHistories = new List<RawStockHistoryData>();
         var stockHistories = new List<StockHistory>(); // Use the correct type for stock histories 
 
         foreach (var batch in filteredBatches)
         {
             Console.WriteLine($"Fetching stock history for batch {batch.retrieveProductBatchInfo()["BatchCode"]}");
-            var stockHistory = fakeBatchInterface.getStockHistoryByBatch((int)batch.retrieveProductBatchInfo()["BatchCode"]);
+            var stockHistory = batchInterface.getStockHistoryByBatch((int)batch.retrieveProductBatchInfo()["BatchCode"]);
             Console.WriteLine($"Found {stockHistory.Count} stock records.");
             if (stockHistory != null)
             {
@@ -165,7 +156,7 @@ public class AgingControl : IStorageDuration
 
     public int getStorageDuration(int batchCode)
     {
-        ProductBatch batch = fakeBatchInterface.getBatchDetails(batchCode); 
+        ProductBatch batch = batchInterface.getBatchDetails(batchCode); 
         if (batch == null)
         {
             Console.WriteLine("⚠ Batch not found.");
