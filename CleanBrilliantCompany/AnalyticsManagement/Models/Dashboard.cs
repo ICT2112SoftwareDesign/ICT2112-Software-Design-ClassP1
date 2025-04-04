@@ -6,13 +6,13 @@ public abstract class Dashboard
     private DateTime? _generatedDate;
     private int _validityDuration;
 
-    protected int Type { get; set; }
+    protected int type { get; set; }
 
-    // 🔹 DashboardId should be set from the database, so allow protected set
-    public int DashboardId { get; protected set; }
+    // 🔹 dashboardId should be set from the database, so allow protected set
+    public int dashboardId { get; protected set; }
 
     // 🔹 Properties with validation
-    public string Name
+    public string name
     {
         get => _name;
         protected set
@@ -23,7 +23,7 @@ public abstract class Dashboard
         }
     }
 
-    public DateTime RequestedStartDate
+    public DateTime requestedStartDate
     {
         get => _requestedStartDate;
         protected set
@@ -34,7 +34,7 @@ public abstract class Dashboard
         }
     }
 
-    public DateTime RequestedEndDate
+    public DateTime requestedEndDate
     {
         get => _requestedEndDate;
         protected set
@@ -45,7 +45,7 @@ public abstract class Dashboard
         }
     }
 
-    public int ValidityDuration
+    public int validityDuration
     {
         get => _validityDuration;
         protected set
@@ -56,7 +56,7 @@ public abstract class Dashboard
         }
     }
 
-    public DateTime? GeneratedDate
+    public DateTime? generatedDate
     {
         get => _generatedDate;
         protected set
@@ -67,16 +67,15 @@ public abstract class Dashboard
         }
     }
 
-    // 🔹 Constructor for Retrieving from Database (Includes DashboardId)
+    // 🔹 Constructor for retrieving from database (includes dashboardId)
     protected Dashboard(int dashboardId, string name, DateTime requestedStartDate, DateTime requestedEndDate, int validityDuration, int type, DateTime? generatedDate = null)
     {
-        DashboardId = dashboardId;
-        Name = name;
-        RequestedStartDate = requestedStartDate;
-        RequestedEndDate = requestedEndDate;
-        ValidityDuration = validityDuration;
-        GeneratedDate = generatedDate ?? DateTime.Now; // 
-        Type = type;
+        this.dashboardId = dashboardId;
+        this.name = name;
+        this.requestedStartDate = requestedStartDate;
+        this.requestedEndDate = requestedEndDate;
+        this.validityDuration = validityDuration;
+        this.generatedDate = generatedDate ?? DateTime.Now;
+        this.type = type;
     }
-
 }
