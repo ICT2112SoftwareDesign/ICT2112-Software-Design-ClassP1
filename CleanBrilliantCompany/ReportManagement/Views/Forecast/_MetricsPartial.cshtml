@@ -1,4 +1,4 @@
-﻿@model CleanBrilliantCompany.Models.Forecast.ForecastDashboard
+﻿@model             ForecastDashboard
 @{
     Layout = null;
     var currentSortType = ViewBag.CurrentSortType as string ?? "";
@@ -168,11 +168,11 @@
    
     <!-- Price Adjustment Slider (outside the form) -->
     @{
-        var metrics = Model.GetMetrics() ?? new List<CleanBrilliantCompany.Models.Forecast.ForecastMetrics>();
+        var metrics = Model.GetMetrics() ?? new List<ForecastMetrics>();
         var adjustmentFactors = metrics.Select(metric =>
         {
             int adjustmentFactor = 0;
-            if (metric is CleanBrilliantCompany.Models.Forecast.PriceScenarioForecast priceScenario)
+            if (metric is PriceScenarioForecast priceScenario)
             {
                 adjustmentFactor = priceScenario.getAdjustmentFactor();
             }
@@ -317,10 +317,10 @@
 
         </thead>
         <tbody>
-            @foreach (var metric in Model.GetMetrics() ?? new List<CleanBrilliantCompany.Models.Forecast.ForecastMetrics>())
+            @foreach (var metric in Model.GetMetrics() ?? new List<ForecastMetrics>())
             {
                 var adjustmentFactor = 0;
-                if (metric is CleanBrilliantCompany.Models.Forecast.PriceScenarioForecast priceScenario)
+                if (metric is PriceScenarioForecast priceScenario)
                 {
                     adjustmentFactor = priceScenario.getAdjustmentFactor();
                 }

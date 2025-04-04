@@ -1,11 +1,11 @@
-﻿using CleanBrilliantCompany.DTO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.DataSource.Interface;
-using CleanBrilliantCompany.Interfaces.Forecast;
 using CleanBrilliantCompany.Services.Sorting;
+using CleanBrilliantCompany.ForecastManagement.DTO;
+using CleanBrilliantCompany.ForecastManagement.Interface;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Models
 {
     public class ForecastFacade : IForecastReportDetails
 
@@ -37,7 +37,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             _alertService = alertService;
             _forecastDataAdapter = forecastDataAdapter;
         }
-        
+
         public ForecastDashboard generateDashboard(DateTime selectedMonth, int adjustmentFactor = 0)
         {
 
@@ -149,11 +149,11 @@ namespace CleanBrilliantCompany.Models.Forecast
             return trendData;
         }
 
-      
-       
 
 
-        public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth, int productId, String productName, int priceAdjustment)
+
+
+        public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth, int productId, string productName, int priceAdjustment)
         {
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
@@ -227,7 +227,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             return report.ToString();
         }
 
-       
+
 
 
     }

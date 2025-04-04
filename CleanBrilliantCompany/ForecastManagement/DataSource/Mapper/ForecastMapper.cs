@@ -1,6 +1,7 @@
 ﻿using System;
 using CleanBrilliantCompany.DataSource.Interface;
-using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.DbContextEntities;
+using CleanBrilliantCompany.ForecastManagement.Models;
 using CleanBrilliantCompany.Models.Forecast;
 using Microsoft.Identity.Client;
 
@@ -18,12 +19,12 @@ namespace CleanBrilliantCompany.DataSource.Mapper
   
         public void saveDashboard(ForecastDashboard dashboard)
         {
-            ForecastDashboardDTO dashboardDto = toDTO(dashboard);
+            ForecastDashboardTable dashboardDto = toDTO(dashboard);
             _context.ForecastDashboards.Add(dashboardDto);
             _context.SaveChanges();
 
             foreach (ForecastMetrics metric in dashboard.GetMetrics()){
-                MetricDTO metricDto = toDTO(metric, dashboardDto.DashBoardID);
+                ForecastMetricTable metricDto = toDTO(metric, dashboardDto.DashBoardID);
                 _context.ForecastMetrics.Add(metricDto);
             }
             _context.SaveChanges();
@@ -77,16 +78,16 @@ namespace CleanBrilliantCompany.DataSource.Mapper
         //        return null;
         //    }
         //}
-        public ForecastDashboardDTO toDTO(ForecastDashboard dashboard)
+        public ForecastDashboardTable toDTO(ForecastDashboard dashboard)
         {
             int dashBoardId = dashboard.GetDashBoardID();
             DateTime startDate = dashboard.GetStartDate();
             DateTime endDate = dashboard.GetEndDate();
             DateTime generatedDate= dashboard.GetGeneratedDate();
             int validityDuration = dashboard.GetValidityDuration();
-            return new ForecastDashboardDTO(dashBoardId, startDate, endDate, generatedDate);
+            return new ForecastDashboardTable(dashBoardId, startDate, endDate, generatedDate);
         }
-        public ForecastDashboard toEntity(ForecastDashboardDTO dto, List<ForecastMetrics> metrics)
+        public ForecastDashboard toEntity(ForecastDashboardTable dto, List<ForecastMetrics> metrics)
         {
             int dashBoardId = dto.DashBoardID;
             DateTime startDate = dto.StartDate;
@@ -95,14 +96,14 @@ namespace CleanBrilliantCompany.DataSource.Mapper
 
             return new ForecastDashboard(dashBoardId, startDate, endDate, generatedDate, 0, metrics);
         }
-        private MetricDTO toDTO(ForecastMetrics forecastMetrics, int dashboardID)
+        private ForecastMetricTable toDTO(ForecastMetrics forecastMetrics, int dashboardID)
         {
             int metricId = forecastMetrics.getMetricId();
             int productId= forecastMetrics.getProductId();
             int forecastedStock = forecastMetrics.getForecastedStock();
-            return new MetricDTO(dashboardID,metricId,  productId,forecastedStock );
+            return new ForecastMetricTable(dashboardID,metricId,  productId,forecastedStock );
         }
-        private ForecastMetrics toEntity(MetricDTO dto)
+        private ForecastMetrics toEntity(ForecastMetricTable dto)
         {
             return new StockForecast( dto.ProductID, dto.ForecastedStock);
         }

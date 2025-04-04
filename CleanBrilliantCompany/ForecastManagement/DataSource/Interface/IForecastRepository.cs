@@ -1,5 +1,5 @@
-﻿using CleanBrilliantCompany.Interfaces.Forecast;
-using CleanBrilliantCompany.Models.Forecast;
+﻿using CleanBrilliantCompany.ForecastManagement.Models;
+using CleanBrilliantCompany.Interfaces.Forecast;
 
 namespace CleanBrilliantCompany.DataSource.Interface
 {

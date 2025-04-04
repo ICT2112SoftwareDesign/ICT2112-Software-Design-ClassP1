@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Models
 {
     public class PriceScenarioForecast : ForecastMetrics
     {
-       
+
         // Properties
         [JsonInclude]
         private int adjustmentFactor { get; set; }
@@ -40,11 +40,11 @@ namespace CleanBrilliantCompany.Models.Forecast
         public PriceScenarioForecast() { } // for the serializer
 
         [JsonConstructor]
-        public PriceScenarioForecast(int productId, int forecastedStock, String productName,int adjustmentFactor, int pricingAfterAdjustment)
+        public PriceScenarioForecast(int productId, int forecastedStock, string productName, int adjustmentFactor, int pricingAfterAdjustment)
         {
-            this.setProductId(productId);
-            this.setProductName(productName);
-            this.setForecastedStock(forecastedStock);
+            setProductId(productId);
+            setProductName(productName);
+            setForecastedStock(forecastedStock);
             this.adjustmentFactor = adjustmentFactor;
             this.pricingAfterAdjustment = pricingAfterAdjustment;
         }

@@ -1,7 +1,7 @@
 ﻿using CleanBrilliantCompany.DTO;
-using CleanBrilliantCompany.Models.Forecast;
+using CleanBrilliantCompany.ForecastManagement.Models;
 
-namespace CleanBrilliantCompany.Interfaces.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Interface
 {
     public interface IPredictionService
     {

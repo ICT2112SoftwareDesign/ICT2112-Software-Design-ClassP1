@@ -2,8 +2,8 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using CleanBrilliantCompany.DataSource.Interface;
+using CleanBrilliantCompany.ForecastManagement.Models;
 using CleanBrilliantCompany.Models;
-using CleanBrilliantCompany.Models.Forecast;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
@@ -25,13 +25,6 @@ namespace CleanBrilliantCompany.Controllers
             //_cache = cache;
         }
 
-        // Handles user input actions, typically triggered from UI
-        [HttpPost("handleInput")]
-        public IActionResult HandleInput(int productId, int batchId)
-        {
-            // Implement logic to handle input if needed
-            return Ok();
-        }
 
         // Fetches data needed for dashboard view
         [HttpGet("fetchDashboardData")]

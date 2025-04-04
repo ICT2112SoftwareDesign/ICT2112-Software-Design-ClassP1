@@ -1,5 +1,5 @@
-﻿using CleanBrilliantCompany.Interfaces.Forecast;
-using CleanBrilliantCompany.Models.Forecast;
+﻿using CleanBrilliantCompany.ForecastManagement.Interface;
+using CleanBrilliantCompany.ForecastManagement.Models;
 
 namespace CleanBrilliantCompany.Services.Sorting
 {

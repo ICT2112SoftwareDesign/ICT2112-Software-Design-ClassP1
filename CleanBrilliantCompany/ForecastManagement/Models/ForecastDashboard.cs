@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using CleanBrilliantCompany.Interfaces.Forecast;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Models
 {
     public class ForecastDashboard
     {
@@ -28,18 +28,18 @@ namespace CleanBrilliantCompany.Models.Forecast
         private List<ForecastMetrics> MetricsList { get; set; } = new List<ForecastMetrics>();
 
         [JsonInclude]
-        private List<string> AlertItemList { get; set; } = new List<string>(); 
+        private List<string> AlertItemList { get; set; } = new List<string>();
         public ForecastDashboard()
         {
         }
-        public ForecastDashboard(int dashboardID, DateTime startDate, DateTime endDate, DateTime generatedDate, int validityDuration,List<ForecastMetrics> metricsList)
+        public ForecastDashboard(int dashboardID, DateTime startDate, DateTime endDate, DateTime generatedDate, int validityDuration, List<ForecastMetrics> metricsList)
         {
-            this.DashBoardID = dashboardID;
-            this.StartDate= startDate;
-            this.EndDate= endDate;
-            this.GeneratedDate= generatedDate;
-            this.ValidityDuration= validityDuration;
-            this.MetricsList = metricsList;
+            DashBoardID = dashboardID;
+            StartDate = startDate;
+            EndDate = endDate;
+            GeneratedDate = generatedDate;
+            ValidityDuration = validityDuration;
+            MetricsList = metricsList;
 
         }
 
@@ -104,7 +104,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             MetricsList = metrics;
         }
 
-        
+
 
         // Methods
         public ForecastDashboard GetDashboard()
@@ -138,11 +138,11 @@ namespace CleanBrilliantCompany.Models.Forecast
 
         public List<string> GetAlertItemList()
         {
-            return this.AlertItemList;
+            return AlertItemList;
         }
         public void SetAlertItemList(List<string> list)
         {
-            this.AlertItemList = list;
+            AlertItemList = list;
         }
 
 

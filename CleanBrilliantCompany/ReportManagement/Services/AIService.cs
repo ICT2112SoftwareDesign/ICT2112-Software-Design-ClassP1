@@ -1,9 +1,10 @@
+using CleanBrilliantCompany.Services;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanBrilliantCompany.Services
+namespace CleanBrilliantCompany.ReportManagement.Services
 {
     public class AIService : IAIService
     {

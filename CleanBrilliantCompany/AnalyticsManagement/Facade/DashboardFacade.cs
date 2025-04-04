@@ -1,5 +1,5 @@
 using CleanBrilliantCompany.Control;
-using CleanBrilliantCompany.Interfaces.Forecast;
+using CleanBrilliantCompany.ForecastManagement.Interface;
 using CleanBrilliantCompany.Models.Forecast;
 
 public class DashboardFacade : IDashboardFacade

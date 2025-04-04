@@ -1,6 +1,7 @@
 using System.Text;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
+using CleanBrilliantCompany.ReportManagement.Services;
 using CleanBrilliantCompany.Services;
 
 namespace CleanBrilliantCompany.Control

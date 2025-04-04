@@ -1,58 +1,28 @@
 using CleanBrilliantCompany.DTO;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.DatabaseEntities;
-using CleanBrilliantCompany.Models.Control;  // for ProductControl
 
 public class CostMapper
 {
-
-
-    private readonly ProductControl _productControl;
-
-    private readonly ItemControl _itemControl;
+    private readonly iProduct _iProduct;
+    private readonly iManufacturer _iManufacturer;
+    private readonly iBatch _iBatch;
+    private readonly iItem _iItem;
     private readonly ApplicationDbContext _db;
 
-
-    // public CostMapper(ApplicationDbContext dbContext)
-    // {
-    //  _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-    // }
-
-      public CostMapper(ApplicationDbContext dbContext,ProductControl productControl,ItemControl itemControl)
+    public CostMapper(ApplicationDbContext dbContext, iProduct iProduct, iManufacturer iManufacturer, iBatch iBatch, iItem iItem)
     {
         _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        _productControl = productControl;  
-        _itemControl = itemControl;  
+        _iProduct = iProduct;
+        _iManufacturer = iManufacturer;
+        _iBatch = iBatch;
+        _iItem = iItem;
     }
 
-
-
-    // ----------------------------------------------------------------
-    // Fetching via Retrieval Service from External Interfaces
-
-     // 🔹 Fetch Product Manufacturers DTOs (maps ManufacturerTable → ProductManufacturerDTO)
-    // public List<ProductManufacturerDTO> GetAllManufacturers()
-    // {
-    //     var manufacturers = _manufacturerService.GetAllManufacturers();
-
-    //     return manufacturers.Select(m => new ProductManufacturerDTO
-    //     {
-    //         ManufacturerId = m.ManufacturerId,
-    //         CompanyName = m.CompanyName,
-    //         Address = m.ManufacturerAddress,
-    //         Email = m.Email
-    //     }).ToList();
-    // }
-
-
-    // Map the domain model to a DTO using ProductControl's method
-   
-   public List<ProductManufacturerDTO> GetAllManufacturers()
+    public List<ProductManufacturerDTO> GetAllManufacturers()
     {
-        // Retrieve the list of ProductManufacturer objects from ProductControl.
-        var manufacturers = _productControl.getAllProductManufacturer();
+        var manufacturers = _iManufacturer.GetAllProductManufacturer();
 
-        // Map each ProductManufacturer to a DTO using its public method to get the values.
         return manufacturers.Select(m =>
         {
             var info = m.retrieveProductManufacturerInfo();
@@ -66,39 +36,11 @@ public class CostMapper
         }).ToList();
     }
 
-
-    // // 🔹 Fetch Product Batches DTOs (maps ProductBatchTable → ProductBatchDTO)
-    // public List<ProductBatchDTO> GetAllProductBatches()
-    // {
-    //     var productBatches = _batchService.GetAllProductBatch();
-    //     var products = _db.Product.Select(p => new { p.productId, p.manufacturerId }).ToList();
-
-    //     return productBatches.Select(batch =>
-    //     {
-    //         var product = products.FirstOrDefault(p => p.productId == batch.ProductId);
-    //         return new ProductBatchDTO
-    //         {
-    //             BatchCode = batch.BatchCode,
-    //             ProductId = batch.ProductId,
-    //             ExpiryDate = batch.ExpiryDate,
-    //             ReceiveDate = batch.ReceiveDate,
-    //             ManufactureDate = batch.ManufactureDate,
-    //             BatchQuantity = batch.Quantity,
-    //             BatchPrice = Convert.ToDecimal(batch.BatchCost),
-    //             ManufacturerId = product?.manufacturerId ?? -1
-    //         };
-    //     }).ToList();
-    // }
-    
     public List<ProductBatchDTO> GetAllProductBatches()
     {
-        // Retrieve a list of domain model ProductBatch objects via ProductControl
-        var batches = _productControl.getAllProductBatch();
+        var batches = _iBatch.getAllProductBatch();
+        var products = _iProduct.getAllProducts();
 
-        // Retrieve all products (domain model) to get manufacturer info.
-        var products = _productControl.getAllProducts();
-
-        // Build a dictionary mapping ProductId to ManufacturerId using each product's public method
         var productManufacturerMap = products
             .Select(p => p.retrieveProductInfo())
             .Select(info => new
@@ -108,7 +50,6 @@ public class CostMapper
             })
             .ToDictionary(x => x.ProductId, x => x.ManufacturerId);
 
-        // Map each ProductBatch to a DTO, and set ManufacturerId by looking it up in the dictionary.
         return batches.Select(pb =>
         {
             var info = pb.retrieveProductBatchInfo();
@@ -129,32 +70,10 @@ public class CostMapper
         }).ToList();
     }
 
-    // 🔹 Fetch Items DTOs (maps ItemTable → ItemDTO)
-    // public List<ItemDTO> GetAllItems()
-    // {
-    //     var items = _itemService.getItems();
-
-    //     return items.Select(i => new ItemDTO
-    //     {
-    //         ItemId = i.ItemId,
-    //         ProductId = i.ProductId,
-    //         SalePrice = (decimal)i.SalePrice,
-    //         BatchCode = i.BatchCode,
-    //         WarehouseId = i.WarehouseId,
-    //         ItemStatus = i.ItemStatus,
-    //         ReservationId = i.ReservationId,
-    //         OrderId = i.OrderId,
-    //         TransferId = i.TransferId,
-    //         ReturnId = i.ReturnId
-    //     }).ToList();
-    // }
-
     public List<ItemDTO> GetAllItems()
     {
-        // Synchronously get the items (using .Result here for demonstration; consider using async/await)
-        var items = _itemControl.getItems().Result;
+        var items = _iItem.getItems().Result;
 
-        // Map each Item to an ItemDTO using its public retrieveItemInfo() method.
         return items.Select(i =>
         {
             var info = i.retrieveItemInfo();
@@ -173,10 +92,6 @@ public class CostMapper
             };
         }).ToList();
     }
-
-
-    // ---------------------------------------------------------------
-    // 🔹 Fetch Dashboard DTOs
 
     public DashboardDTO ToDTO(DashboardTable table)
     {
@@ -204,6 +119,4 @@ public class CostMapper
             TypeId = dto.Type
         };
     }
-
-
 }

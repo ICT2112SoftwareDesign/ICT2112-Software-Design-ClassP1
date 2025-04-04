@@ -1,5 +1,6 @@
 using CleanBrilliantCompany.DatabaseEntities;
 using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.ForecastManagement.DTO;
 using CleanBrilliantCompany.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -23,6 +24,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<ItemTable> Items { get; set; }
     //public DbSet<ProductTable> Product { get; set; }
     public DbSet<ProductBatchTable> ProductBatch { get; set; }
+
+    public DbSet<ProductTable> Product { get; set; }
+
 
     public DbSet<ManufacturerTable> Manufacturers { get; set; }
 
