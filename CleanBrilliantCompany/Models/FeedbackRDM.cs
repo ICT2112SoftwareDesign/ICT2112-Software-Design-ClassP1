@@ -75,7 +75,7 @@ namespace CleanBrilliantCompany.Models
         }
     }
 
-    public class FeedbackRepository
+    public class FeedbackRepository : IFeedbackDatabase
     {
         private readonly string _connectionString;
 
@@ -121,12 +121,8 @@ namespace CleanBrilliantCompany.Models
                     }
                 }
 
-                string query = "INSERT INTO dbo.Feedback (StaffID, FeedbackText, DateSubmitted, Status) VALUES (@StaffID, @FeedbackText, GETDATE(), 'Pending')";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateInsertCommand(conn, staffId, feedback))
                 {
-                    cmd.Parameters.AddWithValue("@StaffID", staffId);
-                    cmd.Parameters.AddWithValue("@FeedbackText", feedback);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -159,13 +155,8 @@ namespace CleanBrilliantCompany.Models
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE dbo.Feedback SET FeedbackText = @FeedbackText WHERE FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateUpdateFeedbackCommand(conn, feedbackId, feedback))
                 {
-                    cmd.Parameters.AddWithValue("@FeedbackText", feedback);
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
@@ -178,39 +169,17 @@ namespace CleanBrilliantCompany.Models
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = @"
-            SELECT f.FeedbackID, f.StaffID, s.name AS StaffName, f.FeedbackText, 
-                   f.Status, ISNULL(f.ManagerComments, '') AS ManagerComments, f.DateSubmitted
-            FROM dbo.Feedback f
-            JOIN dbo.Staff s ON f.StaffID = s.staffId
-            ORDER BY f.DateSubmitted DESC";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateGetAllFeedbackCommand(conn))
                 {
                     conn.Open();
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
-                        {
-                            FeedbackRDM feedback = new FeedbackRDM
-                            {
-                                FeedbackId = reader.GetInt32(0),
-                                StaffId = reader.GetInt32(1),
-                                StaffName = reader.GetString(2),
-                                Feedback = reader.GetString(3),
-                                Status = reader.GetString(4),
-                                ManagerComments = reader.GetString(5),
-                                DateSubmitted = reader.GetDateTime(6)
-                            };
-
-                            feedbackList.Add(feedback);
-                        }
+                        feedbackList = FeedbackMapper.MapList(reader);
                     }
                 }
             }
             return feedbackList;
         }
-
 
         public FeedbackRDM GetFeedbackById(int feedbackId)
         {
@@ -218,32 +187,14 @@ namespace CleanBrilliantCompany.Models
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = @"
-            SELECT f.FeedbackID, f.StaffID, s.name AS StaffName, f.FeedbackText, f.Status, 
-                   ISNULL(f.ManagerComments, '') AS ManagerComments, f.DateSubmitted
-            FROM dbo.Feedback f
-            JOIN dbo.Staff s ON f.StaffID = s.staffId
-            WHERE f.FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateGetFeedbackByIdCommand(conn, feedbackId))
                 {
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
                     conn.Open();
-
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            feedback = new FeedbackRDM
-                            {
-                                FeedbackId = reader.GetInt32(0),
-                                StaffId = reader.GetInt32(1),
-                                StaffName = reader.GetString(2),
-                                Feedback = reader.GetString(3),
-                                Status = reader.GetString(4),
-                                ManagerComments = reader.GetString(5),
-                                DateSubmitted = reader.GetDateTime(6)
-                            };
+                            feedback = FeedbackMapper.Map(reader);
                         }
                     }
                 }
@@ -251,19 +202,12 @@ namespace CleanBrilliantCompany.Models
             return feedback;
         }
 
-
-
         public void UpdateFeedback(int feedbackId, string updatedFeedback)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE dbo.Feedback SET FeedbackText = @FeedbackText WHERE FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateUpdateFeedbackCommand(conn, feedbackId, updatedFeedback))
                 {
-                    cmd.Parameters.AddWithValue("@FeedbackText", updatedFeedback);
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
@@ -274,13 +218,8 @@ namespace CleanBrilliantCompany.Models
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE dbo.Feedback SET ManagerComments = @ManagerComment WHERE FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateUpdateManagerCommentCommand(conn, feedbackId, managerComment))
                 {
-                    cmd.Parameters.AddWithValue("@ManagerComment", managerComment);
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
@@ -291,13 +230,8 @@ namespace CleanBrilliantCompany.Models
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE dbo.Feedback SET Status = @Status WHERE FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateUpdateStatusCommand(conn, feedbackId, status))
                 {
-                    cmd.Parameters.AddWithValue("@Status", status);
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
@@ -308,12 +242,8 @@ namespace CleanBrilliantCompany.Models
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "DELETE FROM dbo.Feedback WHERE FeedbackID = @FeedbackID";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateDeleteCommand(conn, feedbackId))
                 {
-                    cmd.Parameters.AddWithValue("@FeedbackID", feedbackId);
-
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
@@ -326,40 +256,20 @@ namespace CleanBrilliantCompany.Models
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = @"
-            SELECT f.FeedbackID, f.StaffID, s.name AS StaffName, f.FeedbackText, f.Status, 
-                   ISNULL(f.ManagerComments, '') AS ManagerComments, f.DateSubmitted
-            FROM dbo.Feedback f
-            JOIN dbo.Staff s ON f.StaffID = s.staffId
-            ORDER BY f.DateSubmitted DESC";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = FeedbackMapper.CreateGetAllFeedbackCommand(conn))
                 {
                     conn.Open();
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
-                        {
-                            FeedbackRDM feedback = new FeedbackRDM
-                            {
-                                FeedbackId = reader.GetInt32(0),
-                                StaffId = reader.GetInt32(1),
-                                StaffName = reader.GetString(2),
-                                Feedback = reader.GetString(3),
-                                Status = reader.GetString(4),
-                                ManagerComments = reader.GetString(5),
-                                DateSubmitted = reader.GetDateTime(6)
-                            };
-
-                            feedbackList.Add(feedback);
-                        }
+                        feedbackList = FeedbackMapper.MapList(reader);
                     }
                 }
             }
             return feedbackList;
         }
-
     }
+
+
 
     // Feedback Management Implementation
     public class FeedbackManagement : IFeedbackManagement
