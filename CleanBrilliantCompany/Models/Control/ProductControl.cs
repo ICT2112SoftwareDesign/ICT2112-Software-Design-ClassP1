@@ -127,7 +127,7 @@ namespace CleanBrilliantCompany.Models.Control
         // ProductManufacturer
         public ProductManufacturer getManufacturerDetails(int manufacturerId)
         {
-            ProductManufacturer productManufacturer = _productMapper.getProductManufacturerById(manufacturerId);
+            ProductManufacturer productManufacturer = _productMapper.findProductManufacturerById(manufacturerId);
             return productManufacturer;
         }
 
@@ -137,7 +137,7 @@ namespace CleanBrilliantCompany.Models.Control
             return productManufacturer;
         }
 
-        // Product Reorder Request (Simulation)
+        // Product Reorder Request ** SIMULATION **
         public void processReorderRequest()
         {
             List<ReorderRequestSample> reorderRequests = _ireorderRequest.displayListOfReorders();

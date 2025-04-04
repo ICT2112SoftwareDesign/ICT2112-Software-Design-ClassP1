@@ -515,7 +515,7 @@ namespace CleanBrilliantCompany.Mappers
         }
 
         // ProductManufacturer
-        public ProductManufacturer getProductManufacturerById(int manufacturerId)
+        public ProductManufacturer findProductManufacturerById(int manufacturerId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
