@@ -17,7 +17,6 @@ namespace CleanBrilliantCompany.Services
 
         // check every hour to see if it's time to run the monthly check
         private readonly TimeSpan _checkInterval = TimeSpan.FromHours(1);
-        // private readonly timespan _checkinterval = timespan.fromminutes(1); // shorter interval for testing
 
         private readonly TimeZoneInfo _targetTimeZone; // field to hold the target timezone
 
@@ -31,7 +30,7 @@ namespace CleanBrilliantCompany.Services
             _scopeFactory = scopeFactory;
             _hubContext = hubContext;
 
-            // initialize the target timezone (change id if needed)
+            // initialize the target timezone
             try
             {
                 _targetTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
@@ -127,8 +126,8 @@ namespace CleanBrilliantCompany.Services
             var currentPeriod = (targetYear, targetMonth);
 
             // only run the check on the first three day of the month (in the target timezone)
-            // and only if we haven't successfully processed this period before
-            if ((localNow.Day == 1 || localNow.Day == 2 || localNow.Day == 3) && currentPeriod != _lastProcessedPeriod)
+            // and only if haven't successfully processed this period before
+            if ((localNow.Day == 1 || localNow.Day == 2 || localNow.Day == 3 || localNow.Day == 4) && currentPeriod != _lastProcessedPeriod)
             {
                 _logger.LogInformation("starting monthly goal check for {Month}/{Year} based on {TimeZoneId} time ({LocalNow})...", targetMonth, targetYear, _targetTimeZone.Id, localNow);
 
@@ -138,7 +137,7 @@ namespace CleanBrilliantCompany.Services
 
                 try
                 {
-                    // simplified: call alertservice to generate the alert object
+                    // call alertservice to generate the alert object
                     var generatedAlert = await alertService.GenerateAlertForPeriodAsync(targetYear, targetMonth);
 
                     if (generatedAlert != null)
@@ -152,34 +151,9 @@ namespace CleanBrilliantCompany.Services
                             // update the last processed period *only on success*
                             _lastProcessedPeriod = currentPeriod;
 
-                            _logger.LogInformation("monthly alert created for {Month}/{Year}. broadcasting notification.", targetMonth, targetYear);
+                            // notification is now handled by observers attached to alertservice
+                            _logger.LogInformation("monthly alert created and observers notified for {Month}/{Year}.", targetMonth, targetYear);
 
-                            // <<< signalr broadcast start >>>
-                            try
-                            {
-                                // prepare data to send to client
-                                string goalPeriodStr = $"{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(generatedAlert.GoalMonth)} {generatedAlert.GoalYear}";
-                                string targetEmissionStr = generatedAlert.TargetEmission?.ToString("N2") ?? "n/a";
-                                string actualEmissionStr = generatedAlert.ActualTotalEmission.ToString("N2");
-                                string statusStr = generatedAlert.Status;
-
-                                // send to all connected clients, invoking the 'receivemonthlyalert' javascript function
-                                await _hubContext.Clients.All.SendAsync(
-                                    "ReceiveMonthlyAlert", // must match the javascript listener name
-                                    goalPeriodStr,
-                                    targetEmissionStr,
-                                    actualEmissionStr,
-                                    statusStr,
-                                    stoppingToken); // pass cancellationtoken if appropriate
-
-                                _logger.LogInformation("successfully broadcasted signalr alert for {Month}/{Year}.", targetMonth, targetYear);
-                            }
-                            catch (Exception hubEx)
-                            {
-                                _logger.LogError(hubEx, "error broadcasting signalr message for {Month}/{Year}.", targetMonth, targetYear);
-                                // decide if failure to broadcast should prevent marking as processed - probably not
-                            }
-                            // <<< signalr broadcast end >>>
                         }
                         else
                         {

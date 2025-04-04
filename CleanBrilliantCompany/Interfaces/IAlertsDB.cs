@@ -14,24 +14,9 @@ namespace CleanBrilliantCompany.Interfaces
         Task<IEnumerable<Alert>> GetAllAlertsAsync();
 
         /// <summary>
-        /// gets a single alert by its primary key.
-        /// </summary>
-        Task<Alert?> GetAlertByIdAsync(int alertId); // return nullable alert
-
-        /// <summary>
         /// adds a new alert record to the database.
         /// </summary>
         Task<int> AddAlertAsync(Alert alert); // returns the new alert's id
-
-        /// <summary>
-        /// updates an existing alert record.
-        /// </summary>
-        Task<bool> UpdateAlertAsync(Alert alert); // returns true if successful
-
-        /// <summary>
-        /// deletes an alert record by its primary key.
-        /// </summary>
-        Task<bool> DeleteAlertAsync(int alertId); // returns true if successful
 
         /// <summary>
         /// checks if an alert already exists for the specified period.

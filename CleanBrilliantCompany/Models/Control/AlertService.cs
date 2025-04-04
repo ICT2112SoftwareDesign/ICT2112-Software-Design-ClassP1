@@ -6,8 +6,9 @@ namespace CleanBrilliantCompany.Services
     /// <summary>
     /// service implementation for managing alerts, acting as a wrapper around the data gateway.
     /// now also responsible for generating alert details.
+    /// acts as the 'subject' in the observer pattern for alert creation.
     /// </summary>
-    public class AlertService : IAlertService
+    public class AlertService : AbstractAlertNotifierSubject, IAlertService
     {
         private readonly IAlertsDB _alertsDB;
         private readonly IGoalsDB _goalsDB;
@@ -18,16 +19,18 @@ namespace CleanBrilliantCompany.Services
             IAlertsDB alertsDB,
             IGoalsDB goalsDB,
             ICarbonNotification carbonNotification,
-            ILogger<AlertService> logger)
+            ILogger<AlertService> logger,
+            IEnumerable<IAlertCreationObserver> alertCreationObservers)
+            : base(alertCreationObservers) // pass only observers to base constructor
         {
             _alertsDB = alertsDB ?? throw new ArgumentNullException(nameof(alertsDB));
             _goalsDB = goalsDB ?? throw new ArgumentNullException(nameof(goalsDB));
             _carbonNotification = carbonNotification ?? throw new ArgumentNullException(nameof(carbonNotification));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); // initialize local logger
         }
 
         /// <summary>
-        /// creates a new alert by calling the underlying data gateway.
+        /// creates a new alert by calling the underlying data gateway and notifies observers.
         /// </summary>
         public async Task CreateAlertAsync(Alert alert)
         {
@@ -37,8 +40,23 @@ namespace CleanBrilliantCompany.Services
             }
             try
             {
-                await _alertsDB.AddAlertAsync(alert);
-                _logger.LogInformation("created alert for {Month}/{Year} with status: {Status}", alert.GoalMonth, alert.GoalYear, alert.Status);
+                // attempt to add the alert to the database
+                int newAlertId = await _alertsDB.AddAlertAsync(alert); // assume addalertasync now returns id
+
+                // check if creation was successful (e.g., by checking returned id or status)
+                if (newAlertId > 0) // or appropriate success check
+                {
+                    alert.AlertId = newAlertId; // assign the id to the alert object for observers
+                    _logger.LogInformation("created alert for {Month}/{Year} with status: {Status}. notifying observers...", alert.GoalMonth, alert.GoalYear, alert.Status);
+
+                    // notify observers about the new alert using the base class method
+                    await base.NotifyObserversAsync(alert);
+                }
+                else
+                {
+                    // use the local _logger instance
+                    _logger.LogWarning("alert creation seemed to succeed in db layer but returned invalid id for {Month}/{Year}.", alert.GoalMonth, alert.GoalYear);
+                }
             }
             catch (Exception ex)
             {

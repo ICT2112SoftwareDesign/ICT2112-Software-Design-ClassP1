@@ -40,7 +40,7 @@ namespace CleanBrilliantCompany.Controllers
             _logger.LogInformation("manual check requested for {Month}/{Year}", month, year);
 
             // basic validation
-            if (month < 1 || month > 12 || year < 2020) // assume 2020 is a reasonable minimum year
+            if (month < 1 || month > 12 || year < 2020)
             {
                 TempData["ErrorMessage"] = "Invalid year or month provided.";
                 _logger.LogWarning("invalid input for manual check: year={Year}, month={Month}", year, month);

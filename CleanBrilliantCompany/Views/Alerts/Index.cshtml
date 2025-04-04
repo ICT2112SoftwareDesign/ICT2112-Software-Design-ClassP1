@@ -30,39 +30,6 @@
                     <div class="alert alert-info" role="alert">@TempData["InfoMessage"]</div>
                 }
 
-                <div class="mb-4 p-3 border rounded bg-light">
-                    <h5>Manually check past month</h5>
-                    <form asp-action="CheckPastMonth" method="post">
-                        @Html.AntiForgeryToken()
-                        <div class="form-row align-items-end">
-                            <div class="col-md-4 mb-2">
-                                <label for="year">Year</label>
-                                <select id="year" name="year" class="form-control">
-                                    @for (int y = currentYear; y >= currentYear - 5 && y >= 2020; y--)
-                                    {
-                                        <option value="@y">@y</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <label for="month">Month</label>
-                                <select id="month" name="month" class="form-control">
-                                    @for (int m = 1; m <= 12; m++)
-                                    {
-                                        <option value="@m">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
-                                        </option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <button type="submit" class="btn btn-primary btn-block">Check & generate alert</button>
-                            </div>
-                        </div>
-                        <small class="form-text text-muted">Select a month prior to the current one to generate its goal
-                            alert if it
-                            doesn't exist.</small>
-                    </form>
-                </div>
 
                 <p>This page shows the results of the automatic and manual monthly carbon emission goal checks.</p>
 
@@ -152,8 +119,8 @@
         crossorigin="anonymous"></script>
 
     <script src="
-                                https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js
-                                "></script>
+                                    https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js
+                                    "></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -174,14 +141,14 @@
                 const toastStatusText = status ? status.toUpperCase() : 'UNKNOWN';
 
                 const toastHtml = `
-                                                    <div class="toast align-items-center text-white ${toastBgClass} border-0 position-relative" role="alert" aria-live="assertive" aria-atomic="true">
-                                                        <div class="toast-body">
-                                                            <strong>${goalPeriod || 'n/a'}: ${toastStatusText}</strong><br>
-                                                            target: ${targetEmission || 'n/a'} g co2e<br>
-                                                            actual: ${actualEmission || 'n/a'} g co2e
-                                                        </div>
-                                                        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 mt-1 me-1" data-bs-dismiss="toast" aria-label="Close"></button>
-                                                    </div>`;
+                                                        <div class="toast align-items-center text-white ${toastBgClass} border-0 position-relative" role="alert" aria-live="assertive" aria-atomic="true">
+                                                            <div class="toast-body">
+                                                                <strong>${goalPeriod || 'n/a'}: ${toastStatusText}</strong><br>
+                                                                target: ${targetEmission || 'n/a'} g co2e<br>
+                                                                actual: ${actualEmission || 'n/a'} g co2e
+                                                            </div>
+                                                            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 mt-1 me-1" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                        </div>`;
 
                 toastContainer.insertAdjacentHTML('beforeend', toastHtml);
                 const newToastEl = toastContainer.lastElementChild;

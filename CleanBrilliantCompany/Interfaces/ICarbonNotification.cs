@@ -1,7 +1,5 @@
 // Interfaces/ICarbonNotification.cs
 using CleanBrilliantCompany.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Interfaces
 {

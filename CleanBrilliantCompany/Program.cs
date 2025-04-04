@@ -40,6 +40,7 @@ builder.Services.AddScoped<IToxicity, IngredientToxicityAnalysisSDM>();
 builder.Services.AddScoped<IAlertsDB, Alert_Gateway>();
 builder.Services.AddScoped<ICarbonNotification, CarbonOrderItemAnalyticManager>();
 builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddSingleton<IAlertCreationObserver, SignalRAlertObserver>(); // register signalr observer as singleton
 builder.Services.AddHostedService<MonthlyGoalCheckService>();
 builder.Services.AddSignalR();
 

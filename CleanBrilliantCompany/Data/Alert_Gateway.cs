@@ -1,7 +1,6 @@
 // Data/Alert_Gateway.cs
 using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
-using System.Data;
 using Microsoft.Data.SqlClient;
 
 namespace CleanBrilliantCompany.Data
@@ -46,30 +45,6 @@ namespace CleanBrilliantCompany.Data
             return alerts;
         }
 
-        public async Task<Alert?> GetAlertByIdAsync(int alertId)
-        {
-            const string query = @"
-                select alertid, alerttimestamp, goalmonth, goalyear,
-                       targetemission, actualtotalemission, status, message
-                from carbonalerts
-                where alertid = @alertid";
-
-            using (var connection = new SqlConnection(_connectionString))
-            using (var command = new SqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@alertid", alertId);
-                await connection.OpenAsync();
-                using (var reader = await command.ExecuteReaderAsync(CommandBehavior.SingleRow))
-                {
-                    if (await reader.ReadAsync())
-                    {
-                        return MapReaderToAlert(reader);
-                    }
-                }
-            }
-            return null;
-        }
-
         public async Task<int> AddAlertAsync(Alert alert)
         {
             const string query = @"
@@ -94,50 +69,6 @@ namespace CleanBrilliantCompany.Data
                 await connection.OpenAsync();
                 var result = await command.ExecuteScalarAsync();
                 return Convert.ToInt32(result);
-            }
-        }
-
-        public async Task<bool> UpdateAlertAsync(Alert alert)
-        {
-            const string query = @"
-                update carbonalerts set
-                    alerttimestamp = @alerttimestamp,
-                    goalmonth = @goalmonth,
-                    goalyear = @goalyear,
-                    targetemission = @targetemission,
-                    actualtotalemission = @actualtotalemission,
-                    status = @status,
-                    message = @message
-                where alertid = @alertid";
-
-            using (var connection = new SqlConnection(_connectionString))
-            using (var command = new SqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@alertid", alert.AlertId);
-                command.Parameters.AddWithValue("@alerttimestamp", alert.AlertTimestamp);
-                command.Parameters.AddWithValue("@goalmonth", alert.GoalMonth);
-                command.Parameters.AddWithValue("@goalyear", alert.GoalYear);
-                command.Parameters.AddWithValue("@targetemission", (object?)alert.TargetEmission ?? DBNull.Value);
-                command.Parameters.AddWithValue("@actualtotalemission", alert.ActualTotalEmission);
-                command.Parameters.AddWithValue("@status", alert.Status);
-                command.Parameters.AddWithValue("@message", alert.Message);
-
-                await connection.OpenAsync();
-                var rowsAffected = await command.ExecuteNonQueryAsync();
-                return rowsAffected > 0;
-            }
-        }
-
-        public async Task<bool> DeleteAlertAsync(int alertId)
-        {
-            const string query = "delete from carbonalerts where alertid = @alertid";
-            using (var connection = new SqlConnection(_connectionString))
-            using (var command = new SqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@alertid", alertId);
-                await connection.OpenAsync();
-                var rowsAffected = await command.ExecuteNonQueryAsync();
-                return rowsAffected > 0;
             }
         }
 
