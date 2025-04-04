@@ -75,7 +75,7 @@ app.MapHub<AlertHub>("/alertHub");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Analytics}/{action=DisplayGraph}/{id?}");
 
 app.MapControllerRoute(
     name: "toxicity",
@@ -114,7 +114,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "alerts",
     pattern: "alerts",
-    defaults: new { controller = "Alert", action = "Index" }
+    defaults: new { controller = "Alerts", action = "Index" }
 );
 
 // Sustainable Resource Inventory is Low
