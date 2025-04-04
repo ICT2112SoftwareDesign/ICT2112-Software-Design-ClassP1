@@ -28,8 +28,6 @@ namespace CleanBrilliantCompany.Controllers
 
         public IActionResult Index() => View();
 
-
-        // For preview (returns a View with an iframe)
         public IActionResult PreviewReport()
         {
             return View(); // View will embed PDF
@@ -71,37 +69,6 @@ namespace CleanBrilliantCompany.Controllers
             return File(reportData, "application/pdf");
         }
 
-
-        [HttpGet]
-        public IActionResult TestDashboards()
-        {
-            var dashboards = _dashboardFacade.getDashboardsData();
-            return Json(dashboards);
-        }
-
-        [HttpGet]
-        public IActionResult ViewAgingReport()
-        {
-            string reportHtml = _agingControl.GenerateReport();
-            ViewBag.ReportHtml = reportHtml;
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult ViewManufacturerReport()
-        {
-            string reportHtml = _manufacturerControl.GenerateReport();
-            ViewBag.ReportHtml = reportHtml;
-            return View();
-        }
-        [HttpGet]
-        public IActionResult ViewCostReport()
-        {
-            string reportHtml = _costControl.GenerateReport();
-            ViewBag.ReportHtml = reportHtml;
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> GenerateSelectedReport(List<string> selectedDashboards)
         {
@@ -113,7 +80,7 @@ namespace CleanBrilliantCompany.Controllers
 
             var report = await _reportControl.GenerateCustomReportAsync(selectedDashboards);
 
-            // Store report data in memory for the next request (Session or TempData or Singleton)
+            // Store report data in memory for the next request (Session)
             HttpContext.Session.Set("LatestReport", report.ReportData); // Needs Session configured
             return RedirectToAction("ViewReport");
         }
