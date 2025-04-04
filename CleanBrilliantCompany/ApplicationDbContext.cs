@@ -25,6 +25,9 @@ public class ApplicationDbContext : DbContext
     //public DbSet<ProductTable> Product { get; set; }
     public DbSet<ProductBatchTable> ProductBatch { get; set; }
 
+    public DbSet<ProductTable> Product { get; set; }
+
+
     public DbSet<ManufacturerTable> Manufacturers { get; set; }
 
     public DbSet<ManufacturerAnalyticsTable> ManufacturerAnalytics { get; set; }

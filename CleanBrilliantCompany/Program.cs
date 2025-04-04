@@ -14,6 +14,7 @@ using CleanBrilliantCompany.Models.Forecast;
 using CleanBrilliantCompany.Services;
 using CleanBrilliantCompany.Services.Forecast;
 using CleanBrilliantCompany.Services.Notification;
+using CleanBrilliantCompany.Service;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -120,11 +121,15 @@ builder.Services.AddScoped<IItemCreation, ItemControl>();
 builder.Services.AddScoped<IReturnForm, ItemControl>();
 builder.Services.AddScoped<IItemDetails, ItemControl>();
 
+
 builder.Services.AddScoped<IProduct, ProductControl>();
 builder.Services.AddScoped<IProductQuantity, ProductControl>();
 builder.Services.AddScoped<IBatch, ProductControl>();
-builder.Services.AddScoped<iReorderRequest, ReorderRequestManagement>();
 builder.Services.AddScoped<IManufacturer, ProductControl>();
+builder.Services.AddScoped<iReorderRequest, ReorderRequestManagement>();
+builder.Services.AddScoped<iItem, CostDataRetrievalService>();
+builder.Services.AddScoped<iBatch, CostDataRetrievalService>();
+builder.Services.AddScoped<iManufacturer, CostDataRetrievalService>();
 
 // Lazy resolver for breaking circular dependency
 builder.Services.AddScoped(provider => new Lazy<IItemCreation>(
