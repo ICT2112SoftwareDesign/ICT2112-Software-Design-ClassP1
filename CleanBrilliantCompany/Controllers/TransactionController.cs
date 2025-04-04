@@ -13,14 +13,7 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly TransactionControl _transactionControl;
         private readonly IItem _iItem;
-        
-        // Constructor
-        // public TransactionController(IConfiguration configuration)
-        // {
-        //     string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-        //     _transactionControl = new TransactionControl(connectionString);
-        // }
-
+      
         public TransactionController(IConfiguration configuration, IItem iItem)
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -37,9 +30,6 @@ namespace CleanBrilliantCompany.Controllers
             // Filter by Item ID if provided
             if (itemId.HasValue)
             {
-                // allTransactions = _transactionControl.getTransactionByItem(itemId.Value);
-                // ViewData["ItemFilterActive"] = true;
-                // ViewData["FilteredItemId"] = itemId.Value;
 
                 var txByItem = _transactionControl.getTransactionByItem(itemId.Value);
                 var txByItemInfo = txByItem.Select(t => t.retrieveTransactionInfo()).ToList();
@@ -50,7 +40,7 @@ namespace CleanBrilliantCompany.Controllers
                 return View();
             }
 
-            // Step 2: Count adjustment types from all records (before pagination)
+            // Count adjustment types from all records (before pagination)
             ViewData["TotalSoldCount"] = allTransactions.Count(t => t.retrieveTransactionInfo()["AdjustmentType"].ToString() == "Sold");
             ViewData["TotalReservedCount"] = allTransactions.Count(t => t.retrieveTransactionInfo()["AdjustmentType"].ToString() == "Reserved");
             ViewData["TotalTransferredCount"] = allTransactions.Count(t => t.retrieveTransactionInfo()["AdjustmentType"].ToString() == "Transferred");

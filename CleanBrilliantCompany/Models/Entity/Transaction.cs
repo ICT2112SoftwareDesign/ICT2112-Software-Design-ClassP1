@@ -1,20 +1,9 @@
 namespace CleanBrilliantCompany.Models.Entity
 {
-    public enum adjustmentType
-    {
-        //TODO
-    }
     public class Transaction
     {
-        // public int TransactionId { get; set; }
-        // public DateTime DateTime { get; set; }
-        
-        // //For now, take it as AdjustmentType must not always be present --> hence we do not have it as required
-        // public string AdjustmentType { get; set; }
-        // public int ItemId { get; set; }
 
-        // public int StaffId { get; set;}
-
+        //Private Attributes here
         private int TransactionId;
         private DateTime DateTime;
         private string AdjustmentType;
