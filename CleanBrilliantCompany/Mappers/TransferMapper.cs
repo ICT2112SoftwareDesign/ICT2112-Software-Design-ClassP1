@@ -129,7 +129,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public bool updateTransfer(int transferId, int destinationWarehhouse, TransferStatus status)
+        public bool updateTransfer(int transferId, int destinationWarehouse, TransferStatus status)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -161,7 +161,7 @@ namespace CleanBrilliantCompany.Mappers
                 using (SqlCommand command = new SqlCommand(updateQuery, connection))
                 {
                     command.Parameters.AddWithValue("@transferId", transferId);
-                    command.Parameters.AddWithValue("@destinationWarehouse", destinationWarehhouse);
+                    command.Parameters.AddWithValue("@destinationWarehouse", destinationWarehouse);
                     //command.Parameters.AddWithValue("@quantity", quantity);
                     command.Parameters.AddWithValue("@status", status.ToString());
 
