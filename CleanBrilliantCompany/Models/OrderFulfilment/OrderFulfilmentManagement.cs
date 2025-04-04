@@ -7,6 +7,9 @@ namespace CleanBrilliantCompany.Models
     {
         private readonly List<IShippingNotification> _observers = new List<IShippingNotification>();
 
+        private readonly IOrder _order;
+        private readonly IOrderDatabase _orderDatabase;
+
         public OrderFulfilmentManagement(IOrder order, IOrderDatabase orderDatabase)
         {
             _order = order;
@@ -14,7 +17,6 @@ namespace CleanBrilliantCompany.Models
 
             // Add observers
             _observers.Add(new ShippingAgentObserver());
-            _observers.Add(new NotificationObserver());
         }
 
          public OrderRDM getOrderDetails(int orderId)
