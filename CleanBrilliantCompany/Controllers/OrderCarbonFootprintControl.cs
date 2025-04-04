@@ -1,7 +1,7 @@
 ﻿using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.Models;
 
-namespace CleanBrilliantCompany.DomainControl
+namespace CleanBrilliantCompany.Controllers
 {
     public class OrderCarbonFootprintControl : IOrderCF
     {
