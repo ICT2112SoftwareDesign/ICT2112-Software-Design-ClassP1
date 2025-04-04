@@ -76,7 +76,7 @@ public class AgingMapper : AgingRepository
             foreach (var batchCode in batchCodes)
             {
                 // Get the batch analytics for each batch code
-                var analyticsList = dashboard.GetBatchAnalytics(batchCode);
+                var analyticsList = dashboard.getBatchAnalytics(batchCode);
 
                 // Initialize default values for the analytics summary
                 float turnOverRate = 0;
@@ -88,7 +88,7 @@ public class AgingMapper : AgingRepository
                 foreach (var analytics in analyticsList)
                 {
                     // Get batch summary from CalculateBatchSummary
-                    var batchSummary = analytics.CalculateBatchSummary();
+                    var batchSummary = analytics.calculateBatchSummary();
 
                     // Check for each key in the batch summary and set the respective values
                     if (batchSummary.ContainsKey("TurnOverRate"))

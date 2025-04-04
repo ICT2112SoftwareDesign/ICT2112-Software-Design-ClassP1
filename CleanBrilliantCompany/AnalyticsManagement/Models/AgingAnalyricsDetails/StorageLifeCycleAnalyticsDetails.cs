@@ -44,7 +44,7 @@ public class StorageLifeCycleAnalyticsDetails : AbstractAnalyticsDetails {
         return DateTime.Now > expiryDate; 
     } 
 
-    public override Dictionary<string, object> CalculateBatchSummary(){
+    public override Dictionary<string, object> calculateBatchSummary(){
         Dictionary<string, object> batchSummary = new Dictionary<string, object>(); 
         // batchSummary.Add("StorageDuration", calculateStorageDuration()); 
         // batchSummary.Add("RemainingDays", calculateRemainingDays()); 

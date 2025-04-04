@@ -194,14 +194,14 @@ public class AgingControl : IStorageDuration
 
             foreach (int batchCode in batchCodes)
             {
-                var analyticsList = dashboard.GetBatchAnalytics(batchCode);
+                var analyticsList = dashboard.getBatchAnalytics(batchCode);
                 if (analyticsList == null || analyticsList.Count == 0) continue;
 
                 report.AppendLine($"<li><strong>Batch {batchCode}</strong><ul>");
 
                 foreach (var analytics in analyticsList)
                 {
-                    var summary = analytics.CalculateBatchSummary();
+                    var summary = analytics.calculateBatchSummary();
                     report.AppendLine($"<li>{analytics.getAnalyticsType()}</li>");
                     report.AppendLine("<ul>");
                     foreach (var kvp in summary)

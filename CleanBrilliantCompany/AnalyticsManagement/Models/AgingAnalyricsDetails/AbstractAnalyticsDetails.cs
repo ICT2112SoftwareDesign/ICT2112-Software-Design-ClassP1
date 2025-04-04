@@ -7,8 +7,8 @@ public abstract class AbstractAnalyticsDetails {
         this.analyticsType = analyticsType ;
     }
 
-    public int getBatchCode() => batchCode; 
+ 
     public String getAnalyticsType() => analyticsType; 
-    abstract public Dictionary<string, object> CalculateBatchSummary(); 
+    abstract public Dictionary<string, object> calculateBatchSummary(); 
     
 } 

@@ -6,8 +6,8 @@
     var allMetrics = Model != null
         ? productToBatchMap
             .SelectMany(p => p.Value
-                .SelectMany(batch => Model.GetBatchAnalytics(batch)
-                    .SelectMany(a => a.CalculateBatchSummary().Keys)))
+                .SelectMany(batch => Model.getBatchAnalytics(batch)
+                    .SelectMany(a => a.calculateBatchSummary().Keys)))
             .Distinct()
             .ToList()
         : new List<string>();
@@ -97,8 +97,8 @@
                             @* ✅ Get all unique metrics from all batches in this product *@
                             @{
                                 var productMetrics = product.Value
-                                    .SelectMany(batch => Model.GetBatchAnalytics(batch)
-                                        .SelectMany(analytics => analytics.CalculateBatchSummary().Keys))
+                                    .SelectMany(batch => Model.getBatchAnalytics(batch)
+                                        .SelectMany(analytics => analytics.calculateBatchSummary().Keys))
                                     .Distinct()
                                     .ToList();
                             }
@@ -138,8 +138,8 @@
                         @foreach (var product in productToBatchMap)
                         {
                             var matchingValues = product.Value
-                                .SelectMany(batch => Model.GetBatchAnalytics(batch))
-                                .SelectMany(a => a.CalculateBatchSummary())
+                                .SelectMany(batch => Model.getBatchAnalytics(batch))
+                                .SelectMany(a => a.calculateBatchSummary())
                                 .Where(kv => kv.Key == "RemainingDays")
                                 .Select(kv => Convert.ToSingle(kv.Value))
                                 .ToList();
@@ -316,8 +316,8 @@
 
                 foreach (var batchcode in batchList)
                 {
-                    var batchMetrics = Model.GetBatchAnalytics(batchcode)
-                        .SelectMany(a => a.CalculateBatchSummary()) 
+                    var batchMetrics = Model.getBatchAnalytics(batchcode)
+                        .SelectMany(a => a.calculateBatchSummary()) 
                         .ToDictionary(e => e.Key, e => e.Value);
 
                     if (batchMetrics.ContainsKey(metric))
@@ -608,11 +608,11 @@
 
                 var batchCodes = product.Value;
                 var allAnalytics = batchCodes
-                    .SelectMany(batch => Model.GetBatchAnalytics(batch))
+                    .SelectMany(batch => Model.getBatchAnalytics(batch))
                     .ToList();
 
                 var matchingValues = allAnalytics
-                    .SelectMany(a => a.CalculateBatchSummary())
+                    .SelectMany(a => a.calculateBatchSummary())
                     .Where(kv => kv.Key == metric)
                     .Select(kv => Convert.ToSingle(kv.Value))
                     .ToList();

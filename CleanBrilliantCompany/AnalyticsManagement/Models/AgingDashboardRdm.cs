@@ -22,12 +22,6 @@ public class AgingDashboardRdm : Dashboard
         batchAnalyticsMap = new Dictionary<int, List<AbstractAnalyticsDetails>>();
     }
 
-
-
-    public Dictionary<int, List<AbstractAnalyticsDetails>> getBatchAnalyticsMap() => batchAnalyticsMap;
-    private void setBatchAnalyticsMap(Dictionary<int, List<AbstractAnalyticsDetails>> batchAnalyticsMap) => this.batchAnalyticsMap = batchAnalyticsMap;
-
-
     public Dictionary<int, List<int>> getProductToBatchMap() => productToBatchMap;
     public void addBatchtoProductMap(int productId, int batchCode)
     {
@@ -132,7 +126,7 @@ public class AgingDashboardRdm : Dashboard
     }
 
 
-    public List<AbstractAnalyticsDetails>? GetBatchAnalytics(int batchCode)
+    public List<AbstractAnalyticsDetails>? getBatchAnalytics(int batchCode)
     {
         return batchAnalyticsMap.ContainsKey(batchCode) ? batchAnalyticsMap[batchCode] : null;
     }

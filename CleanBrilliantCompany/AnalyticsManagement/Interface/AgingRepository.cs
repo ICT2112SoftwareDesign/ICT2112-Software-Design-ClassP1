@@ -1,4 +1,4 @@
-public interface AgingRepo 
+public interface AgingRepository
 {
     // Fetch the latest dashboard DTO
     DashboardDTO? GetLatestAgingDashboard();

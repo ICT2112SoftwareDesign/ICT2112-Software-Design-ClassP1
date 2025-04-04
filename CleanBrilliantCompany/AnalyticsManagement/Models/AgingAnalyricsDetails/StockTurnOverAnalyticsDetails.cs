@@ -64,7 +64,7 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     }
 
      
-    public override Dictionary<string, object> CalculateBatchSummary(){
+    public override Dictionary<string, object> calculateBatchSummary(){
         Dictionary<string, object> batchSummary = new Dictionary<string, object>(); 
         // batchSummary.Add("TurnOverRate", calculateTurnOverRate()); 
         // batchSummary.Add("DeadStockPercentage", calculateDeadStockPercentage()); 
