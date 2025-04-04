@@ -97,7 +97,7 @@ namespace CleanBrilliantCompany.Models.Entity
         // }
 
         // Public method to update item details
-        public void UpdateTransfer(int transferId, int productId, TransferStatus status, int quantity, int sourceWarehouse, int destinationWarehouse, int staffId)
+        public void updateTransfer(int transferId, int productId, TransferStatus status, int quantity, int sourceWarehouse, int destinationWarehouse, int staffId)
         {
             TransferId = transferId;
             ProductId = productId;
