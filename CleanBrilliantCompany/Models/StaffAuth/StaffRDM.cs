@@ -124,43 +124,5 @@ namespace CleanBrilliantCompany.Models.StaffAuth
                 default: throw new Exception("Unknown property");
             }
         }
-
-        // Sample Method: Create a new Staff (Stub, implementation needed)
-        public bool CreateStaff(int staffId, string name, string username, string email, string contactNo, string address, string password)
-        {
-            // Implementation logic here (e.g., call StaffManagement to insert into DB)
-            return false;
-        }
-
-        // Sample Method: Fetch staff details (Stub, implementation needed)
-        public bool GetStaffDetails(int staffId, string name, string username, string email, string contactNo, string address, string department, string managementLevel)
-        {
-            // Implementation logic here (e.g., call StaffManagement to retrieve from DB)
-            return false;
-        }
-
-        // Sample Method: Update Address (Stub, implementation needed)
-        public bool UpdateStaffAddress(int staffId, string address)
-        {
-            // Implementation logic here
-            return false;
-        }
-
-        // New Role property based on the department or management level
-        public string Role
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(department))
-                {
-                    return "general"; // Staff is in General Staff
-                }
-                else if (!string.IsNullOrEmpty(managementLevel))
-                {
-                    return "management"; // Staff is in Management Staff
-                }
-                return "unknown"; // Unknown role
-            }
-        }
     }
 }

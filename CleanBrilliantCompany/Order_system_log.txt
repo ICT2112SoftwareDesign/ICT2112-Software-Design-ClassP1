@@ -1,8 +1,0 @@
-2025-04-01 02:41:32 - [Order Updated] Order ID: 108, Customer ID: 38, New Status: Pending
-2025-04-03 01:32:47 - [Order Updated] Order ID: 29, Customer ID: 14, New Status: Refunded
-2025-04-03 02:19:15 - [Order Updated] Order ID: 28, Customer ID: 14, New Status: Refunded
-2025-04-03 02:29:26 - [Order Updated] Order ID: 28, Customer ID: 14, New Status: Rejected
-2025-04-03 12:03:06 - [Order Created] Order ID: 141, Customer ID: 39, Total: $22.00
-2025-04-03 12:03:34 - [Order Updated] Order ID: 141, Customer ID: 39, New Status: Shipped
-2025-04-03 12:03:53 - [Order Updated] Order ID: 141, Customer ID: 39, New Status: Completed
-2025-04-03 12:04:04 - [Order Updated] Order ID: 141, Customer ID: 39, New Status: RefundRequested

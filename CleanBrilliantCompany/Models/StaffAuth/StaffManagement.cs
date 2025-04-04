@@ -14,41 +14,34 @@ namespace CleanBrilliantCompany.Models.StaffAuth
             _staffDatabase = staffDatabase;
         }
 
-        // 🔹 Get All Staff (Admin functionality - placeholder)
+        // Get All Staff (Admin functionality - placeholder)
         public List<StaffRDM> GetAllStaff()
         {
-            // Implementation: Fetch all staff from DB
             return new List<StaffRDM>();
         }
 
-        // 🔹 Get Specific Staff Details
-        //public StaffRDM GetStaff(int staffId)
-        //{
-        //    return _staffDatabase.GetStaffDetails(staffId);
-        //}
+        // Get Specific Staff Details
+        public StaffRDM GetStaff(int staffId)
+        {
+            return _staffDatabase.GetStaffDetails(staffId);
+        }
 
-        // 🔹 Create a New Staff Member
+        // Create a New Staff Member
         public bool CreateStaff(string name, string contactNo, string address, string role, string email, string password)
         {
             return _staffDatabase.CreateStaff(name, contactNo, address, role, email, password);
         }
 
-        // 🔹 Update Staff Details
+        // Update Staff Details
         public bool UpdateStaff(int staffId, string name, string contactNo, string address, string role, string email)
         {
             return _staffDatabase.UpdateStaff(staffId, name, contactNo, address, role, email);
         }
 
-        // 🔹 Delete Staff Member
+        // Delete Staff Member
         public bool DeleteStaff(int staffId)
         {
             return _staffDatabase.DeleteStaff(staffId);
-        }
-
-        // 🔹 Check if there are any pending Staff Queries (Placeholder)
-        public bool CheckStaffQuery()
-        {
-            return false; // To be implemented later
         }
 
         public int GetIdByEmail(string email)
@@ -59,11 +52,6 @@ namespace CleanBrilliantCompany.Models.StaffAuth
         public StaffRDM GetStaffDetails(int staffId)
         {
             return _staffDatabase.GetStaffDetails(staffId);
-        }
-
-        public string GetStaffRole(int staffId)
-        {
-            return _staffDatabase.GetStaffRole(staffId);  // Calls GetStaffRole from StaffMapper
         }
     }
 }

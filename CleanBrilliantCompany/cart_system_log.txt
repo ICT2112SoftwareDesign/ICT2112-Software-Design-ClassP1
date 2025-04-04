@@ -1,6 +1,0 @@
-[27/3/2025 2:17:00 pm] Product added to cart - Customer ID: 19, Product ID: 2, Quantity: 2
-[27/3/2025 2:17:59 pm] Cart cleared - Customer ID: 19
-[27/3/2025 2:45:04 pm] Product added to cart - Customer ID: 19, Product ID: 4, Quantity: 3
-[27/3/2025 2:45:44 pm] Cart cleared - Customer ID: 19
-[3/4/2025 12:02:49 PM] Product added to cart - Customer ID: 39, Product ID: 5, Quantity: 1
-[3/4/2025 12:03:06 PM] Cart cleared - Customer ID: 39

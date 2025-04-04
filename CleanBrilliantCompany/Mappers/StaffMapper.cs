@@ -15,7 +15,7 @@ namespace CleanBrilliantCompany.Mappers
             _connectionString = connectionString;
         }
 
-        // ✅ Insert Staff (Register)
+        // Insert Staff (Register)
         public bool CreateStaff(string name, string contactNo, string address, string role, string email, string password)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -50,7 +50,7 @@ namespace CleanBrilliantCompany.Mappers
             return false;
         }
 
-        // ✅ Insert Role into the Correct Table (GeneralStaff / ManagementStaff)
+        // Insert Role into the Correct Table (GeneralStaff / ManagementStaff)
         private bool InsertStaffRole(int staffId, string role)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -79,7 +79,7 @@ namespace CleanBrilliantCompany.Mappers
             return false;
         }
 
-        // ✅ Verify Staff Credentials (Login)
+        // Verify Staff Credentials (Login)
         public bool VerifyStaffCredentials(string email, string password)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -102,7 +102,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        // ✅ Check if Staff Exists (By ID)
+        // Check if Staff Exists (By ID)
         public bool StaffExists(int staffId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -119,7 +119,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        // ✅ Get Staff ID by Username (For Session)
+        // Get Staff ID by Username (For Session)
         public int GetIdByUsername(string username)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -138,7 +138,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        // ✅ Get Staff Details
+        // Get Staff Details
         public StaffRDM GetStaffDetails(int staffId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -170,7 +170,7 @@ namespace CleanBrilliantCompany.Mappers
             return null;
         }
 
-        // ✅ Update Staff Details
+        // Update Staff Details
         public bool UpdateStaff(int staffId, string name, string contactNo, string address, string role, string email)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -195,7 +195,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        // ✅ Delete Staff
+        // Delete Staff
         public bool DeleteStaff(int staffId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -212,7 +212,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        // ✅ Check for Existing Email (For Update)
+        // Check for Existing Email (For Update)
         public bool StaffEmailExists(int staffId, string email)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -231,7 +231,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        // ✅ Check for Existing Username (For Update)
+        // Check for Existing Username (For Update)
         public bool StaffUsernameExists(int staffId, string username)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -268,7 +268,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        // ✅ Get All Staff (Admin)
+        // Get All Staff
         public List<StaffRDM> GetAllStaff()
         {
             List<StaffRDM> staffList = new List<StaffRDM>();
@@ -296,34 +296,6 @@ namespace CleanBrilliantCompany.Mappers
                 }
             }
             return staffList;
-        }
-
-        public string GetStaffRole(int staffId)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string query = @"
-            SELECT 
-                CASE 
-                    WHEN gs.staffId IS NOT NULL THEN 'general'
-                    WHEN ms.staffId IS NOT NULL THEN 'management'
-                    ELSE 'unknown'
-                END AS Role
-            FROM dbo.Staff s
-            LEFT JOIN dbo.GeneralStaff gs ON gs.staffId = s.staffId
-            LEFT JOIN dbo.ManagementStaff ms ON ms.staffId = s.staffId
-            WHERE s.staffId = @StaffId";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@StaffId", staffId);
-                    var role = command.ExecuteScalar()?.ToString();
-
-                    return role ?? "unknown";  // If not found, return "unknown"
-                }
-            }
         }
     }
 }
