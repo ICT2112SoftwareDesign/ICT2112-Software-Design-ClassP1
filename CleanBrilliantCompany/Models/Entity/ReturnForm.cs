@@ -108,20 +108,6 @@
 			SetStaffId(staffId);
 		}
 
-		//private ReturnForm(int returnId, int manufId, int itemId, int productId, string returnReason, int staffId) {
-  //          SetReturnId(returnId);
-  //          SetItemId(itemId);
-  //          SetProductId(productId);
-  //          SetManufacturerId(manufId);
-  //          SetReturnReason(returnReason);
-  //          SetStaffId(staffId);
-  //      }
-		//public static ReturnForm createForm(int returnId, int manufId, int itemId, int productId, string returnReason, int staffId) {
-
-  //          var form = new ReturnForm(returnId, manufId, itemId, productId, returnReason, staffId);
-  //          return form;
-  //      }
-
         // Public method to create a return form.
         public static ReturnForm createForm(
 			int? returnId = null,

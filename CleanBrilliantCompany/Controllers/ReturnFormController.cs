@@ -27,6 +27,7 @@ namespace CleanBrilliantCompany.Controllers
 
         }
 
+        // Viewing details of individual return forms.
         [Route("view/{itemId}")]
 		public IActionResult DisplayReturnForm(int itemId)
 		{
@@ -61,8 +62,7 @@ namespace CleanBrilliantCompany.Controllers
         public async Task<IActionResult> ConfirmReturnForm(int manufacturerId, string manufacturerName, string manufacturerEmail, int productId, string productName, int itemId, string returnReason, int staffId)
 		{
 
-			// Example staff ID set to 1.
-			// Placeholder for returnId is 0.
+			// Placeholder for returnId is 0, will by auto created by db and replaced with actual value.
 			var model = ReturnForm.createForm(0, manufacturerId, manufacturerName, manufacturerEmail, itemId, productId, productName, returnReason, staffId);
 
 			var result = await _returnFormControl.sendReturnForm(model);
@@ -85,7 +85,7 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
         [Route("to-return")]
-        public ActionResult ShowAllToReturn()
+        public IActionResult ShowAllToReturn()
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
 

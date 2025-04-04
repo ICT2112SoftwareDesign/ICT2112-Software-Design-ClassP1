@@ -83,15 +83,18 @@ namespace CleanBrilliantCompany.Models.Control
 
 		public ReturnForm generateReturnForm(int productId, int itemId) {
 
+			// Retrieve item.
             Item item = _iItem.getItemById(itemId).Result;
             Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
+			// Retrieve product.
             Product product = _iReturnForm.retrieveProductDetails(productId).Result;
             Dictionary<string, object> prodDict = product.retrieveProductInfo();
 
             int manufId = (int)prodDict["ManufacturerId"];
             string prodName = (string)prodDict["ProductName"];
 
+			// Retrieve product manufacturer
             ProductManufacturer prodManuf = _iManufacturer.getManufacturerDetails(manufId);
             Dictionary<string, object> manufDict = prodManuf.retrieveProductManufacturerInfo();
 
@@ -107,7 +110,7 @@ namespace CleanBrilliantCompany.Models.Control
 				productId,
                 prodName,
 				"-", // Placeholder for returnReason.
-				1
+				1 // Example staff ID
 			);
 
 			return model;
@@ -117,6 +120,7 @@ namespace CleanBrilliantCompany.Models.Control
 		{
 			Debug.WriteLine($"Finding item for item id: {model.GetItemId()}");
 
+			// Retrieve item.
 			Item item = await _iItem.getItemById((int)model.GetItemId());
 			Dictionary<string, object> itemDict = item.retrieveItemInfo();
 
@@ -177,8 +181,6 @@ namespace CleanBrilliantCompany.Models.Control
 					{
 						Debug.WriteLine($"Error sending email: {ex.Message}");
 					}
-
-					Debug.WriteLine("Sending return form to manufacturer by email...");
 
 					model = ReturnForm.createForm(
 						model.GetReturnId(),
