@@ -4,92 +4,94 @@ using CleanBrilliantCompany.DatabaseEntities;
 
 public class CostMapper
 {
-
+    private readonly iProduct _iProduct;
+    private readonly iManufacturer _iManufacturer;
+    private readonly iBatch _iBatch;
+    private readonly iItem _iItem;
     private readonly ApplicationDbContext _db;
 
-    private readonly iItem _itemService;
-    private readonly iBatch _batchService;
-    private readonly iManufacturer _manufacturerService;
-
-
-    // public CostMapper(ApplicationDbContext dbContext)
-    // {
-    //  _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-    // }
-
-      public CostMapper(iItem itemService, iBatch batchService, iManufacturer manufacturerService,ApplicationDbContext dbContext)
+    public CostMapper(ApplicationDbContext dbContext, iProduct iProduct, iManufacturer iManufacturer, iBatch iBatch, iItem iItem)
     {
-        _itemService = itemService;
-        _batchService = batchService;
-        _manufacturerService = manufacturerService;
         _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _iProduct = iProduct;
+        _iManufacturer = iManufacturer;
+        _iBatch = iBatch;
+        _iItem = iItem;
     }
 
-
-
-    // ----------------------------------------------------------------
-    // Fetching via Retrieval Service from External Interfaces
-
-     // 🔹 Fetch Product Manufacturers DTOs (maps ManufacturerTable → ProductManufacturerDTO)
     public List<ProductManufacturerDTO> GetAllManufacturers()
     {
-        var manufacturers = _manufacturerService.GetAllManufacturers();
+        var manufacturers = _iManufacturer.GetAllProductManufacturer();
 
-        return manufacturers.Select(m => new ProductManufacturerDTO
+        return manufacturers.Select(m =>
         {
-            ManufacturerId = m.ManufacturerId,
-            CompanyName = m.CompanyName,
-            Address = m.ManufacturerAddress,
-            Email = m.Email
-        }).ToList();
-    }
-
-    // 🔹 Fetch Product Batches DTOs (maps ProductBatchTable → ProductBatchDTO)
-    public List<ProductBatchDTO> GetAllProductBatches()
-    {
-        var productBatches = _batchService.GetAllProductBatch();
-        var products = _db.Product.Select(p => new { p.productId, p.manufacturerId }).ToList();
-
-        return productBatches.Select(batch =>
-        {
-            var product = products.FirstOrDefault(p => p.productId == batch.ProductId);
-            return new ProductBatchDTO
+            var info = m.retrieveProductManufacturerInfo();
+            return new ProductManufacturerDTO
             {
-                BatchCode = batch.BatchCode,
-                ProductId = batch.ProductId,
-                ExpiryDate = batch.ExpiryDate,
-                ReceiveDate = batch.ReceiveDate,
-                ManufactureDate = batch.ManufactureDate,
-                BatchQuantity = batch.Quantity,
-                BatchPrice = Convert.ToDecimal(batch.BatchCost),
-                ManufacturerId = product?.manufacturerId ?? -1
+                ManufacturerId = Convert.ToInt32(info["ManufacturerId"]),
+                CompanyName = info["CompanyName"]?.ToString() ?? string.Empty,
+                Address = info["ManufacturerAddress"]?.ToString() ?? string.Empty,
+                Email = info["Email"]?.ToString() ?? string.Empty
             };
         }).ToList();
     }
 
-    // 🔹 Fetch Items DTOs (maps ItemTable → ItemDTO)
-    public List<ItemDTO> GetAllItems()
+    public List<ProductBatchDTO> GetAllProductBatches()
     {
-        var items = _itemService.getItems();
+        var batches = _iBatch.getAllProductBatch();
+        var products = _iProduct.getAllProducts();
 
-        return items.Select(i => new ItemDTO
+        var productManufacturerMap = products
+            .Select(p => p.retrieveProductInfo())
+            .Select(info => new
+            {
+                ProductId = Convert.ToInt32(info["ProductId"]),
+                ManufacturerId = Convert.ToInt32(info["ManufacturerId"])
+            })
+            .ToDictionary(x => x.ProductId, x => x.ManufacturerId);
+
+        return batches.Select(pb =>
         {
-            ItemId = i.ItemId,
-            ProductId = i.ProductId,
-            SalePrice = (decimal)i.SalePrice,
-            BatchCode = i.BatchCode,
-            WarehouseId = i.WarehouseId,
-            ItemStatus = i.ItemStatus,
-            ReservationId = i.ReservationId,
-            OrderId = i.OrderId,
-            TransferId = i.TransferId,
-            ReturnId = i.ReturnId
+            var info = pb.retrieveProductBatchInfo();
+            int prodId = Convert.ToInt32(info["ProductId"]);
+            int manufacturerId = productManufacturerMap.ContainsKey(prodId) ? productManufacturerMap[prodId] : -1;
+
+            return new ProductBatchDTO
+            {
+                BatchCode = Convert.ToInt32(info["BatchCode"]),
+                ProductId = prodId,
+                ExpiryDate = Convert.ToDateTime(info["ExpiryDate"]),
+                ReceiveDate = Convert.ToDateTime(info["ReceiveDate"]),
+                ManufactureDate = Convert.ToDateTime(info["ManufactureDate"]),
+                BatchQuantity = Convert.ToInt32(info["Quantity"]),
+                BatchPrice = Convert.ToDecimal(info["BatchCost"]),
+                ManufacturerId = manufacturerId
+            };
         }).ToList();
     }
 
+    public List<ItemDTO> GetAllItems()
+    {
+        var items = _iItem.getItems().Result;
 
-    // ---------------------------------------------------------------
-    // 🔹 Fetch Dashboard DTOs
+        return items.Select(i =>
+        {
+            var info = i.retrieveItemInfo();
+            return new ItemDTO
+            {
+                ItemId = Convert.ToInt32(info["ItemId"]),
+                ProductId = Convert.ToInt32(info["ProductId"]),
+                SalePrice = Convert.ToDecimal(info["SalePrice"]),
+                BatchCode = Convert.ToInt32(info["BatchCode"]),
+                WarehouseId = Convert.ToInt32(info["WarehouseId"]),
+                ItemStatus = info["ItemStatus"]?.ToString() ?? string.Empty,
+                ReservationId = info["ReservationId"] != null ? Convert.ToInt32(info["ReservationId"]) : (int?)null,
+                OrderId = info["OrderId"] != null ? Convert.ToInt32(info["OrderId"]) : (int?)null,
+                TransferId = info["TransferId"] != null ? Convert.ToInt32(info["TransferId"]) : (int?)null,
+                ReturnId = info["ReturnId"] != null ? Convert.ToInt32(info["ReturnId"]) : (int?)null,
+            };
+        }).ToList();
+    }
 
     public DashboardDTO ToDTO(DashboardTable table)
     {
@@ -117,6 +119,4 @@ public class CostMapper
             TypeId = dto.Type
         };
     }
-
-
 }
