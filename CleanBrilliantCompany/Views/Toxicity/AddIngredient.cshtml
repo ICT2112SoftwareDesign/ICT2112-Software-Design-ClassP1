@@ -5,134 +5,154 @@
     var selectedProductId = ViewBag.SelectedProductId ?? 2; // Default to Eco-Friendly Shampoo ID if not specified
 }
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">Add New Ingredient for Toxicity Analysis</h1>
+<div id="wrapper" class="d-flex flex-nowrap min-vh-100">
+    @await Html.PartialAsync("_Sidebar")
+    <div class="dashboard-content px-4">
+        <div id="content" class="dashboard-container">
+            <div class="container-fluid px-4"></div>
+            <h1 class="mt-4 mb-4">Add New Ingredient for Toxicity Analysis</h1>
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-            @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Add New Ingredient</h5>
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div class="card-body">
-                    <form asp-action="Create" asp-controller="Toxicity" method="post">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label for="IngredientName" class="form-label">Ingredient Name</label>
-                                    <input name="IngredientName" id="IngredientName" class="form-control" required />
-                                    <div class="form-text">Enter the full chemical or common name of the ingredient</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label for="IngredientToxicity" class="form-label">Toxicity Level (0.0-1.0)</label>
-                                    <input type="number" step="0.1" min="0" max="1" name="IngredientToxicity" id="IngredientToxicity" class="form-control" required />
-                                    <div class="form-text">
-                                        <span class="text-success">0.0-0.3: Low</span> | 
-                                        <span class="text-warning">0.3-0.7: Moderate</span> | 
-                                        <span class="text-danger">0.7-1.0: High</span>
+            }
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Add New Ingredient</h5>
+                        </div>
+                        <div class="card-body">
+                            <form asp-action="Create" asp-controller="Toxicity" method="post">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group mb-4">
+                                            <label for="IngredientName" class="form-label">Ingredient Name</label>
+                                            <input name="IngredientName" id="IngredientName" class="form-control"
+                                                required />
+                                            <div class="form-text">Enter the full chemical or common name of the
+                                                ingredient</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group mb-4">
+                                            <label for="IngredientToxicity" class="form-label">Toxicity Level
+                                                (0.0-1.0)</label>
+                                            <input type="number" step="0.1" min="0" max="1" name="IngredientToxicity"
+                                                id="IngredientToxicity" class="form-control" required />
+                                            <div class="form-text">
+                                                <span class="text-success">0.0-0.3: Low</span> |
+                                                <span class="text-warning">0.3-0.7: Moderate</span> |
+                                                <span class="text-danger">0.7-1.0: High</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group mb-4">
+                                            <label for="ProductId" class="form-label">Product</label>
+                                            <select name="ProductId" id="ProductId" class="form-select form-control"
+                                                required>
+                                                @foreach (var product in ViewBag.ProductList ?? new[] {
+                                                                                                new { ProductId = 2, ProductName = "Eco-Friendly Shampoo" },
+                                                                                                new { ProductId = 14, ProductName = "sp1o0" },
+                                                                                                new { ProductId = 23, ProductName = "Bleach" },
+                                                                                                new { ProductId = 167, ProductName = "Organic Surface Spray" },
+                                                                                                new { ProductId = 203, ProductName = "All-Purpose Cleaner" }
+                                                                                                })
+                                                {
+                                                    if (product.ProductId == selectedProductId)
+                                                    {
+                                                        <option value="@product.ProductId" selected>@product.ProductName
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@product.ProductId">@product.ProductName</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <div class="form-text">Select the product that contains this ingredient
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label for="ProductId" class="form-label">Product</label>
-                                    <select name="ProductId" id="ProductId" class="form-select form-control" required>
-                                        @foreach (var product in ViewBag.ProductList ?? new[] { 
-                                            new { ProductId = 2, ProductName = "Eco-Friendly Shampoo" },
-                                            new { ProductId = 14, ProductName = "sp1o0" },
-                                            new { ProductId = 23, ProductName = "Bleach" },
-                                            new { ProductId = 167, ProductName = "Organic Surface Spray" },
-                                            new { ProductId = 203, ProductName = "All-Purpose Cleaner" }
-                                        })
-                                        {
-                                            if (product.ProductId == selectedProductId)
-                                            {
-                                                <option value="@product.ProductId" selected>@product.ProductName</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@product.ProductId">@product.ProductName</option>
-                                            }
-                                        }
-                                    </select>
-                                    <div class="form-text">Select the product that contains this ingredient</div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group mb-4">
+                                            <label for="ThresholdQuantity" class="form-label">Threshold Quantity</label>
+                                            <input type="number" name="ThresholdQuantity" id="ThresholdQuantity"
+                                                class="form-control" value="50" required />
+                                            <div class="form-text">Minimum quantity before reorder is needed</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group mb-4">
+                                            <label for="MeasurementUnit" class="form-label">Measurement Unit</label>
+                                            <select name="MeasurementUnit" id="MeasurementUnit"
+                                                class="form-select form-control" required>
+                                                <option value="ml" selected>Milliliter (ml)</option>
+                                                <option value="l">Liter (l)</option>
+                                                <option value="g">Gram (g)</option>
+                                                <option value="kg">Kilogram (kg)</option>
+                                                <option value="oz">Ounce (oz)</option>
+                                                <option value="lb">Pound (lb)</option>
+                                                <option value="units">Units</option>
+                                            </select>
+                                            <div class="form-text">Unit of measurement for this ingredient</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-end mb-4">
+                                        <div class="d-grid gap-2 d-md-flex w-100">
+                                            <button type="submit" class="btn btn-primary flex-grow-1">
+                                                <i class="fas fa-plus-circle me-2"></i> Add & Analyze
+                                            </button>
+                                            <a href="@Url.Action("Index", "Toxicity")" class="btn btn-secondary">
+                                                <i class="fas fa-arrow-left me-2"></i> Back
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label for="ThresholdQuantity" class="form-label">Threshold Quantity</label>
-                                    <input type="number" name="ThresholdQuantity" id="ThresholdQuantity" class="form-control" value="50" required />
-                                    <div class="form-text">Minimum quantity before reorder is needed</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group mb-4">
-                                    <label for="MeasurementUnit" class="form-label">Measurement Unit</label>
-                                    <select name="MeasurementUnit" id="MeasurementUnit" class="form-select form-control" required>
-                                        <option value="ml" selected>Milliliter (ml)</option>
-                                        <option value="l">Liter (l)</option>
-                                        <option value="g">Gram (g)</option>
-                                        <option value="kg">Kilogram (kg)</option>
-                                        <option value="oz">Ounce (oz)</option>
-                                        <option value="lb">Pound (lb)</option>
-                                        <option value="units">Units</option>
-                                    </select>
-                                    <div class="form-text">Unit of measurement for this ingredient</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 d-flex align-items-end mb-4">
-                                <div class="d-grid gap-2 d-md-flex w-100">
-                                    <button type="submit" class="btn btn-primary flex-grow-1">
-                                        <i class="fas fa-plus-circle me-2"></i> Add & Analyze
-                                    </button>
-                                    <a href="@Url.Action("Index", "Toxicity")" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left me-2"></i> Back
-                                    </a>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Toxicity Guidelines</h5>
                         </div>
-                    </form>
+                        <div class="card-body">
+                            <h6 class="mb-3">How to determine ingredient toxicity:</h6>
+                            <ul class="mb-0">
+                                <li class="mb-2">
+                                    <strong>Low (0.0-0.3):</strong> Generally recognized as safe. Minimal environmental
+                                    impact.
+                                    Examples: Water, Glycerin, Citric Acid, most plant extracts.
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Moderate (0.3-0.7):</strong> Some potential for irritation or environmental
+                                    concerns.
+                                    Examples: Sodium Laureth Sulfate, some preservatives, some fragrances.
+                                </li>
+                                <li class="mb-2">
+                                    <strong>High (0.7-1.0):</strong> Known irritants, allergens, or environmentally
+                                    problematic.
+                                    Examples: Formaldehyde-releasing compounds, certain colorants, concentrated
+                                    acids/bases.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="row mb-5">
-        <div class="col-md-12">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Toxicity Guidelines</h5>
-                </div>
-                <div class="card-body">
-                    <h6 class="mb-3">How to determine ingredient toxicity:</h6>
-                    <ul class="mb-0">
-                        <li class="mb-2">
-                            <strong>Low (0.0-0.3):</strong> Generally recognized as safe. Minimal environmental impact.
-                            Examples: Water, Glycerin, Citric Acid, most plant extracts.
-                        </li>
-                        <li class="mb-2">
-                            <strong>Moderate (0.3-0.7):</strong> Some potential for irritation or environmental concerns.
-                            Examples: Sodium Laureth Sulfate, some preservatives, some fragrances.
-                        </li>
-                        <li class="mb-2">
-                            <strong>High (0.7-1.0):</strong> Known irritants, allergens, or environmentally problematic.
-                            Examples: Formaldehyde-releasing compounds, certain colorants, concentrated acids/bases.
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 </div>

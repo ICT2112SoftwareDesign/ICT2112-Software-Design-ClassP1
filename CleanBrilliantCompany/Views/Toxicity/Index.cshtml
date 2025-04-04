@@ -4,7 +4,11 @@
     var currentProduct = ViewBag.CurrentProduct ?? Model?.ProductName ?? "Eco-Friendly Shampoo";
 }
 
-<div class="container-fluid px-4">
+<div id="wrapper" class="d-flex flex-nowrap min-vh-100">
+    @await Html.PartialAsync("_Sidebar") 
+    <div class="dashboard-content px-4">
+        <div id="content" class="dashboard-container">
+            <div class="container-fluid px-4">
     <h1 class="mt-4 mb-4">Ingredient Toxicity Analysis</h1>
     
     @if (TempData["SuccessMessage"] != null)
@@ -351,3 +355,7 @@
         </div>
     }
 </div>
+        </div>
+    </div>
+</div>
+
