@@ -32,34 +32,10 @@ namespace CleanBrilliantCompany.Models.Control
             return  _productMapper.findByProductId(productId);
         }
 
-
         public List<Product> getAllProducts()
         {
             return  _productMapper.findAllProducts();
         }
-
-        // public void createProduct(string productName, string category, float productCost, 
-        // int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
-        // {
-        //     _productMapper.insert(productName, category, productCost, 
-        //                             manufacturerId, weight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
-        // }
-
-        // public int CreateSolidProduct(string productName, string category, float productCost,
-        // int manufacturerId, float weight, int quantity, float toxicityPercentage, int carbonFootprint)
-        // {
-        //     return _productFactory.CreateProduct(productName, category, productCost,
-        //                                 manufacturerId, weight, quantity, 0,
-        //                                 toxicityPercentage, carbonFootprint, isLiquid: false);
-        // }
-
-        // public int CreateLiquidProduct(string productName, string category, float productCost,
-        // int manufacturerId, float weight, int quantity, int volume, float toxicityPercentage, int carbonFootprint)
-        // {
-        //     return _productFactory.CreateProduct(productName, category, productCost,
-        //                                 manufacturerId, weight, quantity, volume,
-        //                                 toxicityPercentage, carbonFootprint, isLiquid: true);
-        // }
 
         public int createProduct(string productName, string category, float productCost,
                               int manufacturerId, float weight, int quantity, int volumeOrZero,
@@ -76,21 +52,10 @@ namespace CleanBrilliantCompany.Models.Control
             return productId;
         }
 
-        public void deleteProduct(int productId)
-        {
-            _productMapper.delete(productId);
-        }
 
         public bool updateProduct(int productId, string productName, string category, float productCost, 
         int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
-            // Validation: Ensure product cost is greater than 0
-            // if (productCost <= 0 || volume < 0 || carbonFootprint < 0 || productWeight <= 0 || toxicityPercentage < 0)
-            // {
-            //     Console.WriteLine("Error: Cant Update Product ");
-            //     return false;
-            // }
-
             bool error = _productMapper.update(productId, productName, category, productCost, 
                                     manufacturerId, productWeight, quantity, volume, toxicityPercentage, carbonFootprint, productState);
             return error;
@@ -124,32 +89,22 @@ namespace CleanBrilliantCompany.Models.Control
         }
 
         // Product Stock History
-        // public Dictionary<string, List<StockHistory>> getStockHistoryByBatch(int batchCode)
         public List<StockHistory> getStockHistoryByBatch(int batchCode)
         {
-            List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); // Return this if only want list of stockHistory
-            // var stockHistoryDictionary = new Dictionary<string, List<StockHistory>>(); // Return this if dictionary, Key = stockDate
-            // foreach (var stockHistory in stockHistories)
-            // {
-            //     if (stockHistory.GetBatchCode() == batchCode)
-            //     {
-            //         string stockTakeDateKey = stockHistory.GetStockTakeDate().ToString("yyyy-MM-dd");
-            //         if (!stockHistoryDictionary.ContainsKey(stockTakeDateKey))
-            //         {
-            //             stockHistoryDictionary[stockTakeDateKey] = new List<StockHistory>();
-            //         }
-            //         stockHistoryDictionary[stockTakeDateKey].Add(stockHistory);
-            //     }
-            // }
-            return stockHistories;
+            List<StockHistory> allHistories = _productMapper.findAllStockHistory();
+            var filteredHistories = allHistories
+                 .Where(history => history.GetBatchCode() == batchCode)
+                 .ToList();
+ 
+             return filteredHistories;
         }
 
         public Dictionary<int, List<StockHistory>> getStockHistoryByDate(DateOnly stockTakeDate) 
         {
-            var stockHistoryDictionary = new Dictionary<int, List<StockHistory>>(); // Return this if dictionary
-            List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); // Return this if only want list of stockHistory, Key = batchCode
+            var stockHistoryDictionary = new Dictionary<int, List<StockHistory>>();
+            List<StockHistory> stockHistories = _productMapper.findAllStockHistory(); 
 
-            foreach (var stockHistory in stockHistories) // Made the attributes here public, stockTakeDate, batchCode.
+            foreach (var stockHistory in stockHistories)
             {
                 if (stockHistory.GetStockTakeDate() == stockTakeDate)
                 {
@@ -182,12 +137,12 @@ namespace CleanBrilliantCompany.Models.Control
             return productManufacturer;
         }
 
-        // Product Reorder Request
+        // Product Reorder Request (Simulation)
         public void processReorderRequest()
         {
             List<ReorderRequestSample> reorderRequests = _ireorderRequest.displayListOfReorders();
             List<ReorderRequestSample> ApprovedReorderRequests = new List<ReorderRequestSample>();
-            // Grab only Approved reorderRequests? Assuming it means we receive the batch of items.
+            // Grab only Approved reorderRequests
             foreach (var reorderRequest in reorderRequests)
             {
                 if (reorderRequest.Status == "Approved")

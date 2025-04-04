@@ -2,18 +2,6 @@ namespace CleanBrilliantCompany.Models.Entity
 {
     public class ProductManufacturer
     {
-        // CLASS DIAGRAM
-        // - manufacturerId: Int
-        // - companyName: String
-        // - address: String
-        // - email: String
-
-        // DB
-        //     [manufacturerId]
-        //   ,[companyName]
-        //   ,[manufacturerAddress]
-        //   ,[email]
-
         private int ManufacturerId;
         private string CompanyName;
         private string ManufacturerAddress;

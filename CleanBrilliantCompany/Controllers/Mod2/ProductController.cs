@@ -110,13 +110,13 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // Might remove
-        [HttpPost]
-        public async Task<IActionResult> DeleteProduct(int productId)
-        {
-            _productControl.deleteProduct(productId);
+        // [HttpPost]
+        // public async Task<IActionResult> DeleteProduct(int productId)
+        // {
+        //     _productControl.deleteProduct(productId);
 
-            return RedirectToAction("Index");
-        }
+        //     return RedirectToAction("Index");
+        // }
 
         [HttpPost]
         public async Task<IActionResult> FetchProduct(int productId)

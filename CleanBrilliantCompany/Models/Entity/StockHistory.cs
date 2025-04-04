@@ -49,8 +49,8 @@ namespace CleanBrilliantCompany.Models.Entity
 
         // Getters
         private int GetStockId() => StockId;
-        public int GetBatchCode() => BatchCode; // i made it public when creating dictionary of stockHistory
-        public DateOnly GetStockTakeDate() => StockTakeDate; // i made it public when creating dictionary of stockHistory
+        public int GetBatchCode() => BatchCode; 
+        public DateOnly GetStockTakeDate() => StockTakeDate; 
         private int GetQuantity() => Quantity;
         private DateTime GetRecordedDate() => RecordedDate;
 
