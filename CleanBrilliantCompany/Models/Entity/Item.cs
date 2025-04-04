@@ -75,28 +75,6 @@ namespace CleanBrilliantCompany.Models.Entity
             ItemId = itemId;
         }
 
-        // Public method to create a new item
-        public static Item CreateItem(int itemId, int productId, float salePrice, int batchCode, int warehouseId,
-                                      ItemStatus itemStatus, int? reservationId, int? orderId, int? transferId, int? returnId)
-        {
-            return new Item(itemId, productId, salePrice, batchCode, warehouseId, itemStatus, reservationId, orderId, transferId, returnId);
-        }
-
-        // Public method to update item details
-        public void UpdateItemDetails(int productId, float salePrice, int batchCode, int warehouseId, ItemStatus itemStatus,
-                                      int? reservationId, int? orderId, int? transferId, int? returnId)
-        {
-            ProductId = productId;
-            SalePrice = salePrice;
-            BatchCode = batchCode;
-            WarehouseId = warehouseId;
-            ItemStatus = itemStatus;
-            ReservationId = reservationId;
-            OrderId = orderId;
-            TransferId = transferId;
-            ReturnId = returnId;
-        }
-
         public Dictionary<string, object> retrieveItemInfo()
         {
             return new Dictionary<string, object>
@@ -156,7 +134,6 @@ namespace CleanBrilliantCompany.Models.Entity
         private void setOrderId(int? orderId) => OrderId = orderId;
         private void setTransferId(int? transferId) => TransferId = transferId;
         private void setReturnId(int? returnId) => ReturnId = returnId;
-
         public void Attach(IObserver observer)
         {
             Console.WriteLine("Called Attach Observer method");
@@ -186,8 +163,5 @@ namespace CleanBrilliantCompany.Models.Entity
 
             Notify();
         }
-
-        public Item() { }
-
     }
 }
