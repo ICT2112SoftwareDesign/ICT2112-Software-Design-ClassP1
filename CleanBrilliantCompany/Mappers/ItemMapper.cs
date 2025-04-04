@@ -330,7 +330,7 @@ namespace CleanBrilliantCompany.Mappers
                 string query = @"SELECT * FROM Item 
                 INNER JOIN ProductBatch ON ProductBatch.productId = Item.productId
                 AND ProductBatch.batchCode = Item.batchCode
-                WHERE itemStatus = @status";
+                WHERE itemStatus = @itemStatus";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
