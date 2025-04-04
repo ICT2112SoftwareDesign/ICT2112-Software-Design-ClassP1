@@ -362,25 +362,25 @@ namespace CleanBrilliantCompany.Controllers
         //     return Ok(warehouses); // Return data as JSON
         // }
 
-        [HttpPost]
-        [Route("getProductQuantityByWarehouse")]
-        public async Task<IActionResult> getProductQuantityByWarehouse(int productId, int warehouseId)
-        {
-            Console.WriteLine("PRODUCT ID: " + productId);
-            Console.WriteLine("Warehouse ID: " + warehouseId);
+        // [HttpPost]
+        // [Route("getProductQuantityByWarehouse")]
+        // public async Task<IActionResult> getProductQuantityByWarehouse(int productId, int warehouseId)
+        // {
+        //     Console.WriteLine("PRODUCT ID: " + productId);
+        //     Console.WriteLine("Warehouse ID: " + warehouseId);
 
-            int result = await _transferControl.getProductQuantityByWarehouse(productId, warehouseId);
+        //     int result = await _transferControl.getProductQuantityByWarehouse(productId, warehouseId);
 
-            if (result >= 0)
-            {
-                Console.WriteLine("QUANTITY: " + result);
-                return RedirectToAction("Index", new { quantity = result });
-            }
-            else
-            {
-                return BadRequest(new { error = "Failed to get quantity" });
-            }
-        }
+        //     if (result >= 0)
+        //     {
+        //         Console.WriteLine("QUANTITY: " + result);
+        //         return RedirectToAction("Index", new { quantity = result });
+        //     }
+        //     else
+        //     {
+        //         return BadRequest(new { error = "Failed to get quantity" });
+        //     }
+        // }
 
 
 
