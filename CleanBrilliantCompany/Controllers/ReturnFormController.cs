@@ -85,7 +85,7 @@ namespace CleanBrilliantCompany.Controllers
 		}
 
         [Route("to-return")]
-        public ActionResult ShowAllToReturn()
+        public IActionResult ShowAllToReturn()
         {
             List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
 
