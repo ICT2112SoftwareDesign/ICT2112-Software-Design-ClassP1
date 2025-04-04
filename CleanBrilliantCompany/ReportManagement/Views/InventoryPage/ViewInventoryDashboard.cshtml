@@ -1,0 +1,312 @@
+@model CleanBrilliantCompany.Models.InventoryDashboardRDM
+
+@{
+    ViewData["Title"] = "Inventory Dashboard";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    var stockLevels = Model?.GetAllStockLevels() ?? new Dictionary<int, int>();
+    var productLookup = ViewBag.ProductLookup as Dictionary<int, CleanBrilliantCompany.DTO.InventoryDTO>;
+    var lowStock = ViewBag.LowStock as List<int>;
+    var overStock = ViewBag.OverStock as List<int>;
+    var replenish = ViewBag.Replenish as List<int>;
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@Model?.Name (ID: @Model?.GetDashboardId())</h1>
+    <div>
+        <form asp-action="CreateDashboard" method="post" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-primary shadow-sm mr-2">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Create New Dashboard
+            </button>
+        </form>
+        <form asp-controller="Report" asp-action="PreviewReport" method="get" class="d-inline">
+            <input type="hidden" name="selectedDashboards" value="Inventory" />
+            <button type="submit" class="btn btn-sm btn-secondary">
+                <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+            </button>
+        </form>
+    </div>
+</div>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@ViewData["ErrorMessage"]</p>
+        <form asp-action="CreateDashboard" method="post" class="d-inline">
+            <button type="submit" class="btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Create a new dashboard
+            </button>
+        </form>
+    </div>
+}
+else if (Model == null)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>Dashboard data is missing.</p>
+        <form asp-action="CreateDashboard" method="post" class="d-inline">
+            <button type="submit" class="btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Create a new dashboard
+            </button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Dashboard Details</h6>
+        </div>
+        <div class="card-body">
+            <p><strong>Data for:</strong> @Model.RequestedStartDate.ToString("yyyy-MM-dd")</p>
+            <p><strong>Generated:</strong> @(Model.GeneratedDate.HasValue ? Model.GeneratedDate.Value.ToString("d") : "Not generated")</p>
+            <p><strong>Validity Duration:</strong> @Model.ValidityDuration days</p>
+        </div>
+    </div>
+
+    <form method="get" asp-action="ViewDashboard">
+        <label for="category">Filter by Category:</label>
+        <select name="category" id="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            @foreach (var category in ViewBag.Categories as List<string>)
+            {
+                <option value="@category" selected="@(ViewBag.SelectedCategory == category ? "selected" : null)">
+                    @category
+                </option>
+            }
+        </select>
+    </form>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Stock Levels Chart</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="stockLevelChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Alerts Section (Bottom) -->
+    <div class="alerts mb-4">
+        <div class="row">
+            @if (lowStock.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card border-left-danger shadow h-100 py-2">
+                        <div class="card-header bg-danger text-white">
+                            <h6 class="m-0 font-weight-bold">Low Stock Products</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                @foreach (var id in lowStock)
+                                {
+                                    if (productLookup.ContainsKey(id))
+                                    {
+                                        var product = productLookup[id];
+                                        <li class="list-group-item">
+                                            <strong>Product @product.ProductId:</strong> @product.ProductName
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item">
+                                            <strong>ID:</strong> @id � <em>(not found)</em>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (overStock.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="m-0 font-weight-bold">Overstock Products</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                @foreach (var id in overStock)
+                                {
+                                    if (productLookup.ContainsKey(id))
+                                    {
+                                        var product = productLookup[id];
+                                        <li class="list-group-item">
+                                            <strong>Product @product.ProductId:</strong> @product.ProductName
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item">
+                                            <strong>ID:</strong> @id � <em>(not found)</em>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (replenish.Any())
+    {
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Replenishment Actions</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @foreach (var productId in replenish
+                   .OrderBy(id => productLookup.ContainsKey(id) ? productLookup[id].StockLevel : int.MinValue)
+                   .ThenBy(id => id))
+                    {
+                        if (productLookup.ContainsKey(productId))
+                        {
+                            var product = productLookup[productId];
+                            <li class="list-group-item">
+                                <strong>Product @product.ProductId:</strong> @product.StockLevel units
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No products require replenishment at this time.
+        </div>
+    }
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Consecutive Weekly Alerts (Historical)</h6>
+            <form asp-action="ViewThresholds" method="get" class="mb-0">
+                <button type="submit" class="btn btn-sm btn-primary shadow-sm">
+                    <i class="fas fa-sliders-h fa-sm text-white-50"></i> Thresholds
+                </button>
+            </form>
+        </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @{
+                        var streaks = ViewBag.AlertStreaks as Dictionary<int, (int LowStockWeeks, int OverStockWeeks)>;
+
+                        if (streaks != null && streaks.Any())
+                        {
+                            foreach (var product in streaks)
+                            {
+                                var productId = product.Key;
+                                var lowWeeks = product.Value.LowStockWeeks;
+                                var overWeeks = product.Value.OverStockWeeks;
+
+                                if (lowWeeks > 1 || overWeeks > 1)
+                                {
+                                <li class="list-group-item">
+                                    <strong>Product @productId:</strong>
+                                        @if (lowWeeks > 1)
+                                        {
+                                            <text>Low Stock for @lowWeeks consecutive week@(lowWeeks > 1 ? "(s)" : "")</text>
+                                        }
+                                        @if (overWeeks > 0)
+                                        {
+                                            <text>Over Stock for @overWeeks consecutive week@(overWeeks > 1 ? "(s)" : "")</text>
+                                        }
+                                    </li>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <li>No historical alert streaks to show.</li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    <ul>
+        
+    </ul>
+}
+
+@section Scripts {
+    <script>
+        try {
+            const chartData = @Html.Raw(ViewBag.ChartData);
+            console.log("Chart Data:", chartData);
+
+            if (!chartData || !chartData.labels || !chartData.datasets) {
+                throw new Error("Invalid chart data");
+            }
+
+            const ctx = document.getElementById('stockLevelChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets.map(dataset => {
+                        return {
+                            ...dataset,
+                            backgroundColor: dataset.label === "Stock Levels" ? "rgba(75, 192, 192, 0.2)" : "rgba(255, 99, 132, 0.2)",
+                            borderColor: dataset.label === "Stock Levels" ? "rgba(75, 192, 192, 1)" : "rgba(255, 99, 132, 1)"
+                        };
+                    })
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Stock Level (Units)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Products'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                                        tooltip: {
+            displayColors: true,
+            callbacks: {
+                title: () => '',
+                label: function (context) {
+                    const productInfo = chartData.products[context.dataIndex];
+                    const datasetLabel = context.dataset.label;
+
+                    const mainLabel = `Product ${productInfo.id}`;
+                    const subDetails = [
+                        `Name: ${productInfo.name}`,
+                        `Category: ${productInfo.category}`,
+                    ];
+
+                    if (datasetLabel === "Stock Levels") {
+                        subDetails.push(`Stock: ${productInfo.stock}`);
+                    } else if (datasetLabel === "Thresholds") {
+                        subDetails.push(`Threshold: ${productInfo.threshold}`);
+                    }
+
+                    return [mainLabel, ...subDetails];
+                }
+            }
+        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error("Error rendering chart:", error);
+        }
+    </script>
+}

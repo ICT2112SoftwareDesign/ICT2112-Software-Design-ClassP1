@@ -1,0 +1,87 @@
+@using Azure.Core
+@{
+    ViewData["Title"] = "Preview Report";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    var selectedDashboards = Context.Request.Query["selectedDashboards"].ToString().Split(",").ToList();
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left side: instructions + checkboxes -->
+        <div class="col-md-4">
+            <h3><i class="fas fa-file-alt me-2 text-primary"></i>Generate Custom Report</h3>
+            <p class="text-muted">Select which dashboards you want to include in the consolidated AI-generated report.
+            </p>
+
+            <form asp-action="GenerateSelectedReport" method="post">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Aging"
+                        id="agingCheck" @(selectedDashboards.Contains("Aging") ? "checked" : "")>
+                    <label class="form-check-label" for="agingCheck"><i class="fas fa-chart-line me-1"></i>Aging
+                        Dashboard</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Manufacturer"
+                        id="manufacturerCheck" @(selectedDashboards.Contains("Manufacturer") ? "checked" : "")>
+                    <label class="form-check-label" for="manufacturerCheck"><i
+                            class="fas fa-industry me-1"></i>Manufacturer Dashboard</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Cost"
+                        id="costCheck" @(selectedDashboards.Contains("Cost") ? "checked" : "")>
+                    <label class="form-check-label" for="costCheck"><i class="fas fa-dollar-sign me-1"></i>Cost
+                        Dashboard</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Inventory"
+                        id="inventoryCheck" @(selectedDashboards.Contains("Inventory") ? "checked" : "")>
+                    <label class="form-check-label" for="inventoryCheck"><i class="fas fa-chart-bar me-1"></i>Inventory
+                        Dashboard</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="selectedDashboards" value="Forecast"
+                        id="forecastCheck" @(selectedDashboards.Contains("Forecast") ? "checked" : "")>
+                    <label class="form-check-label" for="forecastCheck"><i class="fas fa-chart-line me-1"></i>Forecast
+                        Dashboard</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-file-alt me-1"></i> Generate Report
+                </button>
+            </form>
+        </div>
+
+        <!-- Right side: iframe preview -->
+        <div class="col-md-6">
+            <h3 class="mt-2"><i class="fas fa-eye text-muted me-1"></i>This is what your PDF will look like</h3>
+            <p class="text-muted">Once generated, your customized report will be displayed here:</p>
+            <div class="shadow-sm rounded bg-white p-2">
+                <iframe id="pdfFrame" src="@Url.Action("GetReportPdf", "Report")" width="100%" height="550px"
+                    style="border: 1px solid #ccc;">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="loadingMessage" class="mt-5 text-center" style="display:none;">
+        <div class="spinner-border text-primary mb-2" role="status">
+            <span class="visually-hidden">Generating...</span>
+        </div>
+        <p>Generating your report. Please wait...</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const form = document.getElementById('dashboardForm');
+        const loading = document.getElementById('loadingMessage');
+        const generateBtn = document.getElementById('generateBtn');
+
+        form.addEventListener('submit', () => {
+            form.style.display = 'none';
+            loading.style.display = 'block';
+        });
+    </script>
+}
