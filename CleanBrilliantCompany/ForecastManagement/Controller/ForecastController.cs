@@ -25,13 +25,6 @@ namespace CleanBrilliantCompany.Controllers
             //_cache = cache;
         }
 
-        // Handles user input actions, typically triggered from UI
-        [HttpPost("handleInput")]
-        public IActionResult HandleInput(int productId, int batchId)
-        {
-            // Implement logic to handle input if needed
-            return Ok();
-        }
 
         // Fetches data needed for dashboard view
         [HttpGet("fetchDashboardData")]
