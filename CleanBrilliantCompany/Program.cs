@@ -68,8 +68,10 @@ builder.Services.AddScoped<TransferMapper>();
 builder.Services.AddScoped<TransferController>();
 builder.Services.AddScoped<ItemControl>();
 builder.Services.AddScoped<ProductControl>();
-builder.Services.AddScoped<ProductFactory>();
+// builder.Services.AddScoped<ProductFactory>();
 builder.Services.AddScoped<ProductMapper>();
+builder.Services.AddScoped<ProductFactory, LiquidProductFactory>();
+builder.Services.AddScoped<ProductFactory, SolidProductFactory>();
 
 
 var app = builder.Build();

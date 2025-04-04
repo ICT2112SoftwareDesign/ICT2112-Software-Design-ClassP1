@@ -173,7 +173,7 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-        public void update(int productId, string productName, string productCategory,
+        public bool update(int productId, string productName, string productCategory,
         float productCost, int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)
         {
@@ -218,10 +218,12 @@ namespace CleanBrilliantCompany.Mappers
                         if (getDatabaseQueryStatus(null, rowsAffected))
                         {
                             Console.WriteLine($"Product: '{productId}' updated successfully.");
+                            return true;
                         }
                         else
                         {
                             Console.WriteLine("Error updating product.");
+                            return false;
                         }
                     }
                 }
@@ -229,6 +231,7 @@ namespace CleanBrilliantCompany.Mappers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error updating product: {ex.Message}");
+                return false;
             }
         }
 
@@ -244,34 +247,42 @@ namespace CleanBrilliantCompany.Mappers
                         break;
                     case "decrease":
                         finalQuantity = oldQty - quantity;
+                        if (finalQuantity < 0)
+                        {
+                            Console.WriteLine($"Error: Cannot decrease product quantity below zero. Product ID: {productId}");
+                            break;
+                        }
                         break;
                     default:
                         throw new InvalidOperationException("Unsupported operation. Use 'increase' or 'decrease'.");
                 }
 
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                if (finalQuantity >= 0)
                 {
-                    connection.Open();
-
-                    string query = @"
-                        UPDATE dbo.Product
-                        SET quantity = @Quantity
-                        WHERE productId = @ProductId";
-
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlConnection connection = new SqlConnection(_connectionString))
                     {
-                        command.Parameters.AddWithValue("@ProductId", productId);
-                        command.Parameters.AddWithValue("@Quantity", finalQuantity);
+                        connection.Open();
 
-                        int rowsAffected = command.ExecuteNonQuery();
+                        string query = @"
+                            UPDATE dbo.Product
+                            SET quantity = @Quantity
+                            WHERE productId = @ProductId";
 
-                        if (getDatabaseQueryStatus(null, rowsAffected))
+                        using (SqlCommand command = new SqlCommand(query, connection))
                         {
-                            Console.WriteLine($"Product: '{productId}' updated successfully to quantity: {finalQuantity}");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error updating product.");
+                            command.Parameters.AddWithValue("@ProductId", productId);
+                            command.Parameters.AddWithValue("@Quantity", finalQuantity);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (getDatabaseQueryStatus(null, rowsAffected))
+                            {
+                                Console.WriteLine($"Product: '{productId}' updated successfully to quantity: {finalQuantity}");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Error updating product.");
+                            }
                         }
                     }
                 }

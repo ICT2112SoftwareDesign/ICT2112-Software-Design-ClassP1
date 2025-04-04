@@ -43,21 +43,69 @@ namespace CleanBrilliantCompany.Controllers
         public async Task<IActionResult> CreateProduct(string productName, string productCategory, float productCost, 
         int manufacturerId, float weight, int volume, float toxicityPercentage, int carbonFootprint, bool isLiquid)
         {
-
-            int quantity = 0; // New product, so default quantity is 0
-            if (isLiquid)
+            try
             {
-                _productControl.CreateLiquidProduct(productName, productCategory, productCost,
-                                                    manufacturerId, weight, quantity, volume,
-                                                    toxicityPercentage, carbonFootprint);
-            }
-            else
-            {
-                _productControl.CreateSolidProduct(productName, productCategory, productCost,
-                                                manufacturerId, weight, quantity,
-                                                toxicityPercentage, carbonFootprint);
-            }
 
+                // Input Validation
+                if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(productCategory))
+                {
+                    TempData["ErrorMessage"] = "Product name and category cannot be empty.";
+                    return RedirectToAction("Index");
+                }
+
+                if (manufacturerId <= 0)
+                {
+                    TempData["ErrorMessage"] = "Invalid manufacturer ID.";
+                    return RedirectToAction("Index");
+                }
+
+                if (productCost <= 0)
+                {
+                    TempData["ErrorMessage"] = "Product cost must be greater than 0.";
+                    return RedirectToAction("Index");
+                }
+
+                if (weight <= 0)
+                {
+                    TempData["ErrorMessage"] = "Product weight must be greater than 0.";
+                    return RedirectToAction("Index");
+                }
+
+                if (volume < 0)
+                {
+                    TempData["ErrorMessage"] = "Volume cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                if (toxicityPercentage < 0)
+                {
+                    TempData["ErrorMessage"] = "Toxicity percentage cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                if (carbonFootprint < 0)
+                {
+                    TempData["ErrorMessage"] = "Carbon footprint cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                int productId = _productControl.createProduct(productName, productCategory, productCost, manufacturerId, 
+                                                          weight, 0, volume, toxicityPercentage, carbonFootprint, isLiquid);
+
+
+                if (productId != -1) // Successful creation
+                {
+                    TempData["SuccessMessage"] = $"Product '{productName}' created successfully with ID: {productId}.";
+                }
+                else // Failure
+                {
+                    TempData["ErrorMessage"] = $"Failed to create product '{productName}'.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating product: {ex.Message}";
+            }
             return RedirectToAction("Index");
         }
 
@@ -95,37 +143,78 @@ namespace CleanBrilliantCompany.Controllers
         }
 
 
-        // [HttpPost]
-        // public async Task<IActionResult> FetchProduct(int productId)
-        // {
-        //     List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
-        //     Product product = _productControl.getProductDetails(productId);
-
-        //     if (product != null)
-        //     {
-        //         productInfo.Add(product.retrieveProductInfo());
-        //     }
-        //     return View("~/Views/Product/TestProduct.cshtml", productInfo);
-        // }
-
         [HttpPost]
         public async Task<IActionResult> UpdateProduct(int productId, string productName, string productCategory, float productCost, 
         float productWeight, int quantity, int volumeOrZero, float toxicityPercentage, int carbonFootprint, bool isLiquid)
         // int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
-            // Collect the manufacturerId
-            Product product = _productControl.getProductDetails(productId);
-            List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
-            productInfo.Add(product.retrieveProductInfo());
-            int oldManufacturerId = Convert.ToInt32(productInfo[0]["ManufacturerId"]);
+            try
+            {
+                // Input Validation
+                if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(productCategory))
+                {
+                    TempData["ErrorMessage"] = "Product name and category cannot be empty.";
+                    return RedirectToAction("Index");
+                }
 
-            // Based on isLiquid update volume
-            string productState = isLiquid ? "1" : "0";
-            int volume = isLiquid ? volumeOrZero : 0;
-            _productControl.updateProduct(productId, productName, productCategory, 
-                                        productCost, oldManufacturerId, productWeight, 
-                                        quantity, volume, toxicityPercentage, 
-                                        carbonFootprint, productState);
+                if (productCost <= 0)
+                {
+                    TempData["ErrorMessage"] = "Product cost must be greater than 0.";
+                    return RedirectToAction("Index");
+                }
+
+                if (productWeight <= 0)
+                {
+                    TempData["ErrorMessage"] = "Product weight must be greater than 0.";
+                    return RedirectToAction("Index");
+                }
+
+                if (volumeOrZero < 0)
+                {
+                    TempData["ErrorMessage"] = "Volume cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                if (toxicityPercentage < 0)
+                {
+                    TempData["ErrorMessage"] = "Toxicity percentage cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                if (carbonFootprint < 0)
+                {
+                    TempData["ErrorMessage"] = "Carbon footprint cannot be negative.";
+                    return RedirectToAction("Index");
+                }
+
+                // Collect the manufacturerId
+                Product product = _productControl.getProductDetails(productId);
+                List<Dictionary<string, object>> productInfo = new List<Dictionary<string, object>>();
+                productInfo.Add(product.retrieveProductInfo());
+                int oldManufacturerId = Convert.ToInt32(productInfo[0]["ManufacturerId"]);
+
+                // Based on isLiquid update volume
+                string productState = isLiquid ? "1" : "0";
+                int volume = isLiquid ? volumeOrZero : 0;
+                bool isUpdated = _productControl.updateProduct(productId, productName, productCategory, 
+                                            productCost, oldManufacturerId, productWeight, 
+                                            quantity, volume, toxicityPercentage, 
+                                            carbonFootprint, productState);
+
+                // Check if the update was successful
+                if (isUpdated)
+                {
+                    TempData["SuccessMessage"] = $"Product '{productName}' (ID: {productId}) updated successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"Error updating product '{productName}' (ID: {productId}).";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Exception: {ex.Message}";
+            }
             return RedirectToAction("Index");
         }
 
