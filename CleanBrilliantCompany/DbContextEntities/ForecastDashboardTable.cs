@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CleanBrilliantCompany.DTO
+namespace CleanBrilliantCompany.DbContextEntities
 {
-    public class ForecastDashboardDTO
+    public class ForecastDashboardTable
     {
         [Key]
 
@@ -35,9 +35,9 @@ namespace CleanBrilliantCompany.DTO
             set => _generatedDateTime = value;
         }
 
-      
 
-        public ForecastDashboardDTO(int dashBoardID, DateTime startDate, DateTime endDate, DateTime generatedDate)
+
+        public ForecastDashboardTable(int dashBoardID, DateTime startDate, DateTime endDate, DateTime generatedDate)
         {
             _dashBoardID = dashBoardID;
             _startDate = startDate;
@@ -45,6 +45,6 @@ namespace CleanBrilliantCompany.DTO
             _generatedDateTime = generatedDate;
         }
 
-        public ForecastDashboardDTO() { } // Required for deserialization or EF materialization
+        public ForecastDashboardTable() { } // Required for deserialization or EF materialization
     }
 }

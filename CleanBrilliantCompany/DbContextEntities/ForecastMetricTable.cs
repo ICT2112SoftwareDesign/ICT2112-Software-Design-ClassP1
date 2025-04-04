@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CleanBrilliantCompany.DTO
+namespace CleanBrilliantCompany.DbContextEntities
 {
-    public class MetricDTO
+    public class ForecastMetricTable
     {
         [Key]
         private int _metricsID;
@@ -33,9 +33,9 @@ namespace CleanBrilliantCompany.DTO
             set => _forecastedStock = value;
         }
 
-        public MetricDTO() { } // Required for deserialization or EF materialization
+        public ForecastMetricTable() { } // Required for deserialization or EF materialization
 
-        public MetricDTO(int dashboardID,int metricsID, int productID, int forecastedStock)
+        public ForecastMetricTable(int dashboardID, int metricsID, int productID, int forecastedStock)
         {
             _dashboardID = dashboardID;
             _metricsID = metricsID;
