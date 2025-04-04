@@ -154,10 +154,6 @@ namespace CleanBrilliantCompany.Models.Control
         private void setPredictEmission(List<EmissionPredDTO> predictEmission){
             this.predictEmission = predictEmission;
         }
-        public void checkPredictedGoalThreshold(){
-
-        }
-        
 
         public async Task<List<GoalsSDM>> RetrieveGoalsForGraph(DateTime? startDate, DateTime? endDate)
         {
