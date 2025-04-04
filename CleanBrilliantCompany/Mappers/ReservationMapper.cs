@@ -1,7 +1,5 @@
 ﻿using CleanBrilliantCompany.Models.Entity;
 using Microsoft.Data.SqlClient;
-using Microsoft.IdentityModel.Tokens;
-using System.Reflection.PortableExecutable;
 
 namespace CleanBrilliantCompany.Mappers
 {

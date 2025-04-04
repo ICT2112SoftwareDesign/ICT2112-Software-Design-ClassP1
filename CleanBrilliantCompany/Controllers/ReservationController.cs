@@ -1,11 +1,7 @@
 ﻿using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Mappers;
 using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
-// using CleanBrilliantCompany.Models.ViewModel;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CleanBrilliantCompany.Controllers
 {
@@ -14,9 +10,9 @@ namespace CleanBrilliantCompany.Controllers
     {
         private readonly ReservationControl _reservationControl;
 
-        public ReservationController(IConfiguration configuration, IItem item, IItemUpdate itemUpdate, IReserve reserve)
+        public ReservationController(IConfiguration configuration, IItemUpdate itemUpdate, IReserve reserve)
         {
-            _reservationControl = new ReservationControl(configuration, item, itemUpdate, reserve);
+            _reservationControl = new ReservationControl(configuration, itemUpdate, reserve);
         }
 
         // default get all items
@@ -63,21 +59,6 @@ namespace CleanBrilliantCompany.Controllers
             {   
                 return RedirectToAction("Index");
             }
-        }
-
-        [HttpGet]
-        [Route("reserveitemstatus")]
-        public async Task<IActionResult> Index1()
-        {
-            List<Dictionary<string, object>> itemsInfo = new List<Dictionary<string, object>>();
-            List<Item> items = await _reservationControl.GetItemStatus(ItemStatus.Available);
-
-            foreach (var item in items)
-            {
-                itemsInfo.Add(item.retrieveItemInfo());
-            }
-
-            return View(itemsInfo);
         }
 
         [HttpGet]

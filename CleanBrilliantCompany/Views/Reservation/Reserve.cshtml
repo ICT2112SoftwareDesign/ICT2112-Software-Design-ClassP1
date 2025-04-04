@@ -54,51 +54,6 @@
         </tbody>
     </table>
 
-    @* button to trigger get warehouse quantity model
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#warehouseModel">
-        Get Warehouse Quantity
-    </button>*@
-
-    @* add item modal *@
-    <div class="modal fade" id="reserveStockModal" tabindex="-1" aria-labelledby="reserveStockModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="reserveStockModalLabel">Reserve Stock</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" asp-action="reserveStock">
-                        <div class="mb-3">
-                            <label for="productId" class="form-label">Product ID</label>
-                            <input type="number" class="form-control" id="productId" name="productId" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="reservedQuantity" class="form-label">Reserved Quantity</label>
-                            <input type="number" class="form-control" id="reservedQuantity" name="reservedQuantity" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="warehouseId" class="form-label">Warehouse ID</label>
-                            <input type="number" class="form-control" id="warehouseId" name="warehouseId" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="reservationPurpose" class="form-label">Reservation Purpose</label>
-                            <input type="text" class="form-control" id="reservationPurpose" name="reservationPurpose" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="staffId" class="form-label">Staff ID</label>
-                            <input type="number" class="form-control" id="staffId" name="staffId" required>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Reserve</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     @* reserve modal *@
     <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModal" aria-hidden="true">
         <div class="modal-dialog">
@@ -131,59 +86,6 @@
             </div>
         </div>
     </div>
-
-    @* update item id & status model (to test for iItemUpdate) *@
-    <div class="modal fade" id="updateItemStatusModal" tabindex="-1" aria-labelledby="updateItemStatusModalLabel"
-            aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateItemStatusModalLabel">Update Item Id & Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" asp-action="updateItemStatus">
-                        <input type="hidden" id="updateStatusItemId" name="itemId">
-                        <div class="mb-3">
-                            <label for="reservationId" class="form-label">Reservation Id</label>
-                            <input type="text" class="form-control" id="reservationId" name="reservationId">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="orderId" class="form-label">Order Id</label>
-                            <input type="text" class="form-control" id="orderId" name="orderId">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="orderId" class="form-label">Return Id</label>
-                            <input type="text" class="form-control" id="returnId" name="returnId">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="orderId" class="form-label">Transfer Id</label>
-                            <input type="text" class="form-control" id="transferId" name="transferId">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="itemStatus" class="form-label">Status</label>
-                            <select class="form-control" id="itemStatus" name="status" required>
-                                <option value="Available">Available</option>
-                                <option value="Reserved">Reserved</option>
-                                <option value="Sold">Sold</option>
-                                <option value="Refunded">Refunded</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Reservation</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
