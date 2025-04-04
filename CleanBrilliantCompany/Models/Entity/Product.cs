@@ -14,28 +14,13 @@ namespace CleanBrilliantCompany.Models.Entity
         private int CarbonFootprint;
         private string ProductState;
 
-        // Product Stock, i keep public for now
+
         public int TotalQuantity { get; set; }
         public int WarehouseId { get; set; }
         public string WarehouseName { get; set; }
         public int MaxCapacity { get; set; } // Max capacity of the warehouse
         public int CurrentCapacity { get; set; } // Current capacity of the warehouse
         public int AvailableCapacity { get; set; } // Available capacity of the warehouse
-
-        public Dictionary<string, object> retrieveLowStockInfo()
-        {
-            return new Dictionary<string, object>
-            {
-                { "ProductId", ProductId },
-                { "ProductName", ProductName },
-                { "TotalQuantity", TotalQuantity },
-                { "WarehouseId", WarehouseId },
-                { "WarehouseName", WarehouseName },
-                { "MaxCapacity", MaxCapacity },
-                { "CurrentCapacity", CurrentCapacity },
-                { "AvailableCapacity", AvailableCapacity }
-            };
-        }
 
         public Product(int productId, string productName, string productCategory, float productCost, int manufacturerId,
                 float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
@@ -63,6 +48,21 @@ namespace CleanBrilliantCompany.Models.Entity
             MaxCapacity = maxCapacity;
             CurrentCapacity = currentCapacity;
             AvailableCapacity = availableCapacity;
+        }
+
+        public Dictionary<string, object> retrieveLowStockInfo()
+        {
+            return new Dictionary<string, object>
+            {
+                { "ProductId", ProductId },
+                { "ProductName", ProductName },
+                { "TotalQuantity", TotalQuantity },
+                { "WarehouseId", WarehouseId },
+                { "WarehouseName", WarehouseName },
+                { "MaxCapacity", MaxCapacity },
+                { "CurrentCapacity", CurrentCapacity },
+                { "AvailableCapacity", AvailableCapacity }
+            };
         }
 
         public Dictionary<string, object> retrieveProductInfo()

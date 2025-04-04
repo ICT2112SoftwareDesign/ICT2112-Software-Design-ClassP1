@@ -36,7 +36,7 @@ namespace CleanBrilliantCompany.Controllers
 
             ViewBag.Manufacturers = manufacturersInfo;
 
-            return View("~/Views/Product/Index.cshtml", productInfo);
+            return View("~/Views/Product/Product.cshtml", productInfo);
         }
 
         [HttpPost]
@@ -130,7 +130,7 @@ namespace CleanBrilliantCompany.Controllers
 
             ViewBag.Manufacturers = manufacturersInfo;
 
-            return View("~/Views/Product/Index.cshtml", productInfo);
+            return View("~/Views/Product/Product.cshtml", productInfo);
         }
 
 

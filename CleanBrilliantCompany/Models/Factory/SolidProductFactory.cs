@@ -1,4 +1,3 @@
-using CleanBrilliantCompany.Models.Entity;
 using CleanBrilliantCompany.Mappers;
 
 namespace CleanBrilliantCompany.Models.Factory
