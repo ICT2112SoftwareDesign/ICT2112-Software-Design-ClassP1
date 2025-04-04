@@ -3435,24 +3435,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nope1\\.nuget\\packages\\": {}
+    "C:\\Users\\muhdi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nope1\\Documents\\ICT2112 Team2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "projectUniqueName": "C:\\Github\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
       "projectName": "CleanBrilliantCompany",
-      "projectPath": "C:\\Users\\nope1\\Documents\\ICT2112 Team2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
-      "packagesPath": "C:\\Users\\nope1\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nope1\\Documents\\ICT2112 Team2\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
+      "projectPath": "C:\\Github\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\CleanBrilliantCompany.csproj",
+      "packagesPath": "C:\\Users\\muhdi\\.nuget\\packages\\",
+      "outputPath": "C:\\Github\\ICT2112-Software-Design-ClassP1\\CleanBrilliantCompany\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\nope1\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\muhdi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3513,7 +3515,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -22,37 +22,44 @@ namespace CleanBrilliantCompany.Controllers
         private readonly IToxicityClassificationStrategy _classificationStrategy;
         private readonly ILogger<ToxicityController> _logger;
         private readonly ApplicationDbContext _dbContext;
+        private readonly IProductCF _productCF;
+        private readonly IProduct _product;
 
         public ToxicityController(
             IToxicity toxicity, 
             IIngredientDB ingredientGateway, 
             IToxicityClassificationStrategy classificationStrategy,
             ILogger<ToxicityController> logger,
-            ApplicationDbContext dbContext)
+            ApplicationDbContext dbContext,
+            IProductCF productCF,
+            IProduct product)
         {
             _toxicity = toxicity;
             _ingredientGateway = ingredientGateway;
             _classificationStrategy = classificationStrategy;
             _logger = logger;
             _dbContext = dbContext;
+            _productCF = productCF;
+            _product = product;
         }
 
-        // Helper method to get all products from the database
-        private async Task<List<dynamic>> GetAllProductsAsync()
+        // Helper method to get all products using IProduct interface
+        private List<dynamic> GetAllProducts()
         {
             try
             {
-                // Using the ProductMapping class that maps to the Product table
-                var products = await _dbContext.Products
-                    .AsNoTracking()
-                    .Select(p => new { p.ProductId, p.ProductName })
-                    .ToListAsync();
+                // Get all products using the IProduct interface
+                var products = _product.getAllProducts();
                 
-                return products.Cast<dynamic>().ToList();
+                // Convert to dynamic list with ProductId and ProductName properties
+                return products.Select(p => new { 
+                    ProductId = p.ProductId, 
+                    ProductName = p.ProductName 
+                }).Cast<dynamic>().ToList();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching products from database");
+                _logger.LogError(ex, "Error fetching products using IProduct interface");
                 
                 // Return a default list in case of error
                 return new List<dynamic>
@@ -67,13 +74,26 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // Helper method to get all product names
-        private async Task<List<string>> GetAllProductNamesAsync()
+        private List<string> GetAllProductNames()
         {
-            var products = await GetAllProductsAsync();
+            var products = GetAllProducts();
             return products.Select(p => (string)p.ProductName).ToList();
         }
 
-
+        // Helper method to get product by name
+        private Product GetProductByName(string productName)
+        {
+            try
+            {
+                var products = _product.getAllProducts();
+                return products.FirstOrDefault(p => p.ProductName == productName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error finding product by name: {productName}");
+                return null;
+            }
+        }
 
         // Main entry point for toxicity analysis
         public async Task<IActionResult> Index(string productName = "Eco-Friendly Shampoo")
@@ -83,7 +103,7 @@ namespace CleanBrilliantCompany.Controllers
                 _logger.LogInformation($"ToxicityController.Index accessed for product: {productName}");
                 
                 // Get all products for the dropdown
-                var allProducts = await GetAllProductNamesAsync();
+                var allProducts = GetAllProductNames();
                 ViewBag.Products = allProducts;
                 ViewBag.CurrentProduct = productName;
                 
@@ -98,6 +118,9 @@ namespace CleanBrilliantCompany.Controllers
                         Ingredients = new List<IngredientSDM>() 
                     });
                 }
+
+                // Get product using IProduct interface
+                var product = GetProductByName(productName);
 
                 // Calculate average toxicity
                 float avgToxicity = (float)ingredients.Average(i => i.IngredientToxicity);
@@ -119,6 +142,39 @@ namespace CleanBrilliantCompany.Controllers
                 // Add enhanced analysis
                 report.ProductSafetyAnalysis = await _classificationStrategy.AnalyzeProductSafety(ingredients);
                 
+                // Get carbon footprint data if product exists
+                if (product != null)
+                {
+                    try
+                    {
+                        int productId = product.ProductId;
+                        
+                        // Get carbon footprint value for the product
+                        double carbonFootprint = _productCF.getProductCarbonFootprint(productId);
+                        
+                        // Get eco status for the product if available
+                        var allProductCFs = _productCF.getAllProductCarbonFootprint();
+                        string ecoStatus = "Unknown";
+                        
+                        // Find the product's eco status in the collection
+                        var productCF = allProductCFs.FirstOrDefault(p => p.retrieveProductId() == productId);
+                        if (productCF != null)
+                        {
+                            ecoStatus = productCF.retrieveEcoStatus();
+                        }
+                        
+                        // Add carbon footprint data to ViewBag
+                        ViewBag.CarbonFootprint = carbonFootprint;
+                        ViewBag.EcoStatus = ecoStatus;
+                        ViewBag.CarbonFootprintImpact = AnalyzeCarbonFootprintImpact(carbonFootprint, avgToxicity);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Error retrieving carbon footprint data for product: {productName}");
+                        // Don't set the ViewBag values if there's an error
+                    }
+                }
+                
                 // Get ingredient-specific recommendations and alternatives
                 foreach (var ingredient in ingredients)
                 {
@@ -138,13 +194,6 @@ namespace CleanBrilliantCompany.Controllers
                 // Add correlation analysis
                 report.CorrelationAnalysis = AnalyzeIngredientCorrelations(ingredients);
                 
-                // Here you would integrate carbon footprint data when available
-                // if (_carbonFootprint != null)
-                // {
-                //     var carbonData = await _carbonFootprint.GetProductCarbonFootprint(productName);
-                //     report.CarbonFootprintData = carbonData;
-                // }
-                
                 return View(report);
             }
             catch (Exception ex)
@@ -154,16 +203,40 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
 
-        // Separate page for Add Ingredient form
-        public async Task<IActionResult> AddIngredient(string productName = null)
+        // Helper method to analyze carbon footprint impact
+        private string AnalyzeCarbonFootprintImpact(double carbonFootprint, float toxicityScore)
         {
-            var productList = await GetAllProductsAsync();
+            if (carbonFootprint <= 0)
+                return "No carbon footprint data available for this product.";
+                
+            string impact;
+            if (carbonFootprint < 50)
+                impact = "Low environmental impact. ";
+            else if (carbonFootprint < 100)
+                impact = "Moderate environmental impact. ";
+            else
+                impact = "High environmental impact. ";
+                
+            if (toxicityScore > 0.7)
+                impact += "High toxicity ingredients typically contribute significantly to the carbon footprint during production.";
+            else if (toxicityScore > 0.3)
+                impact += "Some moderate-toxicity ingredients may contribute to the carbon footprint during manufacturing.";
+            else
+                impact += "Low-toxicity ingredients generally have minimal impact on carbon emissions.";
+                
+            return impact;
+        }
+
+        // Separate page for Add Ingredient form
+        public IActionResult AddIngredient(string productName = null)
+        {
+            var productList = GetAllProducts();
             ViewBag.ProductList = productList;
             
             // If productName is specified, find its ID and pre-select
             if (!string.IsNullOrEmpty(productName))
             {
-                var product = productList.FirstOrDefault(p => p.ProductName == productName);
+                var product = GetProductByName(productName);
                 if (product != null)
                 {
                     ViewBag.SelectedProductId = product.ProductId;
@@ -174,15 +247,13 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         // Method to handle product selection by name
-        public async Task<IActionResult> ViewByProductName(string productName)
+        public IActionResult ViewByProductName(string productName)
         {
             if (string.IsNullOrEmpty(productName))
             {
                 return RedirectToAction("Index");
             }
             
-            // Added an await call to make this truly async
-            await Task.Yield(); // This creates an awaitable task so the method is truly async
             return RedirectToAction("Index", new { productName = productName });
         }
         
@@ -209,55 +280,137 @@ namespace CleanBrilliantCompany.Controllers
             }
         }
         
-        // Compare toxicity between products
-        public async Task<IActionResult> CompareProducts(string product1Name, string product2Name)
+        // Method for handling the creation of new ingredients
+        [HttpPost]
+        public async Task<IActionResult> Create(IngredientSDM ingredient)
         {
             try
             {
-                // Get all products for dropdowns
-                var allProducts = await GetAllProductNamesAsync();
-                ViewBag.Products = allProducts;
+                _logger.LogInformation($"Processing ingredient: {ingredient.IngredientName}");
                 
-                if (string.IsNullOrEmpty(product1Name) || string.IsNullOrEmpty(product2Name))
+                if (ModelState.IsValid)
                 {
-                    TempData["ErrorMessage"] = "Both products must be specified for comparison";
-                    return RedirectToAction("Index");
+                    await _ingredientGateway.InsertIngredient(ingredient);
+                    
+                    // Get toxicity classification and recommendation
+                    float toxicityScore = (float)ingredient.IngredientToxicity;
+                    string classification = await _classificationStrategy.Classify(toxicityScore);
+                    
+                    // Record the newly added ingredient in the log
+                    _logger.LogInformation($"Added new ingredient: {ingredient.IngredientName} with toxicity {toxicityScore} ({classification})");
+                    
+                    // Add success message
+                    TempData["SuccessMessage"] = $"Ingredient {ingredient.IngredientName} added successfully and analyzed.";
+                    
+                    // Get product name using IProduct
+                    var product = _product.getProductDetails(ingredient.ProductId);
+                    string productName = product != null ? product.ProductName : "Unknown Product";
+                    
+                    // Redirect to view product analysis that contains this ingredient
+                    return RedirectToAction("Index", new { productName = productName });
                 }
                 
-                var ingredients1 = await _ingredientGateway.FindIngredientsByProductName(product1Name);
-                var ingredients2 = await _ingredientGateway.FindIngredientsByProductName(product2Name);
+                // If ModelState is invalid, repopulate the product list for the dropdown
+                var productList = GetAllProducts();
+                ViewBag.ProductList = productList;
+                ViewBag.SelectedProductId = ingredient.ProductId;
                 
-                if (ingredients1 == null || !ingredients1.Any() || ingredients2 == null || !ingredients2.Any())
-                {
-                    TempData["ErrorMessage"] = "One or both products have no ingredients to compare";
-                    return RedirectToAction("Index");
-                }
-                
-                var avgToxicity1 = (float)ingredients1.Average(i => i.IngredientToxicity);
-                var avgToxicity2 = (float)ingredients2.Average(i => i.IngredientToxicity);
-                
-                var comparisonViewModel = new ProductComparisonViewModel
-                {
-                    Product1Name = product1Name,
-                    Product2Name = product2Name,
-                    Product1ToxicityScore = avgToxicity1,
-                    Product2ToxicityScore = avgToxicity2,
-                    Product1HighToxicityCount = ingredients1.Count(i => i.IngredientToxicity >= 0.7),
-                    Product2HighToxicityCount = ingredients2.Count(i => i.IngredientToxicity >= 0.7),
-                    DifferencePct = Math.Abs(avgToxicity1 - avgToxicity2) * 100,
-                    MoreToxicProduct = avgToxicity1 > avgToxicity2 ? product1Name : product2Name
-                };
-                
-                return View("CompareProducts", comparisonViewModel);
+                TempData["ErrorMessage"] = "There was an error with the ingredient data. Please check your inputs.";
+                return View("AddIngredient", ingredient);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error comparing products");
-                TempData["ErrorMessage"] = "Error comparing products";
-                return RedirectToAction("Index");
+                _logger.LogError(ex, "Error processing ingredient");
+                ModelState.AddModelError("", "An error occurred while processing your request.");
+                
+                // Repopulate the product list for the dropdown
+                var productList = GetAllProducts();
+                ViewBag.ProductList = productList;
+                ViewBag.SelectedProductId = ingredient.ProductId;
+                
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
+                return View("AddIngredient", ingredient);
             }
         }
         
+        // Method for updating an existing ingredient
+        [HttpPost]
+        public async Task<IActionResult> Update(IngredientSDM ingredient)
+        {
+            try
+            {
+                _logger.LogInformation($"Updating ingredient ID {ingredient.IngredientId}: {ingredient.IngredientName}");
+                
+                if (ModelState.IsValid)
+                {
+                    // Check if ingredient exists
+                    var existingIngredient = await _ingredientGateway.FindIngredientsbyID(ingredient.IngredientId);
+                    if (existingIngredient == null)
+                    {
+                        TempData["ErrorMessage"] = "Ingredient not found.";
+                        return RedirectToAction("Index");
+                    }
+                    
+                    // Update the ingredient
+                    await _ingredientGateway.UpdateIngredient(ingredient);
+                    
+                    TempData["SuccessMessage"] = $"Ingredient {ingredient.IngredientName} updated successfully.";
+                    
+                    // Get product name using IProduct
+                    var product = _product.getProductDetails(ingredient.ProductId);
+                    string productName = product != null ? product.ProductName : "Unknown Product";
+                    
+                    return RedirectToAction("Index", new { productName = productName });
+                }
+                
+                TempData["ErrorMessage"] = "There was an error with the ingredient data. Please check your inputs.";
+                return View("EditIngredient", ingredient);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating ingredient ID {ingredient.IngredientId}");
+                TempData["ErrorMessage"] = "An error occurred while updating the ingredient.";
+                return View("EditIngredient", ingredient);
+            }
+        }
+        
+        // Method for deleting an ingredient
+        [HttpPost]
+        public async Task<IActionResult> Delete(int ingredientId)
+        {
+            try
+            {
+                // Get ingredient details before deletion for logging and redirection
+                var ingredient = await _ingredientGateway.FindIngredientsbyID(ingredientId);
+                if (ingredient == null)
+                {
+                    TempData["ErrorMessage"] = "Ingredient not found.";
+                    return RedirectToAction("Index");
+                }
+                
+                int productId = ingredient.ProductId;
+                string ingredientName = ingredient.IngredientName;
+                
+                // Get product name using IProduct before deleting the ingredient
+                var product = _product.getProductDetails(productId);
+                string productName = product != null ? product.ProductName : "Unknown Product";
+                
+                // Delete the ingredient
+                await _ingredientGateway.DeleteIngredient(ingredientId);
+                
+                _logger.LogInformation($"Deleted ingredient ID {ingredientId}: {ingredientName}");
+                TempData["SuccessMessage"] = $"Ingredient {ingredientName} deleted successfully.";
+                
+                return RedirectToAction("Index", new { productName = productName });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting ingredient ID {ingredientId}");
+                TempData["ErrorMessage"] = "An error occurred while deleting the ingredient.";
+                return RedirectToAction("Index");
+            }
+        }
+
         // Method to generate a downloadable report
         public async Task<IActionResult> GenerateReport(string productName)
         {
@@ -269,6 +422,13 @@ namespace CleanBrilliantCompany.Controllers
                 }
                 
                 _logger.LogInformation($"Generating toxicity report for product: {productName}");
+                
+                // Get product using IProduct interface
+                var product = GetProductByName(productName);
+                if (product == null)
+                {
+                    return NotFound($"Product not found: {productName}");
+                }
                 
                 // Get report data the same way as in Index action
                 var ingredients = await _ingredientGateway.FindIngredientsByProductName(productName);
@@ -284,6 +444,34 @@ namespace CleanBrilliantCompany.Controllers
                 var productSafetyAnalysis = await _classificationStrategy.AnalyzeProductSafety(ingredients);
                 var toxicityTrends = AnalyzeToxicityTrends(ingredients);
                 var correlationAnalysis = AnalyzeIngredientCorrelations(ingredients);
+                
+                // Get carbon footprint data
+                double carbonFootprint = 0;
+                string ecoStatus = "Unknown";
+                string carbonImpact = "No carbon footprint data available";
+                
+                try 
+                {
+                    int productId = product.ProductId;
+                    
+                    // Get carbon footprint value for the product
+                    carbonFootprint = _productCF.getProductCarbonFootprint(productId);
+                    
+                    // Get eco status for the product if available
+                    var allProductCFs = _productCF.getAllProductCarbonFootprint();
+                    var productCF = allProductCFs.FirstOrDefault(p => p.retrieveProductId() == productId);
+                    if (productCF != null)
+                    {
+                        ecoStatus = productCF.retrieveEcoStatus();
+                    }
+                    
+                    carbonImpact = AnalyzeCarbonFootprintImpact(carbonFootprint, avgToxicity);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error retrieving carbon footprint data for product: {productName}");
+                    // Keep default values if there's an error
+                }
                 
                 // Generate report content
                 var reportBuilder = new StringBuilder();
@@ -358,7 +546,9 @@ namespace CleanBrilliantCompany.Controllers
                 // Add carbon footprint related section
                 reportBuilder.AppendLine();
                 reportBuilder.AppendLine("CARBON FOOTPRINT CONSIDERATIONS:");
-                reportBuilder.AppendLine("High toxicity ingredients often have higher carbon footprints due to intensive manufacturing processes.");
+                reportBuilder.AppendLine($"Carbon Footprint Value: {carbonFootprint} units");
+                reportBuilder.AppendLine($"Eco Status: {ecoStatus}");
+                reportBuilder.AppendLine($"Environmental Impact: {carbonImpact}");
                 reportBuilder.AppendLine($"Replacing high toxicity ingredients with alternatives could reduce carbon emissions by approximately {highToxicityIngredients.Count * 5}%.");
                 
                 // Return as a downloadable text file
@@ -369,125 +559,6 @@ namespace CleanBrilliantCompany.Controllers
             {
                 _logger.LogError(ex, "Error generating toxicity report");
                 return StatusCode(500, "An error occurred while generating the report.");
-            }
-        }
-        
-        // Method for handling the creation of new ingredients
-        // Method for handling the creation of new ingredients
-        [HttpPost]
-        public async Task<IActionResult> Create(IngredientSDM ingredient)
-        {
-            try
-            {
-                _logger.LogInformation($"Processing ingredient: {ingredient.IngredientName}");
-                
-                if (ModelState.IsValid)
-                {
-                    await _ingredientGateway.InsertIngredient(ingredient);
-                    
-                    // Get toxicity classification and recommendation
-                    float toxicityScore = (float)ingredient.IngredientToxicity;
-                    string classification = await _classificationStrategy.Classify(toxicityScore);
-                    
-                    // Record the newly added ingredient in the log
-                    _logger.LogInformation($"Added new ingredient: {ingredient.IngredientName} with toxicity {toxicityScore} ({classification})");
-                    
-                    // Add success message
-                    TempData["SuccessMessage"] = $"Ingredient {ingredient.IngredientName} added successfully and analyzed.";
-                    
-                    // Redirect to view product analysis that contains this ingredient
-                    return RedirectToAction("Index", new { productName = await GetProductNameById(ingredient.ProductId) });
-                }
-                
-                // If ModelState is invalid, repopulate the product list for the dropdown
-                var productList = await GetAllProductsAsync();
-                ViewBag.ProductList = productList;
-                ViewBag.SelectedProductId = ingredient.ProductId;
-                
-                TempData["ErrorMessage"] = "There was an error with the ingredient data. Please check your inputs.";
-                return View("AddIngredient", ingredient);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error processing ingredient");
-                ModelState.AddModelError("", "An error occurred while processing your request.");
-                
-                // Repopulate the product list for the dropdown
-                var productList = await GetAllProductsAsync();
-                ViewBag.ProductList = productList;
-                ViewBag.SelectedProductId = ingredient.ProductId;
-                
-                TempData["ErrorMessage"] = "An error occurred while processing your request.";
-                return View("AddIngredient", ingredient);
-            }
-        }
-        
-        // Method for updating an existing ingredient
-        [HttpPost]
-        public async Task<IActionResult> Update(IngredientSDM ingredient)
-        {
-            try
-            {
-                _logger.LogInformation($"Updating ingredient ID {ingredient.IngredientId}: {ingredient.IngredientName}");
-                
-                if (ModelState.IsValid)
-                {
-                    // Check if ingredient exists
-                    var existingIngredient = await _ingredientGateway.FindIngredientsbyID(ingredient.IngredientId);
-                    if (existingIngredient == null)
-                    {
-                        TempData["ErrorMessage"] = "Ingredient not found.";
-                        return RedirectToAction("Index");
-                    }
-                    
-                    // Update the ingredient
-                    await _ingredientGateway.UpdateIngredient(ingredient);
-                    
-                    TempData["SuccessMessage"] = $"Ingredient {ingredient.IngredientName} updated successfully.";
-                    return RedirectToAction("Index", new { productName = await GetProductNameById(ingredient.ProductId) });
-                }
-                
-                TempData["ErrorMessage"] = "There was an error with the ingredient data. Please check your inputs.";
-                return View("EditIngredient", ingredient);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error updating ingredient ID {ingredient.IngredientId}");
-                TempData["ErrorMessage"] = "An error occurred while updating the ingredient.";
-                return View("EditIngredient", ingredient);
-            }
-        }
-        
-        // Method for deleting an ingredient
-        [HttpPost]
-        public async Task<IActionResult> Delete(int ingredientId)
-        {
-            try
-            {
-                // Get ingredient details before deletion for logging and redirection
-                var ingredient = await _ingredientGateway.FindIngredientsbyID(ingredientId);
-                if (ingredient == null)
-                {
-                    TempData["ErrorMessage"] = "Ingredient not found.";
-                    return RedirectToAction("Index");
-                }
-                
-                int productId = ingredient.ProductId;
-                string ingredientName = ingredient.IngredientName;
-                
-                // Delete the ingredient
-                await _ingredientGateway.DeleteIngredient(ingredientId);
-                
-                _logger.LogInformation($"Deleted ingredient ID {ingredientId}: {ingredientName}");
-                TempData["SuccessMessage"] = $"Ingredient {ingredientName} deleted successfully.";
-                
-                return RedirectToAction("Index", new { productName = await GetProductNameById(productId) });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error deleting ingredient ID {ingredientId}");
-                TempData["ErrorMessage"] = "An error occurred while deleting the ingredient.";
-                return RedirectToAction("Index");
             }
         }
         
@@ -578,24 +649,6 @@ namespace CleanBrilliantCompany.Controllers
             };
             
             return correlations;
-        }
-        
-        // Helper method to get product name from ID
-        private async Task<string> GetProductNameById(int productId)
-        {
-            try
-            {
-                var product = await _dbContext.Products
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(p => p.ProductId == productId);
-                
-                return product?.ProductName ?? "Unknown Product";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error getting product name for ID {productId}");
-                return "Unknown Product";
-            }
         }
     }
     

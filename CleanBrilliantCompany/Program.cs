@@ -7,6 +7,7 @@ using CleanBrilliantCompany.Services;
 using CleanBrilliantCompany.Hubs;
 using CleanBrilliantCompany.DomainControl;
 
+
 var builder = WebApplication.CreateBuilder(args);
 // Enable logging
 builder.Logging.ClearProviders();
@@ -24,6 +25,10 @@ builder.Services.AddScoped<IProductCarbonFootprintDB, ProductCFMapper>();
 builder.Services.AddScoped<IProductCF, ProductCarbonFootprintControl>();
 builder.Services.AddScoped<IProductCFManagement, ProductCarbonFootprintControl>();
 builder.Services.AddScoped<IProductCFQuery, ProductCarbonFootprintControl>();
+builder.Services.AddScoped<IProduct, ProductControl>();
+builder.Services.AddScoped<IProductQuery, ProductControl>();;
+builder.Services.AddScoped<IProductDatabase, ProductMapper>();
+builder.Services.AddScoped<ProductMapper>();
 
 
 // Register async dependencies
