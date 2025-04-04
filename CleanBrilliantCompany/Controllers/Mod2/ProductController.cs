@@ -41,7 +41,7 @@ namespace CleanBrilliantCompany.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct(string productName, string productCategory, float productCost, 
-        int manufacturerId, float weight, int volume, float toxicityPercentage, int carbonFootprint, bool isLiquid)
+        int manufacturerId, float productWeight, int volume, float toxicityPercentage, int carbonFootprint, bool isLiquid)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace CleanBrilliantCompany.Controllers
                     return RedirectToAction("Index");
                 }
 
-                if (weight <= 0)
+                if (productWeight <= 0)
                 {
                     TempData["ErrorMessage"] = "Product weight must be greater than 0.";
                     return RedirectToAction("Index");
@@ -90,7 +90,7 @@ namespace CleanBrilliantCompany.Controllers
                 }
 
                 int productId = _productControl.createProduct(productName, productCategory, productCost, manufacturerId, 
-                                                          weight, 0, volume, toxicityPercentage, carbonFootprint, isLiquid);
+                                                          productWeight, 0, volume, toxicityPercentage, carbonFootprint, isLiquid);
 
 
                 if (productId != -1) // Successful creation
@@ -108,15 +108,6 @@ namespace CleanBrilliantCompany.Controllers
             }
             return RedirectToAction("Index");
         }
-
-        // Might remove
-        // [HttpPost]
-        // public async Task<IActionResult> DeleteProduct(int productId)
-        // {
-        //     _productControl.deleteProduct(productId);
-
-        //     return RedirectToAction("Index");
-        // }
 
         [HttpPost]
         public async Task<IActionResult> FetchProduct(int productId)
@@ -216,46 +207,6 @@ namespace CleanBrilliantCompany.Controllers
                 TempData["ErrorMessage"] = $"Exception: {ex.Message}";
             }
             return RedirectToAction("Index");
-        }
-
-        // Product Batch
-        public async Task<IActionResult> displayProductBatch()
-        {
-
-            List<Dictionary<string, object>> batchInfo = new List<Dictionary<string, object>>();
-            List<ProductBatch> productBatches = _productControl.getAllProductBatch();
-
-            foreach (var productBatch in productBatches)
-            {
-                batchInfo.Add(productBatch.retrieveProductBatchInfo());
-            }
-
-            return View("~/Views/Product/ProductBatch.cshtml", batchInfo);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> FetchBatch(int batchCode)
-        {
-            List<Dictionary<string, object>> batchInfo = new List<Dictionary<string, object>>();
-            ProductBatch batch = _productControl.getBatchDetails(batchCode);
-
-            if (batch != null)
-            {
-                batchInfo.Add(batch.retrieveProductBatchInfo());
-            }
-            return View("~/Views/Product/ProductBatch.cshtml", batchInfo);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateProductBatch(int productId, DateTime expiryDate, 
-            DateTime receiveDate, DateTime manufactureDate, int quantity, int batchCost)
-        {
-            _productControl.createProductBatch(productId, expiryDate, 
-                    receiveDate, manufactureDate, quantity, batchCost);
-
-            // Add items
-
-            return RedirectToAction("displayProductBatch");
         }
 
         // Reorder Request
