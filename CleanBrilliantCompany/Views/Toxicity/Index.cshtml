@@ -4,7 +4,11 @@
     var currentProduct = ViewBag.CurrentProduct ?? Model?.ProductName ?? "Eco-Friendly Shampoo";
 }
 
-<div class="container-fluid px-4">
+<div id="wrapper" class="d-flex flex-nowrap min-vh-100">
+    @await Html.PartialAsync("_Sidebar") 
+    <div class="dashboard-content px-4">
+        <div id="content" class="dashboard-container">
+            <div class="container-fluid px-4">
     <h1 class="mt-4 mb-4">Ingredient Toxicity Analysis</h1>
     
     @if (TempData["SuccessMessage"] != null)
@@ -53,7 +57,7 @@
                             <div class="col-md-6 d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary me-2">
                                     <i class="fas fa-search me-1"></i> View Toxicity Analysis
-                                    </button>
+                                </button>
                                 <a href="@Url.Action("AddIngredient", "Toxicity", new { productName = currentProduct })" class="btn btn-success">
                                     <i class="fas fa-plus me-1"></i> Add New Ingredient
                                 </a>
@@ -350,4 +354,7 @@
             <p class="mb-0">No ingredients found for the selected product. Please choose a different product or add ingredients.</p>
         </div>
     }
+</div>
+        </div>
+    </div>
 </div>

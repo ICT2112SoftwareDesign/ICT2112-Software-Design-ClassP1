@@ -4,22 +4,26 @@
     ViewData["Title"] = "Ingredient Toxicity Analysis";
 }
 
-<div class="container">
-    <h2 class="my-4">Detailed Toxicity Analysis</h2>
+<div id="wrapper" class="d-flex flex-nowrap min-vh-100">
+    @await Html.PartialAsync("_Sidebar") 
+    <div class="dashboard-content px-4">
+        <div id="content" class="dashboard-container">
+            <div class="container-fluid px-4">
+    <h1 class="mt-4 mb-4">Detailed Toxicity Analysis</h1>
 
     <div class="row mb-4">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Analyze Ingredient</h5>
                 </div>
                 <div class="card-body">
-                    <form method="get" action="@Url.Action("Index", "ToxicityPage")">
+                    <form method="get" action="@Url.Action("AnalyzeIngredient", "Toxicity")" class="mb-0">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="ingredientId">Select Ingredient:</label>
-                                    <select id="ingredientId" name="ingredientId" class="form-control">
+                                <div class="form-group mb-3">
+                                    <label for="ingredientId" class="form-label">Select Ingredient:</label>
+                                    <select id="ingredientId" name="ingredientId" class="form-select form-control">
                                         <option value="1">Sodium Lauryl Sulfate</option>
                                         <option value="2">Cocamidopropyl Betaine</option>
                                         <option value="3">Glycerin</option>
@@ -29,7 +33,9 @@
                                 </div>
                             </div>
                             <div class="col-md-6 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary">Analyze Toxicity</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-microscope me-2"></i> Analyze Toxicity
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -44,24 +50,24 @@
         
         <div class="row mb-4">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">Ingredient Analysis</h5>
                     </div>
                     <div class="card-body">
-                        <h4>@Model.ProductName</h4>
+                        <h4 class="mb-3">@Model.ProductName</h4>
                         <div class="row mt-4">
                             <div class="col-md-4">
                                 <div class="alert @(Model.ToxicityClassification.Contains("High") ? "alert-danger" : 
                                                   Model.ToxicityClassification.Contains("Moderate") ? "alert-warning" : "alert-success")">
-                                    <h5>Toxicity Level: @Model.OverallToxicityScore.ToString("F2")</h5>
-                                    <p><strong>Classification:</strong> @Model.ToxicityClassification</p>
+                                    <h5 class="mb-2">Toxicity Level: @Model.OverallToxicityScore.ToString("F2")</h5>
+                                    <p class="mb-0"><strong>Classification:</strong> @Model.ToxicityClassification</p>
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <div class="alert alert-info">
-                                    <h5>Safety Recommendation:</h5>
-                                    <p>@Model.SafetyRecommendation</p>
+                                    <h5 class="mb-2">Safety Recommendation:</h5>
+                                    <p class="mb-0">@Model.SafetyRecommendation</p>
                                 </div>
                             </div>
                         </div>
@@ -75,12 +81,12 @@
         {
             <div class="row mb-4">
                 <div class="col-md-12">
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-header bg-info text-white">
                             <h5 class="mb-0">Specific Recommendations</h5>
                         </div>
                         <div class="card-body">
-                            <p>@Model.IngredientSpecificRecommendations[ingredient.IngredientId]</p>
+                            <p class="mb-0">@Model.IngredientSpecificRecommendations[ingredient.IngredientId]</p>
                         </div>
                     </div>
                 </div>
@@ -92,15 +98,15 @@
         {
             <div class="row mb-4">
                 <div class="col-md-12">
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-header bg-warning text-dark">
                             <h5 class="mb-0">Suggested Alternatives</h5>
                         </div>
                         <div class="card-body">
-                            <ul>
+                            <ul class="mb-0">
                                 @foreach (var alternative in Model.IngredientAlternatives[ingredient.IngredientId])
                                 {
-                                    <li>@alternative</li>
+                                    <li class="mb-2">@alternative</li>
                                 }
                             </ul>
                         </div>
@@ -109,78 +115,119 @@
             </div>
         }
 
+        <!-- Carbon Footprint Related Information -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Environmental Impact</h5>
+                    </div>
+                    <div class="card-body">
+                        @{
+                            string environmentalImpact = "";
+                            if (ingredient.IngredientToxicity < 0.3)
+                                environmentalImpact = "Low environmental impact. Minimal carbon footprint during production and disposal.";
+                            else if (ingredient.IngredientToxicity < 0.7)
+                                environmentalImpact = "Moderate environmental impact. May contribute to carbon emissions during manufacturing.";
+                            else
+                                environmentalImpact = "High environmental impact. Manufacturing process likely has significant carbon footprint.";
+                        }
+                        <p class="mb-0">@environmentalImpact</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Ingredient Details -->
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">Ingredient Details</h5>
                     </div>
                     <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Property</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Ingredient ID</td>
-                                    <td>@ingredient.IngredientId</td>
-                                </tr>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>@ingredient.IngredientName</td>
-                                </tr>
-                                <tr>
-                                    <td>Toxicity Level</td>
-                                    <td>
-                                        <div class="progress">
-                                            <div class="progress-bar @(ingredient.IngredientToxicity >= 0.7 ? "bg-danger" : 
-                                                                      ingredient.IngredientToxicity >= 0.3 ? "bg-warning" : "bg-success")" 
-                                                 role="progressbar" 
-                                                 style="width: @(ingredient.IngredientToxicity * 100)%" 
-                                                 aria-valuenow="@(ingredient.IngredientToxicity * 100)" 
-                                                 aria-valuemin="0" 
-                                                 aria-valuemax="100">
-                                                @(ingredient.IngredientToxicity.ToString("P0"))
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Property</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ingredient ID</td>
+                                        <td>@ingredient.IngredientId</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>@ingredient.IngredientName</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Toxicity Level</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar @(ingredient.IngredientToxicity >= 0.7 ? "bg-danger" : 
+                                                                          ingredient.IngredientToxicity >= 0.3 ? "bg-warning" : "bg-success")" 
+                                                     role="progressbar" 
+                                                     style="width: @(ingredient.IngredientToxicity * 100)%" 
+                                                     aria-valuenow="@(ingredient.IngredientToxicity * 100)" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
+                                                    @(ingredient.IngredientToxicity.ToString("P0"))
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Threshold Quantity</td>
-                                    <td>@ingredient.ThresholdQuantity @ingredient.MeasurementUnit</td>
-                                </tr>
-                                <tr>
-                                    <td>Reorder Status</td>
-                                    <td>
-                                        @if (ingredient.ReorderStatus)
-                                        {
-                                            <span class="badge bg-danger">Reorder Required</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-success">In Stock</span>
-                                        }
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Last Updated</td>
-                                    <td>@ingredient.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Threshold Quantity</td>
+                                        <td>@ingredient.ThresholdQuantity @ingredient.MeasurementUnit</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Reorder Status</td>
+                                        <td>
+                                            @if (ingredient.ReorderStatus)
+                                            {
+                                                <span class="badge bg-danger">Reorder Required</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">In Stock</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last Updated</td>
+                                        <td>@ingredient.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="row mt-4 mb-5">
+            <div class="col-md-12 text-center">
+                <a href="@Url.Action("Index", "Toxicity")" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Toxicity Analysis
+                </a>
+                <a href="@Url.Action("GenerateReport", "Toxicity", new { ingredientId = ingredient.IngredientId })" 
+                   class="btn btn-success" target="_blank">
+                    <i class="fas fa-file-download me-1"></i> Generate Ingredient Report
+                </a>
             </div>
         </div>
     }
     else
     {
         <div class="alert alert-warning">
-            <p>No ingredient data found. Please select an ingredient to analyze.</p>
+            <p class="mb-0">No ingredient data found. Please select an ingredient to analyze.</p>
         </div>
     }
+</div>
+        </div>
+    </div>
 </div>
