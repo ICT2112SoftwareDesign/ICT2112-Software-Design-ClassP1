@@ -6,7 +6,7 @@ using CleanBrilliantCompany.Interfaces.SupportTicket;
 
 namespace CleanBrilliantCompany.Models.SupportTicket
 {
-    public class SupportTicketManagement : ISupportTicket, iSupportTicketQuery
+    public class SupportTicketManagement : ISupportTicket, ISupportTicketQuery
     {
         private readonly SupportTicketTableDataGateway _gateway;
 
@@ -15,34 +15,34 @@ namespace CleanBrilliantCompany.Models.SupportTicket
             _gateway = gateway;
         }
 
-        public bool createSupportTicket(int customerId, string ticketDetails)
+        public bool CreateSupportTicket(int customerId, string ticketDetails)
         {
             return _gateway.CreateSupportTicket(customerId, ticketDetails);
         }
 
-        public void deleteTicket(int ticketId)
+        public void DeleteTicket(int ticketId)
         {
             _gateway.DeleteTicket(ticketId);
         }
 
-        public void updateSupportTicket(int ticketId, string resolutionDetails)
+        public void UpdateSupportTicket(int ticketId, string resolutionDetails)
         {
             _gateway.UpdateSupportTicket(ticketId, resolutionDetails);
         }
 
-        public List<SupportTicketSDM> viewAllTickets()
+        public List<SupportTicketSDM> ViewAllTickets()
         {
             return _gateway.FetchAllSupportTickets();
         }
 
-        public List<SupportTicketSDM> viewTicketsByStatus(string status)
+        public List<SupportTicketSDM> ViewTicketsByStatus(string status)
         {
             return _gateway
                 .FetchAllSupportTickets()
                 .FindAll(t => t.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
         }
 
-        public SupportTicketSDM viewTicketDetails(int ticketId)
+        public SupportTicketSDM ViewTicketDetails(int ticketId)
         {
             var ticket = _gateway.FetchSupportTicket(ticketId);
             if (ticket == null)
@@ -52,7 +52,7 @@ namespace CleanBrilliantCompany.Models.SupportTicket
             return ticket;
         }
 
-        public List<SupportTicketSDM> viewTicketByCustomer(int customerId)
+        public List<SupportTicketSDM> ViewTicketByCustomer(int customerId)
         {
             // Call the data gateway method to fetch tickets for the customer
             var tickets = _gateway.ViewTicketByCustomer(customerId);
@@ -63,7 +63,7 @@ namespace CleanBrilliantCompany.Models.SupportTicket
             return tickets;
         }
 
-        public bool checkSupportTicketQuery()
+        public bool CheckSupportTicketQuery()
         {
             return _gateway.FetchAllSupportTickets().Count > 0;
         }

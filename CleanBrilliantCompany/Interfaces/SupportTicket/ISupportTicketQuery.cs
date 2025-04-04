@@ -1,7 +1,7 @@
 namespace CleanBrilliantCompany.Interfaces.SupportTicket
 {
-    public interface iSupportTicketQuery
+    public interface ISupportTicketQuery
     {
-        bool checkSupportTicketQuery();
+        bool CheckSupportTicketQuery();
     }
 }

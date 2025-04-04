@@ -51,7 +51,7 @@ builder.Services.AddScoped<ISubmitRefund, RefundManagement>();
 
 // Adding services for Support Ticket
 builder.Services.AddScoped<ISupportTicket, SupportTicketManagement>();
-builder.Services.AddScoped<iSupportTicketQuery, SupportTicketManagement>();
+builder.Services.AddScoped<ISupportTicketQuery, SupportTicketManagement>();
 builder.Services.AddScoped<SupportTicketManagement>();
 builder.Services.AddScoped<SupportTicketTableDataGateway>(provider =>
     new SupportTicketTableDataGateway(connectionString!));

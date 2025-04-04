@@ -16,16 +16,16 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
         [Route("")]
         public IActionResult SupportTicket()
         {
-            var tickets = _manager.viewAllTickets();
+            var tickets = _manager.ViewAllTickets();
             return View("~/Views/SupportTicket/supportticket-index.cshtml", tickets);
         }
 
         [Route("Details/{ticketId}")]
-        public IActionResult displayTicketDetails(int ticketId)
+        public IActionResult DisplayTicketDetails(int ticketId)
         {
             try
             {
-                var ticket = _manager.viewTicketDetails(ticketId);
+                var ticket = _manager.ViewTicketDetails(ticketId);
                 return View("~/Views/SupportTicket/supportticket-details.cshtml", ticket);
             }
             catch
@@ -36,29 +36,29 @@ namespace CleanBrilliantCompany.Controllers.SupportTicket
 
         [HttpPost]
         [Route("UpdateSupportTicket/{ticketId}")]
-        public IActionResult updateSupportTicket(int ticketId, string resolutionDetails)
+        public IActionResult UpdateSupportTicket(int ticketId, string resolutionDetails)
         {
-            _manager.updateSupportTicket(ticketId, resolutionDetails);
+            _manager.UpdateSupportTicket(ticketId, resolutionDetails);
             return RedirectToAction("SupportTicket");
         }
 
-        // for testing ISupportTicket interface 
-        [HttpPost]
-        [Route("CreateSupportTicket")]
-        public IActionResult CreateSupportTicket(int customerId, string ticketDetails)
-        {
-            bool success = _manager.createSupportTicket(customerId, ticketDetails);
+        // for testing ISupportTicket interface - NOT IN CLASS DIAGRAM
+        // [HttpPost]
+        // [Route("CreateSupportTicket")]
+        // public IActionResult CreateSupportTicket(int customerId, string ticketDetails)
+        // {
+        //     bool success = _manager.createSupportTicket(customerId, ticketDetails);
 
-            if (success)
-            {
-                TempData["SuccessMessage"] = "Your ticket has been successfully created!";
-                return RedirectToAction("SupportTicket");
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Failed to create support ticket. Please try again.";
-                return RedirectToAction("SupportTicket");
-            }
-        }
+        //     if (success)
+        //     {
+        //         TempData["SuccessMessage"] = "Your ticket has been successfully created!";
+        //         return RedirectToAction("SupportTicket");
+        //     }
+        //     else
+        //     {
+        //         TempData["ErrorMessage"] = "Failed to create support ticket. Please try again.";
+        //         return RedirectToAction("SupportTicket");
+        //     }
+        // }
     }
 }

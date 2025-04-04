@@ -4,7 +4,7 @@ namespace CleanBrilliantCompany.Interfaces.SupportTicket
 {
     public interface ISupportTicket
     {
-        bool createSupportTicket(int customerId, string ticketDetails);
-        List<SupportTicketSDM> viewTicketByCustomer(int customerId);
+        bool CreateSupportTicket(int customerId, string ticketDetails);
+        List<SupportTicketSDM> ViewTicketByCustomer(int customerId);
     }
 }
