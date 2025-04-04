@@ -79,5 +79,12 @@ namespace CleanBrilliantCompany.Models.Control
         {
             return await Task.FromResult(_transferMapper.updateWarehouseCapacity(warehouseId));
         }
+
+        public void updateProductQuantity(int productId, int quantity, string arithmeticOperations){
+            //Console.WriteLine("ProductId: " + productId.GetType());
+            //Console.WriteLine("Quantity: " + quantity.GetType());
+            //Console.WriteLine("ArithmeticOperations: " + arithmeticOperations.GetType());
+            _iItemUpdateInterface.updateProductQuantity(productId, quantity, arithmeticOperations);
+        }
     }
 }
