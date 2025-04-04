@@ -44,7 +44,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
 
-        // default get all items
+        // clear search route
         [HttpPost]
         public async Task<IActionResult> ClearSearch(int page = 1, int pageSize = 10)
         {
@@ -121,7 +121,7 @@ namespace CleanBrilliantCompany.Controllers
         }
 
 
-        // to test update item status & id (related to iItemUpdate)
+        // update of status & relevant ids 
         [HttpPost]
         [Route("updateItemStatus")]
         public async Task<IActionResult> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
@@ -157,7 +157,7 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Index");
         }
 
-        // HANDLE ORDERING OF ITEMS
+        // HANDLE ORDERING OF ITEMS (MOD 1)
         [HttpPost]
         [Route("adjustInventory")]
         public async Task<IActionResult> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
@@ -171,7 +171,7 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Index");
         }
 
-        // HANDLING CANCELLING OF ORDERS
+        // HANDLING CANCELLING OF ORDERS (MOD 1)
         [HttpPost]
         [Route("processCancelledOrder")]
         public async Task<IActionResult> processCancelledOrder(int orderId)

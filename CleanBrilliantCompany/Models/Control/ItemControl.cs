@@ -11,11 +11,6 @@ namespace CleanBrilliantCompany.Models.Control
     {
         private readonly ItemMapper _itemMapper;
         private readonly TransactionControl _transactionObserver; // Added observer
-
-        //private readonly TransactionControl _transactionObserver; //Added observer
-
-        private readonly IProduct _iproductInterface;
-
         private readonly IProductQuantity _iproductquantityInterface;
 
         // Constructor that takes the connection string
@@ -23,18 +18,18 @@ namespace CleanBrilliantCompany.Models.Control
         {
             string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _itemMapper = new ItemMapper(connectionString);
-            _iproductInterface = iproductInterface;
             _iproductquantityInterface = iproductquantityInterface;
-            Console.WriteLine("Products loaded from database.");
+            Console.WriteLine("Items loaded from database.");
             _transactionObserver = new TransactionControl(connectionString);
         }
 
-        // METHODS FOR IITEM
+        // get all items to display on ui
         public async Task<List<Item>> getAllItems(int pageNumber, int pageSize)
         {
             return await Task.FromResult(_itemMapper.getAllItems(pageNumber, pageSize)); // mapper uses iItemQuery to interact with control 
         }
 
+        // get total item count (for pagination)
         public int getItemCount()
         {
             return _itemMapper.getItemCount();
@@ -46,6 +41,7 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getItems());
         }
 
+        // search by item id & method used for IItem & IItemDetails
         public async Task<Item> getItemById(int itemId)
         {
             return await Task.FromResult(_itemMapper.getItemById(itemId));
@@ -57,6 +53,7 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.getItemByProductName(productName));
         }
 
+        // method for IItemCreation 
         public async Task<bool> createItem(int productId, int batchCode, int warehouseId, ItemStatus status)
         {
             Product product = await retrieveProductDetails(productId);
@@ -81,17 +78,13 @@ namespace CleanBrilliantCompany.Models.Control
             return await Task.FromResult(_itemMapper.createItem(productId, salePrice, batchCode, warehouseId, status));
         }
 
+        // update item sale price
         public async Task<bool> updateItem(int itemId, float salePrice)
         {
             return await Task.FromResult(_itemMapper.updateItem(itemId, salePrice));
         }
 
-        // delete item 
-        public async Task<bool> deleteItem(int itemId)
-        {
-            return await Task.FromResult(_itemMapper.deleteItem(itemId));
-        }
-
+        // observer for transaction logs 
         public void RegisterObservers(Item item)
         {
             item.Attach(_transactionObserver);
@@ -108,11 +101,9 @@ namespace CleanBrilliantCompany.Models.Control
 
         }
 
-
         // METHOD FOR IITEMUPDATE 
         public async Task<bool> updateItemStatus(int itemId, int? reservationId, int? orderId, int? transferId, int? returnId, ItemStatus status)
         {
-            //return await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
             bool dbUpdated = await Task.FromResult(_itemMapper.updateItemStatus(itemId, reservationId, orderId, transferId, returnId, status));
 
             if (dbUpdated)
@@ -130,48 +121,27 @@ namespace CleanBrilliantCompany.Models.Control
             return dbUpdated;
         }
 
-        // for transaction feature, might remove in future
-        // public async Task<bool> updateItemStatusOld(int itemId, ItemStatus status)
-        // {
-        //     return await Task.FromResult(_itemMapper.updateItemStatusOld(itemId, status));
-        // }
-
-
-        // METHODS FOR RESERVE FEATURE (IRESERVE)
+        // METHOD FOR IReserve
         public async Task<List<Item>> getItemsByStatus(ItemStatus itemStatus)
         {
             return await Task.FromResult(_itemMapper.getItemByStatus(itemStatus));
         }
 
+        // using from IProductQuantity & implementing inside IReserve & IReturnForm
         public Task<Product> retrieveProductDetails(int productId)
         {
-            Product product = _iproductInterface.getProductDetails(productId);
+            Product product = _iproductquantityInterface.getProductDetails(productId);
             return Task.FromResult(product);
         }
 
-        // method to update product quantity (IITEMUPDATE)
+        // using from IProductQuantity & implementing inside IItemUpdate
         public void updateProductQuantity(int productId, int quantity, string arithmeticOperations)
         {
             _iproductquantityInterface.updateQuantity(productId, quantity, arithmeticOperations);
         }
 
-        // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
-        public async Task<Warehouse> getWarehouseDetails(int warehouseId)
-        {
-            return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
-        }
 
-        public async Task<List<Item>> getItemByProductAndWarehouse(int productId, int quantity, int warehouseId)
-        {
-            return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, quantity, warehouseId));
-        }
-
-        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId)
-        {
-            return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
-        }
-
-        // METHOD FOR HANDLING REFUNDED ITEMS 
+        // METHOD FOR HANDLING REFUNDED ITEMS (Module 1 IRefundDetails)
         public void returnItemToInventory(List<int> itemId, string refundReason)
         {
             itemId = [4, 5, 6];
@@ -179,7 +149,7 @@ namespace CleanBrilliantCompany.Models.Control
             _itemMapper.returnItemToInventory(itemId, refundReason);
         }
 
-        // METHOD FOR HANDLING ORDERED ITEMS 
+        // METHOD FOR HANDLING ORDERED ITEMS (Module 1 IOrderFufilment)
         public List<Item> adjustInventory(int orderId, Dictionary<int, int> orderProducts)
         {
             List<Item> items = _itemMapper.adjustInventory(orderId, orderProducts);
@@ -205,6 +175,7 @@ namespace CleanBrilliantCompany.Models.Control
             return items;
         }
 
+        // METHOD FOR HANDLING CANCELLED ORDERS (Module 1 IOrderFufilment)
         public void processCancelledOrder(int orderId)
         {
             updateProductQuantity(2, 2, "increase");
@@ -215,7 +186,22 @@ namespace CleanBrilliantCompany.Models.Control
         {
             return await Task.FromResult(_itemMapper.getToReturnItems());
         }
+        
+        // METHODS FOR TRANSFER FEATURE (IWAREHOUSE)
+        public async Task<Warehouse> getWarehouseDetails(int warehouseId)
+        {
+            return await Task.FromResult(_itemMapper.getWarehouseDetails(warehouseId));
+        }
 
+        public async Task<List<Item>> getItemByProductAndWarehouse(int productId, int quantity, int warehouseId)
+        {
+            return await Task.FromResult(_itemMapper.getItemByProductAndWarehouse(productId, quantity, warehouseId));
+        }
+
+        public async Task<int> getProductQuantityByWarehouse(int productId, int warehouseId)
+        {
+            return await Task.FromResult(_itemMapper.getProductQuantityByWarehouse(productId, warehouseId));
+        }
 
         public async Task<List<Item>> getTransferredItems(int transferId)
         {
