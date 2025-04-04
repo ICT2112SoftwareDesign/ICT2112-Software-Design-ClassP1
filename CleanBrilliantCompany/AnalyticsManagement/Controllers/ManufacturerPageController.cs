@@ -33,14 +33,14 @@ public class ManufacturerPageController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(); // Handle the error gracefully, or return the user to the same form if the model is invalid
+            return View(); // Handle the error 
         }
 
-        // Step 1: Generate the new dashboard
+        // Generate the new dashboard
         manufacturerControl.GenerateNewDashboard(dto);
 
         // Log the dashboard generation and redirect
         logger.LogInformation("New manufacturer dashboard generated.");
-        return RedirectToAction("Index"); // Redirect back to the dashboard index or another page
+        return RedirectToAction("Index"); 
     }
 }

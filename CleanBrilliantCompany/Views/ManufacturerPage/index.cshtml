@@ -66,31 +66,6 @@
 
 @if (Model.MetricDetailsList != null && Model.MetricDetailsList.Any())
 {
-    <!-- <h3>Metrics:</h3>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Manufacturer ID</th>
-                                            <th>Delivery Rate</th>
-                                            <th>Defect Rate</th>
-                                            <th>Dependency Rate</th>
-                                            <th>Risk Flag</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-    @foreach (var metric in Model.MetricDetailsList)
-    {
-                                                    <tr>
-                                                        <td>@metric.ManufacturerId</td>
-                                                        <td>@metric.DeliveryRate</td>
-                                                        <td>@metric.DefectRate</td>
-                                                        <td>@metric.DependencyRate</td>
-                                                        <td>@(metric.RiskFlag ? "Yes" : "No")</td>
-                                                    </tr>
-    }
-                                    </tbody>
-                                    </table> -->
-
     <div style="display: flex; flex-wrap: wrap; gap: 40px;">
         <div style="width: 45%; height: 350px; margin-top: 40px; margin-bottom: 40px;">
             <h2>Delivery Rate by Manufacturer</h2>

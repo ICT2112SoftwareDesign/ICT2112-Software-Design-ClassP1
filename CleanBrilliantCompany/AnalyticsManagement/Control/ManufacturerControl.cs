@@ -3,11 +3,11 @@ using CleanBrilliantCompany.Interfaces;
 public class ManufacturerControl
 {
     private Dashboard manufacturerDashboard;
-    private readonly ManufacturerRepo ManufacturerMapper;
+    private readonly ManufacturerRepository ManufacturerMapper;
     private readonly FakeReorderInterface fakeReorderInterface;
     private readonly IManufacturer _Imanufacturer;
 
-    public ManufacturerControl(ManufacturerRepo ManufacturerMapper, FakeReorderInterface fakeReorderInterface, IManufacturer _Imanufacturer)
+    public ManufacturerControl(ManufacturerRepository ManufacturerMapper, FakeReorderInterface fakeReorderInterface, IManufacturer _Imanufacturer)
     {
         this.ManufacturerMapper = ManufacturerMapper;
         this.fakeReorderInterface = fakeReorderInterface;
@@ -72,20 +72,20 @@ public class ManufacturerControl
     public void GenerateNewDashboard(DashboardDTO dto)
     {
         // Set the type for the dashboard
-        dto.Type = 3; // Assuming 3 corresponds to Manufacturer Dashboard Type ID
+        dto.Type = 3; // 3 corresponds to Manufacturer Dashboard Type ID
 
         // Create the new dashboard
         var dashboard = DashboardFactory.createDashboard(dto);
 
-        // Assuming you have a reorder interface injected (like in your earlier instructions)
-        var reorders = fakeReorderInterface.GetAllReorderDetails(); // Adjust this to match the method that fetches batches for manufacturers
+        // Get reorders from fakeOrderInterface
+        var reorders = fakeReorderInterface.GetAllReorderDetails(); 
 
         // Filter the reorders by the requested start and end date
         var filteredOrders = reorders
             .Where(b => b.ExpectedDeliveryDate >= dashboard.RequestedStartDate && b.ExpectedDeliveryDate <= dashboard.RequestedEndDate)
             .ToList();
 
-        // Populate the analytics section of the dashboard (same logic, assuming you have analytics for Manufacturer)
+        // Populate the analytics section of the dashboard
         (dashboard as ManufacturerDashboardRdm).populateMetrics(filteredOrders);
 
         // Save the newly generated dashboard and analytics
@@ -94,7 +94,6 @@ public class ManufacturerControl
 
     public string GenerateReport()
     {
-
         var dashboard = GetLatestDashboard();
 
         if (dashboard == null)
