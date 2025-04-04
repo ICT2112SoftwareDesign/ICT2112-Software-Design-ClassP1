@@ -1,4 +1,7 @@
 
+// ** FOR SIMULATION OF MODULE 1's CONTROL CLASS THAT
+// IMPLEMENETS iReorderRequest. **
+
 using CleanBrilliantCompany.Interfaces;
 
 namespace CleanBrilliantCompany.Models.Control
@@ -13,12 +16,12 @@ namespace CleanBrilliantCompany.Models.Control
             new ReorderRequestSample
             {
                 ReorderId = 1,
-                ProductId = 228, // I change all the productId, ManufacturerId to match with what products we have in the db
+                ProductId = 228, 
                 Quantity = 2,
                 ManufacturerId = 8,
                 ExpectedDeliveryDate = new DateTime(2025, 4, 1),
                 Status = "Pending",
-                DefectQuantity = 0 // idk what do i do with this?
+                DefectQuantity = 0
             },
             new ReorderRequestSample
             {
@@ -40,7 +43,7 @@ namespace CleanBrilliantCompany.Models.Control
                 Status = "Pending",
                 DefectQuantity = 1
             },
-            new ReorderRequestSample // Added new Approved
+            new ReorderRequestSample 
             {
                 ReorderId = 4,
                 ProductId = 999,

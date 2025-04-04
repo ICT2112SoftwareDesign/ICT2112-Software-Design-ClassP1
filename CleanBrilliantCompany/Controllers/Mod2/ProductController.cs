@@ -137,7 +137,6 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProduct(int productId, string productName, string productCategory, float productCost, 
         float productWeight, int quantity, int volumeOrZero, float toxicityPercentage, int carbonFootprint, bool isLiquid)
-        // int manufacturerId, float productWeight, int quantity, int volume, float toxicityPercentage, int carbonFootprint, string productState)
         {
             try
             {
@@ -209,7 +208,7 @@ namespace CleanBrilliantCompany.Controllers
             return RedirectToAction("Index");
         }
 
-        // Reorder Request
+        // Reorder Request ** SIMULTATION **
         public async Task<IActionResult> ReorderRequest() 
         {
             _productControl.processReorderRequest();
