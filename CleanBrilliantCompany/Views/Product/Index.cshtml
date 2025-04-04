@@ -12,15 +12,6 @@
 
     <title>SB Admin 2 - Product</title>
 
-    @* <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet"> *@
-
 </head>
 
 <body id="page-top">
@@ -447,11 +438,6 @@
                                                 <input type="text" class="form-control" id="createProductName" name="productName" required />
                                             </div>
 
-                                            @* <div class="mb-3">
-                                                <label for="createProductCategory" class="form-label">Category</label>
-                                                <input type="text" class="form-control" id="createProductCategory" name="productCategory" required />
-                                            </div> *@
-
                                             <div class="mb-3">
                                                 <label for="modalProductCategory" class="form-label">Category</label>
                                                 <select class="form-control" id="modalProductCategory" name="productCategory" required>
@@ -527,7 +513,7 @@
                         <div class="col-auto">
                             <!-- Simulate Reorder Request -->
                             <form method="post" asp-action="ReorderRequest">
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" class="btn" style="background-color: #BA68C8; color: white">
                                     Reorder Request Simulation
                                 </button>
                             </form>
@@ -577,7 +563,6 @@
                                         <td>@productInfo["Volume"]</td>
                                         <td>@productInfo["ToxicityPercentage"]</td>
                                         <td>@productInfo["CarbonFootprint"]</td>
-                                        @* <td>@productInfo["ProductState"]</td> *@
                                         <td>@(productInfo["ProductState"].ToString() == "0" ? "Solid" : "Liquid")</td>
                                         <td>
                                             <button type="button" class="btn btn-primary"
@@ -638,12 +623,7 @@
                                                 <option value="Kitchen">Kitchen</option>
                                             </select>
                                         </div>
-
-                                        @* <div class="mb-3">
-                                            <label for="modalProductCategory" class="form-label">Category</label>
-                                            <input type="text" class="form-control" id="modalProductCategory" name="productCategory" required />
-                                        </div> *@
-
+                                        
                                         <div class="mb-3">
                                             <label for="modalProductCost" class="form-label">Cost Price</label>
                                             <input type="number" step="0.01" class="form-control" id="modalProductCost" name="productCost" required />
@@ -765,7 +745,6 @@
             document.getElementById('modalProductName').value = button.getAttribute('data-product-name');
             document.getElementById('modalProductCategory').value = button.getAttribute('data-product-category');
             document.getElementById('modalProductCost').value = button.getAttribute('data-product-cost');
-            @* document.getElementById('modalManufacturerId').value = button.getAttribute('data-manufacturer-id'); *@
             document.getElementById('modalProductWeight').value = button.getAttribute('data-product-weight');
             document.getElementById('modalQuantity').value = button.getAttribute('data-quantity');
             document.getElementById('modalVolume').value = button.getAttribute('data-volume');
@@ -774,59 +753,6 @@
             document.getElementById('modalProductState').value = button.getAttribute('data-state');
         });
     </script>
-
-    @* <script>
-        // Target the Update Product Modal
-        const updateProductModal = document.getElementById('updateProductModal');
-
-        // Event listener for showing the modal
-        updateProductModal.addEventListener('show.bs.modal', function (event) {
-            // Button that triggered the modal
-            const button = event.relatedTarget;
-
-            // Extract product details from data attributes
-            const productId = button.getAttribute('data-product-id');
-            const productName = button.getAttribute('data-product-name');
-            const productCategory = button.getAttribute('data-product-category');
-            const productCost = button.getAttribute('data-product-cost');
-            const manufacturerId = button.getAttribute('data-manufacturer-id');
-            const productWeight = button.getAttribute('data-product-weight');
-            const quantity = button.getAttribute('data-quantity');
-            const volume = button.getAttribute('data-volume');
-            const toxicity = button.getAttribute('data-toxicity');
-            const carbon = button.getAttribute('data-carbon');
-            const productState = button.getAttribute('data-state');
-
-            // Populate modal fields
-            document.getElementById('modalProductId').value = productId;
-            document.getElementById('modalProductName').value = productName;
-            document.getElementById('modalProductCost').value = productCost;
-            document.getElementById('modalManufacturerId').value = manufacturerId;
-            document.getElementById('modalProductWeight').value = productWeight;
-            document.getElementById('modalQuantity').value = quantity;
-            document.getElementById('modalVolume').value = volume;
-            document.getElementById('modalToxicity').value = toxicity;
-            document.getElementById('modalCarbon').value = carbon;
-            document.getElementById('modalProductState').value = productState;
-
-            // Populate category dropdown
-            const categorySelect = document.getElementById('modalProductCategory');
-            if (productCategory) {
-                categorySelect.value = productCategory;
-            } else {
-                categorySelect.selectedIndex = 0; // Default to first option if not available
-            }
-
-            // Populate product state (Liquid or Solid)
-            const stateSelect = document.getElementById('isLiquid');
-            if (productState === "1") {
-                stateSelect.value = "true"; // Liquid
-            } else {
-                stateSelect.value = "false"; // Solid
-            }
-        });
-    </script> *@
-
 
     <!-- JavaScript for filtering products -->
     <script>
