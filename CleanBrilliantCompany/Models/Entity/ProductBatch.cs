@@ -2,32 +2,13 @@ namespace CleanBrilliantCompany.Models.Entity
 {
     public class ProductBatch
     {
-        // IN CLASS DIAGRAM
-        // - batchCode: Int
-        // - productId: Int
-        // - expiryDate: Date
-        // - receiveDate: Date
-        // - manufactureDate: Date
-        // - quantity: Int
-        // - salesPrice: Float
-
-        // CURRENT DB
-    //     [batchCode]
-    //   ,[productId]
-    //   ,[expiryDate]
-    //   ,[receiveDate]
-    //   ,[manufactureDate]
-    //   ,[quantity]
-    //   ,[batchCost] ONLY DIFF
-
-
         private int BatchCode;
         private int ProductId;
-        private DateTime ExpiryDate; // Change to date
-        private DateTime ReceiveDate; // Change to date
-        private DateTime ManufactureDate; // Change to date for me
+        private DateTime ExpiryDate; 
+        private DateTime ReceiveDate; 
+        private DateTime ManufactureDate;
         private int Quantity;
-        private float BatchCost; // Change name to SalesPrice
+        private float BatchCost; 
         
         public ProductBatch(int batchCode, int productId, DateTime expiryDate, DateTime receiveDate, DateTime manufactureDate, 
         int quantity, float batchCost)

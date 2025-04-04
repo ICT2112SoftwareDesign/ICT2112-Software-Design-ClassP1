@@ -135,44 +135,6 @@ namespace CleanBrilliantCompany.Mappers
             }
         }
 
-
-        public void delete(int productId)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    string query = @"
-                        DELETE FROM dbo.Product
-                        WHERE productId = @ProductId";
-
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@ProductId", productId);
-
-                        // Execute the insert operation synchronously
-                        int rowsAffected = command.ExecuteNonQuery();
-
-                        // Check if the insert was successful using getDatabaseQueryStatus
-                        if (getDatabaseQueryStatus(null, rowsAffected))
-                        {
-                            Console.WriteLine($"Product Id: '{productId}' deleted successfully.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error deleting product.");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting product: {ex.Message}");
-            }
-        }
-
         public bool update(int productId, string productName, string productCategory,
         float productCost, int manufacturerId, float productWeight, int quantity, int volume,
         float toxicityPercentage, int carbonFootprint, string productState)

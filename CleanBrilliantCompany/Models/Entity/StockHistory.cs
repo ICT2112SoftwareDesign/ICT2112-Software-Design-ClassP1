@@ -1,25 +1,8 @@
 
 namespace CleanBrilliantCompany.Models.Entity
 {
-
-    // IN CLASS DIAGRAM
-//     - stockId: Int
-    // - batchCode: Int
-    // - stocktakeDate: Date
-    // - quantity: Int
-    // - recordedDate: DateTime
-
-
-    // Current DB
-    // [stockId]
-//       ,[batchCode]
-//       ,[stockCheckDate]
-//       ,[quantity]
-//       ,[timeRecorded]
-
     public class StockHistory
     {
-
         private int StockId;
         private int BatchCode;
         private DateOnly StockTakeDate;
