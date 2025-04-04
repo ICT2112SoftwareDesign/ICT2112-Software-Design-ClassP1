@@ -18,12 +18,15 @@
 
     <!-- Custom styles for this template-->
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
 
 </head>
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CleanBrilliantCompany</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -39,20 +42,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                 asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Toxicity"
-                                asp-action="Toxicity">Toxicity</a>
-                        </li>
+                        
+
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main" class="main-body">
+        @RenderBody()
+    </main>
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
@@ -62,7 +62,43 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+    // Initialize all collapse elements when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if Bootstrap 5 is being used
+        if (typeof bootstrap !== 'undefined') {
+            // Bootstrap 5 way - let Bootstrap handle the collapse
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        } else {
+            // Fallback for when Bootstrap JS is not loaded
+            var collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
+            collapseElements.forEach(function(element) {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var target = document.querySelector(this.getAttribute('data-bs-target'));
+                    if (target) {
+                        if (target.classList.contains('show')) {
+                            target.classList.remove('show');
+                        } else {
+                            target.classList.add('show');
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>
+<style>
+    .footer {
+        position: relative;
+        z-index: 2;
+        background: #f8f9fc;
+        padding: 20px;
+    }
+</style>

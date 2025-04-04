@@ -28,8 +28,12 @@
 
     
 }
-
-<h2>Goal Emissions vs Date</h2>
+<body id="page-top">
+    <div id="wrapper" class="d-flex flex-nowrap min-vh-100">
+            @await Html.PartialAsync("_Sidebar") 
+            <div class="dashboard-content px-4">
+                <div id="content" class="dashboard-container">
+                <h2>Goal Emissions vs Date</h2>
 
 <!-- Date Range Picker -->
 <div>
@@ -135,25 +139,94 @@
 
     // Apply the date range filter
     document.getElementById("applyDateRange").addEventListener("click", function() {
-        var startDate = document.getElementById("startDate").value;
-        var endDate = document.getElementById("endDate").value;
+        var startDate = document.getElementById("startDate").value + "-1";
+        var endDate = document.getElementById("endDate").value + "-1";
 
         // Filter the dates and emissions based on the selected range
         var filteredDates = [];
         var filteredEmissions = [];
-        for (var i = 0; i < goalDates.length; i++) {
-            if (goalDates[i] >= startDate && goalDates[i] <= endDate) {
-                filteredDates.push(goalDates[i]);
-                filteredEmissions.push(goalEmissions[i]);
+        var filteredGraphDate = [];
+        var filteredGraphEmission = [];
+        var filteredPredictDate = [];
+        var filteredPredictEmission = [];
+
+        for (var i = 0; i < goalData.length; i++) {
+            if (goalData[i].x >= new Date(startDate) && goalData[i].x <= new Date(endDate)) {
+                filteredDates.push(goalData[i].x);
+                filteredEmissions.push(goalData[i].y);
             }
         }
-
+        for (var i = 0; i < graphData.length; i++) {
+            if (graphData[i].x >= new Date(startDate) && graphData[i].x <= new Date(endDate)) {
+                filteredGraphDate.push(graphData[i].x);
+                filteredGraphEmission.push(graphData[i].y);
+            }
+        }
+        for (var i = 0; i < predictionData.length; i++) {
+            if (predictionData[i].x >= new Date(startDate) && predictionData[i].x <= new Date(endDate)) {
+                filteredPredictDate.push(predictionData[i].x);
+                filteredPredictEmission.push(predictionData[i].y);
+            }
+        }
         // Update the chart with the filtered data
+        var newGoalData = filteredDates.map((date, index) => ({
+            x: date,
+            y: filteredEmissions[index]
+        }));
+        var newGraphData = filteredGraphDate.map((date, index) => ({
+            x: date,
+            y: filteredGraphEmission[index]
+        }));
+        var newPredictionData = filteredPredictDate.map((date, index) => ({
+            x: date,
+            y: filteredPredictEmission[index]
+        }));
+
         goalEmissionChart.data.labels = filteredDates;
-        goalEmissionChart.data.datasets[0].data = filteredEmissions;
+        goalEmissionChart.data.datasets[0].data = newGoalData;
+        goalEmissionChart.data.datasets[1].data = newPredictionData;
+        goalEmissionChart.data.datasets[2].data = newGraphData;
         goalEmissionChart.update();
     });
 </script>
 
-<!-- Canvas for Chart.js -->
-<canvas id="goalEmissionChart" width="400" height="200"></canvas>
+
+                <!-- Canvas for Chart.js -->
+                <canvas id="goalEmissionChart" width="400" height="200"></canvas>
+           </div>
+        </div>  
+    </div>
+</body>>
+<!-- Notification -->
+<div id="notification" class="alert alert-danger" style="display:none;"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#goalForm").submit(function (event) {
+            event.preventDefault(); // Prevent form from reloading the page
+
+            var formData = {
+                TargetEmission: $("#TargetEmission").val(),
+                goalDate: $("#goalDate").val()
+            };
+
+            $.ajax({
+                url: "/GoalsInput/Create",
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message); // Show success message
+                        location.reload(); // Reload the page to reflect new data
+                    } else {
+                        $("#notification").text(response.message).show(); // Show error notification
+                    }
+                },
+                error: function () {
+                    $("#notification").text("An unexpected error occurred.").show();
+                }
+            });
+        });
+    });
+</script>

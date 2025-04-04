@@ -1,9 +1,5 @@
-using System.Threading.Tasks;
 using CleanBrilliantCompany.DTO;
 using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Models.Entity;
-using Microsoft.ML;
-using Microsoft.ML.Data;
 
 namespace CleanBrilliantCompany.Models.Control
 {

@@ -5,6 +5,7 @@ using CleanBrilliantCompany.Models.Control;
 using CleanBrilliantCompany.Controllers;
 using CleanBrilliantCompany.Services;
 using CleanBrilliantCompany.Hubs;
+using CleanBrilliantCompany.DomainControl;
 
 var builder = WebApplication.CreateBuilder(args);
 // Enable logging
@@ -18,6 +19,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IItemCarbonFootprintDB, ItemCFMapper>();
 builder.Services.AddScoped<IOrderCarbonFootprintDB, OrderCFMapper>();
+builder.Services.AddScoped<IProductCarbonFootprintDB, ProductCFMapper>();
+
+builder.Services.AddScoped<IProductCF, ProductCarbonFootprintControl>();
+builder.Services.AddScoped<IProductCFManagement, ProductCarbonFootprintControl>();
+builder.Services.AddScoped<IProductCFQuery, ProductCarbonFootprintControl>();
+
 
 // Register async dependencies
 builder.Services.AddScoped<IIngredientDB, IngredientGateway>();
@@ -35,13 +42,13 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<IGoalsDB, GoalsGateway>();
 builder.Services.AddScoped<GoalManagement>();
 builder.Services.AddScoped<IGoals, GoalManagement>();
-builder.Services.AddScoped<CarbonOrderAnalyticManager>();
 builder.Services.AddScoped<IPredictionStrategy, PredictionSSA>();
 builder.Services.AddScoped<IPredictionStrategy, PredictionSMA>();
 
-builder.Services.AddScoped<CarbonOrderAnalyticManager>();
+builder.Services.AddScoped<CarbonOrderItemAnalyticManager>();
 builder.Services.AddScoped<IItemCF, ItemCarbonFootprintControl>();
 builder.Services.AddScoped<IOrderCF, OrderCarbonFootprintControl>();
+builder.Services.AddScoped<IProductCF, ProductCarbonFootprintControl>();
 
 var app = builder.Build();
 

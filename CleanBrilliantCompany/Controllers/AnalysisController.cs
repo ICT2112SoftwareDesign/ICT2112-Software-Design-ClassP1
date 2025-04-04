@@ -11,12 +11,12 @@ using CleanBrilliantCompany.DTO;
 
 public class AnalyticsController : Controller
 {
-    private readonly CarbonOrderAnalyticManager _analyticManager;
+    private readonly CarbonOrderItemAnalyticManager _analyticManager;
     private readonly ILogger<AnalyticsController> _logger;
 
-    public AnalyticsController(IGoals goalService, ILogger<AnalyticsController> logger)
+    public AnalyticsController(IGoals goalService, IItemCF IItemCFService, IOrderCF IOrderCFService ,ILogger<AnalyticsController> logger)
     {
-        _analyticManager = new CarbonOrderAnalyticManager(goalService);
+        _analyticManager = new CarbonOrderItemAnalyticManager(goalService, IItemCFService, IOrderCFService);
         _logger = logger;
     }
 
