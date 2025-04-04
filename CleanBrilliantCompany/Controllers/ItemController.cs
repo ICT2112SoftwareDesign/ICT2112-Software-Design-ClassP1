@@ -12,7 +12,6 @@ namespace CleanBrilliantCompany.Controllers
 
         public ItemController(IConfiguration configuration, IProduct iProduct, IProductQuantity iProductQuantity)
         {
-            // string connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
             _itemControl = new ItemControl(configuration, iProduct, iProductQuantity);
         }
 

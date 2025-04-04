@@ -582,9 +582,6 @@ namespace CleanBrilliantCompany.Mappers
                     command.Parameters.AddWithValue("@productId", productId);
                     command.Parameters.AddWithValue("@warehouseId", warehouseId);
 
-                    // Console.WriteLine("DB PRODUCT ID: " + productId);
-                    // Console.WriteLine("DB QUANTITY: " + quantity);
-                    // Console.WriteLine("DB WAREHOUSE ID: " + warehouseId);
                     // Execute the query and get the results
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -594,20 +591,9 @@ namespace CleanBrilliantCompany.Mappers
                             // Iterate through each row in the result set
                             while (reader.Read())
                             {
-                                //ItemStatus status = (ItemStatus)Enum.Parse(typeof(ItemStatus), reader.GetString(reader.GetOrdinal("itemStatus")));
-
                                 // Create the Item object using the constructor
                                 Item item = new Item(
                                     reader.GetInt32(reader.GetOrdinal("itemId"))
-                                // reader.GetInt32(reader.GetOrdinal("productId")),
-                                // (float)reader.GetDouble(reader.GetOrdinal("salePrice")),
-                                // reader.GetInt32(reader.GetOrdinal("batchCode")),
-                                // reader.GetInt32(reader.GetOrdinal("warehouseId")),
-                                // status,
-                                // reader.IsDBNull(reader.GetOrdinal("reservationId")) ? null : reader.GetInt32(reader.GetOrdinal("reservationId")),
-                                // reader.IsDBNull(reader.GetOrdinal("orderId")) ? null : reader.GetInt32(reader.GetOrdinal("orderId")),
-                                // reader.IsDBNull(reader.GetOrdinal("transferId")) ? null : reader.GetInt32(reader.GetOrdinal("transferId")),
-                                // reader.IsDBNull(reader.GetOrdinal("returnId")) ? null : reader.GetInt32(reader.GetOrdinal("returnId"))
                                 );
                                 // Add the item to the list
                                 items.Add(item);
