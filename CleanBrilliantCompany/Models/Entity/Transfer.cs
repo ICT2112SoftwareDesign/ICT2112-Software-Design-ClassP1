@@ -6,8 +6,7 @@ namespace CleanBrilliantCompany.Models.Entity
     {
         Pending,
         Transit,
-        Completed,
-        Cancelled
+        Completed
     }
 
     public class Transfer
@@ -20,6 +19,7 @@ namespace CleanBrilliantCompany.Models.Entity
         private int DestinationWarehouse;
         private int StaffId;
 
+        // Private fields for additional information
         private string ProductName;
         private string SourceWarehouseName;
         private string DestinationWarehouseName;

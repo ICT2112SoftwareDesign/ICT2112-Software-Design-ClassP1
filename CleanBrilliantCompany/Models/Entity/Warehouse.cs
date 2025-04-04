@@ -60,6 +60,6 @@ namespace CleanBrilliantCompany.Models.Entity
             return MaxCapacity - CurrentCapacity;
         }
 
-        public Warehouse() { } // dk if need anot 
+        public Warehouse() { }
     }
 }
