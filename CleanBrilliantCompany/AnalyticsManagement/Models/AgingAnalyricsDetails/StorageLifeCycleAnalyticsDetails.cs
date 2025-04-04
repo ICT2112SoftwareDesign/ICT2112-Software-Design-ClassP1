@@ -46,9 +46,7 @@ public class StorageLifeCycleAnalyticsDetails : AbstractAnalyticsDetails {
 
     public override Dictionary<string, object> calculateBatchSummary(){
         Dictionary<string, object> batchSummary = new Dictionary<string, object>(); 
-        // batchSummary.Add("StorageDuration", calculateStorageDuration()); 
-        // batchSummary.Add("RemainingDays", calculateRemainingDays()); 
-        // batchSummary.Add("ExpiryStatus", checkExpiryStatus()); 
+
         //check if daysInStorage, isExpired and remainingDays are -1 
         if (daysInStorage == -1 && remainingDays == -1){
             batchSummary.Add("StorageDuration", calculateStorageDuration()); 
