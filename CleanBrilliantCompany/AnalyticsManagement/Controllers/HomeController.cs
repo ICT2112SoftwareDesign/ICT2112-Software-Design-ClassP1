@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.DbContextEntities;
 using CleanBrilliantCompany.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,26 +17,6 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public IActionResult Db()
-    {
-        if (_context.Database.CanConnect())
-        {
-            ForecastDashboardDTO dto = new ForecastDashboardDTO(
-                0,
-                DateTime.Now,
-                DateTime.Now,
-                DateTime.Now
-            );
-            _context.ForecastDashboards.Add(dto);
-            _context.SaveChanges();
-
-            return Ok("Successfully connected to the database!");
-        }
-        else
-        {
-            return StatusCode(500, "Failed to connect to the database.");
-        }
-    }
 
     public IActionResult Dashboards()
     {
