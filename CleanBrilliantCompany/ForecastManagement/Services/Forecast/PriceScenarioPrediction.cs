@@ -1,5 +1,6 @@
 ﻿using CleanBrilliantCompany.DTO;
-using CleanBrilliantCompany.Interfaces.Forecast;
+using CleanBrilliantCompany.ForecastManagement.Interface;
+using CleanBrilliantCompany.ForecastManagement.Models;
 using CleanBrilliantCompany.Models.Forecast;
 
 namespace CleanBrilliantCompany.Services.Forecast

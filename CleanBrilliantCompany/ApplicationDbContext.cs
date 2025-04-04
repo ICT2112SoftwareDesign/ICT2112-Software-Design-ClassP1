@@ -1,5 +1,6 @@
 using CleanBrilliantCompany.DatabaseEntities;
 using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.ForecastManagement.DTO;
 using CleanBrilliantCompany.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

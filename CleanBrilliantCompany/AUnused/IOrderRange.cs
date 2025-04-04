@@ -1,4 +1,4 @@
-﻿using CleanBrilliantCompany.DTO;
+﻿using CleanBrilliantCompany.ForecastManagement.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

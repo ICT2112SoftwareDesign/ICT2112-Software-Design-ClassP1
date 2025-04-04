@@ -1,7 +1,7 @@
-﻿using CleanBrilliantCompany.DTO;
+﻿using CleanBrilliantCompany.ForecastManagement.DTO;
 using CleanBrilliantCompany.Models.Entity;
 
-namespace CleanBrilliantCompany.Interfaces.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Interface
 {
     public interface IForecastDataAdapter
     {

@@ -1,5 +1,6 @@
 using CleanBrilliantCompany.Control;
-using CleanBrilliantCompany.Interfaces.Forecast;
+using CleanBrilliantCompany.ForecastManagement.Interface;
+
 public interface IDashboardFacade
 {
     List<Dashboard> getDashboardsData();

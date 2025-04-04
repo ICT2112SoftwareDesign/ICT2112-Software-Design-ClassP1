@@ -1,6 +1,8 @@
 ﻿using System;
 using CleanBrilliantCompany.DataSource.Interface;
 using CleanBrilliantCompany.DTO;
+using CleanBrilliantCompany.ForecastManagement.DTO;
+using CleanBrilliantCompany.ForecastManagement.Models;
 using CleanBrilliantCompany.Models.Forecast;
 using Microsoft.Identity.Client;
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Models
 {
     [JsonPolymorphic(TypeDiscriminatorPropertyName = "$discriminator")]
     [JsonDerivedType(typeof(PriceScenarioForecast), "priceScenario")]
@@ -17,7 +17,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         [JsonInclude]
         private int forecastedStock { get; set; }
         [JsonInclude]
-        private String productName {  get; set; }
+        private string productName { get; set; }
         public int getMetricId()
         {
             return metricId;
@@ -29,7 +29,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         }
         public void setProductId(int stockId)
         {
-            this.productId = stockId;
+            productId = stockId;
         }
         public int getForecastedStock()
         {
@@ -40,11 +40,11 @@ namespace CleanBrilliantCompany.Models.Forecast
             this.forecastedStock = forecastedStock;
         }
 
-        public String getProductName()
+        public string getProductName()
         {
             return productName;
         }
-        public void setProductName(String productName)
+        public void setProductName(string productName)
         {
             this.productName = productName;
         }
@@ -55,7 +55,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         }
         public void setProductID(int productID)
         {
-            this.productId = productID;
+            productId = productID;
         }
         public abstract ForecastMetrics getForecastedMetrics();
     }

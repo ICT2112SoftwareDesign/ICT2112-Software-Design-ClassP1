@@ -1,14 +1,14 @@
-﻿using CleanBrilliantCompany.DTO;
+﻿using CleanBrilliantCompany.ForecastManagement.DTO;
+using CleanBrilliantCompany.ForecastManagement.Interface;
 using CleanBrilliantCompany.Interfaces;
-using CleanBrilliantCompany.Interfaces.Forecast;
 using CleanBrilliantCompany.Models.Entity;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Linq;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Models
 {
-    public class ForecastDataAdapter: IForecastDataAdapter
+    public class ForecastDataAdapter : IForecastDataAdapter
     {
         private readonly IOrderRange _salesService;
         private readonly IProduct _iProduct;
@@ -17,7 +17,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         {
             _salesService = salesService;
             _iProduct = iProduct;
-           
+
         }
 
         //public void GetForecastInputs(DateTime selectedMonth, out List<ProductDTO> products, out Dictionary<int, int> aggregatedSales)

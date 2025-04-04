@@ -2,25 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Models
 {
     public class StockForecast : ForecastMetrics
     {
-        
+
         public StockForecast() { }
         public StockForecast(int productId, int stockRequired)
         {
-            this.setProductId(productId);
-            this.setForecastedStock(stockRequired);
+            setProductId(productId);
+            setForecastedStock(stockRequired);
 
         }
         [JsonConstructor]
 
         public StockForecast(int productId, int forecastedStock, string productName)
         {
-            this.setProductId(productId);
-            this.setForecastedStock(forecastedStock);
-            this.setProductName (productName);
+            setProductId(productId);
+            setForecastedStock(forecastedStock);
+            setProductName(productName);
 
         }
         public override StockForecast getForecastedMetrics()
@@ -29,6 +29,6 @@ namespace CleanBrilliantCompany.Models.Forecast
         }
 
 
-       
+
     }
 }

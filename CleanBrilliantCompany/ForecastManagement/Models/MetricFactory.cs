@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CleanBrilliantCompany.DTO;
-using CleanBrilliantCompany.Interfaces.Forecast;
+using CleanBrilliantCompany.ForecastManagement.DTO;
+using CleanBrilliantCompany.ForecastManagement.Interface;
 using CleanBrilliantCompany.Services.Forecast;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.ForecastManagement.Models
 {
     public class MetricFactory
     {
         private readonly IEnumerable<IPredictionService> _predictionServicesList;
 
-        public MetricFactory(IEnumerable<IPredictionService>  predictionServicesList)
+        public MetricFactory(IEnumerable<IPredictionService> predictionServicesList)
         {
             _predictionServicesList = predictionServicesList;
         }
