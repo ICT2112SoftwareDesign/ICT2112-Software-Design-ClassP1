@@ -9,26 +9,32 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
     {
         // Properties
         [JsonInclude]
+        [JsonPropertyName("DashBoardID")]
+        private int dashBoardID { get; set; }
 
-        private int DashBoardID { get; set; }
-        [JsonInclude]
-
-        private DateTime StartDate { get; set; }
-        [JsonInclude]
-
-        private DateTime EndDate { get; set; }
-        [JsonInclude]
-
-        private DateTime GeneratedDate { get; set; }
-        [JsonInclude]
-
-        private int ValidityDuration { get; set; }
-        [JsonInclude]
-
-        private List<ForecastMetrics> MetricsList { get; set; } = new List<ForecastMetrics>();
+        [JsonPropertyName("StartDate")]
+        private DateTime startDate { get; set; }
 
         [JsonInclude]
-        private List<string> AlertItemList { get; set; } = new List<string>();
+        [JsonPropertyName("EndDate")]
+        private DateTime endDate { get; set; }
+
+        [JsonInclude]
+        [JsonPropertyName("GeneratedDate")]
+        private DateTime generatedDate { get; set; }
+
+        [JsonInclude]
+        [JsonPropertyName("ValidityDuration")]
+        private int validityDuration { get; set; }
+
+        [JsonInclude]
+        [JsonPropertyName("MetricsList")]
+        private List<ForecastMetrics> metricsList { get; set; } = new();
+
+        [JsonInclude]
+        [JsonPropertyName("AlertItemList")]
+        private List<string> alertItemList { get; set; } = new();
+
         public ForecastDashboard()
         {
         }
