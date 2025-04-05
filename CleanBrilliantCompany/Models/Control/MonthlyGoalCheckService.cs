@@ -127,7 +127,7 @@ namespace CleanBrilliantCompany.Services
 
             // only run the check on the first three day of the month (in the target timezone)
             // and only if haven't successfully processed this period before
-            if ((localNow.Day == 1 || localNow.Day == 2 || localNow.Day == 3 || localNow.Day == 4) && currentPeriod != _lastProcessedPeriod)
+            if ((localNow.Day == 1 || localNow.Day == 2 || localNow.Day == 3) && currentPeriod != _lastProcessedPeriod)
             {
                 _logger.LogInformation("starting monthly goal check for {Month}/{Year} based on {TimeZoneId} time ({LocalNow})...", targetMonth, targetYear, _targetTimeZone.Id, localNow);
 
