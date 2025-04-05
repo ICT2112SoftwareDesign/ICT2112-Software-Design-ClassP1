@@ -1,17 +1,17 @@
-public class AgingMapper : AgingRepository
+public class AgingMapper : IAgingRepository
 {
-    private readonly ApplicationDbContext _realDbContext;  // Use real DbContext
+    private readonly ApplicationDbContext _dbContext;  // Changed from _realDbContext
 
-    // Constructor for real DbContext
-    public AgingMapper(ApplicationDbContext realDbContext)
+    // Constructor with renamed parameter
+    public AgingMapper(ApplicationDbContext dbContext)
     {
-        _realDbContext = realDbContext ?? throw new ArgumentNullException(nameof(realDbContext)); 
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext)); 
     }
 
     // Fetch Dashboard and Analytics
     public DashboardDTO? GetLatestAgingDashboard()
     {
-        return _realDbContext.Dashboards
+        return _dbContext.Dashboards
             .Where(d => d.TypeId == 1) // Assuming TypeId 1 is for Aging Dashboard 
             .OrderByDescending(d => d.GeneratedDate)
             .Select(d => new DashboardDTO
@@ -29,7 +29,7 @@ public class AgingMapper : AgingRepository
 
     public List<AgingAnalyticsDetailsDTO> GetAgingAnalytics(int dashboardId)
     {
-        return _realDbContext.AgingAnalyticsDetails
+        return _dbContext.AgingAnalyticsDetails
             .Where(a => a.DashboardId == dashboardId)
             .Select(a => new AgingAnalyticsDetailsDTO
             {
@@ -47,7 +47,7 @@ public class AgingMapper : AgingRepository
     }
     public void saveDashboardandAnalytics(AgingDashboardRdm dashboard)
     {
-        if (_realDbContext == null)
+        if (_dbContext == null)
             return;
 
         // Create the DashboardTable (Entity) instead of DashboardDTO
@@ -63,12 +63,12 @@ public class AgingMapper : AgingRepository
         };
 
         // Add the Dashboard entity to the DbContext
-        _realDbContext.Dashboards.Add(newDbTable);
+        _dbContext.Dashboards.Add(newDbTable);
         // save 
-        _realDbContext.SaveChanges(); 
+        _dbContext.SaveChanges(); 
 
         // Loop through the productToBatchMap
-        foreach (var productBatch in dashboard.getProductToBatchMap())
+        foreach (var productBatch in dashboard.GetProductToBatchMap())
         {
             int productId = productBatch.Key; // Get Product ID
             List<int> batchCodes = productBatch.Value; // Get the list of batch codes for this product
@@ -76,7 +76,7 @@ public class AgingMapper : AgingRepository
             foreach (var batchCode in batchCodes)
             {
                 // Get the batch analytics for each batch code
-                var analyticsList = dashboard.getBatchAnalytics(batchCode);
+                var analyticsList = dashboard.GetBatchAnalytics(batchCode);
 
                 // Initialize default values for the analytics summary
                 float turnOverRate = 0;
@@ -88,7 +88,7 @@ public class AgingMapper : AgingRepository
                 foreach (var analytics in analyticsList)
                 {
                     // Get batch summary from CalculateBatchSummary
-                    var batchSummary = analytics.calculateBatchSummary();
+                    var batchSummary = analytics.CalculateBatchSummary();
 
                     // Check for each key in the batch summary and set the respective values
                     if (batchSummary.ContainsKey("TurnOverRate"))
@@ -106,7 +106,6 @@ public class AgingMapper : AgingRepository
                         Console.WriteLine("after conversion: {0}", isExpired); 
                     }
                         
-
                     if (batchSummary.ContainsKey("RemainingDays"))
                         remainingDays = Convert.ToInt32(batchSummary["RemainingDays"]);
                 }
@@ -124,12 +123,11 @@ public class AgingMapper : AgingRepository
                     DeadStockPercentage = deadStockPercentage
                 };
 
-                _realDbContext.AgingAnalyticsDetails.Add(analyticsTable);
+                _dbContext.AgingAnalyticsDetails.Add(analyticsTable);
             };
         }
 
         // Save changes to the real database
-        _realDbContext.SaveChanges();
+        _dbContext.SaveChanges();
     }
-
 }
