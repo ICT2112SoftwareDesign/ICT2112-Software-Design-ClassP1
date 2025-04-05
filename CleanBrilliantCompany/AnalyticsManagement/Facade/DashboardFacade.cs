@@ -19,16 +19,6 @@ public class DashboardFacade : IAnalyticsReportDetails
         this.inventoryControl = inventoryControl;
     }
 
-    public List<Dashboard> GetDashboardsData()
-    {
-        return new List<Dashboard>
-        {
-            agingControl.GetLatestDashboard(),
-            manufacturerControl.GetLatestDashboard(),
-            costControl.GetLatestDashboard()
-            inventoryControl.FetchDashboard()
-        };
-    }
 
     public string GenerateCombinedReport(List<string> selected)
     {

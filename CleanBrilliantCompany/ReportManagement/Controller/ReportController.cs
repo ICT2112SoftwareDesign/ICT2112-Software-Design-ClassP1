@@ -2,27 +2,19 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.ReportManagement.Services;
+using CleanBrilliantCompany.Control;
 
 namespace CleanBrilliantCompany.Controllers
 {
     public class ReportController : Controller
     {
-        private readonly Control.ReportControl _reportControl;
-        private readonly IDashboardFacade _dashboardFacade;
+        private readonly ReportControl _reportControl;
 
-        private readonly AgingControl _agingControl;
-
-        private readonly CostControl _costControl;
-
-        private readonly ManufacturerControl _manufacturerControl;
         private readonly ReportGenerator _reportGenerator;
-        public ReportController(Control.ReportControl reportControl, IDashboardFacade dashboardFacade, AgingControl agingControl, ManufacturerControl manufacturerControl, CostControl costControl, ReportGenerator reportGenerator)
+        
+        public ReportController(ReportControl reportControl, ReportGenerator reportGenerator)
         {
             _reportControl = reportControl;
-            _dashboardFacade = dashboardFacade;
-            _agingControl = agingControl;
-            _manufacturerControl = manufacturerControl;
-            _costControl = costControl;
             _reportGenerator = reportGenerator;
         }
 
