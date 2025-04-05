@@ -52,7 +52,7 @@ namespace CleanBrilliantCompany.Controllers
             HttpContext.Session.SetString("ForecastDashboard", serialized);
 
             // 4) Return view
-            return View("FetchDashboardData", dashboard);
+            return View("ForecastDashboard", dashboard);
         }
 
         [HttpPost("generateForecast")]
@@ -81,7 +81,7 @@ namespace CleanBrilliantCompany.Controllers
             // 3) Store in Session
             HttpContext.Session.SetString("ForecastDashboard", serialized);
 
-            return View("FetchDashboardData", dashboard);
+            return View("ForecastDashboard", dashboard);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
