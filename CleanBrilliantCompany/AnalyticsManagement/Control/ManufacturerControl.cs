@@ -4,13 +4,13 @@ public class ManufacturerControl
 {
     private Dashboard manufacturerDashboard;
     private readonly ManufacturerRepository ManufacturerMapper;
-    private readonly FakeReorderInterface fakeReorderInterface;
+    private readonly IReorder _Ireorder;
     private readonly IManufacturer _Imanufacturer;
 
-    public ManufacturerControl(ManufacturerRepository ManufacturerMapper, FakeReorderInterface fakeReorderInterface, IManufacturer _Imanufacturer)
+    public ManufacturerControl(ManufacturerRepository ManufacturerMapper, IReorder _Ireorder, IManufacturer _Imanufacturer)
     {
         this.ManufacturerMapper = ManufacturerMapper;
-        this.fakeReorderInterface = fakeReorderInterface;
+        this._Ireorder = _Ireorder;
         this._Imanufacturer =  _Imanufacturer;
         LoadDashboard();
     }
@@ -77,8 +77,8 @@ public class ManufacturerControl
         // Create the new dashboard
         var dashboard = DashboardFactory.createDashboard(dto);
 
-        // Get reorders from fakeOrderInterface
-        var reorders = fakeReorderInterface.GetAllReorderDetails(); 
+        // Get reorders from IReorder
+        var reorders = IReorder.GetAllReorderDetails(); 
 
         // Filter the reorders by the requested start and end date
         var filteredOrders = reorders
