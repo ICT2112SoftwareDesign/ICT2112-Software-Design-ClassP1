@@ -122,7 +122,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
         {
             for (int i = 0; i < MetricsList.Count; i++)
             {
-                if (MetricsList[i].getProductID() == updatedMetric.getProductID())
+                if (MetricsList[i].GetProductID() == updatedMetric.GetProductID())
                 {
                     // Replace the old metric with the updated one at the same index
                     MetricsList[i] = updatedMetric;
@@ -133,7 +133,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
 
         public void DeleteMetric(int productId)
         {
-            MetricsList.RemoveAll(metric => metric.getProductID() == productId);
+            MetricsList.RemoveAll(metric => metric.GetProductID() == productId);
         }
 
         public List<string> GetAlertItemList()

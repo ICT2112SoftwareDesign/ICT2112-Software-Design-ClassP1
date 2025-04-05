@@ -31,7 +31,7 @@ namespace CleanBrilliantCompany.Services.Forecast
         }
 
         //prediction for a single product
-        public ForecastMetrics updateMetric(Dictionary<int, int> aggregatedSales, int productId, string productName, int adjustmentFactor)
+        public ForecastMetrics UpdateMetric(Dictionary<int, int> aggregatedSales, int productId, string productName, int adjustmentFactor)
         {
            
 

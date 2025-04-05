@@ -5,7 +5,7 @@ namespace CleanBrilliantCompany.DataSource.Interface
 {
     public interface IForecastRepository
     {
-        public void saveDashboard(ForecastDashboard newDashboard);
-        public ForecastDashboard getDashboard(int month, int year);
+        public void SaveDashboard(ForecastDashboard newDashboard);
+        public ForecastDashboard GetDashboard(int month, int year);
     }
 }

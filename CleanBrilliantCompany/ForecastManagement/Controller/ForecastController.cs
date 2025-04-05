@@ -33,7 +33,7 @@ namespace CleanBrilliantCompany.Controllers
             // 1) Possibly retrieve from DB or from your facade
             // Calculate the first day of next month
             DateTime forecastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
-            var dashboard = _forecastFacade.generateDashboard(forecastMonth, 0);
+            var dashboard = _forecastFacade.GenerateDashboard(forecastMonth, 0);
 
             // 2) Serialize
             string serialized = JsonSerializer.Serialize(dashboard);
@@ -66,7 +66,7 @@ namespace CleanBrilliantCompany.Controllers
             
             
             // Generate the forecast dashboard using ForecastControl
-            ForecastDashboard dashboard= _forecastFacade.generateDashboard(
+            ForecastDashboard dashboard= _forecastFacade.GenerateDashboard(
                  forecastMonth, priceAdjustment
             );
             // Generate the trend data map: "yyyy-MM" -> (productId -> forecast value)
@@ -114,7 +114,7 @@ namespace CleanBrilliantCompany.Controllers
                 ViewBag.CurrentSortOrder = sortOrder;
             }
             // Update the dashboard using ForecastControl logic
-            ForecastDashboard updatedDashboard = _forecastFacade.updateMetric(productId, dashboard, priceAdjustment);
+            ForecastDashboard updatedDashboard = _forecastFacade.UpdateMetric(productId, dashboard, priceAdjustment);
 
             // 4) Re-serialize & store updated version
             string updatedSerialized = JsonSerializer.Serialize(updatedDashboard);

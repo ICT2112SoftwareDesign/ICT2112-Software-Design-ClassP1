@@ -9,33 +9,33 @@ namespace CleanBrilliantCompany.DataSource.Mapper
 {
     public class ForecastMapper : IForecastRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _dbContext;
 
         public ForecastMapper(ApplicationDbContext context)
         {
-            _context = context;
+            _dbContext = context;
         }
         
   
-        public void saveDashboard(ForecastDashboard dashboard)
+        public void SaveDashboard(ForecastDashboard dashboard)
         {
-            ForecastDashboardTable dashboardDto = toDTO(dashboard);
-            _context.ForecastDashboards.Add(dashboardDto);
-            _context.SaveChanges();
+            ForecastDashboardTable dashboardDto = ToDTO(dashboard);
+            _dbContext.ForecastDashboards.Add(dashboardDto);
+            _dbContext.SaveChanges();
 
             foreach (ForecastMetrics metric in dashboard.GetMetrics()){
-                ForecastMetricTable metricDto = toDTO(metric, dashboardDto.DashBoardID);
-                _context.ForecastMetrics.Add(metricDto);
+                ForecastMetricTable metricDto = ToDTO(metric, dashboardDto.DashBoardID);
+                _dbContext.ForecastMetrics.Add(metricDto);
             }
-            _context.SaveChanges();
+            _dbContext.SaveChanges();
 
         }
-        public ForecastDashboard getDashboard(int month,int year)
+        public ForecastDashboard GetDashboard(int month,int year)
         {
 
           
 
-            var dashboardDto = _context.ForecastDashboards
+            var dashboardDto = _dbContext.ForecastDashboards
                     .FirstOrDefault(d => d.StartDate.Month == month && d.StartDate.Year == year && d.GeneratedDateTime.Year==DateTime.Now.Year);
             
             if (dashboardDto == null)
@@ -44,10 +44,10 @@ namespace CleanBrilliantCompany.DataSource.Mapper
                 return null; // or you could create a new dashboard if desired.
             }
 
-            var metricDtos = _context.ForecastMetrics
+            var metricDtos = _dbContext.ForecastMetrics
                 .Where(m => m.DashboardID == dashboardDto.DashBoardID)
                .ToList();
-                    _context.SaveChanges();
+                    _dbContext.SaveChanges();
 
             var metrics = new List<ForecastMetrics>();
             foreach (var metricDto in metricDtos)
@@ -78,7 +78,7 @@ namespace CleanBrilliantCompany.DataSource.Mapper
         //        return null;
         //    }
         //}
-        public ForecastDashboardTable toDTO(ForecastDashboard dashboard)
+        public ForecastDashboardTable ToDTO(ForecastDashboard dashboard)
         {
             int dashBoardId = dashboard.GetDashBoardID();
             DateTime startDate = dashboard.GetStartDate();
@@ -87,7 +87,7 @@ namespace CleanBrilliantCompany.DataSource.Mapper
             int validityDuration = dashboard.GetValidityDuration();
             return new ForecastDashboardTable(dashBoardId, startDate, endDate, generatedDate);
         }
-        public ForecastDashboard toEntity(ForecastDashboardTable dto, List<ForecastMetrics> metrics)
+        public ForecastDashboard ToEntity(ForecastDashboardTable dto, List<ForecastMetrics> metrics)
         {
             int dashBoardId = dto.DashBoardID;
             DateTime startDate = dto.StartDate;
@@ -96,14 +96,14 @@ namespace CleanBrilliantCompany.DataSource.Mapper
 
             return new ForecastDashboard(dashBoardId, startDate, endDate, generatedDate, 0, metrics);
         }
-        private ForecastMetricTable toDTO(ForecastMetrics forecastMetrics, int dashboardID)
+        private ForecastMetricTable ToDTO(ForecastMetrics forecastMetrics, int dashboardID)
         {
-            int metricId = forecastMetrics.getMetricId();
-            int productId= forecastMetrics.getProductId();
-            int forecastedStock = forecastMetrics.getForecastedStock();
+            int metricId = forecastMetrics.GetMetricId();
+            int productId= forecastMetrics.GetProductId();
+            int forecastedStock = forecastMetrics.GetForecastedStock();
             return new ForecastMetricTable(dashboardID,metricId,  productId,forecastedStock );
         }
-        private ForecastMetrics toEntity(ForecastMetricTable dto)
+        private ForecastMetrics ToEntity(ForecastMetricTable dto)
         {
             return new StockForecast( dto.ProductID, dto.ForecastedStock);
         }

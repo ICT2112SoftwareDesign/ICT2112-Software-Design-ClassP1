@@ -8,8 +8,8 @@ namespace CleanBrilliantCompany.Services.Sorting
         public List<ForecastMetrics> Sort(List<ForecastMetrics> metrics, string order)
         {
             return order == "ascending"
-                                ? metrics.OrderBy(m => m.getProductName()).ToList()
-                                : metrics.OrderByDescending(m => m.getProductName()).ToList();
+                                ? metrics.OrderBy(m => m.GetProductName()).ToList()
+                                : metrics.OrderByDescending(m => m.GetProductName()).ToList();
         }
     }
 }

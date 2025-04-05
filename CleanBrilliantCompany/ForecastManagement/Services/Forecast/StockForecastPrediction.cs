@@ -11,7 +11,7 @@ namespace CleanBrilliantCompany.Services.Forecast
     public class StockForecastPrediction : IPredictionService
     {
         
-        public ForecastMetrics updateMetric(Dictionary<int, int> aggregatedSales, int productId, string productName, int adjustmentFactor=0)
+        public ForecastMetrics UpdateMetric(Dictionary<int, int> aggregatedSales, int productId, string productName, int adjustmentFactor=0)
         {
             int forecastValue = 0;
 

@@ -4,6 +4,6 @@ namespace CleanBrilliantCompany.ForecastManagement.Interface
 {
     public interface IAlert
     {
-        public List<string> alert(List<ForecastMetrics> metrics);
+        public List<string> Alert(List<ForecastMetrics> metrics);
     }
 }

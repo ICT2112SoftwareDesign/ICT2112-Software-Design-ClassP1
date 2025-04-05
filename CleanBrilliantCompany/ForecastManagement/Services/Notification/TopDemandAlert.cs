@@ -5,12 +5,12 @@ namespace CleanBrilliantCompany.Services.Notification
 {
     public class TopDemandAlert : IAlert
     {
-        public List<string> alert(List<ForecastMetrics> metrics)
+        public List<string> Alert(List<ForecastMetrics> metrics)
         {
             var topMetrics = metrics
-               .OrderByDescending(m => m.getForecastedStock())
+               .OrderByDescending(m => m.GetForecastedStock())
                 .Take(4)
-                .Select(m => $"{m.getProductName()} (ID: {m.getProductID()})").ToList();
+                .Select(m => $"{m.GetProductName()} (ID: {m.GetProductID()})").ToList();
 
             return topMetrics;
         }
