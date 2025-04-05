@@ -10,20 +10,20 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
         public StockForecast() { }
         public StockForecast(int productId, int stockRequired)
         {
-            setProductId(productId);
-            setForecastedStock(stockRequired);
+            SetProductId(productId);
+            SetForecastedStock(stockRequired);
 
         }
         [JsonConstructor]
 
         public StockForecast(int productId, int forecastedStock, string productName)
         {
-            setProductId(productId);
-            setForecastedStock(forecastedStock);
-            setProductName(productName);
+            SetProductId(productId);
+            SetForecastedStock(forecastedStock);
+            SetProductName(productName);
 
         }
-        public override StockForecast getForecastedMetrics()
+        public override StockForecast GetForecastedMetrics()
         {
             return this;
         }

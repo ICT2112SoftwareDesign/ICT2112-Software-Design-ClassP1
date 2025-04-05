@@ -38,7 +38,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             _forecastDataAdapter = forecastDataAdapter;
         }
 
-        public ForecastDashboard generateDashboard(DateTime selectedMonth, int adjustmentFactor = 0)
+        public ForecastDashboard GenerateDashboard(DateTime selectedMonth, int adjustmentFactor = 0)
         {
 
             List<ProductDTO> productList;
@@ -47,7 +47,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             ForecastDashboard dashboard = null;
             if (adjustmentFactor == 0)
             {
-                dashboard = _forecastRepository.getDashboard(selectedMonth.Month, selectedMonth.Year);
+                dashboard = _forecastRepository.GetDashboard(selectedMonth.Month, selectedMonth.Year);
             }
             if (dashboard == null)
             {
@@ -62,7 +62,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
                 }
                 if (adjustmentFactor == 0)
                 {
-                    _forecastRepository.saveDashboard(dashboard);
+                    _forecastRepository.SaveDashboard(dashboard);
 
                 }
 
@@ -74,8 +74,8 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             {
                 foreach (var metric in dashboard.GetMetrics())
                 {
-                    var product = productList.FirstOrDefault(p => p.ID == metric.getProductId());
-                    metric.setProductName(product.Name);
+                    var product = productList.FirstOrDefault(p => p.ID == metric.GetProductId());
+                    metric.SetProductName(product.Name);
 
                 }
             }
@@ -86,7 +86,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             List<string> alert = new List<string>();
             if (dashboard.GetMetrics().Count != 0)
             {
-                alert = _alertService.alert(dashboard.GetMetrics());
+                alert = _alertService.Alert(dashboard.GetMetrics());
                 dashboard.SetAlertItemList(alert);
             }
 
@@ -94,7 +94,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             return dashboard;
 
         }
-        public ForecastDashboard updateMetric(int productId, ForecastDashboard dashboard, int adjustmentFactor = 0)
+        public ForecastDashboard UpdateMetric(int productId, ForecastDashboard dashboard, int adjustmentFactor = 0)
         {
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
@@ -107,7 +107,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             List<string> alert = new List<string>();
             if (dashboard.GetMetrics().Count != 0)
             {
-                alert = _alertService.alert(dashboard.GetMetrics());
+                alert = _alertService.Alert(dashboard.GetMetrics());
                 dashboard.SetAlertItemList(alert);
             }
             //dashboard.SetMetrics(ForecastMetricSorter.Sort(dashboard.GetMetrics(), sortingType, order));
@@ -127,19 +127,19 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             for (int i = 0; i < months; i++)
             {
                 var date = startMonth.AddMonths(i);
-                var forecast = generateDashboard(date, 0);
+                var forecast = GenerateDashboard(date, 0);
                 var metrics = forecast.GetMetrics();
 
                 // Create a dictionary mapping productId to an anonymous object
                 // with both the product name and forecasted stock.
                 var productMap = metrics
-                    .GroupBy(m => m.getProductId())
+                    .GroupBy(m => m.GetProductId())
                     .ToDictionary(
                         grp => grp.Key,
                         grp => (object)new
                         {
-                            ProductName = grp.First().getProductName(),
-                            ForecastedStock = grp.Sum(m => (decimal)m.getForecastedStock())
+                            ProductName = grp.First().GetProductName(),
+                            ForecastedStock = grp.Sum(m => (decimal)m.GetForecastedStock())
                         }
                     );
 
@@ -153,7 +153,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
 
 
 
-        public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth, int productId, string productName, int priceAdjustment)
+        public ForecastMetrics UpdateProductPriceAdjustment(DateTime selectedMonth, int productId, string productName, int priceAdjustment)
         {
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
@@ -165,20 +165,20 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             return metric;
         }
 
-        public List<ForecastMetrics> generatePriceScenario(DateTime selectedMonth, int adjustmentFactor)
+        public List<ForecastMetrics> GeneratePriceScenario(DateTime selectedMonth, int adjustmentFactor)
         {
-            var dashboard = generateDashboard(selectedMonth, adjustmentFactor);
+            var dashboard = GenerateDashboard(selectedMonth, adjustmentFactor);
             return dashboard.GetMetrics();
         }
-        public List<ForecastMetrics> generateStockForecast(DateTime selectedMonth)
+        public List<ForecastMetrics> GenerateStockForecast(DateTime selectedMonth)
         {
-            var dashboard = generateDashboard(selectedMonth, 0);
+            var dashboard = GenerateDashboard(selectedMonth, 0);
             return dashboard.GetMetrics();
         }
 
         public ForecastDashboard GetDashboard()
         {
-            return generateDashboard(DateTime.Now.AddMonths(1), 0);
+            return GenerateDashboard(DateTime.Now.AddMonths(1), 0);
 
         }
         public string GenerateReport()
@@ -206,9 +206,9 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
             foreach (var metric in dashboard.GetMetrics())
             {
                 report.AppendLine("<tr>");
-                report.AppendLine($"<td>{metric.getProductId()}</td>");
-                report.AppendLine($"<td>{metric.getProductName()}</td>");
-                report.AppendLine($"<td>{metric.getForecastedStock()}</td>");
+                report.AppendLine($"<td>{metric.GetProductId()}</td>");
+                report.AppendLine($"<td>{metric.GetProductName()}</td>");
+                report.AppendLine($"<td>{metric.GetForecastedStock()}</td>");
                 report.AppendLine("</tr>");
             }
 

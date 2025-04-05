@@ -12,27 +12,27 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
         private int adjustmentFactor { get; set; }
         [JsonInclude]
         private int pricingAfterAdjustment { get; set; }
-        public int getAdjustmentFactor()
+        public int GetAdjustmentFactor()
         {
             return adjustmentFactor;
         }
 
-        public void setAdjustmentFactor(int adjustmentFactor)
+        public void SetAdjustmentFactor(int adjustmentFactor)
         {
             this.adjustmentFactor = adjustmentFactor;
         }
 
-        public int getPricingAfterAdjustment()
+        public int GetPricingAfterAdjustment()
         {
             return pricingAfterAdjustment;
         }
 
-        public void setPricingAfterAdjustment(int pricingAfterAdjustment)
+        public void SetPricingAfterAdjustment(int pricingAfterAdjustment)
         {
             this.pricingAfterAdjustment = pricingAfterAdjustment;
         }
 
-        public override PriceScenarioForecast getForecastedMetrics()
+        public override PriceScenarioForecast GetForecastedMetrics()
         {
             return this;
         }
@@ -42,9 +42,9 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
         [JsonConstructor]
         public PriceScenarioForecast(int productId, int forecastedStock, string productName, int adjustmentFactor, int pricingAfterAdjustment)
         {
-            setProductId(productId);
-            setProductName(productName);
-            setForecastedStock(forecastedStock);
+            SetProductId(productId);
+            SetProductName(productName);
+            SetForecastedStock(forecastedStock);
             this.adjustmentFactor = adjustmentFactor;
             this.pricingAfterAdjustment = pricingAfterAdjustment;
         }

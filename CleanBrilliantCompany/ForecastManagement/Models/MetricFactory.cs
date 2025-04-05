@@ -36,7 +36,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
                 throw new InvalidOperationException("Suitable prediction service not found.");
             }
 
-            return predictionService.updateMetric(aggregatedSales, product.ID, product.Name, adjustmentFactor);
+            return predictionService.UpdateMetric(aggregatedSales, product.ID, product.Name, adjustmentFactor);
         }
     }
 }

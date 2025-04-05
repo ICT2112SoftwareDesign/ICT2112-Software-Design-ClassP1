@@ -18,46 +18,46 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
         private int forecastedStock { get; set; }
         [JsonInclude]
         private string productName { get; set; }
-        public int getMetricId()
+        public int GetMetricId()
         {
             return metricId;
         }
 
-        public int getProductId()
+        public int GetProductId()
         {
             return productId;
         }
-        public void setProductId(int stockId)
+        public void SetProductId(int stockId)
         {
             productId = stockId;
         }
-        public int getForecastedStock()
+        public int GetForecastedStock()
         {
             return forecastedStock;
         }
-        public void setForecastedStock(int forecastedStock)
+        public void SetForecastedStock(int forecastedStock)
         {
             this.forecastedStock = forecastedStock;
         }
 
-        public string getProductName()
+        public string GetProductName()
         {
             return productName;
         }
-        public void setProductName(string productName)
+        public void SetProductName(string productName)
         {
             this.productName = productName;
         }
 
-        public int getProductID()
+        public int GetProductID()
         {
             return productId;
         }
-        public void setProductID(int productID)
+        public void SetProductID(int productID)
         {
             productId = productID;
         }
-        public abstract ForecastMetrics getForecastedMetrics();
+        public abstract ForecastMetrics GetForecastedMetrics();
     }
 
 }
