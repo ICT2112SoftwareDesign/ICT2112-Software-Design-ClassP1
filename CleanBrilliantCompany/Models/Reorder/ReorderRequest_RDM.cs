@@ -13,13 +13,4 @@ namespace CleanBrilliantCompany.Models
         public List<ReorderRequest_Products> Products { get; set; } = new List<ReorderRequest_Products>();
     }
 
-    public class ReorderRequest_Products
-    {
-        public int ReorderProductId { get; set; }
-        public int ProductId { get; set; } 
-        public int Quantity { get; set; } 
-        public int? DefectQuantity { get; set; }
-
-    }
-
 }
