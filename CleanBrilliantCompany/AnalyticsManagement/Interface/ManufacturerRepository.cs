@@ -5,5 +5,5 @@ public interface ManufacturerRepository
 
     List<ManufacturerMetricsDTO> GetManufacturerMetrics(int dashboardId);
 
-    void saveDashboardandMetrics(ManufacturerDashboardRdm dashboard);
+    void SaveDashboardandMetrics(ManufacturerDashboardRdm dashboard);
 }
