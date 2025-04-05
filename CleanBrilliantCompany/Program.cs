@@ -60,6 +60,7 @@ builder.Services.AddScoped<SupportTicketTableDataGateway>(provider =>
 builder.Services.AddScoped<ShippingAgentMapper>();
 builder.Services.AddScoped<IShippingAgent, ShippingAgentMapper>();
 builder.Services.AddScoped<IShippingAgentDB>();
+builder.Services.AddScoped<ShippingAgentManagement>();
 
 // Adding services for Reorder
 builder.Services.AddScoped<IReorderRequestDB>(provider => new ReorderRequestMapper(connectionString));
