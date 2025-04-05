@@ -1,57 +1,52 @@
 using CleanBrilliantCompany.Control;
-using CleanBrilliantCompany.ForecastManagement.Interface;
-using CleanBrilliantCompany.Models.Forecast;
 
-public class DashboardFacade : IDashboardFacade
+public class DashboardFacade : IAnalyticsReportDetails
 {
     private readonly AgingControl agingControl;
     private readonly ManufacturerControl manufacturerControl;
     private readonly CostControl costControl;
     private readonly InventoryControl inventoryControl;
-    private readonly IForecastReportDetails forecastControl;
-
 
     public DashboardFacade(
         AgingControl agingControl,
         ManufacturerControl manufacturerControl,
         CostControl costControl,
-        InventoryControl inventoryControl,
-        IForecastReportDetails forecastControl
-        )
+        InventoryControl inventoryControl)
     {
         this.agingControl = agingControl;
         this.manufacturerControl = manufacturerControl;
         this.costControl = costControl;
         this.inventoryControl = inventoryControl;
-        this.forecastControl = forecastControl;
     }
 
-
-    public AgingControl GetAgingControl() => agingControl;
-    public ManufacturerControl GetManufacturerControl() => manufacturerControl;
-    public CostControl GetCostControl() => costControl;
-    public InventoryControl GetInventoryControl() => inventoryControl;
-    public IForecastReportDetails GetForecastControl() => forecastControl;
-    public List<Dashboard> getDashboardsData()
+    public string GenerateCombinedReport(List<string> selected)
     {
-        // this thing just calls every dashboard's getDashboardData method 
-        List<Dashboard> dashboards = new List<Dashboard>();
+        var sb = new System.Text.StringBuilder();
 
-        // go to control class and get the dashboard from aging 
-        Dashboard agingDashboard = agingControl.GetLatestDashboard();
-        dashboards.Add(agingDashboard);
+        if (selected.Contains("Aging"))
+        {
+            sb.AppendLine("===== AGING DASHBOARD =====");
+            sb.AppendLine(agingControl.GenerateReport());
+        }
 
-        Dashboard manufacturerDashboard = manufacturerControl.GetLatestDashboard();
-        dashboards.Add(manufacturerDashboard);
+        if (selected.Contains("Manufacturer"))
+        {
+            sb.AppendLine("===== MANUFACTURER DASHBOARD =====");
+            sb.AppendLine(manufacturerControl.GenerateReport());
+        }
 
-        Dashboard costDashboard = costControl.GetLatestDashboard();
-        dashboards.Add(costDashboard);
+        if (selected.Contains("Cost"))
+        {
+            sb.AppendLine("===== COST DASHBOARD =====");
+            sb.AppendLine(costControl.GenerateReport());
+        }
 
-        string inventoryReport = inventoryControl.GenerateReport();
+        if (selected.Contains("Inventory"))
+        {
+            sb.AppendLine("===== INVENTORY DASHBOARD =====");
+            sb.AppendLine(inventoryControl.GenerateReport());
+        }
 
-        return dashboards;
+        return sb.ToString();
     }
-    public string GetForecastReport() => forecastControl.GenerateReport();
-
-
 }

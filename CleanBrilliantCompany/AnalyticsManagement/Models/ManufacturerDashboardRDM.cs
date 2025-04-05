@@ -7,16 +7,13 @@ public class ManufacturerDashboardRdm : Dashboard
         // Initialization code, if needed
         Metrics = new List<ManufacturerMetricsDTO>();  // Initialize the Metrics list
         MetricDetailsList = new List<ManufacturerMetricDetails>();  // List for detailed metric calculations
-        ManufacturerNames = new Dictionary<int, string>();
     }
 
     // Property to store the manufacturer metrics
-    public List<ManufacturerMetricsDTO> Metrics { get; set; }  // List of metrics specific to the manufacturer dashboard
+    private List<ManufacturerMetricsDTO> Metrics { get; set; }  // List of metrics specific to the manufacturer dashboard
 
     // List of detailed metrics for calculations
-    public List<ManufacturerMetricDetails> MetricDetailsList { get; set; }
-
-    public Dictionary<int, string> ManufacturerNames { get; set; }
+    private List<ManufacturerMetricDetails> MetricDetailsList { get; set; }
 
     public void populateMetrics(List<ReorderData> reorders)
     {
@@ -56,5 +53,4 @@ public class ManufacturerDashboardRdm : Dashboard
             MetricDetailsList.Add(new ManufacturerMetricDetails(manufacturerIdString, deliveryRate, defectRate, dependencyRate, riskFlag));
         }
     }
-
 }

@@ -179,14 +179,14 @@ builder.Services.AddScoped<FakeReorderInterface>();
 builder.Services.AddHttpClient<IAIService, AIService>();
 builder.Services.AddScoped<ReportGenerator>();
 builder.Services.AddScoped<ReportControl>();
-builder.Services.AddScoped<ReportRepo, ReportMapper>();
+builder.Services.AddScoped<ReportRepo, ReportGateway>();
 //builder.Services.AddScoped<AgingControl>();
 //builder.Services.AddScoped<ManufacturerControl>();
 //builder.Services.AddScoped<CostControl>();
 builder.Services.AddScoped<IForecastReportDetails, ForecastFacade>();
 
-builder.Services.AddScoped<DashboardFacade>();
-builder.Services.AddScoped<IDashboardFacade, DashboardFacade>();
+builder.Services.AddScoped<IAnalyticsReportDetails>();
+builder.Services.AddScoped<IAnalyticsReportDetails, DashboardFacade>();
 Console.WriteLine($"[Debug] OpenAI Key Length: {apiKey?.Length}");
 builder.Services.AddSession();
 
