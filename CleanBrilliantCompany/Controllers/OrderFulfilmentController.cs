@@ -5,7 +5,7 @@ using System;
 
 namespace CleanBrilliantCompany.Controllers
 {
-    [Route("staff/orderfulfilment")]
+    [Route("Staff/orderfulfilment")]
     public class OrderFulfilmentController : ApplicationController
     {
         private readonly IOrder _orderFulfilmentManagement;
