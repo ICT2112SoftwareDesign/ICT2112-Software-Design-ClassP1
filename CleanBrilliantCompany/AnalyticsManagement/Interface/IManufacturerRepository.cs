@@ -1,4 +1,4 @@
-public interface ManufacturerRepository
+public interface IManufacturerRepository
 {
     // Fetch the latest manufacturer dashboard
     DashboardDTO? GetLatestManufacturerDashboard();

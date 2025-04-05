@@ -3,13 +3,13 @@ using CleanBrilliantCompany.Interfaces;
 public class ManufacturerControl
 {
     private Dashboard manufacturerDashboard;
-    private readonly ManufacturerRepository ManufacturerMapper;
+    private readonly IManufacturerRepository manufacturerMapper;
     private readonly IReorder _Ireorder;
     private readonly IManufacturer _Imanufacturer;
 
-    public ManufacturerControl(ManufacturerRepository ManufacturerMapper, IReorder _Ireorder, IManufacturer _Imanufacturer)
+    public ManufacturerControl(IManufacturerRepository manufacturerMapper, IReorder _Ireorder, IManufacturer _Imanufacturer)
     {
-        this.ManufacturerMapper = ManufacturerMapper;
+        this.manufacturerMapper = manufacturerMapper;
         this._Ireorder = _Ireorder;
         this._Imanufacturer =  _Imanufacturer;
         LoadDashboard();
@@ -18,7 +18,7 @@ public class ManufacturerControl
     // Load the latest manufacturer dashboard
     private void LoadDashboard()
     {
-        var dashboardDto = ManufacturerMapper.GetLatestManufacturerDashboard();
+        var dashboardDto = manufacturerMapper.GetLatestManufacturerDashboard();
         if (dashboardDto == null)
         {
             Console.WriteLine("⚠ No manufacturer dashboard found.");
@@ -33,13 +33,13 @@ public class ManufacturerControl
         manufacturerDashboard = DashboardFactory.createDashboard(dashboardDto) as ManufacturerDashboardRdm;
 
         // Fetch the manufacturer metrics and assign it to the dashboard
-        var metricsList = ManufacturerMapper.GetManufacturerMetrics(dashboardDto.DashboardId);
+        var metricsList = manufacturerMapper.GetManufacturerMetrics(dashboardDto.DashboardId);
 
         if (manufacturerDashboard is ManufacturerDashboardRdm manufacturerDashboardRdm)
         {
             manufacturerDashboardRdm.Metrics = metricsList;
 
-            manufacturerDashboardRdm.MetricDetailsList = ManufacturerMapper
+            manufacturerDashboardRdm.MetricDetailsList = manufacturerMapper
             .GetManufacturerMetrics(dashboardDto.DashboardId)
             .Select(m => {
             // Fetch the manufacturer details
@@ -86,10 +86,10 @@ public class ManufacturerControl
             .ToList();
 
         // Populate the analytics section of the dashboard
-        (dashboard as ManufacturerDashboardRdm).populateMetrics(filteredOrders);
+        (dashboard as ManufacturerDashboardRdm).PopulateMetrics(filteredOrders);
 
         // Save the newly generated dashboard and analytics
-        ManufacturerMapper.saveDashboardandMetrics(dashboard as ManufacturerDashboardRdm);
+        ManufacturerMapper.SaveDashboardandMetrics(dashboard as ManufacturerDashboardRdm);
     }
 
     public string GenerateReport()
