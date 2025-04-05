@@ -7,7 +7,7 @@ using CleanBrilliantCompany.ForecastManagement.Interface;
 
 namespace CleanBrilliantCompany.ForecastManagement.Models
 {
-    public class ForecastFacade : IForecastReportDetails
+    public class ForecastControl : IForecastReportDetails
 
     {
         //private readonly IStockPredictionService _stockPredictionService;
@@ -19,7 +19,7 @@ namespace CleanBrilliantCompany.ForecastManagement.Models
         private readonly IAlert _alertService;
         private readonly IForecastDataAdapter _forecastDataAdapter;
 
-        public ForecastFacade(
+        public ForecastControl(
             MetricFactory metricFactory,
             IForecastRepository forecastRepository,
             TempForecastIProduct iProduct,
