@@ -1,4 +1,4 @@
-public class ManufacturerMapper : ManufacturerRepo
+public class ManufacturerMapper : ManufacturerRepository
 {
     private readonly ApplicationDbContext _dbContext;
 
@@ -58,7 +58,7 @@ public class ManufacturerMapper : ManufacturerRepo
     }
 
     // Save the new manufacturer dashboard to the database
-    public void saveDashboardandMetrics(ManufacturerDashboardRdm dashboard)
+    public void SaveDashboardandMetrics(ManufacturerDashboardRdm dashboard)
     {
         if (_dbContext == null)
             return;
