@@ -6,7 +6,7 @@
     @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info text-center">
-            Your cart is empty. <a asp-controller="CustomerPage" asp-action="GetAllProducts" class="alert-link">Continue shopping</a>.
+            Your cart is empty. <a asp-controller="ProductInput" asp-action="viewProducts" class="alert-link">Continue shopping</a>.
         </div>
     }
     else

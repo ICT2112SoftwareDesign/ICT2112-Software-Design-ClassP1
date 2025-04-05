@@ -20,7 +20,7 @@
     @if (cart == null || !cart.Any())
     {
         <div class="alert alert-info text-center">
-                Your cart is empty. <a asp-controller="CustomerPage" asp-action="GetAllProducts">Continue shopping</a>.
+                Your cart is empty. <a asp-controller="ProductInput" asp-action="viewProducts">Continue shopping</a>.
         </div>
     }
     else
