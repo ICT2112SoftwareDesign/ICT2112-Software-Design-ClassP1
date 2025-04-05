@@ -3,16 +3,16 @@ using Microsoft.CodeAnalysis;
 
 public class InventoryMapper : IInventoryRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ApplicationDbContext _dbContext;
 
-    public InventoryMapper(ApplicationDbContext context)
+    public InventoryMapper(ApplicationDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     public void SaveDashboard(InventoryDashboardRDM dashboard)
     {
-        using (var transaction = _context.Database.BeginTransaction())
+        using (var transaction = _dbContext.Database.BeginTransaction())
         {
             try
             {
@@ -28,8 +28,8 @@ public class InventoryMapper : IInventoryRepository
                     ValidityDuration = dashboard.ValidityDuration,
                     TypeId = 2
                 };
-                _context.DashboardTable.Add(dashboardEntity);
-                _context.SaveChanges();
+                _dbContext.DashboardTable.Add(dashboardEntity);
+                _dbContext.SaveChanges();
 
 
                 // Save stock levels and thresholds to InventoryLevel
@@ -48,8 +48,8 @@ public class InventoryMapper : IInventoryRepository
                         StockLevel = stockLevels[productId],
                         ReplenishmentStatus = replenishmentStatuses[productId]
                     };
-                    _context.InventoryLevelTable.Add(inventoryLevel);
-                    _context.SaveChanges(); // Save each entry to get the generated InventoryId
+                    _dbContext.InventoryLevelTable.Add(inventoryLevel);
+                    _dbContext.SaveChanges(); // Save each entry to get the generated InventoryId
                     productToInventoryIdMap[productId] = inventoryLevel.InventoryId; // Store the mapping
                 }
 
@@ -59,7 +59,7 @@ public class InventoryMapper : IInventoryRepository
 
                 foreach (var productId in lowStockProducts)
                 {
-                    var inventoryLevel = _context.InventoryLevelTable
+                    var inventoryLevel = _dbContext.InventoryLevelTable
                         .FirstOrDefault(il => il.ProductId == productId && il.DashboardId == dashboardEntity.DashboardId);
                     if (inventoryLevel != null)
                     {
@@ -70,13 +70,13 @@ public class InventoryMapper : IInventoryRepository
                             AlertType = "LS",
                             AlertDate = now
                         };
-                        _context.InventoryAlertsTable.Add(alert);
+                        _dbContext.InventoryAlertsTable.Add(alert);
                     }
                 }
 
                 foreach (var productId in overStockProducts)
                 {
-                    var inventoryLevel = _context.InventoryLevelTable
+                    var inventoryLevel = _dbContext.InventoryLevelTable
                         .FirstOrDefault(il => il.ProductId == productId && il.DashboardId == dashboardEntity.DashboardId);
                     if (inventoryLevel != null)
                     {
@@ -87,11 +87,11 @@ public class InventoryMapper : IInventoryRepository
                             AlertType = "OS",
                             AlertDate = now
                         };
-                        _context.InventoryAlertsTable.Add(alert);
+                        _dbContext.InventoryAlertsTable.Add(alert);
                     }
                 }
 
-                _context.SaveChanges();
+                _dbContext.SaveChanges();
                 transaction.Commit();
             }
             catch (Exception ex)
@@ -105,7 +105,7 @@ public class InventoryMapper : IInventoryRepository
 
     public InventoryDashboardRDM? GetLatestDashboard()
     {
-        var dashboardEntity = _context.DashboardTable
+        var dashboardEntity = _dbContext.DashboardTable
             .Where(t => t.TypeId == 2)
             .OrderByDescending(d => d.GeneratedDate)
             .FirstOrDefault();
@@ -123,12 +123,12 @@ public class InventoryMapper : IInventoryRepository
 
 
         // Get stock levels from InventoryLevelTable
-        var inventoryLevels = _context.InventoryLevelTable
+        var inventoryLevels = _dbContext.InventoryLevelTable
             .Where(i => i.DashboardId == dashboardEntity.DashboardId)
             .ToList();
 
         // Get thresholds from ProductThresholdTable
-        var productThresholds = _context.ProductThresholdTable
+        var productThresholds = _dbContext.ProductThresholdTable
             .ToDictionary(p => p.ProductId, p => p.Threshold);
 
         var stockLevels = new Dictionary<int, int>();
@@ -158,10 +158,10 @@ public class InventoryMapper : IInventoryRepository
         var result = new Dictionary<int, (int LowStockWeeks, int OverStockWeeks)>();
 
         // Check the number of records in InventoryAlertsTable
-        var alertCount = _context.InventoryAlertsTable.Count();
+        var alertCount = _dbContext.InventoryAlertsTable.Count();
 
         // Query only InventoryAlertsTable
-        var alerts = _context.InventoryAlertsTable
+        var alerts = _dbContext.InventoryAlertsTable
             .Select(a => new
             {
                 a.ProductId,
@@ -333,7 +333,7 @@ public class InventoryMapper : IInventoryRepository
 
     public Dictionary<int, int?> GetAllProductThresholds()
     {
-        return _context.ProductThresholdTable
+        return _dbContext.ProductThresholdTable
             .ToDictionary(p => p.ProductId, p => p.Threshold);
     }
 }
