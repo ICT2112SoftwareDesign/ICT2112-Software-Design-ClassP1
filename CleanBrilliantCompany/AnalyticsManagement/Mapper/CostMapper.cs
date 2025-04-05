@@ -7,16 +7,16 @@ public class CostMapper
     private readonly iProduct _iProduct;
     private readonly iManufacturer _iManufacturer;
     private readonly iBatch _iBatch;
-    private readonly iItem _iItem;
+    private readonly iItemDetails _iItemDetails;
     private readonly ApplicationDbContext _db;
 
-    public CostMapper(ApplicationDbContext dbContext, iProduct iProduct, iManufacturer iManufacturer, iBatch iBatch, iItem iItem)
+    public CostMapper(ApplicationDbContext dbContext, iProduct iProduct, iManufacturer iManufacturer, iBatch iBatch, iItemDetails iItemDetails)
     {
         _db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _iProduct = iProduct;
         _iManufacturer = iManufacturer;
         _iBatch = iBatch;
-        _iItem = iItem;
+        _iItemDetails = iItemDetails;
     }
 
     public List<ProductManufacturerDTO> GetAllManufacturers()
@@ -72,7 +72,7 @@ public class CostMapper
 
     public List<ItemDTO> GetAllItems()
     {
-        var items = _iItem.getItems().Result;
+        var items = _iItemDetails.getItems().Result;
 
         return items.Select(i =>
         {
