@@ -12,10 +12,10 @@ namespace CleanBrilliantCompany.Control
 
         private readonly ReportGenerator _reportGenerator;
         private readonly IAIService _AIService;
-        private readonly ReportRepo _repo;
+        private readonly IReportRepository _repo;
         private readonly IAnalyticsReportDetails _dashboardFacade;
         private readonly IForecastReportDetails _forecastFacade;
-        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, ReportRepo repo, IAnalyticsReportDetails dashboardFacade, IForecastReportDetails forecastFacade)
+        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, IReportRepository repo, IAnalyticsReportDetails dashboardFacade, IForecastReportDetails forecastFacade)
         {
             _reportGenerator = reportGenerator;
             _AIService = aiService;

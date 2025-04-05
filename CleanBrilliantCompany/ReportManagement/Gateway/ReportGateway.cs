@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanBrilliantCompany.Gateway
 {
-    public class ReportGateway : ReportRepo
+    public class ReportGateway : IReportRepository
     {
         private readonly ApplicationDbContext _db;
 

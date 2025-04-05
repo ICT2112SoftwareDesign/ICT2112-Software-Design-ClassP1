@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace CleanBrilliantCompany.Interface
 {
-    public interface ReportRepo
+    public interface IReportRepository
     {
         void InsertReport(Report report);
         void InsertReportLog(ReportLog log);
