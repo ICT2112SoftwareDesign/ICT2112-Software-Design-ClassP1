@@ -1,15 +1,14 @@
 public class InventoryControl
 {
-    private readonly ApplicationDbContext _context;
-    //private readonly SimulatedDbContext _simulatedContext;
+    private readonly ApplicationDbContext _dbContext;
     private readonly IInventoryRepository _inventoryRepository;
     private readonly IProduct _productService;
 
-    public InventoryControl(ApplicationDbContext context, IInventoryRepository inventoryRepository, IProduct productService)
+    public InventoryControl(ApplicationDbContext dbContext, IInventoryRepository inventoryRepository, IProduct productService)
     {
         _inventoryRepository = inventoryRepository ?? throw new ArgumentNullException(nameof(inventoryRepository));
         _productService = productService ?? throw new ArgumentNullException(nameof(productService));
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
     }
 
@@ -193,7 +192,7 @@ public class InventoryControl
     {
         var dashboard = FetchDashboard();
         var stockLevels = dashboard.GetAllStockLevels();
-        var thresholds = _context.ProductThresholdTable
+        var thresholds = _dbContext.ProductThresholdTable
             .ToDictionary(t => t.ProductId, t => t.Threshold ?? 100);
         var productIds = stockLevels.Keys.ToList();
 
@@ -310,7 +309,7 @@ public class InventoryControl
         var product = _productService.getAllProducts()
             .FirstOrDefault(p => (int)p.retrieveProductInfo()["ProductId"] == id);
 
-        var threshold = _context.ProductThresholdTable
+        var threshold = _dbContext.ProductThresholdTable
             .FirstOrDefault(t => t.ProductId == id);
 
         var info = product?.retrieveProductInfo();
@@ -329,7 +328,7 @@ public class InventoryControl
 
     public void UpdateThreshold(ProductThresholdTable model)
     {
-        var entry = _context.ProductThresholdTable.FirstOrDefault(t => t.ProductId == model.ProductId);
+        var entry = _dbContext.ProductThresholdTable.FirstOrDefault(t => t.ProductId == model.ProductId);
         if (entry != null)
         {
             entry.Threshold = model.Threshold;
@@ -337,10 +336,10 @@ public class InventoryControl
         }
         else
         {
-            _context.ProductThresholdTable.Add(model);
+            _dbContext.ProductThresholdTable.Add(model);
         }
 
-        _context.SaveChanges();
+        _dbContext.SaveChanges();
     }
     public List<InventoryDTO> GetProductThresholdsWithInfo()
     {
@@ -351,7 +350,7 @@ public class InventoryControl
             p => p.retrieveProductInfo()
         );
 
-        var thresholds = _context.ProductThresholdTable.ToList();
+        var thresholds = _dbContext.ProductThresholdTable.ToList();
 
         return thresholds
             .Where(pt => productDict.ContainsKey(pt.ProductId))
@@ -377,7 +376,7 @@ public class InventoryControl
             .ToList();
 
         // Get product IDs that already have thresholds
-        var existingThresholdProductIds = _context.ProductThresholdTable
+        var existingThresholdProductIds = _dbContext.ProductThresholdTable
             .Select(pt => pt.ProductId)
             .ToList();
 
@@ -389,7 +388,7 @@ public class InventoryControl
         // Insert default thresholds (100) for missing products
         foreach (var productId in missingProductIds)
         {
-            _context.ProductThresholdTable.Add(new ProductThresholdTable
+            _dbContext.ProductThresholdTable.Add(new ProductThresholdTable
             {
                 ProductId = productId,
                 Threshold = 100,
@@ -397,6 +396,6 @@ public class InventoryControl
             });
         }
 
-        _context.SaveChanges();
+        _dbContext.SaveChanges();
     }
 }
