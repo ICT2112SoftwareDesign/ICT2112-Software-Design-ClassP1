@@ -64,26 +64,5 @@ public class DashboardFacade : IDashboardFacade
     return sb.ToString();
 }
 
-    public List<Dashboard> getDashboardsData()
-    {
-        // this thing just calls every dashboard's getDashboardData method 
-        List<Dashboard> dashboards = new List<Dashboard>();
-
-        // go to control class and get the dashboard from aging 
-        Dashboard agingDashboard = agingControl.GetLatestDashboard();
-        dashboards.Add(agingDashboard);
-
-        Dashboard manufacturerDashboard = manufacturerControl.GetLatestDashboard();
-        dashboards.Add(manufacturerDashboard);
-
-        Dashboard costDashboard = costControl.GetLatestDashboard();
-        dashboards.Add(costDashboard);
-
-        string inventoryReport = inventoryControl.GenerateReport();
-
-        return dashboards;
-    }
-    public string GetForecastReport() => forecastControl.GenerateReport();
-
 
 }
