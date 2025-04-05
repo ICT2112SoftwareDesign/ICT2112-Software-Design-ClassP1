@@ -18,8 +18,6 @@ namespace CleanBrilliantCompany.DTO
 
         public DateTime? LastUpdated { get; set; }
 
-        //public string StockStatus { get; set; }
-
         public bool ReplenishmentStatus { get; set; }
 
         public int DashboardId { get; set; }

@@ -209,7 +209,6 @@ namespace CleanBrilliantCompany.Mapper
                 int overStockWeeks = 0;
 
                 // Track week ranges
-                //var weekRanges = new List<(int Year, int Week)>();
                 var weekRanges = new Dictionary<string, (int Year, int Week)[]>();
 
                 Console.WriteLine($"Processing Product {productId}");
