@@ -24,19 +24,19 @@ public class StorageLifeCycleAnalyticsDetails : AbstractAnalyticsDetails {
         this.remainingDays = remainingDays; 
     } 
 
-    public int calculateStorageDuration(){
+    public int CalculateStorageDuration(){
         DateTime currentDate = DateTime.Now; 
         TimeSpan storageDuration = currentDate - receiveDate; 
         return storageDuration.Days; 
     } 
 
-    public int calculateRemainingDays(){
+    public int CalculateRemainingDays(){
         DateTime currentDate = DateTime.Now; 
         TimeSpan remainingDays = expiryDate - currentDate; 
         return remainingDays.Days; 
     } 
 
-    public bool checkExpiryStatus(){
+    public bool CheckExpiryStatus(){
         Console.WriteLine("Checking expiry status for batch {0}", batchCode); 
         Console.WriteLine("Expiry date is {0}", expiryDate); 
         Console.WriteLine("Current date is {0}", DateTime.Now); 
@@ -44,7 +44,7 @@ public class StorageLifeCycleAnalyticsDetails : AbstractAnalyticsDetails {
         return DateTime.Now > expiryDate; 
     } 
 
-    public override Dictionary<string, object> calculateBatchSummary(){
+    public override Dictionary<string, object> CalculateBatchSummary(){
         Dictionary<string, object> batchSummary = new Dictionary<string, object>(); 
 
         //check if daysInStorage, isExpired and remainingDays are -1 
