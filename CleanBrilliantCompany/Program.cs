@@ -92,7 +92,7 @@ builder.Services.AddScoped<IForecastRepository, ForecastMapper>();
 //builder.Services.AddScoped<IForecastingFacade, ForecastFacade>();
 //builder.Services.AddScoped<ForecastControl>();
 builder.Services.AddScoped<MetricFactory>();
-builder.Services.AddScoped<ForecastFacade>();
+builder.Services.AddScoped<ForecastControl>();
 builder.Services.AddScoped<IAlert, TopDemandAlert>();
 builder.Services.AddScoped<IForecastDataAdapter, ForecastDataAdapter>();
 builder.Services.AddScoped<IDashboardFacade, DashboardFacade>();
@@ -178,7 +178,7 @@ builder.Services.AddScoped<ReportRepo, ReportMapper>();
 //builder.Services.AddScoped<AgingControl>();
 //builder.Services.AddScoped<ManufacturerControl>();
 //builder.Services.AddScoped<CostControl>();
-builder.Services.AddScoped<IForecastReportDetails, ForecastFacade>();
+builder.Services.AddScoped<IForecastReportDetails, ForecastControl>();
 
 builder.Services.AddScoped<DashboardFacade>();
 builder.Services.AddScoped<IDashboardFacade, DashboardFacade>();

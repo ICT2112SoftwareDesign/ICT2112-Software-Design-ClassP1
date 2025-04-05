@@ -4,10 +4,11 @@ using CleanBrilliantCompany.Interfaces;
 using CleanBrilliantCompany.DataSource.Interface;
 using CleanBrilliantCompany.Interfaces.Forecast;
 using CleanBrilliantCompany.Services.Sorting;
+using CleanBrilliantCompany.Models.Forecast;
 
-namespace CleanBrilliantCompany.Models.Forecast
+namespace CleanBrilliantCompany.Control
 {
-    public class ForecastFacade : IForecastReportDetails
+    public class ForecastControl : IForecastReportDetails
 
     {
         //private readonly IStockPredictionService _stockPredictionService;
@@ -19,7 +20,7 @@ namespace CleanBrilliantCompany.Models.Forecast
         private readonly IAlert _alertService;
         private readonly IForecastDataAdapter _forecastDataAdapter;
 
-        public ForecastFacade(
+        public ForecastControl(
             MetricFactory metricFactory,
             IForecastRepository forecastRepository,
             TempForecastIProduct iProduct,
@@ -37,7 +38,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             _alertService = alertService;
             _forecastDataAdapter = forecastDataAdapter;
         }
-        
+
         public ForecastDashboard generateDashboard(DateTime selectedMonth, int adjustmentFactor = 0)
         {
 
@@ -149,11 +150,11 @@ namespace CleanBrilliantCompany.Models.Forecast
             return trendData;
         }
 
-      
-       
 
 
-        public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth, int productId, String productName, int priceAdjustment)
+
+
+        public ForecastMetrics updateProductPriceAdjustment(DateTime selectedMonth, int productId, string productName, int priceAdjustment)
         {
             List<ProductDTO> productList;
             Dictionary<int, int> aggregatedSales;
@@ -227,7 +228,7 @@ namespace CleanBrilliantCompany.Models.Forecast
             return report.ToString();
         }
 
-       
+
 
 
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using CleanBrilliantCompany.Control;
 using CleanBrilliantCompany.DataSource.Interface;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.Models.Forecast;
@@ -14,12 +15,12 @@ namespace CleanBrilliantCompany.Controllers
     [Route("[controller]")]
     public class ForecastController : Controller
     {
-        private readonly ForecastFacade _forecastFacade;
+        private readonly ForecastControl _forecastFacade;
         //private readonly IMemoryCache _cache;
         //private const string DashboardCacheKey = "Dashboard_User123"; // Adjust key for user-specific caching
 
         // Inject ForecastControl and IMemoryCache via DI
-        public ForecastController(ForecastFacade forecastControl)
+        public ForecastController(ForecastControl forecastControl)
         {
             _forecastFacade = forecastControl;
             //_cache = cache;
