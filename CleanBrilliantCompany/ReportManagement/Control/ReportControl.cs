@@ -1,4 +1,5 @@
 using System.Text;
+using CleanBrilliantCompany.ForecastManagement.Interface;
 using CleanBrilliantCompany.Interface;
 using CleanBrilliantCompany.Models;
 using CleanBrilliantCompany.ReportManagement.Services;
@@ -8,25 +9,34 @@ namespace CleanBrilliantCompany.Control
 {
     public class ReportControl
     {
+
         private readonly ReportGenerator _reportGenerator;
         private readonly IAIService _AIService;
         private readonly ReportRepo _repo;
         private readonly IAnalyticsReportDetails _dashboardFacade;
-        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, ReportRepo repo, IAnalyticsReportDetails dashboardFacade)
+        private readonly IForecastReportDetails _forecastFacade;
+        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, ReportRepo repo, IAnalyticsReportDetails dashboardFacade, IForecastReportDetails forecastFacade)
         {
             _reportGenerator = reportGenerator;
             _AIService = aiService;
             _repo = repo;
             _dashboardFacade = dashboardFacade;
+            _forecastFacade = forecastFacade;
         }
 
         public async Task<Report> GenerateCustomReportAsync(List<string> selected)
         {
-            // Use facade to generate combined report summary
-            string combinedDashboardData = _dashboardFacade.GenerateCombinedReport(selected);
+            var combinedDashboardData = new StringBuilder();
+            combinedDashboardData.AppendLine(_dashboardFacade.GenerateCombinedReport(selected));
 
-            // Send combined data to OpenAI for analysis
-            string aiSummary = await _AIService.GenerateAnalysis(combinedDashboardData);
+            if (selected.Contains("Forecast"))
+            {
+                combinedDashboardData.AppendLine("===== FORECAST DASHBOARD =====");
+                combinedDashboardData.AppendLine(_forecastFacade.GenerateReport());
+            }
+
+            // Pass combined data to OpenAI for analysis
+            string aiSummary = await _AIService.GenerateAnalysis(combinedDashboardData.ToString());
 
             var report = new Report
             {
@@ -55,14 +65,14 @@ namespace CleanBrilliantCompany.Control
             return report;
         }
 
-        public async Task<List<ReportLog>> GetReportLogsAsync(int reportID)
-        {
-            return await _repo.QueryStatusAsync(reportID);
-        }
-
         public async Task<Report?> GetReportAsync(int reportID)
         {
             return await _repo.FindByIdAsync(reportID);
+        }
+
+        public async Task<List<ReportLog>> GetReportLogsAsync(int reportID)
+        {
+            return await _repo.QueryStatusAsync(reportID);
         }
     }
 }

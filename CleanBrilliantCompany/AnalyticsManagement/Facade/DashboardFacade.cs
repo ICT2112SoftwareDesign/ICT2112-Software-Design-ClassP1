@@ -19,7 +19,6 @@ public class DashboardFacade : IAnalyticsReportDetails
         this.inventoryControl = inventoryControl;
     }
 
-
     public string GenerateCombinedReport(List<string> selected)
     {
         var sb = new System.Text.StringBuilder();
