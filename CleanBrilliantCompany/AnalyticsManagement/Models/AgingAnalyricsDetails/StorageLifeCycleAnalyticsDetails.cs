@@ -49,9 +49,9 @@ public class StorageLifeCycleAnalyticsDetails : AbstractAnalyticsDetails {
 
         //check if daysInStorage, isExpired and remainingDays are -1 
         if (daysInStorage == -1 && remainingDays == -1){
-            batchSummary.Add("StorageDuration", calculateStorageDuration()); 
-            batchSummary.Add("RemainingDays", calculateRemainingDays()); 
-            batchSummary.Add("ExpiryStatus", checkExpiryStatus()); 
+            batchSummary.Add("StorageDuration", CalculateStorageDuration()); 
+            batchSummary.Add("RemainingDays", CalculateRemainingDays()); 
+            batchSummary.Add("ExpiryStatus", CheckExpiryStatus()); 
         } else {
             batchSummary.Add("StorageDuration", daysInStorage); 
             batchSummary.Add("RemainingDays", remainingDays); 
