@@ -21,7 +21,7 @@ namespace CleanBrilliantCompany.Models.Control
             _logger = logger;
         }
 
-        public async Task<bool> CreateGoal(GoalsSDM goal, string goalDate)
+        public async Task<bool> CreateGoal(GoalsSDM goal, string goalDate, double targetEmission)
         {
             if (DateTime.TryParseExact(goalDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
             {
@@ -38,6 +38,7 @@ namespace CleanBrilliantCompany.Models.Control
 
                 // Update goal's date and insert
                 goal.UpdateGoalDate(goalYear, goalMonth);
+                goal.UpdateTargetEmission(targetEmission);
                 await _goalDb.InsertGoal(goal);
                 return true;
             }

@@ -21,11 +21,11 @@ namespace CleanBrilliantCompany.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Create(GoalsSDM goal, string goalDate)
+        public async Task<JsonResult> Create(GoalsSDM goal, string goalDate, double targetEmission)
         {
             if (ModelState.IsValid)
             {
-                bool success = await _goalManager.CreateGoal(goal, goalDate);
+                bool success = await _goalManager.CreateGoal(goal, goalDate, targetEmission);
                 if (success)
                 {
                     return Json(new { success = true, message = "Goal created successfully!" });

@@ -2,11 +2,26 @@
     ViewData["Title"] = "Goal Management";
 }
 
-<h1>Goal Management</h1>
+<body id="page-top">
+    <div id="wrapper" class="d-flex flex-nowrap min-vh-100">
+           @await Html.PartialAsync("_Sidebar")
 
-<p>Choose an action:</p>
+            <div class="text-center my-4">
+                <h1>Goal Management</h1>
+                <p>Choose an action:</p>
+            </div>
 
-<ul>
-    <li><a asp-controller="Goals" asp-action="GoalsCreation">Create a New Goal</a></li>
-    <li><a asp-controller="Goals" asp-action="GoalsModification">Modify an Existing Goal</a></li>
-</ul>
+            <div class="d-flex justify-content-center mt-4 gap-3">
+                
+                <form asp-controller="Goals" asp-action="GoalsCreation" method="get">
+                    <button type="submit" class="btn btn-primary px-4 py-2">Create a New Goal</button>
+                </form>
+
+                <form asp-controller="Goals" asp-action="GoalsModification" method="get">
+                    <button type="submit" class="btn btn-danger px-4 py-2">Modify an Existing Goal</button>
+                </form>
+            </div>
+
+        </div>  
+    </div>
+</body>>
