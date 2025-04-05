@@ -55,9 +55,9 @@
                                         {
                                             @Model.ResolutionDetails
                                         }
-                                        else
-                                        {
-                                            <form asp-action="updateSupportTicket" asp-route-ticketId="@Model.TicketId" method="post">
+                                        else                                       {
+                                            <form method="post" action="@Url.Action("updateSupportTicket", "SupportTicket", new { ticketId = Model.TicketId })">
+                                            <input type="hidden" name="ticketId" value="@Model.TicketId" />
                                                 <div class="form-group">
                                                     <textarea name="resolutionDetails" class="form-control" rows="3" required></textarea>
                                                 </div>
@@ -68,7 +68,7 @@
                                 </tr>
                             </table>
 
-                            <a asp-action="SupportTicket" class="btn btn-secondary btn-sm mt-3">Back to List</a>
+                            <a href="@Url.Action("SupportTicket", "Staff")" class="btn btn-secondary btn-sm mt-3">Back to List</a>
                         </div>
                     </div>
 

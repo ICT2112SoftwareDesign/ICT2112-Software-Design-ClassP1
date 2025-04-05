@@ -8,12 +8,12 @@ using System.Linq;
 namespace CleanBrilliantCompany.Controllers
 {
     [Route("staff/shippingagent")]
-    public class ShippingAgentController : Controller
+    public class ShippingAgentController : ApplicationController
     {
         private readonly IShippingAgentDB _shippingAgentDB;
 
         // Add constructor with dependency injection
-        public ShippingAgentController(IShippingAgentDB shippingAgentDB)
+        public ShippingAgentController(IShippingAgentDB shippingAgentDB, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _shippingAgentDB = shippingAgentDB;
         }
@@ -21,6 +21,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Shipping Agents page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             // Get shipping agents from the service
             var agents = await _shippingAgentDB.GetAllShippingAgentsAsync();
             var agentsList = agents.ToList();
@@ -46,6 +53,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet("add")]
         public IActionResult Add()
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Shipping Agents page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             return View("~/Views/ShippingAgent/add-shippingagent.cshtml", new ShippingAgent_RDM());
         }
 
@@ -53,6 +67,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost("AddShippingAgent")]
         public async Task<IActionResult> Add(ShippingAgent_RDM shippingAgent)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Shipping Agents page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             if (ModelState.IsValid)
             {
                 try
@@ -90,6 +111,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet("update/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Shipping Agents page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+
             var agentRDM = await _shippingAgentDB.GetShippingAgentByIdAsync(id);
 
             if (agentRDM == null)
@@ -107,6 +135,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost("UpdateShippingAgent/{id}")]
         public async Task<IActionResult> Update(int id, ShippingAgent_RDM shippingAgent)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Shipping Agents page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             if (id != shippingAgent.ShippingAgentId)
             {
                 return BadRequest();
@@ -149,6 +184,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Shipping Agents page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             var result = await _shippingAgentDB.DeleteShippingAgentAsync(id);
 
             if (result)

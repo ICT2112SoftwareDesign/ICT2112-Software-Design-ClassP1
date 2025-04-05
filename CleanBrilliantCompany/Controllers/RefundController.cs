@@ -22,7 +22,7 @@ namespace CleanBrilliantCompany.Controllers.Refund
             int? staffId = GetLoggedInStaffId();
             if (staffId == null)
             {
-                TempData["Message"] = "You must log in to access refunds.";
+                TempData["Message"] = "You must log in to access the Refunds page.";
                 return RedirectToAction("Login", "StaffLogin");
             }
 
@@ -33,6 +33,13 @@ namespace CleanBrilliantCompany.Controllers.Refund
         [HttpGet("details/{id}")]
         public IActionResult RefundDetails(int id)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Refunds page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             var refund = _refundManagement.GetRefundDetails(id);
 
             if (refund == null || refund.Status == "Not Found")
@@ -46,6 +53,13 @@ namespace CleanBrilliantCompany.Controllers.Refund
         [HttpPost("update-status")]
         public IActionResult UpdateRefundStatus(int refundId, string status)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Refunds page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             _refundManagement.UpdateRefund(refundId, status);
 
             TempData["SuccessMessage"] = "Refund status updated successfully.";

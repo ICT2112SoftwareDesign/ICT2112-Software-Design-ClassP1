@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace CleanBrilliantCompany.Controllers
 {
     [Route("staff/dashboard")]
-    public class DashboardController : Controller
+    public class DashboardController : ApplicationController
     {
         private readonly DashboardManagement _dashboard;
         private readonly ILogger<DashboardController> _logger;
@@ -20,8 +20,9 @@ namespace CleanBrilliantCompany.Controllers
         public DashboardController(
             IOrder order,
             IRefundQuery refundQuery,
-            IOrderDatabase orderDatabase, // remove later when getOrderById() is available in IOrder
-            ILogger<DashboardController> logger)
+            IOrderDatabase orderDatabase,
+            ILogger<DashboardController> logger,
+            IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _order = order;
             _orderDatabase = orderDatabase;
@@ -35,6 +36,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet("")]
         public IActionResult Index(int? year = null, int? month = null)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Staff Dashboard.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             try
             {
                 // Log database types to verify correct implementations

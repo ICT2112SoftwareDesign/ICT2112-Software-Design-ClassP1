@@ -6,17 +6,24 @@ using System;
 namespace CleanBrilliantCompany.Controllers
 {
     [Route("staff/orderfulfilment")]
-    public class OrderFulfilmentController : Controller
+    public class OrderFulfilmentController : ApplicationController
     {
         private readonly IOrder _orderFulfilmentManagement;
 
-        public OrderFulfilmentController(IOrder orderFulfilmentManagement)
+        public OrderFulfilmentController(IOrder orderFulfilmentManagement, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _orderFulfilmentManagement = orderFulfilmentManagement;
         }
         [HttpGet("")]
         public IActionResult Index()
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Order Fulfilment page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             try
             {
                 // If you need to pass data to the view, fetch it here
@@ -32,6 +39,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpGet("details/{orderId}")]
         public IActionResult Details(int orderId)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Order Fulfilment page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             try
             {
                 var order = _orderFulfilmentManagement.getOrderDetails(orderId);
@@ -52,6 +66,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost("UpdateStatus")]
         public IActionResult UpdateStatus([FromBody] StatusUpdateRequest request)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Order Fulfilment page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             try
             {
                 Console.WriteLine($"DEBUG: UpdateStatus called with OrderID: {request.orderId}, Status: {request.status}");
@@ -97,6 +118,13 @@ namespace CleanBrilliantCompany.Controllers
         // GET: /OrderFulfilment/History/5
         public IActionResult History(int customerId)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Order Fulfilment page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             try
             {
                 var orders = _orderFulfilmentManagement.getOrderHistory(customerId);
@@ -113,6 +141,13 @@ namespace CleanBrilliantCompany.Controllers
         [HttpPost]
         public IActionResult Cancel(int orderId)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Order Fulfilment page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             try
             {
                 bool success = _orderFulfilmentManagement.cancelOrder(orderId);
