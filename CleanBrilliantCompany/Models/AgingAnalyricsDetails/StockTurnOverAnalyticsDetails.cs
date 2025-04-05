@@ -33,8 +33,13 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     public float calculateTurnOverRate()
     {
         // Early returns for edge cases
-        if (!quantityPerDay.Any() || totalQuantity == 0) return 0;
-        
+        // if (!quantityPerDay.Any() || totalQuantity == 0) return 0;
+        // simulation 
+        if (!quantityPerDay.Any()) {
+            // return a rnadom percetnage from 0 to 100 
+            Random random = new Random(); 
+            return random.Next(0, 101); 
+        } 
         // Get only needed quantity (we don't use firstDate/earliestQuantity)
         int latestQuantity = quantityPerDay[quantityPerDay.Keys.Max()];
         
@@ -49,7 +54,13 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     public float calculateDeadStockPercentage()
     {
         // Early returns for edge cases
-        if (!quantityPerDay.Any()) return 100;
+        // if (!quantityPerDay.Any()) return 100;
+        // simulation
+        if (!quantityPerDay.Any()) {
+            // return a rnadom percetnage from 0 to 100 
+            Random random = new Random(); 
+            return random.Next(0, 101); 
+        }
         if (totalQuantity == 0) return 0f;
         
         // Get the latest quantity
