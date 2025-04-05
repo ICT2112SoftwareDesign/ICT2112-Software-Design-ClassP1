@@ -1,7 +1,6 @@
 using CleanBrilliantCompany.Control;
-using CleanBrilliantCompany.Models.Forecast;
 
-public class DashboardFacade : IDashboardFacade
+public class DashboardFacade : IAnalyticsReportDetails
 {
     private readonly AgingControl agingControl;
     private readonly ManufacturerControl manufacturerControl;
@@ -20,16 +19,6 @@ public class DashboardFacade : IDashboardFacade
         this.inventoryControl = inventoryControl;
     }
 
-    public List<Dashboard> GetDashboardsData()
-    {
-        return new List<Dashboard>
-        {
-            agingControl.GetLatestDashboard(),
-            manufacturerControl.GetLatestDashboard(),
-            costControl.GetLatestDashboard()
-            inventoryControl.GetLatestDashboard()
-        };
-    }
 
     public string GenerateCombinedReport(List<string> selected)
     {

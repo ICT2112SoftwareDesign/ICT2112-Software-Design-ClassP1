@@ -11,8 +11,8 @@ namespace CleanBrilliantCompany.Control
         private readonly ReportGenerator _reportGenerator;
         private readonly IAIService _AIService;
         private readonly ReportRepo _repo;
-        private readonly IDashboardFacade _dashboardFacade;
-        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, ReportRepo repo, IDashboardFacade dashboardFacade)
+        private readonly IAnalyticsReportDetails _dashboardFacade;
+        public ReportControl(ReportGenerator reportGenerator, IAIService aiService, ReportRepo repo, IAnalyticsReportDetails dashboardFacade)
         {
             _reportGenerator = reportGenerator;
             _AIService = aiService;
@@ -22,32 +22,10 @@ namespace CleanBrilliantCompany.Control
 
         public async Task<Report> GenerateCustomReportAsync(List<string> selected)
         {
-            var sb = new StringBuilder();
+            // Use facade to generate combined report summary
+            string combinedDashboardData = _dashboardFacade.GenerateCombinedReport(selected);
 
-            if (selected.Contains("Aging"))
-                sb.AppendLine("===== AGING DASHBOARD =====");
-            sb.AppendLine(_dashboardFacade.GetAgingControl().GenerateReport());
-
-            if (selected.Contains("Manufacturer"))
-                sb.AppendLine("===== MANUFACTURER DASHBOARD =====");
-            sb.AppendLine(_dashboardFacade.GetManufacturerControl().GenerateReport());
-
-            if (selected.Contains("Cost"))
-                sb.AppendLine("===== COST DASHBOARD =====");
-            sb.AppendLine(_dashboardFacade.GetCostControl().GenerateReport());
-
-            if (selected.Contains("Inventory"))
-                sb.AppendLine("===== INVENTORY DASHBOARD =====");
-            sb.AppendLine(_dashboardFacade.GetInventoryControl().GenerateReport());
-
-            if (selected.Contains("Forecast"))
-                sb.AppendLine("===== FORECAST DASHBOARD =====");
-            sb.AppendLine(_dashboardFacade.GetForecastControl().GenerateReport());
-
-
-            string combinedDashboardData = sb.ToString();
-
-            // Pass combined data to OpenAI for analysis
+            // Send combined data to OpenAI for analysis
             string aiSummary = await _AIService.GenerateAnalysis(combinedDashboardData);
 
             var report = new Report
@@ -63,7 +41,7 @@ namespace CleanBrilliantCompany.Control
                 })
             };
 
-            // Save to db
+            // Save to database
             _repo.InsertReport(report);
             _repo.InsertReportLog(new ReportLog
             {
@@ -71,11 +49,11 @@ namespace CleanBrilliantCompany.Control
                 GeneratedDate = DateTime.Now,
                 Status = "Generated"
             });
+
             await _repo.SaveChangesAsync();
             Console.WriteLine("AI Summary:\n" + aiSummary);
             return report;
         }
-
 
         public async Task<List<ReportLog>> GetReportLogsAsync(int reportID)
         {
@@ -88,3 +66,4 @@ namespace CleanBrilliantCompany.Control
         }
     }
 }
+
