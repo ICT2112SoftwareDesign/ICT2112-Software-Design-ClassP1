@@ -5,12 +5,12 @@ using CleanBrilliantCompany.Interfaces;
 namespace CleanBrilliantCompany.Controllers.Reorder
 {
     [Route("staff/reorder")]
-    public class ReorderRequestController : Controller
+    public class ReorderRequestController : ApplicationController
     {
         private readonly IReorderQuery _reorderManagement;
         
 
-        public ReorderRequestController(IReorderQuery reorderManagement)
+        public ReorderRequestController(IReorderQuery reorderManagement, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _reorderManagement = reorderManagement;
             
@@ -19,6 +19,13 @@ namespace CleanBrilliantCompany.Controllers.Reorder
         [HttpGet("")]
         public IActionResult Reorder()
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Reorder Requests page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             var reorders = _reorderManagement.displayListOfReorders();
             return View("~/Views/Reorder/ListOfReorders.cshtml", reorders);
         }
@@ -26,6 +33,13 @@ namespace CleanBrilliantCompany.Controllers.Reorder
         [HttpGet("details/{id}")]
         public IActionResult ReorderDetails(int id)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Reorder Requests page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             var reorder = _reorderManagement.getReorderRequestDetails(id);
 
             if (reorder == null)
@@ -39,6 +53,13 @@ namespace CleanBrilliantCompany.Controllers.Reorder
         [HttpGet("new")]
         public IActionResult CreateReorderForm()
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Reorder Requests page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             IProduct productService = new ProductManagement();
             IManufacturer manufacturerService = new ProductManufacturerManagement(); 
              
@@ -54,6 +75,13 @@ namespace CleanBrilliantCompany.Controllers.Reorder
         [HttpPost("submitreorderform")]
         public IActionResult SubmitReorderForm(ReorderRequest_RDM reorder)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Reorder Requests page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             if (!ModelState.IsValid)
             {
                 return View("~/Views/Reorder/ReorderForm.cshtml", reorder);
@@ -82,6 +110,13 @@ namespace CleanBrilliantCompany.Controllers.Reorder
         [ValidateAntiForgeryToken]
         public IActionResult CancelReorder(int reorderId)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Reorder Requests page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+           
             var reorder = _reorderManagement.getReorderRequestDetails(reorderId);
             if (reorder == null)
             {
@@ -100,6 +135,13 @@ namespace CleanBrilliantCompany.Controllers.Reorder
 [ValidateAntiForgeryToken]
 public IActionResult UpdateReorderDetails(int id, ReorderRequest_RDM reorder)
 {
+    int? staffId = GetLoggedInStaffId();
+    if (staffId == null)
+    {
+        TempData["Message"] = "You must log in to access the Reorder Requests page.";
+        return RedirectToAction("Login", "StaffLogin");
+    }
+    
     // Ensure reorder.Products is initialized
     if (reorder.Products == null)
     {
@@ -170,6 +212,13 @@ public IActionResult UpdateReorderDetails(int id, ReorderRequest_RDM reorder)
         [ValidateAntiForgeryToken]
         public IActionResult DeleteProduct(int reorder_product_Id, int reorderId)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Reorder Requests page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             try
             {
                 _reorderManagement.deleteProductFromReorder(reorder_product_Id);
@@ -189,6 +238,13 @@ public IActionResult UpdateReorderDetails(int id, ReorderRequest_RDM reorder)
         [HttpGet("edit/{id}")]
         public IActionResult EditReorderDetails(int id)
         {
+            int? staffId = GetLoggedInStaffId();
+            if (staffId == null)
+            {
+                TempData["Message"] = "You must log in to access the Reorder Requests page.";
+                return RedirectToAction("Login", "StaffLogin");
+            }
+            
             var reorder = _reorderManagement.getReorderRequestDetails(id);
             if (reorder == null)
             {
