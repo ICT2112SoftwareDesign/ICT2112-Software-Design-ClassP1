@@ -27,11 +27,43 @@ public class DashboardFacade : IDashboardFacade
     }
 
 
-    public AgingControl GetAgingControl() => agingControl;
-    public ManufacturerControl GetManufacturerControl() => manufacturerControl;
-    public CostControl GetCostControl() => costControl;
-    public InventoryControl GetInventoryControl() => inventoryControl;
-    public IForecastReportDetails GetForecastControl() => forecastControl;
+    public string GenerateCombinedReport(List<string> selected)
+{
+    var sb = new System.Text.StringBuilder();
+
+    if (selected.Contains("Aging"))
+    {
+        sb.AppendLine("===== AGING DASHBOARD =====");
+        sb.AppendLine(agingControl.GenerateReport());
+    }
+
+    if (selected.Contains("Manufacturer"))
+    {
+        sb.AppendLine("===== MANUFACTURER DASHBOARD =====");
+        sb.AppendLine(manufacturerControl.GenerateReport());
+    }
+
+    if (selected.Contains("Cost"))
+    {
+        sb.AppendLine("===== COST DASHBOARD =====");
+        sb.AppendLine(costControl.GenerateReport());
+    }
+
+    if (selected.Contains("Inventory"))
+    {
+        sb.AppendLine("===== INVENTORY DASHBOARD =====");
+        sb.AppendLine(inventoryControl.GenerateReport());
+    }
+
+    if (selected.Contains("Forecast"))
+    {
+        sb.AppendLine("===== FORECAST DASHBOARD =====");
+        sb.AppendLine(forecastControl.GenerateReport());
+    }
+
+    return sb.ToString();
+}
+
     public List<Dashboard> getDashboardsData()
     {
         // this thing just calls every dashboard's getDashboardData method 
