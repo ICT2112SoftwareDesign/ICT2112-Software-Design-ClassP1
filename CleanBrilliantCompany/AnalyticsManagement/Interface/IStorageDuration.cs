@@ -1,4 +1,4 @@
 interface IStorageDuration
 {
-    int getStorageDuration(int batchCode); 
+    int GetStorageDuration(int batchCode); 
 } 
