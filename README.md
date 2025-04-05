@@ -41,7 +41,7 @@ This project requires the following NuGet packages:
 | **Microsoft.Data.SqlClient** | SQL Server data provider for .NET Core and .NET Framework. |
 | **System.Data.SqlClient** | Legacy SQL Server data provider for .NET Framework applications. |
 
-**Screenshot of NuGet Packages Solution GUI:
+**Screenshot of NuGet Packages Solution GUI:**
 
 ![Screenshot 2025-04-05 105030](https://github.com/user-attachments/assets/a9df4bc1-f41d-4623-9779-78953df0fa7b)
 
@@ -60,13 +60,13 @@ Add the following file into to the project repository:
 teak-clone-454005-d5-5fa367197d61.json
 ```
 
-Additionally, replace the `appsettings.json` file with the one provided in Team 5's .zip` folder. Specific instructions and screenshots can be found in Team 5's D2 Report. As this GitHub repository is public, the database connection strings and API keys are excluded from this branch.
+Additionally, **replace** the 'appsettings.json' file and **add** in the 'teak-clone-454005-d5-5fa367197d61.json' file, provided in Team 5's .zip` folder. Specific instructions and screenshots can be found in Team 5's D2 Report. As this GitHub repository is public, the database connection strings and API keys are excluded from this branch.
 &nbsp;
 
 ## 4️⃣**⚙️ Run the project**
 
 
-**🖥️ Running with Visual Studio 2022 Community Editio**n
+**Running with Visual Studio 2022 Community Editio**n
 
 1. Open the `.sln` (Solution) file in Visual Studio 2022.
 2. Make sure the correct Startup Project is selected (right-click the project > **Set as Startup Project**).
@@ -75,7 +75,7 @@ Additionally, replace the `appsettings.json` file with the one provided in Team 
 
 **OR**
 
-**💻 Running with Visual Studio Code**
+**Running with Visual Studio Code**
 
 1. Open the project folder (where the `.csproj` file is located) in **VS Code**.
 2. Open a new terminal inside VS Code.
