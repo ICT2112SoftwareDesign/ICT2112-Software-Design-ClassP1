@@ -1,6 +1,6 @@
 public class DashboardFactory
 {
-    public static Dashboard? createDashboard(DashboardDTO dTO)
+    public static Dashboard? CreateDashboard(DashboardDTO dTO)
     {
         switch (dTO.Type)
         {

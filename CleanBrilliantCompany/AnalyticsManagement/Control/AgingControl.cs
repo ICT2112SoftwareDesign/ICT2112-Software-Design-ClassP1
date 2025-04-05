@@ -8,7 +8,7 @@ public class AgingControl : IStorageDuration
     private IProduct _productInterface;
     private IBatch _batchInterface; 
 
-    public AgingControl(AgingRepository agingMapper, IProduct productInterface, IBatch batchInterface)
+    public AgingControl(IAgingRepository agingMapper, IProduct productInterface, IBatch batchInterface)
     {
         this._agingMapper = agingMapper;
         this._batchInterface = batchInterface;
@@ -41,7 +41,7 @@ public class AgingControl : IStorageDuration
             );
 
         // Step 3: Create an AgingDashboardRdm and populate with analytics
-        _agingDashboard = DashboardFactory.createDashboard(dashboardDto);
+        _agingDashboard = DashboardFactory.CreateDashboard(dashboardDto);
 
         if (_agingDashboard == null)
         {
@@ -69,7 +69,7 @@ public class AgingControl : IStorageDuration
             foreach (var analyticsDto in analyticsList)
             {
                 // add this batchID to the list of batch for the productID in the dashboard
-                (_agingDashboard as AgingDashboardRdm).AddBatchToProductMap(productID, analyticsDto.BatchCode);
+                (_agingDashboard as AgingDashboardRdm).AddBatchtoProductMap(productID, analyticsDto.BatchCode);
 
                 var stockTurnOverDetails = new StockTurnOverAnalyticsDetails(
                     analyticsDto.BatchCode,
@@ -102,7 +102,7 @@ public class AgingControl : IStorageDuration
     public void GenerateNewDashboard(DashboardDTO dto)
     {
         dto.Type = 1;
-        var dashboard = DashboardFactory.createDashboard(dto);
+        var dashboard = DashboardFactory.CreateDashboard(dto);
         var batches = _batchInterface.getAllProductBatch();
         // using the dashboard's requestedStartDate and requestedEndDate
         // i will filter out the batches that are within the date range using the batch's receive date 
@@ -112,8 +112,8 @@ public class AgingControl : IStorageDuration
         {
             var info = b.retrieveProductBatchInfo();
             var receiveDate = (DateTime)info["ReceiveDate"];
-            return receiveDate >= dashboard.RequestedStartDate &&
-                receiveDate <= dashboard.RequestedEndDate;
+            return receiveDate >= dashboard.requestedStartDate &&
+                receiveDate <= dashboard.requestedEndDate;
         }).ToList();
         
         // Retrieve all stock histories for all batches
@@ -157,8 +157,8 @@ public class AgingControl : IStorageDuration
         var dashboard = GetLatestDashboard();
         var report = new System.Text.StringBuilder();
 
-        report.AppendLine($"<h1>Aging Report - {dashboard.Name}</h1>");
-        report.AppendLine($"<p>Generated: {dashboard.GeneratedDate}</p>");
+        report.AppendLine($"<h1>Aging Report - {dashboard.name}</h1>");
+        report.AppendLine($"<p>Generated: {dashboard.generatedDate}</p>");
         report.AppendLine("<hr/>");
 
         var productMap = dashboard.GetProductToBatchMap();
