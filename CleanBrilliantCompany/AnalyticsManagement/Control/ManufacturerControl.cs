@@ -78,7 +78,7 @@ public class ManufacturerControl
         var dashboard = DashboardFactory.createDashboard(dto);
 
         // Get reorders from fakeOrderInterface
-        var reorders = fakeReorderInterface.GetAllReorderDetails(); 
+        var reorders = IReorder.GetAllReorderDetails(); 
 
         // Filter the reorders by the requested start and end date
         var filteredOrders = reorders
