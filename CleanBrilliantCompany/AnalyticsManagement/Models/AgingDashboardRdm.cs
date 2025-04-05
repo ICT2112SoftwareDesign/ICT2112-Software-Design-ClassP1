@@ -3,8 +3,6 @@ using CleanBrilliantCompany.Models.Entity;
 
 public class AgingDashboardRdm : Dashboard
 {
-
-
     // batchCode to list of analytics 
     private Dictionary<int, List<AbstractAnalyticsDetails>> batchAnalyticsMap;
 
