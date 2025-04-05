@@ -25,12 +25,11 @@
                     <button type="submit" class="btn btn-primary">Update Goal</button>
                 </form>
             </div>
-
+            <!-- Notification -->
+            <div id="notification" class="alert alert-danger" style="display:none;"></div>
         </div>  
     </div>
 </body>>
-<!-- Notification -->
-<div id="notification" class="alert" style="display:none; margin-top:10px;"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -55,7 +54,7 @@
 
                         setTimeout(function () {
                             location.reload(); // Reload after success
-                        }, 1500);
+                        }, 5500);
                     } else {
                         notification.removeClass("alert-success").addClass("alert-danger")
                             .text(response.message).fadeIn();

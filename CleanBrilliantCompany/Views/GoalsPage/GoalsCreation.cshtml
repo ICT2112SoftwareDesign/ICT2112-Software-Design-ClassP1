@@ -26,12 +26,11 @@
                     <button type="submit" class="btn btn-primary">Create Goal</button>
                 </form>
            </div>
-
+            <!-- Notification -->
+            <div id="notification" class="alert alert-danger" style="display:none;"></div>
         </div>  
     </div>
 </body>>
-<!-- Notification -->
-<div id="notification" class="alert alert-danger" style="display:none;"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -40,8 +39,8 @@
             event.preventDefault(); // Prevent form from reloading the page
 
             var formData = {
-                TargetEmission: $("#TargetEmission").val(),
-                goalDate: $("#goalDate").val()
+                goalDate: $("#goalDate").val(),
+                targetEmission: $("#targetEmission").val()
             };
 
             $.ajax({
@@ -49,15 +48,22 @@
                 type: "POST",
                 data: formData,
                 success: function (response) {
+                    var notification = $("#notification");
                     if (response.success) {
-                        alert(response.message); // Show success message
-                        location.reload(); // Reload the page to reflect new data
+                        notification.removeClass("alert-danger").addClass("alert-success")
+                            .text(response.message).fadeIn();
+
+                        setTimeout(function () {
+                            location.reload(); // Reload after success
+                        }, 5500);
                     } else {
-                        $("#notification").text(response.message).show(); // Show error notification
+                        notification.removeClass("alert-success").addClass("alert-danger")
+                            .text(response.message).fadeIn();
                     }
                 },
                 error: function () {
-                    $("#notification").text("An unexpected error occurred.").show();
+                    $("#notification").removeClass("alert-success").addClass("alert-danger")
+                        .text("An unexpected error occurred.").fadeIn();
                 }
             });
         });
