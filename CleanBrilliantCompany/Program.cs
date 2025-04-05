@@ -153,7 +153,7 @@ builder.Services.AddScoped<ProductFactory, SolidProductFactory>();
 
 //==================================================
 //aging
-builder.Services.AddScoped<AgingRepository, AgingMapper>();
+builder.Services.AddScoped<IAgingRepository, AgingMapper>();
 builder.Services.AddScoped<AgingControl>();
 //================================================
 

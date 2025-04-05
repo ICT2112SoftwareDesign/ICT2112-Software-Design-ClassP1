@@ -22,8 +22,8 @@ public class AgingDashboardRdm : Dashboard
         batchAnalyticsMap = new Dictionary<int, List<AbstractAnalyticsDetails>>();
     }
 
-    public Dictionary<int, List<int>> getProductToBatchMap() => productToBatchMap;
-    public void addBatchtoProductMap(int productId, int batchCode)
+    public Dictionary<int, List<int>> GetProductToBatchMap() => productToBatchMap;
+    public void AddBatchtoProductMap(int productId, int batchCode)
     {
 
         //Console.WriteLine("Adding batch {0} to product {1}", batchCode, productId); 
@@ -37,9 +37,9 @@ public class AgingDashboardRdm : Dashboard
         }
     }
 
-    public Dictionary<int, string> getProductIDToNameMap() => productIDToNameMap;
+    public Dictionary<int, string> GetProductIDToNameMap() => productIDToNameMap;
 
-    public void addProductToNameMap(int productId, string productName)
+    public void AddProductToNameMap(int productId, string productName)
     {
         if (!productIDToNameMap.ContainsKey(productId))
         {
@@ -47,7 +47,7 @@ public class AgingDashboardRdm : Dashboard
         }
     }
 
-    public void populateAnalytics(List<ProductBatch> productBatchData, List<StockHistory> stockHistoryData) 
+    public void PopulateAnalytics(List<ProductBatch> productBatchData, List<StockHistory> stockHistoryData) 
     {
                 // so for each rawanalyticsdata i need to create 2 instances since 
         // i have 2 types of agingAnalytics
@@ -105,15 +105,15 @@ public class AgingDashboardRdm : Dashboard
             }
             
             // add them to analytics map
-            addBatchAnalytics(batchCode, storageLifeCycleAnalytics); 
-            addBatchAnalytics(batchCode, stockTurnOverAnalytics); 
+            AddBatchAnalytics(batchCode, storageLifeCycleAnalytics); 
+            AddBatchAnalytics(batchCode, stockTurnOverAnalytics); 
         }
     }
 
 
 
 
-    public void addBatchAnalytics(int batchCode, AbstractAnalyticsDetails batchDetails)
+    public void AddBatchAnalytics(int batchCode, AbstractAnalyticsDetails batchDetails)
     {
         if (batchAnalyticsMap.ContainsKey(batchCode))
         {
@@ -126,7 +126,7 @@ public class AgingDashboardRdm : Dashboard
     }
 
 
-    public List<AbstractAnalyticsDetails>? getBatchAnalytics(int batchCode)
+    public List<AbstractAnalyticsDetails>? GetBatchAnalytics(int batchCode)
     {
         return batchAnalyticsMap.ContainsKey(batchCode) ? batchAnalyticsMap[batchCode] : null;
     }

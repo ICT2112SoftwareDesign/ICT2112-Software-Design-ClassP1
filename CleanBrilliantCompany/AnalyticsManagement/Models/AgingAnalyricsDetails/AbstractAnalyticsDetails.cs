@@ -8,7 +8,7 @@ public abstract class AbstractAnalyticsDetails {
     }
 
  
-    public String getAnalyticsType() => analyticsType; 
-    abstract public Dictionary<string, object> calculateBatchSummary(); 
+    public String GetAnalyticsType() => analyticsType; 
+    abstract public Dictionary<string, object> CalculateBatchSummary(); 
     
 } 

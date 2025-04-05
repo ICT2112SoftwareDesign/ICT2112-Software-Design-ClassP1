@@ -18,19 +18,19 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     public StockTurnOverAnalyticsDetails(int batchCode, int totalQuantity) : base(batchCode, "StockTurnOverAnalyticsDetails"){
         this.totalQuantity = totalQuantity; 
     } 
-    public void setQuantityPerDay(Dictionary<DateOnly, int> quantityPerDay){
-        this.quantityPerDay = quantityPerDay; 
-    }   
-    
+ 
 
     // constructor for retrieving from the database 
     public StockTurnOverAnalyticsDetails(int batchCode, float turnOverRate, float DeadStockPercentage) : base(batchCode, "StockTurnOverAnalyticsDetails"){
         this.turnOverRate = turnOverRate; 
         this.DeadStockPercentage = DeadStockPercentage; 
     } 
+    public void SetQuantityPerDay(Dictionary<DateOnly, int> quantityPerDay){
+        this.quantityPerDay = quantityPerDay; 
+    }   
 
     // percentage of stock used
-    public float calculateTurnOverRate()
+    public float CalculateTurnOverRate()
     {
         // Early returns for edge cases
         if (!quantityPerDay.Any() || totalQuantity == 0) return 0;
@@ -46,7 +46,7 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
         );
     }
 
-    public float calculateDeadStockPercentage()
+    public float CalculateDeadStockPercentage()
     {
         // Early returns for edge cases
         if (!quantityPerDay.Any()) return 100;
@@ -64,7 +64,7 @@ public class StockTurnOverAnalyticsDetails : AbstractAnalyticsDetails {
     }
 
      
-    public override Dictionary<string, object> calculateBatchSummary(){
+    public override Dictionary<string, object> CalculateBatchSummary(){
         Dictionary<string, object> batchSummary = new Dictionary<string, object>(); 
         // batchSummary.Add("TurnOverRate", calculateTurnOverRate()); 
         // batchSummary.Add("DeadStockPercentage", calculateDeadStockPercentage()); 
